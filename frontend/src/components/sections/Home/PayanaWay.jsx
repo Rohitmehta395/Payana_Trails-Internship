@@ -1,5 +1,5 @@
 import React from "react";
-import wildlifeImg from "../../../assets/Home/PayanaWay/wildlife.jpg";
+import wildlifeImg from "../../../assets/Home/PayanaWay/Payana-way.png";
 import CreamBtn from "../../common/buttons/CreamBtn";
 
 const PayanaWay = () => {
@@ -11,59 +11,69 @@ const PayanaWay = () => {
   ];
 
   return (
-    <section className="bg-[#F3EFE9] w-full py-16 sm:py-20 lg:py-16">
-      <div className="max-w-300 mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header Section */}
-        <div className="text-center mb-10 sm:mb-12">
-          <h2 className="text-[#4A3B2A] text-4xl sm:text-5xl font-bold tracking-wide uppercase mb-4">
+    <section className="bg-[#F3EFE9] w-full py-16 sm:py-24 font-sans">
+      <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
+        {/* === Header Section === */}
+        <div className="text-center mb-16">
+          <h2 className="text-[#4A3B2A] text-4xl sm:text-5xl font-bold tracking-widest uppercase mb-4 relative inline-block group cursor-default">
             The Payana Way
+            {/* Animated underline that expands from the center on hover */}
+            <span className="absolute -bottom-2 left-1/2 w-0 h-[2px] bg-[#4A3B2A] transition-all duration-500 ease-out group-hover:w-1/2 group-hover:-translate-x-full"></span>
+            <span className="absolute -bottom-2 right-1/2 w-0 h-[2px] bg-[#4A3B2A] transition-all duration-500 ease-out group-hover:w-1/2"></span>
           </h2>
-          <p className="text-[#4A3B2A] text-2xl sm:text-3xl font-serif italic">
+          <p className="text-[#4A3B2A] text-2xl sm:text-3xl font-serif italic mt-6 opacity-90">
             A more thoughtful way to travel
           </p>
         </div>
 
-        {/* Main Card */}
-        <div className="bg-[#4A3B2A] rounded-4xl p-4 sm:p-6 lg:p-10 flex flex-col lg:flex-row gap-8 lg:gap-12 shadow-xl">
-          {/* 1. Image Section */}
-          <div className="w-full lg:w-[40%] shrink-0">
-            <img
-              src={wildlifeImg}
-              alt="The Payana Way"
-              className="w-full h-full min-h-75 object-cover border-8 border-[#F3EFE9] rounded-3xl shadow-sm"
-            />
+        {/* === Main Content Card === */}
+        {/* Notice the asymmetrical rounded corners (tr & bl) for an organic, premium shape */}
+        <div className="group/main flex flex-col lg:flex-row items-center gap-12 lg:gap-16 bg-[#4A3B2A] rounded-tr-[4rem] rounded-bl-[4rem] rounded-tl-2xl rounded-br-2xl p-6 sm:p-10 lg:p-14 shadow-2xl transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
+          {/* 1. Image Section - 100% visible, no forced cropping */}
+          <div className="w-full lg:w-[45%] shrink-0 relative mt-4 lg:mt-0">
+            {/* Offset decorative frame that shifts outward when you hover over the card */}
+            <div className="absolute inset-0 border border-[#F3EFE9]/30 rounded-tr-[3rem] rounded-bl-[3rem] rounded-tl-xl rounded-br-xl translate-x-3 translate-y-3 transition-transform duration-500 ease-out group-hover/main:translate-x-5 group-hover/main:translate-y-5"></div>
+
+            {/* Image Container */}
+            <div className="relative overflow-hidden rounded-tr-[3rem] rounded-bl-[3rem] rounded-tl-xl rounded-br-xl shadow-lg bg-[#F3EFE9]/5">
+              <img
+                src={wildlifeImg}
+                alt="The Payana Way"
+                className="w-full h-auto object-cover transition-transform duration-1000 ease-out group-hover/main:scale-105"
+              />
+              <div className="absolute inset-0 bg-[#4A3B2A]/10 transition-opacity duration-500 group-hover/main:opacity-0"></div>
+            </div>
           </div>
 
-          {/* 2. Text Section*/}
-          <div className="w-full lg:w-[60%] flex flex-col justify-center py-2 lg:py-4 text-[#F3EFE9]">
-            {/* Description */}
-            <p className="text-[15px] sm:text-[16px] lg:text-[18px] italic leading-relaxed mb-8 opacity-90">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+          {/* 2. Text Section */}
+          <div className="w-full lg:w-[55%] flex flex-col justify-center text-[#F3EFE9]">
+            {/* Description with subtle quote marks */}
+            <div className="relative mb-10">
+              <span className="text-5xl absolute -top-6 -left-4 text-[#F3EFE9]/10 font-serif leading-none">
+                "
+              </span>
+              <p className="text-[16px] sm:text-[18px] font-sans italic leading-relaxed opacity-90 relative z-10">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                nulla pariatur.
+              </p>
+            </div>
 
-            {/* Features List */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-5 mb-10">
+            {/* Features List - Minimalist expanding lines */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 mb-12">
               {features.map((feature, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    className="text-[#F3EFE9] shrink-0"
-                  >
-                    <circle cx="12" cy="12" r="9" />
-                    <circle cx="12" cy="12" r="3.5" fill="currentColor" />
-                  </svg>
-                  <span className="text-[16px] lg:text-[18px] font-medium opacity-95">
+                <div
+                  key={index}
+                  className="group/item flex items-center gap-4 cursor-default"
+                >
+                  {/* Line expands from 24px to 48px on hover */}
+                  <div className="h-[2px] w-6 bg-[#F3EFE9]/30 transition-all duration-500 ease-out group-hover/item:w-8 group-hover/item:bg-[#F3EFE9]"></div>  
+
+                  {/* Text slides slightly to the right */}
+                  <span className="text-[17px] font-medium tracking-wide opacity-80 transition-all duration-500 group-hover/item:opacity-100 group-hover/item:translate-x-1">
                     {feature}
                   </span>
                 </div>
@@ -71,10 +81,10 @@ const PayanaWay = () => {
             </div>
 
             {/* Action Button */}
-            <div className="flex justify-start mt-auto lg:mt-0">
+            <div className="flex justify-start">
               <CreamBtn
-                text="Discover The Payana Way"
-                className="w-fit px-8 py-3 sm:py-3.5 text-[16px] sm:text-[18px] shadow-md hover:shadow-lg"
+                text="Discover The Payana Way &rarr;"
+                className="w-full sm:w-fit px-8 py-4 text-[16px] sm:text-[18px] shadow-lg transition-transform duration-300 hover:-translate-y-1"
               />
             </div>
           </div>
