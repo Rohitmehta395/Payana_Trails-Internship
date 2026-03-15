@@ -1,6 +1,8 @@
 import React from "react";
 import CreamBtn from "../../common/buttons/CreamBtn";
-import storyImg from "../../../assets/Home/Stories/stories-moments.avif";
+import BrownBtn from "../../common/buttons/BrownBtn";
+import storyImg from "../../../assets/Home/Stories/stories-moments.jpg";
+import { FaEnvelopeOpenText } from "react-icons/fa6";
 
 const StoriesMoments = () => {
   return (
@@ -18,11 +20,10 @@ const StoriesMoments = () => {
           {/* 2. Uniform Overlay */}
           <div className="absolute inset-0 bg-[#c9bebd]/20 transition-opacity duration-300"></div>
 
-          {/* 3. Quote Text */}
-          <div className="absolute top-8 sm:top-12 lg:top-14 left-0 right-0 flex justify-center px-6 z-10">
-            <h2 className="text-[#4A3B2A] text-[18px] sm:text-[22px] lg:text-[26px] font-sans italic font-semibold leading-relaxed tracking-wide text-center">
-              "Travel isn't about checking places off a list. It's about the{" "}
-              <br className="hidden sm:block" /> quiet moments you never
+          {/* 3. Quote Text (Shifted Left) */}
+          <div className="absolute top-8 sm:top-12 lg:top-14 left-6 sm:left-12 pr-6 z-10 max-w-lg lg:max-w-2xl">
+            <h2 className="text-[#4A3B2A] text-[18px] sm:text-[22px] lg:text-[26px] font-sans italic font-semibold leading-relaxed tracking-wide text-left">
+              "Travel isn't about checking places off a list. It's about the quiet moments you never
               expected."
             </h2>
           </div>
@@ -30,8 +31,36 @@ const StoriesMoments = () => {
           {/* 4. Action Button */}
           <div className="absolute bottom-8 sm:bottom-12 left-6 sm:left-12 z-10">
             <CreamBtn
-              text="Read Our Stories &rarr;"
+              text="Explore Our Travel Stories &rarr;"
               className="px-6 py-3 sm:px-8 sm:py-3.5 text-[15px] sm:text-[16px] shadow-lg hover:shadow-xl font-bold"
+            />
+          </div>
+        </div>
+
+        {/* === NEWSLETTER SUBSCRIPTION BAR === */}
+        <div className="mt-12 relative overflow-hidden bg-white/60 border border-[#4A3B2A]/10 rounded-4xl p-8 sm:px-12 sm:py-10 shadow-sm transition-all duration-300 hover:shadow-lg hover:bg-white/80 flex flex-col lg:flex-row items-center justify-between gap-8">
+          {/* Left: Text Info */}
+          <div className="flex items-center gap-5 text-center sm:text-left flex-col sm:flex-row w-full lg:w-auto">
+            <div className="w-14 h-14 shrink-0 bg-[#4A3B2A]/10 rounded-full flex items-center justify-center text-[#4A3B2A]">
+              <FaEnvelopeOpenText size={24} />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold font-serif text-[#4A3B2A] mb-2">
+                Stay Inspired
+              </h3>
+              <p className="text-[#4A3B2A]/80 text-[16px] max-w-md leading-relaxed">
+                Get handpicked travel stories, exclusive journeys, and a touch
+                of magic delivered directly to your inbox.
+              </p>
+            </div>
+          </div>
+
+          {/* Right: Action Button */}
+          <div className="shrink-0 w-full sm:w-auto">
+            <BrownBtn
+              text="Subscribe to our Newsletter &rarr;"
+              className="w-full sm:w-auto px-8 py-4 shadow-md hover:shadow-xl shadow-[#4A3B2A]/20"
+              onClick={() => console.log("Newsletter Clicked")}
             />
           </div>
         </div>

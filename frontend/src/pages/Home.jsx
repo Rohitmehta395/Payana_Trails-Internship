@@ -5,6 +5,7 @@ import SignatureTrails from "../components/sections/Home/SignatureTrails";
 import PayanaWay from "../components/sections/Home/PayanaWay";
 import StoriesMoments from "../components/sections/Home/StoriesMoments";
 import ClosingInvitation from "../components/sections/Home/ClosingInvitation";
+import ShareExperience from "../components/sections/Home/ShareExperience";
 
 const Home = () => {
   return (
@@ -15,6 +16,7 @@ const Home = () => {
       <PayanaWay />
       <StoriesMoments />
       <ClosingInvitation />
+      <ShareExperience />
     </div>
   );
 };
