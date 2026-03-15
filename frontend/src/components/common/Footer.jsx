@@ -5,8 +5,11 @@ import {
   FaInstagram,
   FaWhatsapp,
   FaFacebook,
+  FaLocationDot,
+  FaEnvelope,
+  FaPhone,
 } from "react-icons/fa6";
-import logoImg from "../../../public/logo.svg";
+import logoImg from "/logo.svg";
 
 const Footer = () => {
   const navLinks = [
@@ -21,23 +24,47 @@ const Footer = () => {
   const socialLinks = [
     {
       name: "WhatsApp",
-      icon: <FaWhatsapp className="text-[#25D366]" size={22} />,
+      icon: (
+        <FaWhatsapp
+          className="text-[#25D366] group-hover:text-white transition-colors duration-300"
+          size={20}
+        />
+      ),
       href: "#",
+      bgHover: "hover:bg-[#25D366]",
     },
     {
       name: "Facebook",
-      icon: <FaFacebook className="text-black" size={20} />,
+      icon: (
+        <FaFacebook
+          className="text-[#1877F2] group-hover:text-white transition-colors duration-300"
+          size={18}
+        />
+      ),
       href: "https://www.facebook.com/payanatrails/",
-    },
-    {
-      name: "YouTube",
-      icon: <FaYoutube className="text-[#FF0000]" size={22} />,
-      href: "www.youtube.com/@PayanaTrails",
+      bgHover: "hover:bg-[#1877F2]",
     },
     {
       name: "Instagram",
-      icon: <FaInstagram className="text-[#E1306C]" size={22} />,
+      icon: (
+        <FaInstagram
+          className="text-[#E1306C] group-hover:text-white transition-colors duration-300"
+          size={20}
+        />
+      ),
       href: "https://www.instagram.com/payanatrails/",
+      bgHover: "hover:bg-[#E1306C]",
+    },
+    {
+      name: "YouTube",
+      icon: (
+        <FaYoutube
+          className="text-[#FF0000] group-hover:text-white transition-colors duration-300"
+          size={20}
+        />
+      ),
+      href: "www.youtube.com/@PayanaTrails",
+      bgHover: "hover:bg-[#FF0000]",
     },
   ];
 
@@ -47,28 +74,34 @@ const Footer = () => {
       links: [
         { name: "Wildlife Trails", path: "/wildlife-trails" },
         { name: "Heritage Trails", path: "/unesco-trails" },
-        { name: "Immersive Trails", path: "/immersive-trails" },
         { name: "Signature Trails", path: "/signature-journeys" },
+        { name: "Cultural & Immersive Trails", path: "/immersive-trails" },
       ],
     },
     {
       title: "The Payana Way",
       links: [
-        { name: "About Payana", path: "/about" },
-        { name: "Our Philosophy", path: "/philosophy" },
-        { name: "How We Curate", path: "/curate" },
+        { name: "A Journey Begins", path: "/journey" },
+        { name: "The Payana Difference", path: "/philosophy" },
         { name: "Responsible Travel", path: "/responsible-travel" },
+        { name: "In the Media", path: "/media" },
+      ],
+    },
+    {
+      title: "Stories",
+      links: [
+        { name: "Travel Stories", path: "/stories" },
         { name: "Voices from the Trail", path: "/voices" },
-        { name: "Press & Media", path: "/press" },
+        { name: "Newsletter", path: "/newsletter" },
       ],
     },
     {
       title: "Connect",
       links: [
         { name: "Enquiry", path: "/enquiry" },
-        { name: "Contact", path: "/contact" },
+        { name: "Connect With Us", path: "/connect" },
         { name: "FAQs", path: "/faqs" },
-        { name: "Refer a Friend", path: "/refer" },
+        { name: "Refer Your Friends", path: "/refer" },
         { name: "Gift a Journey", path: "/gift" },
       ],
     },
@@ -77,24 +110,32 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#4A3B2A] w-full pt-12 pb-8">
-      <div className="max-w-350 mx-auto px-4 sm:px-6 lg:px-8">
-        {/* === TOP SECTION === */}
-        <div className="flex flex-col xl:flex-row justify-between items-start gap-12 xl:gap-8">
+    <footer className="relative bg-gradient-to-b from-[#4A3B2A] to-[#2E2419] w-full pt-10 pb-6 overflow-hidden font-sans">
+      {/* Subtle background decoration */}
+      <div className="absolute top-0 right-0 w-80 h-80 bg-[#F3EFE9] opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+
+      <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10 z-10">
+        {/* === TOP SECTION (Logo + 4 Columns) === */}
+        <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start gap-8">
           {/* Left: Brand & Socials */}
-          <div className="flex flex-col gap-6 xl:w-1/4">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col items-center lg:items-start gap-4 lg:w-1/4">
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
               <img
                 src={logoImg}
                 alt="Payana Trails"
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover shadow-md"
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover shadow-lg border-2 border-[#F3EFE9]/20"
               />
-              <span className="text-[#F3EFE9] text-2xl sm:text-2xl italic tracking-wide font-serif">
+              <span className="text-[#F3EFE9] text-2xl italic tracking-wide font-serif drop-shadow-md">
                 Payana Trails
               </span>
             </div>
 
-            <div className="flex gap-3">
+            <p className="text-[#F3EFE9]/80 text-sm text-center lg:text-left max-w-xs leading-snug">
+              Crafting unforgettable stories through thoughtful, immersive
+              travel experiences.
+            </p>
+
+            <div className="flex gap-3 mt-1">
               {socialLinks.map((social, index) => (
                 <a
                   key={index}
@@ -102,7 +143,7 @@ const Footer = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  className="w-10 h-10 sm:w-11 sm:h-11 bg-[#F3EFE9] rounded-[10px] flex items-center justify-center hover:scale-110 transition-transform duration-200 shadow-sm"
+                  className={`group w-9 h-9 bg-[#F3EFE9] rounded-full flex items-center justify-center transition-all duration-300 shadow-md hover:-translate-y-1 ${social.bgHover}`}
                 >
                   {social.icon}
                 </a>
@@ -110,11 +151,14 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* 3-Column Navigation */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 xl:w-2/4 w-full">
+          {/* Right: 4-Column Navigation */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:w-3/4 w-full mt-6 lg:mt-0">
             {footerMenus.map((menu, index) => (
-              <div key={index} className="flex flex-col text-[#F3EFE9]">
-                <h4 className="font-bold text-[18px] mb-4 tracking-wide font-serif">
+              <div
+                key={index}
+                className="flex flex-col text-[#F3EFE9] text-left"
+              >
+                <h4 className="font-semibold text-[16px] mb-3 tracking-wider font-serif uppercase text-[#F3EFE9]/90 border-b border-[#F3EFE9]/20 pb-1 inline-block">
                   {menu.title}
                 </h4>
                 <ul className="flex flex-col gap-2">
@@ -122,7 +166,7 @@ const Footer = () => {
                     <li key={idx}>
                       <Link
                         to={link.path}
-                        className="text-[15px] sm:text-[16px] opacity-80 hover:opacity-100 hover:text-white hover:underline transition-all"
+                        className="text-[14px] opacity-70 hover:opacity-100 hover:text-white transition-all duration-300 inline-block hover:translate-x-1"
                         onClick={() => window.scrollTo(0, 0)}
                       >
                         {link.name}
@@ -133,63 +177,83 @@ const Footer = () => {
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Contact Info */}
-          <div className="flex flex-col xl:items-end text-[#F3EFE9] gap-3 text-left xl:text-right xl:w-1/4">
-            <h3 className="font-bold text-[20px] sm:text-[18px] tracking-wide mb-1 font-serif">
+        {/* === MIDDLE SECTION: CONTACT INFO === */}
+        <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start gap-6 mt-8 pt-6 border-t border-[#F3EFE9]/10 text-[#F3EFE9]">
+          {/* Address */}
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-md gap-2">
+            <h3 className="font-bold text-[18px] tracking-wide font-serif text-[#F3EFE9] drop-shadow-sm">
               Journeys, thoughtfully curated!
             </h3>
+            <div className="flex items-start gap-2 opacity-80">
+              <FaLocationDot
+                className="mt-1 text-[#F3EFE9]/70 shrink-0"
+                size={14}
+              />
+              <address className="not-italic text-[14px] leading-snug">
+                110, Sowmya Springs, Basavanagudi, Bangalore - 560 004
+              </address>
+            </div>
+          </div>
 
-            {/* Address */}
-            <address className="not-italic text-[15px] sm:text-[16px] opacity-90 leading-relaxed max-w-62.5">
-              Address: 110, Sowmya Springs, Basavanagudi, <br />
-              Bangalore - 560 004
-            </address>
-
+          {/* Contact Links */}
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center mt-3 lg:mt-0 bg-black/10 px-4 py-3 rounded-xl border border-white/5 shadow-inner">
             <a
               href="mailto:info@payanatrails.com"
-              className="text-[16px] sm:text-[18px] underline hover:text-white transition-colors opacity-90 hover:opacity-100"
+              className="flex items-center gap-2 text-[14px] transition-all duration-300 opacity-80 hover:opacity-100 hover:text-white group"
             >
+              <div className="w-8 h-8 bg-[#F3EFE9]/10 rounded-full flex items-center justify-center group-hover:bg-[#F3EFE9]/20 transition-colors">
+                <FaEnvelope size={14} />
+              </div>
               info@payanatrails.com
             </a>
 
-            {/* Phone / WhatsApp */}
+            {/* Divider for larger screens */}
+            <div className="hidden sm:block w-px h-6 bg-[#F3EFE9]/20"></div>
+
             <a
               href="tel:+918660460512"
-              className="text-[12px] sm:text-[16px] hover:text-white transition-colors opacity-90 hover:opacity-100"
+              className="flex items-center gap-2 text-[14px] transition-all duration-300 opacity-80 hover:opacity-100 hover:text-white group"
             >
-              Call or WhatsApp:{" "}
-              <span className="italic tracking-widest">+91 8660460512</span>
+              <div className="w-8 h-8 bg-[#F3EFE9]/10 rounded-full flex items-center justify-center group-hover:bg-[#F3EFE9]/20 transition-colors">
+                <FaPhone size={14} />
+              </div>
+              <div className="flex flex-col items-start">
+                <span className="font-semibold tracking-widest leading-none">
+                  +91 8660460512
+                </span>
+              </div>
             </a>
           </div>
         </div>
 
         {/* === DIVIDER === */}
-          <hr className="border-[#F3EFE9] opacity-30 my-10" />
+        <hr className="border-[#F3EFE9] opacity-10 my-6" />
 
         {/* === BOTTOM SECTION === */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-[#F3EFE9] text-[14px] sm:text-[15px]">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[#F3EFE9] text-[13px]">
           {/* Bottom inline links */}
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 font-medium tracking-wide opacity-80">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 font-medium tracking-wide opacity-70">
             {navLinks.map((link, index) => (
               <React.Fragment key={index}>
                 <Link
                   to={link.path}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-white hover:opacity-100 transition-colors"
                   onClick={() => window.scrollTo(0, 0)}
                 >
                   {link.name}
                 </Link>
 
                 {index < navLinks.length - 1 && (
-                  <span className="opacity-60 font-light select-none">|</span>
+                  <span className="opacity-40 font-light select-none">|</span>
                 )}
               </React.Fragment>
             ))}
           </div>
 
           {/* Copyright */}
-          <div className="font-medium tracking-wide text-center md:text-right opacity-80">
+          <div className="font-medium tracking-wide text-center md:text-right opacity-60">
             © {currentYear} Payana Trails. All Rights Reserved.
           </div>
         </div>
