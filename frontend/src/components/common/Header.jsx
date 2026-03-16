@@ -6,13 +6,25 @@ import BrownBtn from "./buttons/BrownBtn";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isUiHidden, setIsUiHidden] = useState(false); // NEW: State for Cinematic Mode
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
+
+    // NEW: Listen for the custom event from the Hero component
+    const handleUiToggle = (e) => {
+      setIsUiHidden(e.detail);
+    };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("toggle-ui-mode", handleUiToggle);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("toggle-ui-mode", handleUiToggle);
+    };
   }, []);
 
   const handleNavClick = () => {
@@ -29,17 +41,21 @@ export default function Header() {
   ];
 
   return (
-    // "fixed" ensures it floats over the Hero content
-    <header className="fixed top-0 left-0 z-50 w-full pointer-events-none">
+    <header
+      // NEW: Added transform/opacity to hide the header smoothly
+      className={`fixed top-0 left-0 z-50 w-full pointer-events-none transition-all duration-700 ${
+        isUiHidden ? "-translate-y-full opacity-0" : "translate-y-0 opacity-100"
+      }`}
+    >
       <div className="flex justify-center w-full pt-4">
         <div
           className={`pointer-events-auto transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] 
-  flex flex-col overflow-hidden bg-[#F3EFE9]
-  ${
-    isScrolled || isMenuOpen
-      ? "w-full max-w-full rounded-none mt-[-16px] px-6 sm:px-12 shadow-md py-1 border-transparent"
-      : "w-[92%] max-w-[1100px] rounded-[100px] px-6 py-1.5 shadow-lg border border-[#4A3B2A]/10"
-  }`}
+          flex flex-col overflow-hidden bg-[#F3EFE9]
+          ${
+            isScrolled || isMenuOpen
+              ? "w-full max-w-full rounded-none mt-[-16px] px-6 sm:px-12 shadow-md py-1 border-transparent"
+              : "w-[92%] max-w-[1100px] rounded-[100px] px-6 py-1.5 shadow-lg border border-[#4A3B2A]/10"
+          }`}
         >
           <div className="flex items-center justify-between h-12 sm:h-14 gap-4">
             <Link
