@@ -22,7 +22,7 @@ const ExploreDestination = () => {
     },
     {
       name: "Bhutan",
-      image: bhutanImg,
+      image: bhutanImg, 
     },
   ];
 
