@@ -1,5 +1,5 @@
 import React from "react";
-import wildlifeImg from "../../../assets/Home/PayanaWay/Payana-way.png";
+import wildlifeImg from "../../../assets/Home/PayanaWay/Payana-way.webp";
 import CreamBtn from "../../common/buttons/CreamBtn";
 
 const PayanaWay = () => {

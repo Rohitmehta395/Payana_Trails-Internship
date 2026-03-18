@@ -1,7 +1,7 @@
 import React from "react";
 import CreamBtn from "../../common/buttons/CreamBtn";
 import BrownBtn from "../../common/buttons/BrownBtn";
-import storyImg from "../../../assets/Home/Stories/stories-moments.jpg";
+import storyImg from "../../../assets/Home/Stories/stories-moments.webp";
 import { FaEnvelopeOpenText } from "react-icons/fa6";
 
 const StoriesMoments = () => {
@@ -20,12 +20,18 @@ const StoriesMoments = () => {
           {/* 2. Uniform Overlay */}
           <div className="absolute inset-0 bg-[#c9bebd]/20 transition-opacity duration-300"></div>
 
-          {/* 3. Quote Text (Shifted Left) */}
-          <div className="absolute top-8 sm:top-12 lg:top-14 left-6 sm:left-12 pr-6 z-10 max-w-lg lg:max-w-2xl">
-            <h2 className="text-[#4A3B2A] text-[18px] sm:text-[22px] lg:text-[26px] font-sans italic font-semibold leading-relaxed tracking-wide text-left">
-              "Travel isn't about checking places off a list. It's about the quiet moments you never
-              expected."
-            </h2>
+          {/* 3. Quote Text */}
+          <div className="absolute inset-0 flex items-start justify-end z-10">
+            {/* Gradient overlay ONLY on right side */}
+            <div className="absolute inset-0 bg-gradient-to-l from-black/50 via-black/20 to-transparent"></div>
+
+            {/* Text container */}
+            <div className="relative mt-4 sm:mt-8 lg:mt-8 mr-6 sm:mr-8 max-w-md lg:max-w-lg text-right">
+              <h2 className="text-white text-[16px] sm:text-[20px] lg:text-[24px] font-sans italic font-semibold leading-relaxed tracking-wide">
+                "Travel isn't about checking places off a list. It's about the
+                quiet moments you never expected."
+              </h2>
+            </div>
           </div>
 
           {/* 4. Action Button */}
