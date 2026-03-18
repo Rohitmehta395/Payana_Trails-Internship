@@ -28,7 +28,7 @@ const ClosingInvitation = () => {
 
             {/* Action Button */}
             <BrownBtn
-              text="Speak to a Travel Curator &rarr;"
+              text="Connect to a Travel Curator &rarr;"
               className="px-6 py-3 sm:px-8 sm:py-4 text-[16px] sm:text-[18px] shadow-md hover:shadow-lg w-fit"
             />
           </div>

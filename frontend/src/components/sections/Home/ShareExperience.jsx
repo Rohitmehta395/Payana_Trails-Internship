@@ -1,7 +1,8 @@
 import React from "react";
 import { FaUserPlus, FaGift, FaHeart } from "react-icons/fa6";
 import BrownBtn from "../../common/buttons/BrownBtn";
-
+import referFriendPic from "../../../assets/Home/Refer/referFriendPic.webp";
+import giftAJourney from "../../../assets/Home/Refer/gift.webp";
 
 const ShareExperience = () => {
   return (
@@ -35,7 +36,7 @@ const ShareExperience = () => {
             <div className="relative h-64 sm:h-80 w-full rounded-[2rem] overflow-hidden mb-8 shadow-inner">
               <div className="absolute inset-0 bg-[#4A3B2A]/20 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none"></div>
               <img
-                src="https://images.unsplash.com/photo-1530789253388-582c481c54b0?q=80&w=800&auto=format&fit=crop"
+                src={referFriendPic}
                 alt="Friends traveling together"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
@@ -71,7 +72,7 @@ const ShareExperience = () => {
             <div className="relative h-64 sm:h-80 w-full rounded-[2rem] overflow-hidden mb-8 shadow-inner">
               <div className="absolute inset-0 bg-[#4A3B2A]/20 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none"></div>
               <img
-                src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop"
+                src={giftAJourney}
                 alt="Gifting a journey"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
