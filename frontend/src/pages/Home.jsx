@@ -57,7 +57,7 @@ const Home = () => {
     <div>
       <Hero images={heroImages} />
       <ExploreOurTrails />
-      <SignatureTrails />
+      {/* <SignatureTrails /> */}
       <PayanaWay />
       <StoriesMoments />
       <ClosingInvitation />

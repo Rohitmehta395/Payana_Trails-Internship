@@ -3,7 +3,7 @@ import CreamBtn from "../../common/buttons/CreamBtn";
 
 export default function Hero({ images = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isUiHidden, setIsUiHidden] = useState(false); // NEW: State for hiding UI
+  const [isUiHidden, setIsUiHidden] = useState(false);
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -13,7 +13,6 @@ export default function Hero({ images = [] }) {
     return () => clearInterval(timer);
   }, [images.length]);
 
-  // NEW: Function to toggle UI and notify the Header component
   const toggleUi = () => {
     const newState = !isUiHidden;
     setIsUiHidden(newState);
@@ -31,7 +30,7 @@ export default function Hero({ images = [] }) {
 
   return (
     <section className="relative w-full h-[100dvh] flex flex-col justify-end overflow-hidden bg-black pb-24 sm:pb-28 lg:pb-32">
-      {/* Background Images Layer (Always Visible) */}
+      {/* Background Images Layer */}
       {images.map((img, index) => (
         <div
           key={index}
@@ -48,14 +47,14 @@ export default function Hero({ images = [] }) {
             style={{ backgroundImage: `url(${img.desktop})` }}
           />
 
-          {/* Gradient Overlay: Fades out when UI is hidden */}
+          {/* Gradient Overlay */}
           <div
             className={`absolute inset-0 bg-gradient-to-t from-[#4A3B2A]/70 via-transparent to-transparent sm:from-[#4A3B2A]/30 sm:h-[50%] sm:bottom-0 sm:top-auto w-full transition-opacity duration-500 ${isUiHidden ? "opacity-0" : "opacity-100"}`}
           />
         </div>
       ))}
 
-      {/* Content Layer: Fades out when UI is hidden */}
+      {/* Content Layer */}
       <div
         className={`relative z-10 w-full max-w-400 mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pointer-events-none transition-all duration-700 ${isUiHidden ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}
       >
@@ -91,9 +90,9 @@ export default function Hero({ images = [] }) {
         </div>
       </div>
 
-      {/* Dots Indicator: Fades out when UI is hidden */}
+      {/* Dots Indicator */}
       <div
-        className={`absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 z-20 w-32 h-6 pointer-events-none [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] transition-opacity duration-500 ${isUiHidden ? "opacity-0" : "opacity-100"}`}
+        className={`absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2 z-20 w-32 h-6 pointer-events-none mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] transition-opacity duration-500 ${isUiHidden ? "opacity-0" : "opacity-100"}`}
       >
         <div
           className="absolute top-0 left-1/2 flex gap-2 h-full items-center transition-transform duration-500 ease-out pointer-events-auto"
@@ -114,7 +113,7 @@ export default function Hero({ images = [] }) {
         </div>
       </div>
 
-      {/* NEW: Cinematic Toggle Eye Button (Always Visible) */}
+      {/* Cinematic Toggle Eye Button (Always Visible) */}
       <button
         onClick={toggleUi}
         className="absolute bottom-6 right-6 sm:bottom-8 sm:right-10 z-50 p-3 rounded-full bg-[#4A3B2A]/40 hover:bg-[#4A3B2A]/70 backdrop-blur-md border border-[#F3EFE9]/30 transition-all duration-300 group"

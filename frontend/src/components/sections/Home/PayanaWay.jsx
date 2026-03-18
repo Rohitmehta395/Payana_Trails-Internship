@@ -11,7 +11,7 @@ const PayanaWay = () => {
   ];
 
   return (
-    <section className="bg-[#F3EFE9] w-full py-16 sm:py-24 font-sans">
+    <section className="bg-[#F3EFE9] w-full py-2 sm:py-2 font-sans">
       <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
         {/* === Header Section === */}
         <div className="text-center mb-16">

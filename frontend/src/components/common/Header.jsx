@@ -139,7 +139,7 @@ export default function Header() {
                 <Link
                   key={index}
                   to={item.path}
-                  className="text-[#4A3B2A] text-lg font-bold px-4 py-2"
+                  className="text-[#4A3B2A] text-lg font-semibold px-4 py-2"
                   onClick={handleNavClick}
                 >
                   {item.name}
