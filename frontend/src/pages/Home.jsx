@@ -10,10 +10,10 @@ import ShareExperience from "../components/sections/Home/ShareExperience";
 //HardCoded Hero Images
 //Desktop
 import heroBg from "../assets/Home/hero/Desktop/heroBg.webp";
-// import imgD1 from "../assets/Home/hero/Desktop/1.Lioness_with_cubs_Kenya.webp";
-import imgD2 from "../assets/Home/hero/Desktop/2.Giraffe_couple_Tanzania.webp";
+// import imgD1 from "../assets/Home/hero/Desktop/4.Lioness_with_cubs_Kenya.webp";
+import imgD2 from "../assets/Home/hero/Desktop/1.Rose_City_of_Petra_Jordan.webp";
 import imgD3 from "../assets/Home/hero/Desktop/3.Pyramids_and_Camels_Egypt.webp";
-import imgD4 from "../assets/Home/hero/Desktop/4.Rose_City_of_Petra_Jordan.webp";
+import imgD4 from "../assets/Home/hero/Desktop/2.Giraffe_couple_Tanzania.webp";
 import imgD5 from "../assets/Home/hero/Desktop/5.Tanah_Lot_Bali_Indonesia.webp";
 import imgD6 from "../assets/Home/hero/Desktop/6.Halong_Bay_Vietnam.webp";
 import imgD7 from "../assets/Home/hero/Desktop/7.Borneo_Orangutan_Malaysia.webp";
@@ -25,9 +25,9 @@ import imgD12 from "../assets/Home/hero/Desktop/12.Mount_Kailas_Tibet.webp";
 //Mobile
 import heroBgMob from "../assets/Home/hero/Mobile/heroBg.jpg";
 // import imgM1 from "../assets/Home/hero/Mobile/1.LionesswithcubsKenya-Portrait.webp";
-import imgM2 from "../assets/Home/hero/Mobile/2.Cheetah-Tanzania-Portrait.jpg";
+import imgM2 from "../assets/Home/hero/Mobile/1.Rose CityofPetra-Jordan-Portrait.jpg";
 import imgM3 from "../assets/Home/hero/Mobile/3.PyramidsandCamels-Egypt-Portrait.jpg";
-import imgM4 from "../assets/Home/hero/Mobile/4.Rose CityofPetra-Jordan-Portrait.jpg";
+import imgM4 from "../assets/Home/hero/Mobile/2.Cheetah-Tanzania-Portrait.jpg";
 import imgM5 from "../assets/Home/hero/Mobile/5.Bali-Indonesia-Portrait.jpg";
 import imgM6 from "../assets/Home/hero/Mobile/6.HalongBay-Vietnam-Portrait.jpg";
 import imgM7 from "../assets/Home/hero/Mobile/7.Borneo-Orangutan-Malaysia-Portrait.jpg";
