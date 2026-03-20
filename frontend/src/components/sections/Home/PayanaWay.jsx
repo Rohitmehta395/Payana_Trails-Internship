@@ -4,10 +4,10 @@ import CreamBtn from "../../common/buttons/CreamBtn";
 
 const PayanaWay = () => {
   const features = [
-    "Small Groups",
-    "Gentle Pace",
-    "Expert Curators",
-    "Carefully Chosen Stays",
+    "Designed for Seniors",
+    "Expertly Crafted Itineraries",
+    "Journeys Designed Around You",
+    "Trusted & Transparent Pricing",
   ];
 
   return (
@@ -54,12 +54,11 @@ const PayanaWay = () => {
                 "
               </span>
               <p className="text-[16px] sm:text-[18px] font-sans italic leading-relaxed opacity-90 relative z-10">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur.
+                We believe travel should be unhurried, immersive and deeply
+                meaningful. Our journeys are thoughtfully designed to let you
+                slow down, travel at ease, and connect with each destination.
+                Because true travel is not about seeing more, but experiencing
+                more.
               </p>
             </div>
 
@@ -74,7 +73,7 @@ const PayanaWay = () => {
                   <div className="h-[2px] w-6 bg-[#F3EFE9]/30 transition-all duration-500 ease-out group-hover/item:w-8 group-hover/item:bg-[#F3EFE9]"></div>
 
                   {/* Text slides slightly to the right */}
-                  <span className="text-[17px] font-medium tracking-wide opacity-80 transition-all duration-500 group-hover/item:opacity-100 group-hover/item:translate-x-1">
+                  <span className="text-[15px] font-medium tracking-wide opacity-90 transition-all duration-500 group-hover/item:opacity-100 group-hover/item:translate-x-1">
                     {feature}
                   </span>
                 </div>
