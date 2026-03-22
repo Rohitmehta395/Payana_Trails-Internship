@@ -4,7 +4,7 @@ import BrownBtn from "../../common/buttons/BrownBtn";
 
 const ClosingInvitation = () => {
   return (
-    <section className="bg-[#F3EFE9] w-full py-16 sm:py-16 lg:py-10">
+    <section className="bg-[#F3EFE9] w-full py-2 sm:py-8 lg:py-10">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           {/* 1. Image Section - 3D Hover Transform */}
@@ -27,7 +27,7 @@ const ClosingInvitation = () => {
               Travel, when designed with care,{" "}
               <br className="hidden sm:block" /> becomes memory.
             </p>
-            <h3 className="text-[#4A3B2A] text-[22px] sm:text-[26px] lg:text-[28px] font-bold mb-8">
+            <h3 className="text-[#4A3B2A] text-[20px] sm:text-[24px] lg:text-[24px] font-bold mb-8 font-serif">
               Let's design a journey that suits you.
             </h3>
 

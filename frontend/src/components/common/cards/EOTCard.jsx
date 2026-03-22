@@ -23,9 +23,9 @@ const EOTCard = ({
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
 
-        {/* Top Left Badge (Signature Text) */}
+        {/* 1) Top Left Badge (Signature Text) - Increased font to text-sm sm:text-base */}
         <div className="absolute top-4 left-4">
-          <div className="bg-[#4A3B2A] text-[#F3EFE9] px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold tracking-wide shadow-md overflow-hidden">
+          <div className="bg-[#4A3B2A] text-[#F3EFE9] px-3 py-1.5 rounded-xl text-sm sm:text-base font-semibold tracking-wide shadow-md overflow-hidden">
             <span className="truncate block">Signature Heritage Trail</span>
           </div>
         </div>
@@ -54,21 +54,21 @@ const EOTCard = ({
           {/* Separator Line */}
           <hr className="w-[60%] border-[#4A3B2A]/20 my-2.5" />
 
-          {/* Description (Wraps up to 2 lines without breaking card size) */}
-          <p className="text-[#4A3B2A]/80 text-[14px] text-center font-medium line-clamp-2 w-full px-2">
+          {/* 2) Description (Sub-Heading) - Increased font to 16px */}
+          <p className="text-[#4A3B2A]/80 text-[16px] text-center font-medium line-clamp-2 w-full px-2">
             {description}
           </p>
         </div>
 
         {/* Info Row: Location (Left) and Duration (Right) */}
         <div className="flex justify-between items-center w-full text-[#4A3B2A] mt-1 gap-2">
-          {/* Location */}
-          <div className="flex items-center gap-1 justify-start overflow-hidden">
+          {/* 3) Location (Country Name) - Increased font to 15px/16px */}
+          <div className="flex items-center gap-1.5 justify-start overflow-hidden">
             <LuMapPin
-              className="w-[17px] h-[17px] shrink-0"
+              className="w-[18px] h-[18px] shrink-0"
               strokeWidth="2.5"
             />
-            <span className="text-[13px] sm:text-[14px] font-bold truncate">
+            <span className="text-[15px] sm:text-[16px] font-bold truncate">
               {location}
             </span>
           </div>
@@ -81,9 +81,9 @@ const EOTCard = ({
           </div>
         </div>
 
-        {/* Trail Route Text (Cream background variant) */}
+        {/* 4) Trail Route Text - Matches Sub-Heading styling & line-clamp */}
         <div className="bg-[#F3EFE9]/70 rounded-2xl p-4 flex justify-center items-center shadow-inner border border-[#4A3B2A]/10 w-full mt-1">
-          <span className="text-[#4A3B2A] font-serif font-semibold text-center text-[13px] sm:text-[12.5px] block w-full">
+          <span className="text-[#4A3B2A]/80 text-[16px] text-center font-medium line-clamp-2 block w-full px-2">
             {trail}
           </span>
         </div>
