@@ -5,7 +5,6 @@ const EOTCard = ({
   imgSrc,
   title = "Vietnam Mosaic – From Delta to the Bay",
   description = "A comprehensive journey through Vietnam's iconic highlights.",
-  // Prop and default value removed for 'category'
   location = "Vietnam",
   duration = "7D - 6N",
   date = "Oct 12 - Oct 18",
@@ -24,14 +23,15 @@ const EOTCard = ({
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
 
-        {/* Top Badges (Signature Text Left, Date Right) */}
-        <div className="absolute top-4 left-4 right-4 flex justify-between items-start gap-2">
-          {/* Signature Heritage Trail */}
+        {/* Top Left Badge (Signature Text) */}
+        <div className="absolute top-4 left-4">
           <div className="bg-[#4A3B2A] text-[#F3EFE9] px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold tracking-wide shadow-md overflow-hidden">
             <span className="truncate block">Signature Heritage Trail</span>
           </div>
+        </div>
 
-          {/* Calendar & Date */}
+        {/* Bottom Right Badge (Calendar & Date) */}
+        <div className="absolute bottom-4 right-4">
           <div className="bg-[#4A3B2A]/90 backdrop-blur-md text-[#F3EFE9] px-3 py-1.5 rounded-xl text-xs sm:text-[13px] font-semibold tracking-wide shadow-md flex items-center gap-1.5 shrink-0">
             <LuCalendarDays
               className="w-[14px] h-[14px] shrink-0"
@@ -40,8 +40,6 @@ const EOTCard = ({
             <span className="truncate">{date}</span>
           </div>
         </div>
-
-        {/* Bottom Category Overlay REMOVED */}
       </div>
 
       {/* Content Section */}
@@ -56,8 +54,8 @@ const EOTCard = ({
           {/* Separator Line */}
           <hr className="w-[60%] border-[#4A3B2A]/20 my-2.5" />
 
-          {/* 1-Line Description */}
-          <p className="text-[#4A3B2A]/80 text-[14px] text-center font-medium truncate w-full px-2">
+          {/* Description (Wraps up to 2 lines without breaking card size) */}
+          <p className="text-[#4A3B2A]/80 text-[14px] text-center font-medium line-clamp-2 w-full px-2">
             {description}
           </p>
         </div>
@@ -83,8 +81,8 @@ const EOTCard = ({
           </div>
         </div>
 
-        {/* Trail Route Text */}
-        <div className="bg-white rounded-2xl p-4 flex justify-center items-center shadow-inner border border-[#4A3B2A]/10 w-full mt-1">
+        {/* Trail Route Text (Cream background variant) */}
+        <div className="bg-[#F3EFE9]/70 rounded-2xl p-4 flex justify-center items-center shadow-inner border border-[#4A3B2A]/10 w-full mt-1">
           <span className="text-[#4A3B2A] font-serif font-semibold text-center text-[13px] sm:text-[12.5px] block w-full">
             {trail}
           </span>
