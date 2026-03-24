@@ -1,7 +1,12 @@
 import React from "react";
+import Hero from "../components/sections/Journey/Hero";
 
 const Journeys = () => {
-  return <div>Journeys</div>;
+  return (
+    <>
+      <Hero />
+    </>
+  );
 };
 
 export default Journeys;
