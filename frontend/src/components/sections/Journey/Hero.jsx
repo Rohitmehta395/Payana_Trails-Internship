@@ -66,7 +66,7 @@ export default function Hero() {
           <div className="relative z-20">
             <motion.h1
               variants={itemVariants}
-              className="text-[2.75rem] md:text-2xl font-semibold leading-[1.1] font-serif text-[#4A3B2A] mb-6"
+              className="text-[1.5rem] md:text-2xl font-semibold leading-[1.1] font-serif text-[#4A3B2A] mb-6"
             >
               JOURNEYS THAT STAY,
               <br />
