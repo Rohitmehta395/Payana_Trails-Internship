@@ -1,7 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Compass, Landmark, Users, } from "lucide-react";
+import { Compass, Landmark, Users } from "lucide-react";
 
+// Added 'path' to match your navItems structure
 const trailsData = [
   {
     id: 1,
@@ -9,12 +10,14 @@ const trailsData = [
     description:
       "Safari landscapes and wildlife encounters across iconic reserves.",
     icon: Compass,
+    path: "/journeys/wildlife",
   },
   {
     id: 2,
     title: "Heritage Trails",
     description: "Journeys through sites of exceptional cultural significance.",
     icon: Landmark,
+    path: "/journeys/heritage",
   },
   {
     id: 3,
@@ -22,6 +25,7 @@ const trailsData = [
     description:
       "Experience the living culture of a destination — its people, traditions, food, art, and spiritual life.",
     icon: Users,
+    path: "/journeys/cultural",
   },
 ];
 
@@ -90,10 +94,11 @@ export default function OurTrails() {
           {trailsData.map((trail) => {
             const Icon = trail.icon;
             return (
-              <motion.div
+              <motion.a
+                href={trail.path} // Link added here! Change to <Link> if using a framework
                 key={trail.id}
                 variants={cardVariants}
-                className="group relative bg-white p-8 rounded-3xl shadow-sm border border-[#4A3B2A]/10 hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-2 cursor-pointer hover:border-[#4A3B2A]/40"
+                className="group relative bg-white p-8 rounded-3xl shadow-sm border border-[#4A3B2A]/10 hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-2 cursor-pointer hover:border-[#4A3B2A]/40 block"
               >
                 {/* Icon Container */}
                 <div className="w-16 h-16 rounded-2xl bg-[#4A3B2A]/10 flex items-center justify-center mb-6 transform group-hover:scale-110 transition-transform duration-300">
@@ -125,7 +130,7 @@ export default function OurTrails() {
                     />
                   </svg>
                 </div>
-              </motion.div>
+              </motion.a>
             );
           })}
         </motion.div>
