@@ -73,7 +73,7 @@ export default function PayanaJourneyFocused() {
           }`}
         >
           <a
-            href="#discover"
+            href="/payana-way"
             className="group relative inline-flex items-center gap-4 px-8 py-4 border border-[#4A3B2A] text-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] uppercase tracking-[0.2em] text-xs font-semibold rounded-full transition-all duration-500 overflow-hidden"
           >
             <span>Discover The Payana Way</span>
