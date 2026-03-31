@@ -15,30 +15,39 @@ import Cultural from "./components/sections/Journey/Cultural";
 // Import Destinations
 import Destinations from "./components/sections/Journey/Destinations";
 
+//Admin
+import AdminLogin from "./pages/Admin/AdminLogin";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+
 const App = () => {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
+      <Routes>
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
-          {/* Main Journeys Page */}
-          <Route path="/journeys" element={<Journeys />} />
-
-          {/* Journey Types */}
-          <Route path="/journeys/wildlife" element={<Wildlife />} />
-          <Route path="/journeys/heritage" element={<Heritage />} />
-          <Route path="/journeys/cultural" element={<Cultural />} />
-
-          {/* Destinations */}
-          <Route path="/journeys/destinations" element={<Destinations />} />
-
-          {/* Other Pages */}
-          <Route path="/payana-way" element={<PayanaWay />} />
-          <Route path="/stories" element={<Stories />} />
-          <Route path="/connect" element={<Connect />} />
-        </Routes>
-      </Layout>
+        <Route
+          path="/*"
+          element={
+            <Layout>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/journeys" element={<Journeys />} />
+                <Route path="/journeys/wildlife" element={<Wildlife />} />
+                <Route path="/journeys/heritage" element={<Heritage />} />
+                <Route path="/journeys/cultural" element={<Cultural />} />
+                <Route
+                  path="/journeys/destinations"
+                  element={<Destinations />}
+                />
+                <Route path="/payana-way" element={<PayanaWay />} />
+                <Route path="/stories" element={<Stories />} />
+                <Route path="/connect" element={<Connect />} />
+              </Routes>
+            </Layout>
+          }
+        />
+      </Routes>
     </Router>
   );
 };

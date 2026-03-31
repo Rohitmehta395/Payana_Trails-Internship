@@ -11,8 +11,10 @@ app.use(express.json());
 
 //Routes Import
 const trailRoutes = require("./routes/trailRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 //Routes
+app.use("/admin", adminRoutes);
 app.use("/api/trails", trailRoutes);
 
 // Basic health check route
