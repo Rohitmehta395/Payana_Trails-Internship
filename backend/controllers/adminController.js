@@ -23,6 +23,7 @@ exports.loginAdmin = async (req, res) => {
       res.status(401).json({ message: "Invalid email or password" });
     }
   } catch (error) {
+    console.error("Login Error details:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
@@ -38,12 +39,12 @@ exports.forgotPassword = async (req, res) => {
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     admin.resetOtp = otp;
-    admin.resetOtpExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+    admin.resetOtpExpire = Date.now() + 10 * 60 * 1000;
     await admin.save();
 
     // Send Email
     const transporter = nodemailer.createTransport({
-      service: "Gmail", // Or your preferred email service
+      service: "Gmail",
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,

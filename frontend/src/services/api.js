@@ -2,6 +2,9 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
 
+const ADMIN_BASE_URL =
+  import.meta.env.VITE_ADMIN_BASE_URL || "http://localhost:8000/admin";
+
 export const api = {
   // 1. Fetch Trails (For ExploreOurTrails component)
   getTrails: async (category = "All") => {
@@ -50,6 +53,55 @@ export const api = {
       return await response.json();
     } catch (error) {
       console.error("API Error (submitContact):", error);
+      throw error;
+    }
+  },
+
+  // --- ADMIN ROUTES ---
+  adminLogin: async (credentials) => {
+    try {
+      const response = await fetch(`${ADMIN_BASE_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(credentials),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Login failed");
+      return data;
+    } catch (error) {
+      console.error("API Error (adminLogin):", error);
+      throw error;
+    }
+  },
+
+  adminForgotPassword: async (email) => {
+    try {
+      const response = await fetch(`${ADMIN_BASE_URL}/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to send OTP");
+      return data;
+    } catch (error) {
+      console.error("API Error (adminForgotPassword):", error);
+      throw error;
+    }
+  },
+
+  adminResetPassword: async (payload) => {
+    try {
+      const response = await fetch(`${ADMIN_BASE_URL}/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Invalid OTP");
+      return data;
+    } catch (error) {
+      console.error("API Error (adminResetPassword):", error);
       throw error;
     }
   },

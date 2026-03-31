@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../services/api";
 
 const AdminLogin = () => {
-  const [step, setStep] = useState("login"); // 'login', 'forgot', 'reset'
+  const [step, setStep] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
@@ -13,16 +13,13 @@ const AdminLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("http://localhost:8000/admin/login", {
-        email,
-        password,
-      });
+      const data = await api.adminLogin({ email, password });
       localStorage.setItem("adminToken", data.token);
       navigate("/admin/dashboard");
     } catch (err) {
       setMessage({
         type: "error",
-        text: err.response?.data?.message || "Login failed",
+        text: err.message || "Login failed",
       });
     }
   };
@@ -31,15 +28,13 @@ const AdminLogin = () => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
     try {
-      await axios.post("http://localhost:8000/admin/forgot-password", {
-        email,
-      });
+      await api.adminForgotPassword(email);
       setStep("reset");
       setMessage({ type: "success", text: "OTP sent to your email." });
     } catch (err) {
       setMessage({
         type: "error",
-        text: err.response?.data?.message || "Failed to send OTP",
+        text: err.message || "Failed to send OTP",
       });
     }
   };
@@ -47,7 +42,7 @@ const AdminLogin = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/admin/reset-password", {
+      await api.adminResetPassword({
         email,
         otp,
         newPassword: password,
@@ -61,7 +56,7 @@ const AdminLogin = () => {
     } catch (err) {
       setMessage({
         type: "error",
-        text: err.response?.data?.message || "Invalid OTP",
+        text: err.message || "Invalid OTP",
       });
     }
   };
