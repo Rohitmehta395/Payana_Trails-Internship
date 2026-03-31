@@ -105,4 +105,25 @@ export const api = {
       throw error;
     }
   },
+
+  // --- TRAILS ADMIN ROUTES ---
+  createTrail: async (trailData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/trails`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("adminToken")}`
+        },
+        body: JSON.stringify(trailData),
+      });
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || "Failed to create trail");
+      return data;
+    } catch (error) {
+      console.error("API Error (createTrail):", error);
+      throw error;
+    }
+  },
 };

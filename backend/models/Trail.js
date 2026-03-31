@@ -12,8 +12,8 @@ const trailSchema = new mongoose.Schema(
     location: { type: String, required: true },
     duration: { type: String, required: true },
     date: { type: String, required: true },
-    trail: { type: String, required: true }, // The route (e.g., "Nairobi - Masai Mara...")
-    imgSrc: { type: String, required: true }, // URL or local path to the image
+    trail: { type: String, required: true },
+    imgSrc: { type: String, required: true },
   },
   { timestamps: true },
 );
