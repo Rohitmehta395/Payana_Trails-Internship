@@ -1,23 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { api } from "../../../services/api";
+import TrailForm from "./TrailForm";
+import TrailList from "./TrailList";
 
 const AddTrail = () => {
-  const [formData, setFormData] = useState({
-    category: "Wildlife",
-    title: "",
-    description: "",
-    location: "",
+  // --- UI STATE ---
+  const [showForm, setShowForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentTrailId, setCurrentTrailId] = useState(null);
+
+  const [trails, setTrails] = useState([]);
+  const [loadingTrails, setLoadingTrails] = useState(true);
+
+  // --- FORM STATE ---
+  const initialFormState = {
+    trailTheme: "Wildlife",
+    trailType: "",
+    trailName: "",
+    trailDestination: "",
+    trailSubTitle: "",
     duration: "",
-    date: "",
-    trail: "",
-    imgSrc: "",
-  });
+    journeyDate: "",
+    trailRoute: "",
+    visa: "",
+    bestTimeToTravel: "",
+    comfortLevel: "",
+    overview: "",
+    isThisJourneyForYou: "",
+    highlights: "",
+    whatsIncluded: "",
+    whatsNotIncluded: "",
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
+  const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
+  // --- FETCH TRAILS ON LOAD ---
+  const fetchExistingTrails = async () => {
+    setLoadingTrails(true);
+    try {
+      const data = await api.getTrails("All");
+      setTrails(data);
+    } catch (error) {
+      console.error("Failed to fetch trails", error);
+    } finally {
+      setLoadingTrails(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchExistingTrails();
+  }, []);
+
+  // --- FORM HANDLERS ---
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    setImageFile(e.target.files[0]);
+  };
+
+  const resetForm = () => {
+    setFormData(initialFormState);
+    setImageFile(null);
+    setIsEditing(false);
+    setCurrentTrailId(null);
+    if (document.getElementById("imageInput"))
+      document.getElementById("imageInput").value = "";
   };
 
   const handleSubmit = async (e) => {
@@ -25,165 +78,144 @@ const AddTrail = () => {
     setLoading(true);
     setMessage({ type: "", text: "" });
 
+    if (!isEditing && !imageFile) {
+      setMessage({ type: "error", text: "Please select a route map image." });
+      setLoading(false);
+      return;
+    }
+
     try {
-      await api.createTrail(formData);
-      setMessage({ type: "success", text: "Trail added successfully!" });
-      setFormData({
-        category: "Wildlife",
-        title: "",
-        description: "",
-        location: "",
-        duration: "",
-        date: "",
-        trail: "",
-        imgSrc: "",
+      const submitData = new FormData();
+
+      Object.keys(formData).forEach((key) => {
+        if (["highlights", "whatsIncluded", "whatsNotIncluded"].includes(key)) {
+          const arrayValue = formData[key]
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean);
+          submitData.append(key, JSON.stringify(arrayValue));
+        } else {
+          submitData.append(key, formData[key]);
+        }
       });
+
+      if (imageFile) {
+        submitData.append("routeMap", imageFile);
+      }
+
+      if (isEditing) {
+        await api.updateTrail(currentTrailId, submitData);
+        setMessage({ type: "success", text: "Trail updated successfully!" });
+      } else {
+        await api.createTrail(submitData);
+        setMessage({ type: "success", text: "Trail created successfully!" });
+      }
+
+      resetForm();
+      setShowForm(false);
+      fetchExistingTrails();
+
+      setTimeout(() => setMessage({ type: "", text: "" }), 3000);
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: error.message || "Failed to add trail.",
-      });
+      setMessage({ type: "error", text: error.message || "Operation failed." });
     } finally {
       setLoading(false);
     }
   };
 
-  // Styled with #4A3B2A focus rings
-  const inputClasses =
-    "w-full p-2.5 border border-gray-300 rounded text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#4A3B2A] focus:border-[#4A3B2A] transition-colors";
+  // --- EDIT & DELETE HANDLERS ---
+  const handleEdit = (trail) => {
+    setFormData({
+      ...trail,
+      journeyDate: trail.journeyDate ? trail.journeyDate.split("T")[0] : "",
+      highlights: trail.highlights ? trail.highlights.join(", ") : "",
+      whatsIncluded: trail.whatsIncluded ? trail.whatsIncluded.join(", ") : "",
+      whatsNotIncluded: trail.whatsNotIncluded
+        ? trail.whatsNotIncluded.join(", ")
+        : "",
+    });
+    setIsEditing(true);
+    setCurrentTrailId(trail._id);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleDelete = async (id) => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this trail? This action cannot be undone.",
+      )
+    ) {
+      try {
+        await api.deleteTrail(id);
+        fetchExistingTrails();
+        setMessage({ type: "success", text: "Trail deleted successfully!" });
+        setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+      } catch (error) {
+        alert(error.message || "Failed to delete trail");
+      }
+    }
+  };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-      {/* Brown Top Border Line */}
-      <div className="h-1 w-full bg-[#4A3B2A]"></div>
-
-      <div className="p-8">
-        <h2 className="text-[1.1rem] font-bold text-[#4A3B2A] mb-6">
-          Add New Trail
+    <div className="space-y-6">
+      {/* TOP ACTIONS BAR */}
+      <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <h2 className="text-lg font-bold text-[#4A3B2A]">
+          {showForm
+            ? isEditing
+              ? "Edit Trail"
+              : "Create New Trail"
+            : "All Trails"}
         </h2>
-
-        {message.text && (
-          <div
-            className={`p-4 mb-6 rounded text-sm ${message.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}
-          >
-            {message.text}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Row 1: Title & Category */}
-            <div>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                placeholder="Trail Title"
-                className={inputClasses}
-                required
-              />
-            </div>
-            <div>
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className={`${inputClasses} bg-white cursor-pointer`}
-                required
-              >
-                <option value="Wildlife">Wildlife</option>
-                <option value="Heritage">Heritage</option>
-                <option value="Cultural">Cultural</option>
-              </select>
-            </div>
-
-            {/* Row 2: Location & Duration */}
-            <div>
-              <input
-                type="text"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                placeholder="Location (e.g., Kenya)"
-                className={inputClasses}
-                required
-              />
-            </div>
-            <div>
-              <input
-                type="text"
-                name="duration"
-                value={formData.duration}
-                onChange={handleChange}
-                placeholder="Duration (e.g., 5 Days)"
-                className={inputClasses}
-                required
-              />
-            </div>
-
-            {/* Row 3: Date & Route */}
-            <div>
-              <input
-                type="text"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                placeholder="Date/Season (e.g., Jul - Oct)"
-                className={inputClasses}
-                required
-              />
-            </div>
-            <div>
-              <input
-                type="text"
-                name="trail"
-                value={formData.trail}
-                onChange={handleChange}
-                placeholder="Route (e.g., Nairobi - Masai Mara)"
-                className={inputClasses}
-                required
-              />
-            </div>
-
-            {/* Row 4: Image URL (Full Width) */}
-            <div className="md:col-span-2">
-              <input
-                type="text"
-                name="imgSrc"
-                value={formData.imgSrc}
-                onChange={handleChange}
-                placeholder="Image URL / Path"
-                className={inputClasses}
-                required
-              />
-            </div>
-
-            {/* Row 5: Description (Full Width) */}
-            <div className="md:col-span-2">
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Description"
-                rows="4"
-                className={`${inputClasses} resize-none`}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="mt-6 flex justify-end">
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-[#4A3B2A] text-[#F3EFE9] px-8 py-2.5 rounded text-sm font-medium hover:bg-[#3a2d20] disabled:opacity-50 transition-colors shadow-sm"
-            >
-              {loading ? "Adding..." : "Add Trail"}
-            </button>
-          </div>
-        </form>
+        <button
+          onClick={() => {
+            if (showForm) {
+              resetForm();
+              setShowForm(false);
+            } else {
+              setShowForm(true);
+            }
+          }}
+          className={`px-5 py-2 rounded text-sm font-medium transition-colors shadow-sm ${
+            showForm
+              ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              : "bg-[#4A3B2A] text-[#F3EFE9] hover:bg-[#3a2d20]"
+          }`}
+        >
+          {showForm ? "Cancel / Close Form" : "+ Add New Trail"}
+        </button>
       </div>
+
+      {message.text && (
+        <div
+          className={`p-4 rounded text-sm ${message.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}
+        >
+          {message.text}
+        </div>
+      )}
+
+      {/* RENDER FORM COMPONENT IF OPEN */}
+      {showForm && (
+        <TrailForm
+          formData={formData}
+          handleChange={handleChange}
+          handleFileChange={handleFileChange}
+          handleSubmit={handleSubmit}
+          loading={loading}
+          isEditing={isEditing}
+          resetForm={resetForm}
+          setShowForm={setShowForm}
+        />
+      )}
+
+      {/* RENDER LIST COMPONENT */}
+      <TrailList
+        trails={trails}
+        loadingTrails={loadingTrails}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+      />
     </div>
   );
 };
