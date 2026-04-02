@@ -36,15 +36,17 @@ const EOTCard = ({
         </div>
 
         {/* Bottom Right Badge (Calendar & Date) */}
-        <div className="absolute bottom-4 right-4">
-          <div className="bg-[#4A3B2A]/90 backdrop-blur-md text-[#F3EFE9] px-3 py-1.5 rounded-xl text-xs sm:text-[13px] font-semibold tracking-wide shadow-md flex items-center gap-1.5 shrink-0">
-            <LuCalendarDays
-              className="w-[14px] h-[14px] shrink-0"
-              strokeWidth="2.5"
-            />
-            <span className="truncate">{date}</span>
+        {date && (
+          <div className="absolute bottom-4 right-4">
+            <div className="bg-[#4A3B2A]/90 backdrop-blur-md text-[#F3EFE9] px-3 py-1.5 rounded-xl text-xs sm:text-[13px] font-semibold tracking-wide shadow-md flex items-center gap-1.5 shrink-0">
+              <LuCalendarDays
+                className="w-[14px] h-[14px] shrink-0"
+                strokeWidth="2.5"
+              />
+              <span className="truncate">{date}</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Content Section */}
