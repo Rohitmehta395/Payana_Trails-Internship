@@ -1,5 +1,5 @@
 import React from "react";
-import { IMAGE_BASE_URL } from "../../../../services/api";
+import { IMAGE_BASE_URL } from "../../../services/api";
 
 const TrailForm = ({
   formData,

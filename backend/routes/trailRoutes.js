@@ -115,7 +115,7 @@ router.put("/:id", cpUpload, async (req, res) => {
     }
 
     const updatedTrail = await Trail.findByIdAndUpdate(trailId, updateData, {
-      new: true,
+      returnDocument: 'after',
     });
     if (!updatedTrail)
       return res.status(404).json({ message: "Trail not found" });
