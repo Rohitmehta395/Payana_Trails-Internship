@@ -50,7 +50,7 @@ const cardVariants = {
 
 export default function OurTrails() {
   return (
-    <section className="py-12 bg-[#F3EFE9] relative overflow-hidden">
+    <section id="our-trails" className="py-12 bg-[#F3EFE9] relative overflow-hidden">
       {/* Decorative background blob */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#4A3B2A]/5 rounded-full blur-3xl -z-10" />
 

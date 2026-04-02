@@ -73,6 +73,14 @@ const trailSchema = new mongoose.Schema(
       type: String, // Storing the image URL or Cloudinary path
       required: true,
     },
+    heroImage: {
+      type: String,
+      required: true,
+    },
+    trailImages: {
+      type: [String],
+      default: [],
+    },
     whatsIncluded: {
       type: [String],
       required: true,

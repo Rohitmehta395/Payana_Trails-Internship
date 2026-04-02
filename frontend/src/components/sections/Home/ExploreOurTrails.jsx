@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-// Ensure your image imports are correct based on your file structure!
-import wildlifeImg from "../../../assets/Home/Whatwedo/wildlife.webp";
-import unescoImg from "../../../assets/Home/Whatwedo/unesco.webp";
-import culturalImg from "../../../assets/Home/Whatwedo/cultural.webp";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { api } from "../../../services/api";
 import EOTCard from "../../common/cards/EOTCard";
 import BrownBtn from "../../common/buttons/BrownBtn";
 import CreamBtn from "../../common/buttons/CreamBtn";
@@ -10,66 +8,50 @@ import CreamBtn from "../../common/buttons/CreamBtn";
 const ExploreOurTrails = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [services, setServices] = useState([]);
+  const navigate = useNavigate();
 
   const categories = ["All", "Wildlife", "Heritage", "Cultural"];
 
-  const services = [
-    {
-      id: 1,
-      category: "Wildlife",
-      title: "Wildlife Trails",
-      description: "Discover the majestic beasts of the savannah",
-      location: "Kenya & Tanzania",
-      duration: "10D - 9N",
-      date: "12 Aug 2026",
-      trail: "Nairobi - Masai Mara - Serengeti - Arusha",
-      imgSrc: wildlifeImg,
-    },
-    {
-      id: 2,
-      category: "Heritage",
-      title: "The Mekong Heritage",
-      description: "From the ancient Angkor to the picturesque Halong",
-      location: "Cambodia & Vietnam",
-      duration: "7D - 6N",
-      date: "18 Jun 2026",
-      trail: "Siem Reap - Ho Chi Minh City - Da Nang - Hanoi",
-      imgSrc: unescoImg,
-    },
-    {
-      id: 3,
-      category: "Cultural",
-      title: "Cultural Escapes",
-      description: "Immersive experiences through ancient traditions",
-      location: "Japan & South Korea",
-      duration: "14D - 13N",
-      date: "05 Oct 2026",
-      trail: "Tokyo - Kyoto - Seoul - Jeju Island",
-      imgSrc: culturalImg,
-    },
-    {
-      id: 4,
-      category: "Wildlife",
-      title: "Amazon Rainforest Expedition",
-      description: "Deep dive into the world's largest tropical rainforest",
-      location: "Brazil",
-      duration: "8D - 7N",
-      date: "22 Nov 2026",
-      trail: "Manaus - Amazon River - Jungle Lodge",
-      imgSrc: wildlifeImg,
-    },
-    {
-      id: 5,
-      category: "Heritage",
-      title: "Inca Trail to Machu Picchu",
-      description: "Walk the historic path of the ancient Inca empire",
-      location: "Peru",
-      duration: "6D - 5N",
-      date: "10 Sep 2026",
-      trail: "Cusco - Sacred Valley - Machu Picchu",
-      imgSrc: unescoImg,
-    },
-  ];
+  useEffect(() => {
+    const fetchTrails = async () => {
+      try {
+        const data = await api.getTrails();
+        const formattedTrails = data.map((trail) => {
+          let dateStr = "";
+          if (trail.journeyDate) {
+            dateStr = new Date(trail.journeyDate).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            });
+          }
+          const backendBase = import.meta.env.VITE_API_BASE_URL
+            ? import.meta.env.VITE_API_BASE_URL.replace("/api", "")
+            : "http://localhost:8000";
+
+          return {
+            id: trail._id,
+            category: trail.trailTheme,
+            title: trail.trailName,
+            description: trail.trailSubTitle,
+            location: trail.trailDestination,
+            duration: trail.duration,
+            date: dateStr,
+            trail: trail.trailRoute,
+            // Assuming the hero image is returned as a relative path
+            imgSrc: trail.heroImage
+              ? `${backendBase}${trail.heroImage}`
+              : undefined,
+          };
+        });
+        setServices(formattedTrails);
+      } catch (error) {
+        console.error("Failed to fetch trails for Explore Our Trails", error);
+      }
+    };
+    fetchTrails();
+  }, []);
 
   const filteredServices = services.filter((service) =>
     activeCategory === "All" ? true : service.category === activeCategory,
@@ -216,7 +198,15 @@ const ExploreOurTrails = () => {
                 </svg>
               </span>
             }
-            onClick={() => console.log("Navigate to trails page")}
+            onClick={() => {
+              navigate("/journeys");
+              setTimeout(() => {
+                const element = document.getElementById("our-trails");
+                if (element) {
+                  element.scrollIntoView({ behavior: "smooth" });
+                }
+              }, 100);
+            }}
             className="group px-8 py-4 sm:px-10 text-lg font-semibold min-w-[240px] shadow-md hover:shadow-lg transition-all duration-300"
           />
         </div>

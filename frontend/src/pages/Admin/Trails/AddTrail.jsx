@@ -34,6 +34,10 @@ const AddTrail = () => {
 
   const [formData, setFormData] = useState(initialFormState);
   const [imageFile, setImageFile] = useState(null);
+  const [heroImageFile, setHeroImageFile] = useState(null);
+  const [trailImageFiles, setTrailImageFiles] = useState([]);
+  const [existingTrailImages, setExistingTrailImages] = useState([]);
+  const [imagesToDelete, setImagesToDelete] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
@@ -64,6 +68,23 @@ const AddTrail = () => {
     setImageFile(e.target.files[0]);
   };
 
+  const handleHeroImageChange = (e) => {
+    setHeroImageFile(e.target.files[0]);
+  };
+
+  const handleTrailImagesChange = (e) => {
+    setTrailImageFiles(Array.from(e.target.files));
+  };
+
+  const removeExistingTrailImage = (imgUrl) => {
+    setExistingTrailImages((prev) => prev.filter((img) => img !== imgUrl));
+    setImagesToDelete((prev) => [...prev, imgUrl]);
+  };
+
+  const removeQueuedTrailImage = (index) => {
+    setTrailImageFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleHighlightChange = (index, field, value) => {
     const newHighlights = [...formData.highlights];
     newHighlights[index][field] = value;
@@ -87,10 +108,15 @@ const AddTrail = () => {
   const resetForm = () => {
     setFormData(initialFormState);
     setImageFile(null);
+    setHeroImageFile(null);
+    setTrailImageFiles([]);
+    setExistingTrailImages([]);
+    setImagesToDelete([]);
     setIsEditing(false);
     setCurrentTrailId(null);
-    if (document.getElementById("imageInput"))
-      document.getElementById("imageInput").value = "";
+    if (document.getElementById("imageInput")) document.getElementById("imageInput").value = "";
+    if (document.getElementById("heroImageInput")) document.getElementById("heroImageInput").value = "";
+    if (document.getElementById("trailImagesInput")) document.getElementById("trailImagesInput").value = "";
   };
 
   const handleSubmit = async (e) => {
@@ -98,16 +124,18 @@ const AddTrail = () => {
     setLoading(true);
     setMessage({ type: "", text: "" });
 
-    if (!isEditing && !imageFile) {
-      setMessage({ type: "error", text: "Please select a route map image." });
+    if (!isEditing && (!imageFile || !heroImageFile)) {
+      setMessage({ type: "error", text: "Please select both Route Map and Hero Image." });
       setLoading(false);
       return;
     }
 
     try {
       const submitData = new FormData();
+      submitData.append("trailName", formData.trailName);
 
       Object.keys(formData).forEach((key) => {
+        if (key === "trailName") return;
         if (key === "highlights") {
           const arrayValue = formData.highlights
             .filter((h) => h.title.trim() || h.description.trim())
@@ -132,8 +160,13 @@ const AddTrail = () => {
         }
       });
 
-      if (imageFile) {
-        submitData.append("routeMap", imageFile);
+      if (imageFile) submitData.append("routeMap", imageFile);
+      if (heroImageFile) submitData.append("heroImage", heroImageFile);
+      trailImageFiles.forEach((file) => submitData.append("trailImages", file));
+
+      if (isEditing) {
+        submitData.append("existingTrailImages", JSON.stringify(existingTrailImages));
+        submitData.append("imagesToDelete", JSON.stringify(imagesToDelete));
       }
 
       if (isEditing) {
@@ -158,6 +191,11 @@ const AddTrail = () => {
 
   // --- EDIT & DELETE HANDLERS ---
   const handleEdit = (trail) => {
+    setExistingTrailImages(trail.trailImages || []);
+    setImagesToDelete([]);
+    setHeroImageFile(null);
+    setTrailImageFiles([]);
+
     setFormData({
       ...trail,
       journeyDate: trail.journeyDate ? trail.journeyDate.split("T")[0] : "",
@@ -252,6 +290,12 @@ const AddTrail = () => {
           handleHighlightChange={handleHighlightChange}
           addHighlight={addHighlight}
           removeHighlight={removeHighlight}
+          handleHeroImageChange={handleHeroImageChange}
+          handleTrailImagesChange={handleTrailImagesChange}
+          existingTrailImages={existingTrailImages}
+          removeExistingTrailImage={removeExistingTrailImage}
+          trailImageFiles={trailImageFiles}
+          removeQueuedTrailImage={removeQueuedTrailImage}
         />
       )}
 

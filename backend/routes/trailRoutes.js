@@ -5,16 +5,32 @@ const path = require("path");
 const fs = require("fs"); // Needed to delete old images
 const Trail = require("../models/Trail");
 
-// --- Multer Configuration --- (Keep your existing multer config)
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/Trails/");
+    const trailName = req.body.trailName || "Unnamed_Trail";
+    const sanitizedName = trailName.replace(/[^a-z0-9]/gi, '_');
+    const uploadPath = path.join("uploads", "Trails", sanitizedName);
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+    if (file.fieldname === 'heroImage') {
+      cb(null, "hero-" + Date.now() + path.extname(file.originalname));
+    } else if (file.fieldname === 'routeMap') {
+      cb(null, "routemap-" + Date.now() + path.extname(file.originalname));
+    } else {
+      cb(null, Date.now() + "-" + file.originalname);
+    }
   },
 });
 const upload = multer({ storage: storage });
+const cpUpload = upload.fields([
+  { name: 'routeMap', maxCount: 1 },
+  { name: 'heroImage', maxCount: 1 },
+  { name: 'trailImages', maxCount: 20 }
+]);
 
 // GET all trails (Keep your existing route)
 router.get("/", async (req, res) => {
@@ -28,53 +44,74 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST a new trail (Keep your existing route)
-router.post("/", upload.single("routeMap"), async (req, res) => {
-  // ... your existing POST code ...
+// POST a new trail
+router.post("/", cpUpload, async (req, res) => {
   try {
-    if (!req.file)
-      return res.status(400).json({ message: "Image is required" });
-    const imagePath = `/uploads/Trails/${req.file.filename}`;
+    const sanitizedName = (req.body.trailName || "Unnamed_Trail").replace(/[^a-z0-9]/gi, '_');
+    const basePath = `/uploads/Trails/${sanitizedName}/`;
+
     const trailData = {
       ...req.body,
-      routeMap: imagePath,
+      routeMap: req.files && req.files['routeMap'] ? basePath + req.files['routeMap'][0].filename : "",
+      heroImage: req.files && req.files['heroImage'] ? basePath + req.files['heroImage'][0].filename : "",
+      trailImages: req.files && req.files['trailImages'] ? req.files['trailImages'].map(f => basePath + f.filename) : [],
       highlights: req.body.highlights ? JSON.parse(req.body.highlights) : [],
-      whatsIncluded: req.body.whatsIncluded
-        ? JSON.parse(req.body.whatsIncluded)
-        : [],
-      whatsNotIncluded: req.body.whatsNotIncluded
-        ? JSON.parse(req.body.whatsNotIncluded)
-        : [],
+      whatsIncluded: req.body.whatsIncluded ? JSON.parse(req.body.whatsIncluded) : [],
+      whatsNotIncluded: req.body.whatsNotIncluded ? JSON.parse(req.body.whatsNotIncluded) : [],
     };
+    
+    if (!trailData.routeMap || !trailData.heroImage) {
+      return res.status(400).json({ message: "Both Route Map and Hero Image are required." });
+    }
+
     const newTrail = new Trail(trailData);
     const savedTrail = await newTrail.save();
     res.status(201).json(savedTrail);
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Failed to create trail", error: error.message });
+    res.status(400).json({ message: "Failed to create trail", error: error.message });
   }
 });
 
 // --- NEW: PUT (Update) a trail ---
-router.put("/:id", upload.single("routeMap"), async (req, res) => {
+router.put("/:id", cpUpload, async (req, res) => {
   try {
     const trailId = req.params.id;
     let updateData = { ...req.body };
+    const sanitizedName = (updateData.trailName || "Unnamed_Trail").replace(/[^a-z0-9]/gi, '_');
+    const basePath = `/uploads/Trails/${sanitizedName}/`;
 
     // Parse arrays
-    if (updateData.highlights)
-      updateData.highlights = JSON.parse(updateData.highlights);
-    if (updateData.whatsIncluded)
-      updateData.whatsIncluded = JSON.parse(updateData.whatsIncluded);
-    if (updateData.whatsNotIncluded)
-      updateData.whatsNotIncluded = JSON.parse(updateData.whatsNotIncluded);
+    if (updateData.highlights) updateData.highlights = JSON.parse(updateData.highlights);
+    if (updateData.whatsIncluded) updateData.whatsIncluded = JSON.parse(updateData.whatsIncluded);
+    if (updateData.whatsNotIncluded) updateData.whatsNotIncluded = JSON.parse(updateData.whatsNotIncluded);
 
-    // If a new image was uploaded, update the image path
-    if (req.file) {
-      updateData.routeMap = `/uploads/Trails/${req.file.filename}`;
+    // If new images were uploaded, update the image paths
+    if (req.files && req.files['routeMap']) {
+      updateData.routeMap = basePath + req.files['routeMap'][0].filename;
+    }
+    if (req.files && req.files['heroImage']) {
+      updateData.heroImage = basePath + req.files['heroImage'][0].filename;
+    }
+    
+    // Process multiple trail images
+    let finalTrailImages = [];
+    if (req.body.existingTrailImages) {
+      finalTrailImages = JSON.parse(req.body.existingTrailImages);
+    }
+    if (req.files && req.files['trailImages']) {
+      finalTrailImages = finalTrailImages.concat(req.files['trailImages'].map(f => basePath + f.filename));
+    }
+    updateData.trailImages = finalTrailImages;
 
-      // Optional: You could write code here to find the old trail and delete its old image
+    // Remove deleted images from disk
+    if (req.body.imagesToDelete) {
+      const toDelete = JSON.parse(req.body.imagesToDelete);
+      toDelete.forEach(img => {
+         const filePath = path.join(__dirname, "..", img);
+         fs.unlink(filePath, (err) => {
+           if (err) console.error("Failed to delete old image file:", err);
+         });
+      });
     }
 
     const updatedTrail = await Trail.findByIdAndUpdate(trailId, updateData, {
@@ -101,13 +138,23 @@ router.delete("/:id", async (req, res) => {
     if (!trailToDelete)
       return res.status(404).json({ message: "Trail not found" });
 
-    // Delete the image file from the server
-    if (trailToDelete.routeMap) {
-      // routeMap looks like "/uploads/Trails/123.jpg". We need to map it to the actual file system path.
-      const filePath = path.join(__dirname, "..", trailToDelete.routeMap);
-      fs.unlink(filePath, (err) => {
-        if (err) console.error("Failed to delete image file:", err);
-      });
+    // Delete the entire trail images folder from the server
+    const sanitizedName = (trailToDelete.trailName || "Unnamed_Trail").replace(/[^a-z0-9]/gi, '_');
+    const folderPath = path.join(__dirname, "..", "uploads", "Trails", sanitizedName);
+    
+    if (fs.existsSync(folderPath)) {
+      fs.rmSync(folderPath, { recursive: true, force: true });
+    } else {
+      // Fallback clean up for old images that weren't in a named folder
+      if (trailToDelete.routeMap) {
+        fs.unlink(path.join(__dirname, "..", trailToDelete.routeMap), () => {});
+      }
+      if (trailToDelete.heroImage) {
+        fs.unlink(path.join(__dirname, "..", trailToDelete.heroImage), () => {});
+      }
+      if (trailToDelete.trailImages) {
+        trailToDelete.trailImages.forEach(img => fs.unlink(path.join(__dirname, "..", img), () => {}));
+      }
     }
 
     await Trail.findByIdAndDelete(trailId);

@@ -12,6 +12,12 @@ const TrailForm = ({
   handleHighlightChange,
   addHighlight,
   removeHighlight,
+  handleHeroImageChange,
+  handleTrailImagesChange,
+  existingTrailImages,
+  removeExistingTrailImage,
+  trailImageFiles,
+  removeQueuedTrailImage,
 }) => {
   const inputClasses =
     "w-full p-2.5 border border-gray-300 rounded text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#4A3B2A] focus:border-[#4A3B2A] transition-colors";
@@ -178,7 +184,7 @@ const TrailForm = ({
               <label className="block text-sm font-semibold text-[#4A3B2A] mb-2">
                 {isEditing
                   ? "Upload New Route Map (Leave empty to keep existing)"
-                  : "Upload Route Map / Image"}
+                  : "Upload Route Map"}
               </label>
               <input
                 id="imageInput"
@@ -188,6 +194,83 @@ const TrailForm = ({
                 className={`${inputClasses} bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer`}
                 required={!isEditing}
               />
+            </div>
+
+            {/* HERO IMAGE UPLOAD */}
+            <div className="md:col-span-2 bg-gray-50 p-4 rounded-md border border-gray-200 border-dashed">
+              <label className="block text-sm font-semibold text-[#4A3B2A] mb-1">
+                {isEditing
+                  ? "Upload New Hero Image (Leave empty to keep existing)"
+                  : "Upload Hero Image"}
+              </label>
+              <p className="text-xs text-gray-500 mb-3">(Recommended size: 1920x1080. This image will also be used in Trail Cards.)</p>
+              <input
+                id="heroImageInput"
+                type="file"
+                accept="image/*"
+                onChange={handleHeroImageChange}
+                className={`${inputClasses} bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer`}
+                required={!isEditing}
+              />
+            </div>
+
+            {/* TRAIL IMAGES UPLOAD (MULTIPLE) */}
+            <div className="md:col-span-2 bg-gray-50 p-4 rounded-md border border-gray-200 border-dashed">
+              <label className="block text-sm font-semibold text-[#4A3B2A] mb-1">
+                Trail Gallery Images
+              </label>
+              <p className="text-xs text-gray-500 mb-3">Add all additional images related to this particular trail here. You can select multiple files.</p>
+              <input
+                id="trailImagesInput"
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleTrailImagesChange}
+                className={`${inputClasses} bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer`}
+              />
+              
+              {/* EXISTING TRAIL IMAGES PREVIEW */}
+              {isEditing && existingTrailImages && existingTrailImages.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-xs font-semibold text-gray-600 mb-2">Existing Images:</p>
+                  <div className="flex flex-wrap gap-3">
+                    {existingTrailImages.map((img, idx) => (
+                      <div key={idx} className="relative group">
+                        <img src={`http://localhost:8000${img}`} alt="trail gallery piece" className="w-20 h-20 object-cover rounded shadow-sm border border-gray-200" />
+                        <button
+                          type="button"
+                          onClick={() => removeExistingTrailImage(img)}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Remove Image"
+                        >
+                          X
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* QUEUED NEW IMAGES PREVIEW */}
+              {trailImageFiles && trailImageFiles.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-xs font-semibold text-gray-600 mb-2">New Images to Upload:</p>
+                  <ul className="text-xs text-gray-600 space-y-1">
+                    {trailImageFiles.map((file, idx) => (
+                      <li key={idx} className="flex justify-between items-center bg-white p-2 rounded border border-gray-200">
+                        <span className="truncate flex-1 font-medium">{file.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeQueuedTrailImage(idx)}
+                          className="text-red-500 font-bold ml-2 px-2 hover:bg-red-50 rounded"
+                        >
+                          X
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
 
             {/* TEXT AREAS */}
@@ -238,7 +321,7 @@ const TrailForm = ({
                     placeholder="Description"
                     value={highlight.description}
                     onChange={(e) => handleHighlightChange(index, "description", e.target.value)}
-                    className={`${inputClasses} flex-[2]`}
+                    className={`${inputClasses} flex-2`}
                   />
                   {formData.highlights.length > 1 && (
                     <button
