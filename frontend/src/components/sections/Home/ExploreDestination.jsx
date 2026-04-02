@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DestinationCard from "../../common/cards/DestinationCard";
 import BrownBtn from "../../common/buttons/BrownBtn";
+import { Link } from "react-router-dom";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
 
 const ExploreDestination = () => {
@@ -36,11 +37,13 @@ const ExploreDestination = () => {
         {/* Responsive Grid for Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {loading ? (
-             <div className="col-span-full flex justify-center items-center py-10">
-               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4A3B2A]"></div>
-             </div>
+            <div className="col-span-full flex justify-center items-center py-10">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4A3B2A]"></div>
+            </div>
           ) : destinations.length === 0 ? (
-             <div className="col-span-full text-center text-[#4A3B2A]/70 py-10">No destinations available.</div>
+            <div className="col-span-full text-center text-[#4A3B2A]/70 py-10">
+              No destinations available.
+            </div>
           ) : (
             destinations.map((dest, index) => (
               <div
@@ -48,7 +51,10 @@ const ExploreDestination = () => {
                 className="animate-fade-in-up w-full flex justify-center"
                 style={{ animationDelay: `${index * 150}ms` }}
               >
-                <DestinationCard name={dest.name} image={`${IMAGE_BASE_URL}${dest.heroImage}`} />
+                <DestinationCard
+                  name={dest.name}
+                  image={`${IMAGE_BASE_URL}${dest.heroImage}`}
+                />
               </div>
             ))
           )}
@@ -56,27 +62,29 @@ const ExploreDestination = () => {
 
         {/* Call to Action Button */}
         <div className="flex justify-center mt-12 md:mt-16">
-          <BrownBtn
-            text={
-              <span className="flex items-center gap-2 p-2 text-sm md:text-base">
-                View All Destinations
-                <svg
-                  className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </span>
-            }
-            className="group"
-          />
+          <Link to="/journeys/destinations">
+            <BrownBtn
+              text={
+                <span className="flex items-center gap-2 p-2 text-sm md:text-base">
+                  View All Destinations
+                  <svg
+                    className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </span>
+              }
+              className="group"
+            />
+          </Link>
         </div>
       </div>
     </section>

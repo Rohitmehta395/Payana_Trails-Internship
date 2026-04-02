@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DestinationCard from "../../common/cards/DestinationCard";
 import BrownBtn from "../../common/buttons/BrownBtn";
+import { Link } from "react-router-dom";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
 
 const OurDestinations = () => {
@@ -19,7 +20,7 @@ const OurDestinations = () => {
       }
     };
     fetchDestinations();
-  }, []);
+  }, []); 
 
   return (
     <section className="relative w-full py-12 md:py-12 px-6 md:px-12 lg:px-24 bg-[#F3EFE9]">
@@ -62,27 +63,29 @@ const OurDestinations = () => {
 
         {/* Call to Action Button */}
         <div className="flex justify-center mt-12 md:mt-16">
-          <BrownBtn
-            text={
-              <span className="flex items-center gap-2 p-2 text-sm md:text-base">
-                View All Destinations
-                <svg
-                  className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </span>
-            }
-            className="group"
-          />
+          <Link to="/journeys/destinations">
+            <BrownBtn
+              text={
+                <span className="flex items-center gap-2 p-2 text-sm md:text-base">
+                  View All Destinations
+                  <svg
+                    className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </span>
+              }
+              className="group"
+            />
+          </Link>
         </div>
       </div>
     </section>
