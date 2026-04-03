@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
+import DraggableTableBody from "../../../components/admin/DraggableTableBody";
 
 const DestinationManager = () => {
   const [destinations, setDestinations] = useState([]);
@@ -103,6 +104,21 @@ const DestinationManager = () => {
     }
   };
 
+  const handleReorder = async (newDestinations) => {
+    setDestinations(newDestinations); // Optimistic UI update
+    try {
+      const payload = newDestinations.map((dest, index) => ({
+        id: dest._id,
+        order: index,
+      }));
+      await api.reorderDestinations(payload);
+    } catch (error) {
+      console.error("Failed to save reorder", error);
+      setMessage({ type: "error", text: "Failed to save new order." });
+      fetchDestinations(); // revert on fail
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* TOP ACTIONS BAR */}
@@ -186,29 +202,36 @@ const DestinationManager = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 text-sm">
+                <th className="p-4 w-10"></th>
                 <th className="p-4 font-medium uppercase min-w-[120px]">Image</th>
                 <th className="p-4 font-medium uppercase w-full">Destination Name</th>
                 <th className="p-4 font-medium uppercase text-center w-48">Actions</th>
               </tr>
             </thead>
-            <tbody>
-              {fetching ? (
+            {fetching ? (
+              <tbody>
                 <tr>
-                  <td colSpan="3" className="p-8 text-center text-gray-500">
+                  <td colSpan="4" className="p-8 text-center text-gray-500">
                     <div className="flex justify-center">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-600"></div>
                     </div>
                   </td>
                 </tr>
-              ) : destinations.length === 0 ? (
+              </tbody>
+            ) : destinations.length === 0 ? (
+              <tbody>
                 <tr>
-                  <td colSpan="3" className="p-8 text-center text-gray-500">
+                  <td colSpan="4" className="p-8 text-center text-gray-500">
                     No destinations added yet.
                   </td>
                 </tr>
-              ) : (
-                destinations.map((dest) => (
-                  <tr key={dest._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              </tbody>
+            ) : (
+              <DraggableTableBody
+                items={destinations}
+                onReorder={handleReorder}
+                renderRow={(dest) => (
+                  <>
                     <td className="p-4">
                       <img 
                         src={`${IMAGE_BASE_URL}${dest.heroImage}`} 
@@ -235,10 +258,10 @@ const DestinationManager = () => {
                         </button>
                       </div>
                     </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
+                  </>
+                )}
+              />
+            )}
           </table>
         </div>
       )}

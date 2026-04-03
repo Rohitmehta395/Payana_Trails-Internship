@@ -31,10 +31,32 @@ const cpUpload = upload.fields([
 // GET all destinations
 router.get("/", async (req, res) => {
   try {
-    const destinations = await Destination.find().sort({ createdAt: -1 });
+    const destinations = await Destination.find().sort({ order: 1, createdAt: -1 });
     res.status(200).json(destinations);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch destinations", error: error.message });
+  }
+});
+
+// PUT (Reorder) destinations
+router.put("/reorder", async (req, res) => {
+  try {
+    const { items } = req.body;
+    if (!items || !Array.isArray(items)) {
+      return res.status(400).json({ message: "Invalid payload" });
+    }
+
+    const bulkOps = items.map((item) => ({
+      updateOne: {
+        filter: { _id: item.id },
+        update: { order: item.order },
+      },
+    }));
+
+    await Destination.bulkWrite(bulkOps);
+    res.status(200).json({ message: "Destinations reordered successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to reorder destinations", error: error.message });
   }
 });
 

@@ -91,6 +91,10 @@ const trailSchema = new mongoose.Schema(
       required: true,
       validate: [arrayLimit(18), "Exclusions cannot exceed 8 bullet points"],
     },
+    order: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true },
 );

@@ -238,6 +238,18 @@ const AddTrail = () => {
     }
   };
 
+  const handleReorder = async (newTrails) => {
+    setTrails(newTrails); // optimistic UI update
+    try {
+      const payload = newTrails.map((trail, index) => ({ id: trail._id, order: index }));
+      await api.reorderTrails(payload);
+    } catch (error) {
+      console.error("Failed to reorder", error);
+      setMessage({ type: "error", text: "Failed to save new order." });
+      fetchExistingTrails(); // Revert
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* TOP ACTIONS BAR */}
@@ -305,6 +317,7 @@ const AddTrail = () => {
         loadingTrails={loadingTrails}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
+        handleReorder={handleReorder}
       />
     </div>
   );

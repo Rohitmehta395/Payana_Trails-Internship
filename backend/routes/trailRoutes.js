@@ -35,12 +35,34 @@ const cpUpload = upload.fields([
 // GET all trails (Keep your existing route)
 router.get("/", async (req, res) => {
   try {
-    const trails = await Trail.find().sort({ createdAt: -1 });
+    const trails = await Trail.find().sort({ order: 1, createdAt: -1 });
     res.status(200).json(trails);
   } catch (error) {
     res
       .status(500)
       .json({ message: "Failed to fetch trails", error: error.message });
+  }
+});
+
+// PUT (Reorder) trails
+router.put("/reorder", async (req, res) => {
+  try {
+    const { items } = req.body;
+    if (!items || !Array.isArray(items)) {
+      return res.status(400).json({ message: "Invalid payload" });
+    }
+
+    const bulkOps = items.map((item) => ({
+      updateOne: {
+        filter: { _id: item.id },
+        update: { order: item.order },
+      },
+    }));
+
+    await Trail.bulkWrite(bulkOps);
+    res.status(200).json({ message: "Trails reordered successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to reorder trails", error: error.message });
   }
 });
 

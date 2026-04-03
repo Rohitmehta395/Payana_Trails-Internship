@@ -11,11 +11,11 @@ const EOTCard = ({
   trail = "Siem Reap - Ho Chi Minh City - Da Nang - Hanoi",
 }) => {
   return (
-    <div className="group relative overflow-hidden w-full max-w-[400px] p-4 bg-gradient-to-bl from-[#CDBB9E] to-[#E3D5C4] border-[6px] border-[#5C4033] outline outline-1 outline-[#3A281F] ring-2 ring-inset ring-[#8B6A55]/30 rounded-[2.2rem] shadow-[0_10px_30px_rgba(92,64,51,0.2),inset_0_4px_15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(92,64,51,0.3)] font-sans">
+    <div className="group relative overflow-hidden w-full max-w-[400px] p-4 bg-linear-to-bl from-[#CDBB9E] to-[#E3D5C4] border-[6px] border-[#5C4033] outline-1 outline-[#3A281F] ring-2 ring-inset ring-[#8B6A55]/30 rounded-[2.2rem] shadow-[0_10px_30px_rgba(92,64,51,0.2),inset_0_4px_15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(92,64,51,0.3)] font-sans">
       {/* --- Aesthetic Cloud Spots (Background) --- */}
-      <div className="absolute -top-10 -right-10 w-52 h-52 bg-white/40 rounded-full blur-[40px] pointer-events-none z-0"></div>
+      <div className="absolute -top-10 -right-10 w-52 h-52 bg-white/40 rounded-full blur-2xl pointer-events-none z-0"></div>
       <div className="absolute top-1/2 -left-12 w-64 h-64 bg-white/30 rounded-full blur-[50px] pointer-events-none z-0"></div>
-      <div className="absolute -bottom-10 right-10 w-48 h-48 bg-[#FAF6F0]/40 rounded-full blur-[40px] pointer-events-none z-0"></div>
+      <div className="absolute -bottom-10 right-10 w-48 h-48 bg-[#FAF6F0]/40 rounded-full blur-2xl pointer-events-none z-0"></div>
 
       {/* Image Section */}
       <div className="relative z-10 w-full h-[260px] rounded-[1.8rem] overflow-hidden mb-5 shadow-inner">

@@ -155,6 +155,21 @@ export const api = {
     }
   },
 
+  reorderTrails: async (items) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/trails/reorder`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to reorder trails");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   // --- DESTINATION ROUTES ---
   getDestinations: async () => {
     try {
@@ -202,6 +217,21 @@ export const api = {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to delete destination");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  reorderDestinations: async (items) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/destinations/reorder`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to reorder destinations");
       return data;
     } catch (error) {
       throw error;

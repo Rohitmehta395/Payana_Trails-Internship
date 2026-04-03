@@ -11,6 +11,10 @@ const destinationSchema = new mongoose.Schema(
       type: String, // Path to the uploaded image
       required: true,
     },
+    order: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
