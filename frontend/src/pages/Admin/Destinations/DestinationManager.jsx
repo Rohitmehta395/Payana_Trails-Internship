@@ -50,15 +50,18 @@ const DestinationManager = () => {
     setMessage({ type: "", text: "" });
 
     if (!isEditing && (!name || !heroImageFile)) {
-      setMessage({ type: "error", text: "Please fill all fields and select an image." });
+      setMessage({
+        type: "error",
+        text: "Please fill all fields and select an image.",
+      });
       return;
     }
-    
+
     if (isEditing && !name) {
       setMessage({ type: "error", text: "Destination name is required." });
       return;
     }
-    
+
     setLoading(true);
     const formData = new FormData();
     formData.append("name", name);
@@ -69,10 +72,16 @@ const DestinationManager = () => {
     try {
       if (isEditing) {
         await api.updateDestination(currentId, formData);
-        setMessage({ type: "success", text: "Destination updated successfully!" });
+        setMessage({
+          type: "success",
+          text: "Destination updated successfully!",
+        });
       } else {
         await api.addDestination(formData);
-        setMessage({ type: "success", text: "Destination added successfully!" });
+        setMessage({
+          type: "success",
+          text: "Destination added successfully!",
+        });
       }
       resetForm();
       setShowForm(false);
@@ -88,7 +97,7 @@ const DestinationManager = () => {
 
   const handleEdit = (dest) => {
     setName(dest.name);
-    setHeroImageFile(null); 
+    setHeroImageFile(null);
     setIsEditing(true);
     setCurrentId(dest._id);
     setShowForm(true);
@@ -96,10 +105,14 @@ const DestinationManager = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this destination?")) return;
+    if (!window.confirm("Are you sure you want to delete this destination?"))
+      return;
     try {
       await api.deleteDestination(id);
-      setMessage({ type: "success", text: "Destination deleted successfully!" });
+      setMessage({
+        type: "success",
+        text: "Destination deleted successfully!",
+      });
       fetchDestinations();
       setTimeout(() => setMessage({ type: "", text: "" }), 3000);
     } catch (error) {
@@ -126,13 +139,16 @@ const DestinationManager = () => {
   const handleToggle = async (id) => {
     // Optimistic UI update
     setDestinations((prev) =>
-      prev.map((d) => (d._id === id ? { ...d, isActive: !d.isActive } : d))
+      prev.map((d) => (d._id === id ? { ...d, isActive: !d.isActive } : d)),
     );
     try {
       await api.toggleDestinationStatus(id);
     } catch (error) {
       console.error("Failed to toggle destination status", error);
-      setMessage({ type: "error", text: "Failed to update destination status." });
+      setMessage({
+        type: "error",
+        text: "Failed to update destination status.",
+      });
       fetchDestinations(); // revert on failure
     }
   };
@@ -177,39 +193,53 @@ const DestinationManager = () => {
 
       {showForm && (
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <form onSubmit={handleSubmit} className="bg-[#F8F6F3] p-6 rounded-xl border border-[#4A3B2A]/10">
+          <form
+            onSubmit={handleSubmit}
+            className="bg-[#F8F6F3] p-6 rounded-xl border border-[#4A3B2A]/10"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Country Name</label>
-                <input 
-                  type="text" 
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Country Name
+                </label>
+                <input
+                  type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A3B2A] focus:border-transparent"
                   placeholder="e.g. Kenya"
-                  required 
+                  required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Hero Image (Recommended: 1920x1080 px) {isEditing && <span className="text-gray-400 text-xs">(Leave empty to keep existing)</span>}
+                  Hero Image (Recommended: 1080X1920 px){" "}
+                  {isEditing && (
+                    <span className="text-gray-400 text-xs">
+                      (Leave empty to keep existing)
+                    </span>
+                  )}
                 </label>
-                <input 
+                <input
                   id="heroImageInput"
-                  type="file" 
+                  type="file"
                   accept="image/*"
                   onChange={(e) => setHeroImageFile(e.target.files[0])}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A3B2A] focus:border-transparent bg-white"
-                  required={!isEditing} 
+                  required={!isEditing}
                 />
               </div>
             </div>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
               className="mt-6 bg-[#4A3B2A] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#3d3022] transition-colors disabled:opacity-50"
             >
-              {loading ? "Saving..." : isEditing ? "Update Destination" : "Add Destination"}
+              {loading
+                ? "Saving..."
+                : isEditing
+                  ? "Update Destination"
+                  : "Add Destination"}
             </button>
           </form>
         </div>
@@ -221,10 +251,18 @@ const DestinationManager = () => {
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 text-sm">
                 <th className="p-4 w-10"></th>
-                <th className="p-4 font-medium uppercase min-w-[120px]">Image</th>
-                <th className="p-4 font-medium uppercase w-full">Destination Name</th>
-                <th className="p-4 font-medium uppercase text-center">Status</th>
-                <th className="p-4 font-medium uppercase text-center w-48">Actions</th>
+                <th className="p-4 font-medium uppercase min-w-[120px]">
+                  Image
+                </th>
+                <th className="p-4 font-medium uppercase w-full">
+                  Destination Name
+                </th>
+                <th className="p-4 font-medium uppercase text-center">
+                  Status
+                </th>
+                <th className="p-4 font-medium uppercase text-center w-48">
+                  Actions
+                </th>
               </tr>
             </thead>
             {fetching ? (
@@ -252,8 +290,8 @@ const DestinationManager = () => {
                 renderRow={(dest) => (
                   <>
                     <td className="p-4">
-                      <img 
-                        src={`${IMAGE_BASE_URL}${dest.heroImage}`} 
+                      <img
+                        src={`${IMAGE_BASE_URL}${dest.heroImage}`}
                         alt={dest.name}
                         className="w-24 h-16 object-cover rounded shadow-sm border border-gray-200"
                       />
