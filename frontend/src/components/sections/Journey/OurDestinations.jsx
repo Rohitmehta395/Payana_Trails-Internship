@@ -49,7 +49,7 @@ const OurDestinations = () => {
           ) : destinations.length === 0 ? (
              <div className="col-span-full text-center text-[#4A3B2A]/70 py-10">No destinations available.</div>
           ) : (
-            destinations.map((dest, index) => (
+            destinations.slice(0, 4).map((dest, index) => (
               <div
                 key={dest._id}
                 className="animate-fade-in-up w-full flex justify-center"
