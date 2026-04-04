@@ -55,7 +55,6 @@ const TrailForm = ({
                 value={formData.trailType}
                 onChange={handleChange}
                 className={inputClasses}
-                required
               />
             </div>
 
@@ -326,7 +325,7 @@ const TrailForm = ({
                   />
                   {formData.highlights.length > 1 && (
                     <button
-                      type="buhightton"
+                      type="button"
                       onClick={() => removeHighlight(index)}
                       className="p-2.5 text-red-500 hover:bg-red-50 rounded"
                       title="Remove"
