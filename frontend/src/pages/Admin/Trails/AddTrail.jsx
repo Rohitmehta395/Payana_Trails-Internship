@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { api } from "../../../services/api";
 import TrailList from "./TrailList";
 import TrailForm from "./TrailForm";
+import useScrollToTop from "../../../hooks/useScrollToTop";
 
 const AddTrail = () => {
   // --- UI STATE ---
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentTrailId, setCurrentTrailId] = useState(null);
+
+  const [sectionRef, scrollToTop] = useScrollToTop();
 
   const [trails, setTrails] = useState([]);
   const [loadingTrails, setLoadingTrails] = useState(true);
@@ -218,7 +221,7 @@ const AddTrail = () => {
     setIsEditing(true);
     setCurrentTrailId(trail._id);
     setShowForm(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToTop();
   };
 
   const handleDelete = async (id) => {
@@ -265,7 +268,7 @@ const AddTrail = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div ref={sectionRef} className="space-y-6">
       {/* TOP ACTIONS BAR */}
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200">
         <h2 className="text-lg font-bold text-[#4A3B2A]">

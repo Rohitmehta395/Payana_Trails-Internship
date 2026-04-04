@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
 import DraggableTableBody from "../../../components/admin/DraggableTableBody";
 import StatusToggle from "../../../components/admin/StatusToggle";
+import useScrollToTop from "../../../hooks/useScrollToTop";
 
 const DestinationManager = () => {
   const [destinations, setDestinations] = useState([]);
@@ -9,6 +10,8 @@ const DestinationManager = () => {
   const [heroImageFile, setHeroImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+
+  const [sectionRef, scrollToTop] = useScrollToTop();
 
   // UI State
   const [showForm, setShowForm] = useState(false);
@@ -89,7 +92,7 @@ const DestinationManager = () => {
     setIsEditing(true);
     setCurrentId(dest._id);
     setShowForm(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToTop();
   };
 
   const handleDelete = async (id) => {
@@ -135,7 +138,7 @@ const DestinationManager = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div ref={sectionRef} className="space-y-6">
       {/* TOP ACTIONS BAR */}
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200">
         <h2 className="text-lg font-bold text-[#4A3B2A]">
