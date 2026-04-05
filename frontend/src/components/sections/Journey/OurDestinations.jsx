@@ -3,6 +3,10 @@ import DestinationCard from "../../common/cards/DestinationCard";
 import BrownBtn from "../../common/buttons/BrownBtn";
 import { Link } from "react-router-dom";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
+import {
+  buildDestinationListingPath,
+  getDestinationGeography,
+} from "../../../constants/destinationGeographies";
 
 const OurDestinations = () => {
   const [destinations, setDestinations] = useState([]);
@@ -55,7 +59,14 @@ const OurDestinations = () => {
                 className="animate-fade-in-up w-full flex justify-center"
                 style={{ animationDelay: `${index * 150}ms` }}
               >
-                <DestinationCard name={dest.name} image={`${IMAGE_BASE_URL}${dest.heroImage}`} />
+                <DestinationCard
+                  name={dest.name}
+                  image={`${IMAGE_BASE_URL}${dest.heroImage}`}
+                  to={buildDestinationListingPath({
+                    geography: getDestinationGeography(dest),
+                    destination: dest.name,
+                  })}
+                />
               </div>
             ))
           )}

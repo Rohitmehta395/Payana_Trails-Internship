@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import EOTCard from "../../common/cards/EOTCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
@@ -93,55 +94,80 @@ const SignatureJourneys = () => {
       )}
 
       {!loading && !error && journeys.length > 0 && (
-        <div className="relative max-w-7xl mx-auto flex items-center group">
-          {/* Left Arrow */}
-          <button 
-             onClick={scrollLeft}
-             className="absolute left-0 lg:-left-6 z-20 w-12 h-12 bg-white/80 backdrop-blur border border-[#4A3B2A]/20 text-[#4A3B2A] rounded-full flex items-center justify-center shadow-md hover:bg-[#4A3B2A] hover:text-white transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 disabled:opacity-0"
-             aria-label="Previous journeys"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
+        <div className="max-w-7xl mx-auto">
+          <div className="relative flex items-center group">
+            {/* Left Arrow */}
+            <button 
+               onClick={scrollLeft}
+               className="absolute left-0 lg:-left-6 z-20 w-12 h-12 bg-white/80 backdrop-blur border border-[#4A3B2A]/20 text-[#4A3B2A] rounded-full flex items-center justify-center shadow-md hover:bg-[#4A3B2A] hover:text-white transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 disabled:opacity-0"
+               aria-label="Previous journeys"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
 
-          {/* Cards Container */}
-          <div 
-            ref={scrollContainerRef}
-            className="flex overflow-x-auto gap-8 lg:gap-10 px-4 py-8 snap-x snap-mandatory hide-scroll-bar w-full"
-            style={{ 
-              scrollbarWidth: "none", /* Firefox */
-              msOverflowStyle: "none" /* IE and Edge */
-            }}
-          >
-            <style>{`
-              .hide-scroll-bar::-webkit-scrollbar {
-                display: none;
-              }
-            `}</style>
-            
-            {journeys.map((journey) => (
-              <div key={journey._id} className="snap-center shrink-0 w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)] max-w-[400px] flex justify-center">
-                <EOTCard
-                  title={journey.trailName}
-                  description={journey.trailSubTitle}
-                  location={journey.trailDestination}
-                  duration={journey.duration}
-                  date={formatDate(journey.journeyDate)}
-                  trail={journey.trailRoute}
-                  trailType={journey.trailType || ""}
-                  imgSrc={journey.heroImage ? `${IMAGE_BASE_URL}${journey.heroImage}` : null}
-                />
-              </div>
-            ))}
+            {/* Cards Container */}
+            <div 
+              ref={scrollContainerRef}
+              className="flex overflow-x-auto gap-8 lg:gap-10 px-4 py-8 snap-x snap-mandatory hide-scroll-bar w-full"
+              style={{ 
+                scrollbarWidth: "none", /* Firefox */
+                msOverflowStyle: "none" /* IE and Edge */
+              }}
+            >
+              <style>{`
+                .hide-scroll-bar::-webkit-scrollbar {
+                  display: none;
+                }
+              `}</style>
+              
+              {journeys.map((journey) => (
+                <div key={journey._id} className="snap-center shrink-0 w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)] max-w-[400px] flex justify-center">
+                  <EOTCard
+                    title={journey.trailName}
+                    description={journey.trailSubTitle}
+                    location={journey.trailDestination}
+                    duration={journey.duration}
+                    date={formatDate(journey.journeyDate)}
+                    trail={journey.trailRoute}
+                    trailType={journey.trailType || ""}
+                    imgSrc={journey.heroImage ? `${IMAGE_BASE_URL}${journey.heroImage}` : null}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Right Arrow */}
+            <button 
+               onClick={scrollRight}
+               className="absolute right-0 lg:-right-6 z-20 w-12 h-12 bg-white/80 backdrop-blur border border-[#4A3B2A]/20 text-[#4A3B2A] rounded-full flex items-center justify-center shadow-md hover:bg-[#4A3B2A] hover:text-white transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
+               aria-label="Next journeys"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
           </div>
 
-          {/* Right Arrow */}
-          <button 
-             onClick={scrollRight}
-             className="absolute right-0 lg:-right-6 z-20 w-12 h-12 bg-white/80 backdrop-blur border border-[#4A3B2A]/20 text-[#4A3B2A] rounded-full flex items-center justify-center shadow-md hover:bg-[#4A3B2A] hover:text-white transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
-             aria-label="Next journeys"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
+          <div className="mt-8 flex justify-center">
+            <Link
+              to="/journeys/signature"
+              onClick={() => window.scrollTo(0, 0)}
+              className="group inline-flex items-center gap-2 rounded-full bg-[#4A3B2A] px-6 py-3 text-sm md:text-base font-semibold text-[#F3EFE9] shadow-[0_14px_28px_rgba(74,59,42,0.16)] transition-all duration-300 hover:bg-[#3A2C1C] hover:-translate-y-0.5"
+            >
+              <span>Explore Signature Trails</span>
+              <svg
+                className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Link>
+          </div>
         </div>
       )}
     </section>

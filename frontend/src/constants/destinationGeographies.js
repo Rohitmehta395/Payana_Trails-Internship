@@ -35,12 +35,17 @@ export const getDestinationGeography = (destination) => {
 
 export const buildDestinationListingPath = ({
   geography = "",
+  destination = "",
   search = "",
 } = {}) => {
   const params = new URLSearchParams();
 
   if (geography) {
     params.set("geography", geography);
+  }
+
+  if (destination) {
+    params.set("destination", destination);
   }
 
   if (search) {

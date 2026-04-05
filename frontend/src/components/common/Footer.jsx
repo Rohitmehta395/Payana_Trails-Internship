@@ -85,10 +85,10 @@ const Footer = () => {
     {
       title: "Journeys",
       links: [
-        { name: "Wildlife Trails", path: "/wildlife-trails" },
-        { name: "Heritage Trails", path: "/unesco-trails" },
-        { name: "Signature Trails", path: "/signature-journeys" },
-        { name: "Cultural & Immersive Trails", path: "/immersive-trails" },
+        { name: "Wildlife Trails", path: "/journeys/wildlife" },
+        { name: "Heritage Trails", path: "/journeys/heritage" },
+        { name: "Signature Trails", path: "/journeys/signature" },
+        { name: "Cultural & Immersive Trails", path: "/journeys/cultural" },
       ],
     },
     {

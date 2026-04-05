@@ -20,7 +20,7 @@ const buildDestinationsSubmenu = (destinations) =>
         name: destination.name,
         path: buildDestinationListingPath({
           geography,
-          search: destination.name,
+          destination: destination.name,
         }),
       }));
 
@@ -94,9 +94,16 @@ export default function Header() {
       name: "Journeys",
       path: "/journeys",
       submenu: [
-        { name: "Wildlife Trails", path: "/journeys/wildlife" },
-        { name: "Heritage Trails", path: "/journeys/heritage" },
-        { name: "Cultural & Immersive Trails", path: "/journeys/cultural" },
+        {
+          name: "Trails",
+          path: "/journeys",
+          submenu: [
+            { name: "Wildlife Trails", path: "/journeys/wildlife" },
+            { name: "Heritage Trails", path: "/journeys/heritage" },
+            { name: "Signature Trails", path: "/journeys/signature" },
+            { name: "Cultural & Immersive Trails", path: "/journeys/cultural" },
+          ],
+        },
         {
           name: "Destinations",
           path: buildDestinationListingPath(),

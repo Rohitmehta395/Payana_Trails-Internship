@@ -11,6 +11,7 @@ import Connect from "./pages/Connect";
 import Wildlife from "./components/sections/Journey/Wildlife";
 import Heritage from "./components/sections/Journey/Heritage";
 import Cultural from "./components/sections/Journey/Cultural";
+import SignatureTrailsPage from "./components/sections/Journey/SignatureTrailsPage";
 
 // Import Destinations
 import Destinations from "./components/sections/Journey/Destinations";
@@ -35,6 +36,10 @@ const App = () => {
                 <Route path="/journeys" element={<Journeys />} />
                 <Route path="/journeys/wildlife" element={<Wildlife />} />
                 <Route path="/journeys/heritage" element={<Heritage />} />
+                <Route
+                  path="/journeys/signature"
+                  element={<SignatureTrailsPage />}
+                />
                 <Route path="/journeys/cultural" element={<Cultural />} />
                 <Route
                   path="/journeys/destinations"

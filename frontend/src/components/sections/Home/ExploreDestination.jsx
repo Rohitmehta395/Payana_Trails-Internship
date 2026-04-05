@@ -3,6 +3,10 @@ import DestinationCard from "../../common/cards/DestinationCard";
 import BrownBtn from "../../common/buttons/BrownBtn";
 import { Link } from "react-router-dom";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
+import {
+  buildDestinationListingPath,
+  getDestinationGeography,
+} from "../../../constants/destinationGeographies";
 
 const ExploreDestination = () => {
   const [destinations, setDestinations] = useState([]);
@@ -54,6 +58,10 @@ const ExploreDestination = () => {
                 <DestinationCard
                   name={dest.name}
                   image={`${IMAGE_BASE_URL}${dest.heroImage}`}
+                  to={buildDestinationListingPath({
+                    geography: getDestinationGeography(dest),
+                    destination: dest.name,
+                  })}
                 />
               </div>
             ))
