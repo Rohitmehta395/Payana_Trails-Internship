@@ -3,11 +3,18 @@ import { api, IMAGE_BASE_URL } from "../../../services/api";
 import DraggableTableBody from "../../../components/admin/DraggableTableBody";
 import StatusToggle from "../../../components/admin/StatusToggle";
 import useScrollToTop from "../../../hooks/useScrollToTop";
+import {
+  DESTINATION_GEOGRAPHIES,
+  getDestinationGeography,
+} from "../../../constants/destinationGeographies";
 
 const DestinationManager = () => {
   const [destinations, setDestinations] = useState([]);
   const [name, setName] = useState("");
+  const [geography, setGeography] = useState("");
   const [heroImageFile, setHeroImageFile] = useState(null);
+  const [currentHeroImage, setCurrentHeroImage] = useState("");
+  const [heroImagePreview, setHeroImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
@@ -23,6 +30,18 @@ const DestinationManager = () => {
     fetchDestinations();
   }, []);
 
+  useEffect(() => {
+    if (heroImageFile) {
+      const objectUrl = URL.createObjectURL(heroImageFile);
+      setHeroImagePreview(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+
+    setHeroImagePreview(
+      currentHeroImage ? `${IMAGE_BASE_URL}${currentHeroImage}` : "",
+    );
+  }, [currentHeroImage, heroImageFile]);
+
   const fetchDestinations = async () => {
     setFetching(true);
     try {
@@ -37,7 +56,9 @@ const DestinationManager = () => {
 
   const resetForm = () => {
     setName("");
+    setGeography("");
     setHeroImageFile(null);
+    setCurrentHeroImage("");
     setIsEditing(false);
     setCurrentId(null);
     if (document.getElementById("heroImageInput")) {
@@ -49,22 +70,26 @@ const DestinationManager = () => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
 
-    if (!isEditing && (!name || !heroImageFile)) {
+    if (!isEditing && (!name || !geography || !heroImageFile)) {
       setMessage({
         type: "error",
-        text: "Please fill all fields and select an image.",
+        text: "Please fill all fields, select a geography, and upload an image.",
       });
       return;
     }
 
-    if (isEditing && !name) {
-      setMessage({ type: "error", text: "Destination name is required." });
+    if (isEditing && (!name || !geography)) {
+      setMessage({
+        type: "error",
+        text: "Destination name and geography are required.",
+      });
       return;
     }
 
     setLoading(true);
     const formData = new FormData();
     formData.append("name", name);
+    formData.append("geography", geography);
     if (heroImageFile) {
       formData.append("heroImage", heroImageFile);
     }
@@ -97,7 +122,9 @@ const DestinationManager = () => {
 
   const handleEdit = (dest) => {
     setName(dest.name);
+    setGeography(getDestinationGeography(dest));
     setHeroImageFile(null);
+    setCurrentHeroImage(dest.heroImage || "");
     setIsEditing(true);
     setCurrentId(dest._id);
     setShowForm(true);
@@ -213,23 +240,72 @@ const DestinationManager = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Hero Image (Recommended: 1080X1920 px){" "}
-                  {isEditing && (
-                    <span className="text-gray-400 text-xs">
-                      (Leave empty to keep existing)
-                    </span>
-                  )}
+                  Geography
                 </label>
-                <input
-                  id="heroImageInput"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setHeroImageFile(e.target.files[0])}
+                <select
+                  value={geography}
+                  onChange={(e) => setGeography(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A3B2A] focus:border-transparent bg-white"
-                  required={!isEditing}
-                />
+                  required
+                >
+                  <option value="">Select Geography</option>
+                  {DESTINATION_GEOGRAPHIES.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
+
+            <div className="mt-6 bg-white/70 p-5 rounded-xl border border-[#4A3B2A]/10 border-dashed">
+              <div className="flex flex-col sm:flex-row gap-5 items-start">
+                <div>
+                  <p className="text-xs font-semibold text-gray-600 mb-2">
+                    {heroImageFile
+                      ? "New Image Preview"
+                      : isEditing
+                        ? "Current Image"
+                        : "Image Preview"}
+                  </p>
+                  {heroImagePreview ? (
+                    <img
+                      src={heroImagePreview}
+                      alt="Destination hero preview"
+                      className="w-24 h-32 object-cover rounded-lg border border-gray-200 shadow-sm bg-white"
+                    />
+                  ) : (
+                    <div className="w-24 h-32 rounded-lg border border-dashed border-gray-300 bg-white flex items-center justify-center text-[11px] text-gray-400 text-center px-2">
+                      Destination image preview will appear here
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 w-full">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Hero Image
+                  </label>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Recommended size: 1080x1920 px.
+                    {isEditing ? " Leave empty to keep the current image." : ""}
+                  </p>
+                  <input
+                    id="heroImageInput"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setHeroImageFile(e.target.files[0])}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A3B2A] focus:border-transparent bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer"
+                    required={!isEditing}
+                  />
+                  {heroImageFile && (
+                    <p className="mt-2 text-xs text-[#4A3B2A]">
+                      Selected file: {heroImageFile.name}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
@@ -257,6 +333,9 @@ const DestinationManager = () => {
                 <th className="p-4 font-medium uppercase w-full">
                   Destination Name
                 </th>
+                <th className="p-4 font-medium uppercase min-w-[200px]">
+                  Geography
+                </th>
                 <th className="p-4 font-medium uppercase text-center">
                   Status
                 </th>
@@ -268,7 +347,7 @@ const DestinationManager = () => {
             {fetching ? (
               <tbody>
                 <tr>
-                  <td colSpan="5" className="p-8 text-center text-gray-500">
+                  <td colSpan="6" className="p-8 text-center text-gray-500">
                     <div className="flex justify-center">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-600"></div>
                     </div>
@@ -278,7 +357,7 @@ const DestinationManager = () => {
             ) : destinations.length === 0 ? (
               <tbody>
                 <tr>
-                  <td colSpan="5" className="p-8 text-center text-gray-500">
+                  <td colSpan="6" className="p-8 text-center text-gray-500">
                     No destinations added yet.
                   </td>
                 </tr>
@@ -298,6 +377,9 @@ const DestinationManager = () => {
                     </td>
                     <td className="p-4 font-bold text-[#4A3B2A]">
                       {dest.name}
+                    </td>
+                    <td className="p-4 text-gray-600">
+                      {getDestinationGeography(dest) || "Not set"}
                     </td>
                     <td className="p-4 text-center">
                       <StatusToggle

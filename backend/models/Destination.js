@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { DESTINATION_GEOGRAPHIES } = require("../constants/destinationGeographies");
 
 const destinationSchema = new mongoose.Schema(
   {
@@ -6,6 +7,13 @@ const destinationSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
+    },
+    geography: {
+      type: String,
+      required: true,
+      enum: DESTINATION_GEOGRAPHIES,
+      trim: true,
     },
     heroImage: {
       type: String, // Path to the uploaded image

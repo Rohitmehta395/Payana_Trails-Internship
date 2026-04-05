@@ -5,6 +5,8 @@ import JourneySearchBar from "./JourneySearchBar";
 import DestinationCard from "../../common/cards/DestinationCard";
 import BrownBtn from "../../common/buttons/BrownBtn";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
+import { useSearchParams } from "react-router-dom";
+import { getDestinationGeography } from "../../../constants/destinationGeographies";
 
 const Destinations = () => {
   const [destinations, setDestinations] = useState([]);
@@ -12,10 +14,17 @@ const Destinations = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(8);
+  const [searchParams] = useSearchParams();
+  const geographyFilter = searchParams.get("geography") || "";
+  const initialSearchQuery = searchParams.get("search") || "";
 
   const handleLoadMore = () => {
     setVisibleCount(prev => prev + 4);
   };
+
+  useEffect(() => {
+    setSearchQuery(initialSearchQuery);
+  }, [initialSearchQuery]);
 
   useEffect(() => {
     const fetchDestinations = async () => {
@@ -32,10 +41,20 @@ const Destinations = () => {
     fetchDestinations();
   }, []);
 
+  useEffect(() => {
+    setVisibleCount(8);
+  }, [searchQuery, geographyFilter]);
+
   // Filter based on searchQuery
-  const filteredDestinations = destinations.filter((dest) =>
-    dest.name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredDestinations = destinations.filter((dest) => {
+    const matchesSearch = dest.name
+      ?.toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesGeography = !geographyFilter
+      || getDestinationGeography(dest) === geographyFilter;
+
+    return matchesSearch && matchesGeography;
+  });
 
   return (
     <div className="bg-[#F3EFE9] min-h-screen font-['Lato',sans-serif]">

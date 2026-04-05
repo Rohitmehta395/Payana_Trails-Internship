@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { api } from "../../../services/api";
+import { api, IMAGE_BASE_URL } from "../../../services/api";
 import TrailList from "./TrailList";
 import TrailForm from "./TrailForm";
 import useScrollToTop from "../../../hooks/useScrollToTop";
@@ -41,6 +41,8 @@ const AddTrail = () => {
   const [trailImageFiles, setTrailImageFiles] = useState([]);
   const [existingTrailImages, setExistingTrailImages] = useState([]);
   const [imagesToDelete, setImagesToDelete] = useState([]);
+  const [routeMapPreview, setRouteMapPreview] = useState("");
+  const [heroImagePreview, setHeroImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
@@ -60,6 +62,30 @@ const AddTrail = () => {
   useEffect(() => {
     fetchExistingTrails();
   }, []);
+
+  useEffect(() => {
+    if (imageFile) {
+      const objectUrl = URL.createObjectURL(imageFile);
+      setRouteMapPreview(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+
+    setRouteMapPreview(
+      isEditing && formData.routeMap ? `${IMAGE_BASE_URL}${formData.routeMap}` : "",
+    );
+  }, [formData.routeMap, imageFile, isEditing]);
+
+  useEffect(() => {
+    if (heroImageFile) {
+      const objectUrl = URL.createObjectURL(heroImageFile);
+      setHeroImagePreview(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+
+    setHeroImagePreview(
+      isEditing && formData.heroImage ? `${IMAGE_BASE_URL}${formData.heroImage}` : "",
+    );
+  }, [formData.heroImage, heroImageFile, isEditing]);
 
   // --- FORM HANDLERS ---
   const handleChange = (e) => {
@@ -196,6 +222,7 @@ const AddTrail = () => {
   const handleEdit = (trail) => {
     setExistingTrailImages(trail.trailImages || []);
     setImagesToDelete([]);
+    setImageFile(null);
     setHeroImageFile(null);
     setTrailImageFiles([]);
 
@@ -325,6 +352,10 @@ const AddTrail = () => {
           removeExistingTrailImage={removeExistingTrailImage}
           trailImageFiles={trailImageFiles}
           removeQueuedTrailImage={removeQueuedTrailImage}
+          routeMapPreview={routeMapPreview}
+          heroImagePreview={heroImagePreview}
+          routeMapFileName={imageFile?.name || ""}
+          heroImageFileName={heroImageFile?.name || ""}
         />
       )}
 

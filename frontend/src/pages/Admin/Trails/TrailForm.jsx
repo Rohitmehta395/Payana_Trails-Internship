@@ -19,6 +19,10 @@ const TrailForm = ({
   removeExistingTrailImage,
   trailImageFiles,
   removeQueuedTrailImage,
+  routeMapPreview,
+  heroImagePreview,
+  routeMapFileName,
+  heroImageFileName,
 }) => {
   const inputClasses =
     "w-full p-2.5 border border-gray-300 rounded text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#4A3B2A] focus:border-[#4A3B2A] transition-colors";
@@ -181,37 +185,105 @@ const TrailForm = ({
 
             {/* IMAGE UPLOAD */}
             <div className="md:col-span-2 bg-gray-50 p-4 rounded-md border border-gray-200 border-dashed">
-              <label className="block text-sm font-semibold text-[#4A3B2A] mb-2">
-                {isEditing
-                  ? "Upload New Route Map (Leave empty to keep existing)"
-                  : "Upload Route Map"}
-              </label>
-              <input
-                id="imageInput"
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className={`${inputClasses} bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer`}
-                required={!isEditing}
-              />
+              <div className="flex flex-col sm:flex-row gap-4 items-start">
+                <div>
+                  <p className="text-xs font-semibold text-gray-600 mb-2">
+                    {routeMapFileName
+                      ? "New Route Map Preview"
+                      : isEditing
+                        ? "Current Route Map"
+                        : "Route Map Preview"}
+                  </p>
+                  {routeMapPreview ? (
+                    <img
+                      src={routeMapPreview}
+                      alt="Route map preview"
+                      className="w-24 h-20 object-contain rounded-lg border border-gray-200 bg-white shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-24 h-20 rounded-lg border border-dashed border-gray-300 bg-white flex items-center justify-center text-[11px] text-gray-400 text-center px-2">
+                      Route map preview will appear here
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 w-full">
+                  <label className="block text-sm font-semibold text-[#4A3B2A] mb-2">
+                    {isEditing
+                      ? "Upload New Route Map"
+                      : "Upload Route Map"}
+                  </label>
+                  <p className="text-xs text-gray-500 mb-3">
+                    {isEditing
+                      ? "Leave empty to keep the current route map."
+                      : "Upload the route map used in the trail detail page."}
+                  </p>
+                  <input
+                    id="imageInput"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className={`${inputClasses} bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer`}
+                    required={!isEditing}
+                  />
+                  {routeMapFileName && (
+                    <p className="mt-2 text-xs text-[#4A3B2A]">
+                      Selected file: {routeMapFileName}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* HERO IMAGE UPLOAD */}
             <div className="md:col-span-2 bg-gray-50 p-4 rounded-md border border-gray-200 border-dashed">
-              <label className="block text-sm font-semibold text-[#4A3B2A] mb-1">
-                {isEditing
-                  ? "Upload New Hero Image (Leave empty to keep existing)"
-                  : "Upload Hero Image"}
-              </label>
-              <p className="text-xs text-gray-500 mb-3">(Recommended size: 1920x1080. This image will also be used in Trail Cards.)</p>
-              <input
-                id="heroImageInput"
-                type="file"
-                accept="image/*"
-                onChange={handleHeroImageChange}
-                className={`${inputClasses} bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer`}
-                required={!isEditing}
-              />
+              <div className="flex flex-col sm:flex-row gap-4 items-start">
+                <div>
+                  <p className="text-xs font-semibold text-gray-600 mb-2">
+                    {heroImageFileName
+                      ? "New Hero Image Preview"
+                      : isEditing
+                        ? "Current Hero Image"
+                        : "Hero Image Preview"}
+                  </p>
+                  {heroImagePreview ? (
+                    <img
+                      src={heroImagePreview}
+                      alt="Hero image preview"
+                      className="w-24 h-20 object-cover rounded-lg border border-gray-200 bg-white shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-24 h-20 rounded-lg border border-dashed border-gray-300 bg-white flex items-center justify-center text-[11px] text-gray-400 text-center px-2">
+                      Hero image preview will appear here
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 w-full">
+                  <label className="block text-sm font-semibold text-[#4A3B2A] mb-1">
+                    {isEditing
+                      ? "Upload New Hero Image"
+                      : "Upload Hero Image"}
+                  </label>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Recommended size: 1920x1080. This image is also used in trail cards.
+                    {isEditing ? " Leave empty to keep the current hero image." : ""}
+                  </p>
+                  <input
+                    id="heroImageInput"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleHeroImageChange}
+                    className={`${inputClasses} bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer`}
+                    required={!isEditing}
+                  />
+                  {heroImageFileName && (
+                    <p className="mt-2 text-xs text-[#4A3B2A]">
+                      Selected file: {heroImageFileName}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* TRAIL IMAGES UPLOAD (MULTIPLE) */}

@@ -1,15 +1,41 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import { api } from "../../services/api";
+import {
+  DESTINATION_GEOGRAPHIES,
+  buildDestinationListingPath,
+  getDestinationGeography,
+} from "../../constants/destinationGeographies";
 
 // Importing React Icons
 import { FiChevronDown, FiChevronRight, FiMenu, FiX } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 
+const buildDestinationsSubmenu = (destinations) =>
+  DESTINATION_GEOGRAPHIES.map((geography) => {
+    const countries = destinations
+      .filter((destination) => getDestinationGeography(destination) === geography)
+      .map((destination) => ({
+        name: destination.name,
+        path: buildDestinationListingPath({
+          geography,
+          search: destination.name,
+        }),
+      }));
+
+    return {
+      name: geography,
+      path: buildDestinationListingPath({ geography }),
+      submenu: countries.length > 0 ? countries : undefined,
+    };
+  });
+
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUiHidden, setIsUiHidden] = useState(false);
+  const [destinations, setDestinations] = useState([]);
 
   // State to track which mobile submenus are open
   const [mobileMenuState, setMobileMenuState] = useState({});
@@ -32,6 +58,19 @@ export default function Header() {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      try {
+        const data = await api.getDestinations();
+        setDestinations(data);
+      } catch (error) {
+        console.error("Error fetching header destinations:", error);
+      }
+    };
+
+    fetchDestinations();
+  }, []);
+
   const handleNavClick = () => {
     window.scrollTo(0, 0);
     setIsMenuOpen(false);
@@ -46,6 +85,8 @@ export default function Header() {
     }));
   };
 
+  const destinationSubmenu = buildDestinationsSubmenu(destinations);
+
   // Updated navigation structure with nested submenus
   const navItems = [
     { name: "Home", path: "/" },
@@ -58,13 +99,8 @@ export default function Header() {
         { name: "Cultural & Immersive Trails", path: "/journeys/cultural" },
         {
           name: "Destinations",
-          path: "/journeys/destinations",
-          submenu: [
-            { name: "Vietnam", path: "/destinations/vietnam" },
-            { name: "Kenya", path: "/destinations/kenya" },
-            { name: "Jordan", path: "/destinations/jordan" },
-            { name: "India", path: "/destinations/india" },
-          ],
+          path: buildDestinationListingPath(),
+          submenu: destinationSubmenu,
         },
       ],
     },
@@ -121,6 +157,7 @@ export default function Header() {
                         <Link
                           to={item.path}
                           className="flex items-center gap-1 hover:opacity-60 transition-opacity whitespace-nowrap py-4"
+                          onClick={handleNavClick}
                         >
                           {item.name}
                           <FiChevronDown className="w-4 h-4 transition-transform" />
@@ -137,23 +174,55 @@ export default function Header() {
                                     <Link
                                       to={sub.path}
                                       className="flex items-center justify-between px-4 py-2.5 hover:bg-[#E3D5C4] rounded-xl transition-colors cursor-pointer"
+                                      onClick={handleNavClick}
                                     >
                                       {sub.name}
                                       <FiChevronRight className="w-4 h-4 transition-transform" />
                                     </Link>
 
                                     {/* Secondary Dropdown Container */}
-                                    <div className="absolute left-full top-0 hidden group-hover/sub:block w-[200px] pl-2">
+                                    <div className="absolute left-full top-0 hidden group-hover/sub:block w-[260px] pl-2">
                                       <div className="bg-[#F3EFE9] rounded-2xl shadow-xl border border-[#4A3B2A]/10 p-2 flex flex-col gap-1">
                                         {sub.submenu.map((sub2, s2Idx) => (
-                                          <Link
-                                            key={s2Idx}
-                                            to={sub2.path}
-                                            className="px-4 py-2 hover:bg-[#E3D5C4] rounded-xl transition-colors"
-                                            onClick={handleNavClick}
-                                          >
-                                            {sub2.name}
-                                          </Link>
+                                          <div key={s2Idx}>
+                                            {sub2.submenu ? (
+                                              <div className="relative group/sub2">
+                                                <Link
+                                                  to={sub2.path}
+                                                  className="flex items-center justify-between px-4 py-2 hover:bg-[#E3D5C4] rounded-xl transition-colors"
+                                                  onClick={handleNavClick}
+                                                >
+                                                  {sub2.name}
+                                                  <FiChevronRight className="w-4 h-4 transition-transform" />
+                                                </Link>
+
+                                                <div className="absolute left-full top-0 hidden group-hover/sub2:block w-[220px] pl-2">
+                                                  <div className="bg-[#F3EFE9] rounded-2xl shadow-xl border border-[#4A3B2A]/10 p-2 flex flex-col gap-1">
+                                                    {sub2.submenu.map(
+                                                      (sub3, s3Idx) => (
+                                                        <Link
+                                                          key={s3Idx}
+                                                          to={sub3.path}
+                                                          className="px-4 py-2 hover:bg-[#E3D5C4] rounded-xl transition-colors"
+                                                          onClick={handleNavClick}
+                                                        >
+                                                          {sub3.name}
+                                                        </Link>
+                                                      ),
+                                                    )}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            ) : (
+                                              <Link
+                                                to={sub2.path}
+                                                className="block px-4 py-2 hover:bg-[#E3D5C4] rounded-xl transition-colors"
+                                                onClick={handleNavClick}
+                                              >
+                                                {sub2.name}
+                                              </Link>
+                                            )}
+                                          </div>
                                         ))}
                                       </div>
                                     </div>
@@ -269,7 +338,7 @@ export default function Header() {
                       <div
                         className={`overflow-hidden transition-all duration-300 ${
                           mobileMenuState[item.name]
-                            ? "max-h-[500px]"
+                            ? "max-h-[1000px]"
                             : "max-h-0"
                         }`}
                       >
@@ -306,20 +375,75 @@ export default function Header() {
                                   <div
                                     className={`overflow-hidden transition-all duration-300 ${
                                       mobileMenuState[sub.name]
-                                        ? "max-h-[300px]"
+                                        ? "max-h-[600px]"
                                         : "max-h-0"
                                     }`}
                                   >
                                     <div className="pl-4 flex flex-col gap-2 pt-2 border-l-2 border-[#4A3B2A]/10 ml-2 mt-1">
                                       {sub.submenu.map((sub2, s2Idx) => (
-                                        <Link
-                                          key={s2Idx}
-                                          to={sub2.path}
-                                          className="text-[#4A3B2A]/70 text-sm font-medium hover:text-[#4A3B2A]"
-                                          onClick={handleNavClick}
-                                        >
-                                          {sub2.name}
-                                        </Link>
+                                        <div key={s2Idx}>
+                                          {sub2.submenu ? (
+                                            <div className="flex flex-col">
+                                              <div className="flex items-center justify-between pr-4">
+                                                <Link
+                                                  to={sub2.path}
+                                                  className="text-[#4A3B2A]/80 text-sm font-medium flex-1"
+                                                  onClick={handleNavClick}
+                                                >
+                                                  {sub2.name}
+                                                </Link>
+                                                <button
+                                                  onClick={(e) =>
+                                                    toggleMobileMenu(
+                                                      sub2.name,
+                                                      e,
+                                                    )
+                                                  }
+                                                  className="p-1.5 text-[#4A3B2A] bg-[#4A3B2A]/5 rounded-md"
+                                                >
+                                                  <FiChevronDown
+                                                    className={`w-4 h-4 transition-transform ${
+                                                      mobileMenuState[sub2.name]
+                                                        ? "rotate-180"
+                                                        : ""
+                                                    }`}
+                                                  />
+                                                </button>
+                                              </div>
+
+                                              <div
+                                                className={`overflow-hidden transition-all duration-300 ${
+                                                  mobileMenuState[sub2.name]
+                                                    ? "max-h-[500px]"
+                                                    : "max-h-0"
+                                                }`}
+                                              >
+                                                <div className="pl-4 flex flex-col gap-2 pt-2 border-l-2 border-[#4A3B2A]/10 ml-2 mt-1">
+                                                  {sub2.submenu.map(
+                                                    (sub3, s3Idx) => (
+                                                      <Link
+                                                        key={s3Idx}
+                                                        to={sub3.path}
+                                                        className="text-[#4A3B2A]/70 text-sm font-medium hover:text-[#4A3B2A]"
+                                                        onClick={handleNavClick}
+                                                      >
+                                                        {sub3.name}
+                                                      </Link>
+                                                    ),
+                                                  )}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          ) : (
+                                            <Link
+                                              to={sub2.path}
+                                              className="text-[#4A3B2A]/70 text-sm font-medium hover:text-[#4A3B2A]"
+                                              onClick={handleNavClick}
+                                            >
+                                              {sub2.name}
+                                            </Link>
+                                          )}
+                                        </div>
                                       ))}
                                     </div>
                                   </div>
