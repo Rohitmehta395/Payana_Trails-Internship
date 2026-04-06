@@ -1,20 +1,43 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
 import TrailList from "./TrailList";
 import TrailForm from "./TrailForm";
 import useScrollToTop from "../../../hooks/useScrollToTop";
 
+const createEmptyCompressionPreviews = () => ({
+  routeMap: [],
+  heroImage: [],
+  trailImages: [],
+});
+
+const createEmptyCompressionLoading = () => ({
+  routeMap: false,
+  heroImage: false,
+  trailImages: false,
+});
+
+const formatBytes = (bytes = 0) => {
+  if (bytes >= 1024 * 1024) {
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  }
+
+  if (bytes >= 1024) {
+    return `${(bytes / 1024).toFixed(0)} KB`;
+  }
+
+  return `${bytes} B`;
+};
+
+const formatCompressionStat = (stat) => {
+  const savedLabel =
+    stat.savedPercent >= 0
+      ? `${stat.savedPercent}% saved`
+      : `${Math.abs(stat.savedPercent)}% larger`;
+
+  return `${stat.originalName}: ${formatBytes(stat.originalSize)} -> ${formatBytes(stat.compressedSize)} (${savedLabel})`;
+};
+
 const AddTrail = () => {
-  // Builds a human-readable compression summary from the imageStats array
-  // returned by the API after upload (e.g. " | Images compressed: hero 2.1MB→420KB (80% saved)")
-  const buildStatsMessage = (stats) => {
-    if (!stats || stats.length === 0) return "";
-    const fmt = (bytes) => (bytes / 1024).toFixed(0) + " KB";
-    const parts = stats.map(
-      (s) => `${s.field}: ${fmt(s.originalSize)} → ${fmt(s.compressedSize)} (${s.savedPercent}% saved)`
-    );
-    return " | Compressed: " + parts.join(", ");
-  };
   // --- UI STATE ---
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -55,12 +78,42 @@ const AddTrail = () => {
   const [heroImagePreview, setHeroImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [compressionPreviews, setCompressionPreviews] = useState(
+    createEmptyCompressionPreviews,
+  );
+  const [compressionPreviewLoading, setCompressionPreviewLoading] = useState(
+    createEmptyCompressionLoading,
+  );
+  const compressionRequestIds = useRef({
+    routeMap: 0,
+    heroImage: 0,
+    trailImages: 0,
+  });
+
+  const resetCompressionPreviewState = () => {
+    setCompressionPreviews(createEmptyCompressionPreviews());
+    setCompressionPreviewLoading(createEmptyCompressionLoading());
+    compressionRequestIds.current = {
+      routeMap: 0,
+      heroImage: 0,
+      trailImages: 0,
+    };
+  };
+
+  const cancelPendingCompressionPreviews = () => {
+    compressionRequestIds.current = {
+      routeMap: compressionRequestIds.current.routeMap + 1,
+      heroImage: compressionRequestIds.current.heroImage + 1,
+      trailImages: compressionRequestIds.current.trailImages + 1,
+    };
+    setCompressionPreviewLoading(createEmptyCompressionLoading());
+  };
 
   // --- FETCH TRAILS ON LOAD ---
   const fetchExistingTrails = async () => {
     setLoadingTrails(true);
     try {
-      const data = await api.getTrails("All", true); // pass isAdmin=true to get all trails
+      const data = await api.getTrails("All", true);
       setTrails(data);
     } catch (error) {
       console.error("Failed to fetch trails", error);
@@ -103,16 +156,59 @@ const AddTrail = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
-    setImageFile(e.target.files[0]);
+  const previewCompression = async (field, files) => {
+    const normalizedFiles = (Array.isArray(files) ? files : [files]).filter(Boolean);
+    const requestId = compressionRequestIds.current[field] + 1;
+    compressionRequestIds.current[field] = requestId;
+
+    setCompressionPreviews((prev) => ({ ...prev, [field]: [] }));
+
+    if (normalizedFiles.length === 0) {
+      setCompressionPreviewLoading((prev) => ({ ...prev, [field]: false }));
+      return;
+    }
+
+    setCompressionPreviewLoading((prev) => ({ ...prev, [field]: true }));
+
+    try {
+      const result = await api.previewTrailImageCompression({ [field]: normalizedFiles });
+
+      if (compressionRequestIds.current[field] !== requestId) return;
+
+      const imageStats = result.imageStats || [];
+      setCompressionPreviews((prev) => ({ ...prev, [field]: imageStats }));
+    } catch (error) {
+      if (compressionRequestIds.current[field] !== requestId) return;
+
+      console.error("Failed to preview image compression", error);
+      setCompressionPreviews((prev) => ({ ...prev, [field]: [] }));
+      setMessage({
+        type: "error",
+        text: error.message || "Failed to preview image compression.",
+      });
+    } finally {
+      if (compressionRequestIds.current[field] === requestId) {
+        setCompressionPreviewLoading((prev) => ({ ...prev, [field]: false }));
+      }
+    }
   };
 
-  const handleHeroImageChange = (e) => {
-    setHeroImageFile(e.target.files[0]);
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0] || null;
+    setImageFile(file);
+    await previewCompression("routeMap", file);
   };
 
-  const handleTrailImagesChange = (e) => {
-    setTrailImageFiles(Array.from(e.target.files));
+  const handleHeroImageChange = async (e) => {
+    const file = e.target.files[0] || null;
+    setHeroImageFile(file);
+    await previewCompression("heroImage", file);
+  };
+
+  const handleTrailImagesChange = async (e) => {
+    const files = Array.from(e.target.files || []);
+    setTrailImageFiles(files);
+    await previewCompression("trailImages", files);
   };
 
   const removeExistingTrailImage = (imgUrl) => {
@@ -120,8 +216,10 @@ const AddTrail = () => {
     setImagesToDelete((prev) => [...prev, imgUrl]);
   };
 
-  const removeQueuedTrailImage = (index) => {
-    setTrailImageFiles((prev) => prev.filter((_, i) => i !== index));
+  const removeQueuedTrailImage = async (index) => {
+    const nextFiles = trailImageFiles.filter((_, i) => i !== index);
+    setTrailImageFiles(nextFiles);
+    await previewCompression("trailImages", nextFiles);
   };
 
   const handleHighlightChange = (index, field, value) => {
@@ -151,20 +249,31 @@ const AddTrail = () => {
     setTrailImageFiles([]);
     setExistingTrailImages([]);
     setImagesToDelete([]);
+    resetCompressionPreviewState();
     setIsEditing(false);
     setCurrentTrailId(null);
-    if (document.getElementById("imageInput")) document.getElementById("imageInput").value = "";
-    if (document.getElementById("heroImageInput")) document.getElementById("heroImageInput").value = "";
-    if (document.getElementById("trailImagesInput")) document.getElementById("trailImagesInput").value = "";
+    if (document.getElementById("imageInput")) {
+      document.getElementById("imageInput").value = "";
+    }
+    if (document.getElementById("heroImageInput")) {
+      document.getElementById("heroImageInput").value = "";
+    }
+    if (document.getElementById("trailImagesInput")) {
+      document.getElementById("trailImagesInput").value = "";
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    cancelPendingCompressionPreviews();
     setLoading(true);
     setMessage({ type: "", text: "" });
 
     if (!isEditing && (!imageFile || !heroImageFile)) {
-      setMessage({ type: "error", text: "Please select both Route Map and Hero Image." });
+      setMessage({
+        type: "error",
+        text: "Please select both Route Map and Hero Image.",
+      });
       setLoading(false);
       return;
     }
@@ -183,9 +292,9 @@ const AddTrail = () => {
                 return `*${h.title.trim()}* ${h.description.trim()}`;
               } else if (h.title.trim()) {
                 return `*${h.title.trim()}*`;
-              } else {
-                return h.description.trim();
               }
+
+              return h.description.trim();
             });
           submitData.append(key, JSON.stringify(arrayValue));
         } else if (["whatsIncluded", "whatsNotIncluded"].includes(key)) {
@@ -209,13 +318,11 @@ const AddTrail = () => {
       }
 
       if (isEditing) {
-        const result = await api.updateTrail(currentTrailId, submitData);
-        const statsMsg = buildStatsMessage(result.imageStats);
-        setMessage({ type: "success", text: `Trail updated successfully!${statsMsg}` });
+        await api.updateTrail(currentTrailId, submitData);
+        setMessage({ type: "success", text: "Trail updated successfully!" });
       } else {
-        const result = await api.createTrail(submitData);
-        const statsMsg = buildStatsMessage(result.imageStats);
-        setMessage({ type: "success", text: `Trail created successfully!${statsMsg}` });
+        await api.createTrail(submitData);
+        setMessage({ type: "success", text: "Trail created successfully!" });
       }
 
       resetForm();
@@ -237,21 +344,25 @@ const AddTrail = () => {
     setImageFile(null);
     setHeroImageFile(null);
     setTrailImageFiles([]);
+    resetCompressionPreviewState();
 
     setFormData({
       ...trail,
       journeyDate: trail.journeyDate ? trail.journeyDate.split("T")[0] : "",
-      highlights: trail.highlights && trail.highlights.length > 0 
-        ? trail.highlights.map((h) => {
-            const match = h.match(/^\*(.*?)\*\s*(.*)$/);
-            if (match) return { title: match[1], description: match[2] };
-            
-            const matchTitleOnly = h.match(/^\*(.*?)\*$/);
-            if (matchTitleOnly) return { title: matchTitleOnly[1], description: "" };
+      highlights:
+        trail.highlights && trail.highlights.length > 0
+          ? trail.highlights.map((h) => {
+              const match = h.match(/^\*(.*?)\*\s*(.*)$/);
+              if (match) return { title: match[1], description: match[2] };
 
-            return { title: "", description: h };
-          })
-        : [{ title: "", description: "" }],
+              const matchTitleOnly = h.match(/^\*(.*?)\*$/);
+              if (matchTitleOnly) {
+                return { title: matchTitleOnly[1], description: "" };
+              }
+
+              return { title: "", description: h };
+            })
+          : [{ title: "", description: "" }],
       whatsIncluded: trail.whatsIncluded ? trail.whatsIncluded.join("\n") : "",
       whatsNotIncluded: trail.whatsNotIncluded
         ? trail.whatsNotIncluded.join("\n")
@@ -281,34 +392,35 @@ const AddTrail = () => {
   };
 
   const handleReorder = async (newTrails) => {
-    setTrails(newTrails); // optimistic UI update
+    setTrails(newTrails);
     try {
-      const payload = newTrails.map((trail, index) => ({ id: trail._id, order: index }));
+      const payload = newTrails.map((trail, index) => ({
+        id: trail._id,
+        order: index,
+      }));
       await api.reorderTrails(payload);
     } catch (error) {
       console.error("Failed to reorder", error);
       setMessage({ type: "error", text: "Failed to save new order." });
-      fetchExistingTrails(); // Revert
+      fetchExistingTrails();
     }
   };
 
   const handleToggle = async (id) => {
-    // Optimistic UI update
     setTrails((prev) =>
-      prev.map((t) => (t._id === id ? { ...t, isActive: !t.isActive } : t))
+      prev.map((t) => (t._id === id ? { ...t, isActive: !t.isActive } : t)),
     );
     try {
       await api.toggleTrailStatus(id);
     } catch (error) {
       console.error("Failed to toggle trail status", error);
       setMessage({ type: "error", text: "Failed to update trail status." });
-      fetchExistingTrails(); // Revert on failure
+      fetchExistingTrails();
     }
   };
 
   return (
     <div ref={sectionRef} className="space-y-6">
-      {/* TOP ACTIONS BAR */}
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200">
         <h2 className="text-lg font-bold text-[#4A3B2A]">
           {showForm
@@ -344,7 +456,6 @@ const AddTrail = () => {
         </div>
       )}
 
-      {/* RENDER FORM COMPONENT IF OPEN */}
       {showForm && (
         <TrailForm
           formData={formData}
@@ -368,10 +479,12 @@ const AddTrail = () => {
           heroImagePreview={heroImagePreview}
           routeMapFileName={imageFile?.name || ""}
           heroImageFileName={heroImageFile?.name || ""}
+          compressionPreviews={compressionPreviews}
+          compressionPreviewLoading={compressionPreviewLoading}
+          formatCompressionStat={formatCompressionStat}
         />
       )}
 
-      {/* RENDER LIST COMPONENT */}
       <TrailList
         trails={trails}
         loadingTrails={loadingTrails}

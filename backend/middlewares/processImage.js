@@ -16,6 +16,53 @@ const RESIZE_PRESETS = {
   trailImages: { width: 1920, height: 1080 },
 };
 
+const buildSharpPipeline = (file, fieldname) => {
+  let pipeline = sharp(file.buffer);
+  const preset = RESIZE_PRESETS[fieldname];
+
+  if (preset) {
+    pipeline = pipeline.resize(preset.width, preset.height, {
+      fit: "inside",
+      withoutEnlargement: true,
+    });
+  }
+
+  return pipeline.webp({ quality: 80 });
+};
+
+const buildImageStat = (file, fieldname, compressedSize) => {
+  const originalSize = file.size || file.buffer?.length || 0;
+  const savedPercent = originalSize > 0
+    ? Math.round((1 - compressedSize / originalSize) * 100)
+    : 0;
+
+  return {
+    field: fieldname,
+    originalName: file.originalname,
+    originalSize,
+    compressedSize,
+    savedPercent,
+    savedBytes: originalSize - compressedSize,
+  };
+};
+
+const getCompressedImageBuffer = async (file, fieldname) => {
+  return buildSharpPipeline(file, fieldname).toBuffer();
+};
+
+const getImageStats = async (files = {}) => {
+  const stats = [];
+
+  for (const fieldname of Object.keys(files)) {
+    for (const file of files[fieldname]) {
+      const compressedBuffer = await getCompressedImageBuffer(file, fieldname);
+      stats.push(buildImageStat(file, fieldname, compressedBuffer.length));
+    }
+  }
+
+  return stats;
+};
+
 /**
  * Safely resolves a stored URL path (e.g. "/uploads/Trails/foo/bar.jpg")
  * to an absolute filesystem path, avoiding the Windows path.join trap
@@ -62,7 +109,6 @@ const processImages = (folderResolver) => async (req, res, next) => {
 
     for (const fieldname of Object.keys(req.files)) {
       const processedFiles = [];
-      const preset = RESIZE_PRESETS[fieldname];
 
       for (const file of req.files[fieldname]) {
         // Build WebP filename with the same prefix logic as before
@@ -79,31 +125,12 @@ const processImages = (folderResolver) => async (req, res, next) => {
         const webpFilename = `${baseName}.webp`;
         const destPath = path.join(folder, webpFilename);
 
-        // Build Sharp pipeline: optionally resize then convert to WebP
-        let pipeline = sharp(file.buffer);
-        if (preset) {
-          pipeline = pipeline.resize(preset.width, preset.height, {
-            fit: "inside",      // never distorts; keeps aspect ratio
-            withoutEnlargement: true, // never upscales small images
-          });
-        }
-        await pipeline.webp({ quality: 80 }).toFile(destPath);
-
-        const compressedSize = fs.statSync(destPath).size;
-        const originalSize = file.size;
-        const savedPercent = originalSize > 0
-          ? Math.round((1 - compressedSize / originalSize) * 100)
-          : 0;
+        const compressedBuffer = await getCompressedImageBuffer(file, fieldname);
+        fs.writeFileSync(destPath, compressedBuffer);
+        const imageStat = buildImageStat(file, fieldname, compressedBuffer.length);
 
         // Record stats
-        req.imageStats.push({
-          field: fieldname,
-          originalName: file.originalname,
-          originalSize,           // bytes
-          compressedSize,         // bytes
-          savedPercent,           // e.g. 65 means "65% smaller"
-          savedBytes: originalSize - compressedSize,
-        });
+        req.imageStats.push(imageStat);
 
         // Mimic diskStorage object so downstream route controllers are unchanged
         processedFiles.push({
@@ -114,7 +141,7 @@ const processImages = (folderResolver) => async (req, res, next) => {
           destination: folder,
           filename: webpFilename,
           path: destPath,
-          size: compressedSize,
+          size: compressedBuffer.length,
         });
       }
 
@@ -128,4 +155,4 @@ const processImages = (folderResolver) => async (req, res, next) => {
   }
 };
 
-module.exports = { processImages, resolveUploadPath };
+module.exports = { processImages, resolveUploadPath, getImageStats };

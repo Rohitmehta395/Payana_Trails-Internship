@@ -4,7 +4,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const Trail = require("../models/Trail");
-const { processImages, resolveUploadPath } = require("../middlewares/processImage");
+const { processImages, resolveUploadPath, getImageStats } = require("../middlewares/processImage");
 
 // Use memoryStorage so Sharp can intercept buffers before writing to disk
 const upload = multer({ storage: multer.memoryStorage() });
@@ -67,6 +67,20 @@ router.put("/reorder", async (req, res) => {
     res.status(200).json({ message: "Trails reordered successfully" });
   } catch (error) {
     res.status(500).json({ message: "Failed to reorder trails", error: error.message });
+  }
+});
+
+// POST image compression preview for admin uploads
+router.post("/preview-image-stats", cpUpload, async (req, res) => {
+  try {
+    const imageStats = await getImageStats(req.files || {});
+    res.status(200).json({ imageStats });
+  } catch (error) {
+    console.error("Error previewing trail image compression:", error);
+    res.status(400).json({
+      message: "Failed to preview image compression",
+      error: error.message,
+    });
   }
 });
 

@@ -23,9 +23,41 @@ const TrailForm = ({
   heroImagePreview,
   routeMapFileName,
   heroImageFileName,
+  compressionPreviews,
+  compressionPreviewLoading,
+  formatCompressionStat,
 }) => {
   const inputClasses =
     "w-full p-2.5 border border-gray-300 rounded text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#4A3B2A] focus:border-[#4A3B2A] transition-colors";
+
+  const renderCompressionPreview = (field) => {
+    const stats = compressionPreviews?.[field] || [];
+
+    if (compressionPreviewLoading?.[field]) {
+      return (
+        <p className="mt-3 text-xs font-medium text-amber-700">
+          Checking compression...
+        </p>
+      );
+    }
+
+    if (stats.length === 0) return null;
+
+    return (
+      <div className="mt-3 rounded-md border border-emerald-200 bg-emerald-50 p-3">
+        <p className="text-xs font-semibold text-emerald-800">
+          Compression preview
+        </p>
+        <ul className="mt-2 space-y-1 text-xs text-emerald-700">
+          {stats.map((stat, index) => (
+            <li key={`${field}-${stat.originalName}-${index}`}>
+              {formatCompressionStat(stat)}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden animate-fade-in">
@@ -231,6 +263,7 @@ const TrailForm = ({
                       Selected file: {routeMapFileName}
                     </p>
                   )}
+                  {renderCompressionPreview("routeMap")}
                 </div>
               </div>
             </div>
@@ -282,6 +315,7 @@ const TrailForm = ({
                       Selected file: {heroImageFileName}
                     </p>
                   )}
+                  {renderCompressionPreview("heroImage")}
                 </div>
               </div>
             </div>
@@ -300,6 +334,7 @@ const TrailForm = ({
                 onChange={handleTrailImagesChange}
                 className={`${inputClasses} bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer`}
               />
+              {renderCompressionPreview("trailImages")}
               
               {/* EXISTING TRAIL IMAGES PREVIEW */}
               {isEditing && existingTrailImages && existingTrailImages.length > 0 && (
