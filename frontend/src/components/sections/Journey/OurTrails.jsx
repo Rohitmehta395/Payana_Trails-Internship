@@ -119,10 +119,6 @@ export default function OurTrails() {
                     {trail.title}
                   </h3>
 
-                  <p className="max-w-[18rem] text-[15px] leading-7 text-[#4A3B2A]/72 md:text-base">
-                    {trail.description}
-                  </p>
-
                   <div className="mt-auto pt-8">
                     <div className="inline-flex items-center gap-2 rounded-full border border-[#4A3B2A]/12 bg-white/75 px-4 py-2 text-sm font-semibold text-[#4A3B2A] shadow-sm transition-all duration-300 group-hover:border-[#4A3B2A]/22 group-hover:bg-[#4A3B2A] group-hover:text-[#F3EFE9]">
                       Explore Trail
