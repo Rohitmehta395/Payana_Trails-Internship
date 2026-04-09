@@ -88,8 +88,6 @@ const cardConfigs = {
     description:
       "The comforts, support, and curated touches already built into the experience.",
     Icon: LuCheck,
-    AccentIcon: LuShield,
-    countLabel: "Included",
     cardClassName:
       "border-[#4A3B2A]/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(248,242,233,0.98)_100%)] shadow-[0_18px_42px_rgba(74,59,42,0.12)]",
     glowClassName: "bg-[#A18160]/35",
@@ -100,15 +98,10 @@ const cardConfigs = {
     bodyClassName: "text-[#5E4938]",
     chipClassName:
       "border-[#4A3B2A]/12 bg-white/75 text-[#4A3B2A] shadow-[0_8px_18px_rgba(74,59,42,0.08)]",
-    countClassName:
-      "border-[#4A3B2A]/12 bg-white/80 text-[#4A3B2A] shadow-[0_8px_18px_rgba(74,59,42,0.08)]",
     itemClassName:
       "border-[#4A3B2A]/10 bg-white/78 text-[#2F2319] shadow-[0_12px_28px_rgba(74,59,42,0.08)]",
-    itemMetaClassName: "text-[#6B513C]",
     itemIconClassName: "bg-[#4A3B2A] text-[#F8F2E9]",
     itemGlowClassName: "bg-[#A18160]/30",
-    watermarkClassName: "text-[#4A3B2A]/7",
-    orbitClassName: "border-[#4A3B2A]/12 bg-white/55 text-[#4A3B2A]/70",
     fadeClassName: "from-[#F8F2E9]",
     scrollThumbClassName: "[&::-webkit-scrollbar-thumb]:bg-[#4A3B2A]/15 hover:[&::-webkit-scrollbar-thumb]:bg-[#4A3B2A]/25",
     scrollIndicatorClassName: "bg-[#4A3B2A]/5 text-[#6B513C]",
@@ -119,8 +112,6 @@ const cardConfigs = {
     description:
       "The extras you may want to carry, arrange, or budget for before the journey begins.",
     Icon: LuX,
-    AccentIcon: LuCompass,
-    countLabel: "Excluded",
     cardClassName:
       "border-white/10 bg-[linear-gradient(160deg,#5D3D2B_0%,#3D2B1F_100%)] shadow-[0_20px_50px_rgba(39,24,17,0.26)]",
     glowClassName: "bg-[#C68C76]/24",
@@ -131,15 +122,10 @@ const cardConfigs = {
     bodyClassName: "text-[#E8D6C2]",
     chipClassName:
       "border-white/10 bg-white/10 text-[#F2E3D2] shadow-[0_8px_20px_rgba(0,0,0,0.14)]",
-    countClassName:
-      "border-white/10 bg-white/15 text-[#FFF0E1] shadow-[0_8px_20px_rgba(0,0,0,0.16)]",
     itemClassName:
       "border-[#4A3B2A]/10 bg-[#F3EFE9] text-[#4A3B2A] shadow-[0_14px_28px_rgba(0,0,0,0.08)]",
-    itemMetaClassName: "text-[#4A3B2A]/60",
     itemIconClassName: "bg-[#4A3B2A] text-[#F8F2E9]",
     itemGlowClassName: "bg-[#C68C76]/15",
-    watermarkClassName: "text-white/7",
-    orbitClassName: "border-white/10 bg-white/10 text-[#F6E8D8]/70",
     fadeClassName: "from-[#3D2B1F]",
     scrollThumbClassName: "[&::-webkit-scrollbar-thumb]:bg-white/15 hover:[&::-webkit-scrollbar-thumb]:bg-white/25",
     scrollIndicatorClassName: "bg-white/10 text-[#E5C7AA]",
@@ -166,8 +152,6 @@ const InclusionCard = ({ type, items }) => {
     eyebrow,
     description,
     Icon,
-    AccentIcon,
-    countLabel,
     cardClassName,
     glowClassName,
     iconWrapClassName,
@@ -175,13 +159,9 @@ const InclusionCard = ({ type, items }) => {
     titleClassName,
     bodyClassName,
     chipClassName,
-    countClassName,
     itemClassName,
-    itemMetaClassName,
     itemIconClassName,
     itemGlowClassName,
-    watermarkClassName,
-    orbitClassName,
     fadeClassName,
     scrollThumbClassName,
     scrollIndicatorClassName,
@@ -200,22 +180,6 @@ const InclusionCard = ({ type, items }) => {
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_32%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.08),transparent_34%)]" />
       <div className="absolute inset-0 opacity-[0.14] [background-image:radial-gradient(currentColor_1px,transparent_1px)] [background-size:22px_22px]" />
-      <div
-        aria-hidden="true"
-        className={`absolute right-5 top-4 h-24 w-24 ${watermarkClassName}`}
-      >
-        <Icon className="h-full w-full" />
-      </div>
-
-      <motion.div
-        aria-hidden="true"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 20, ease: "linear", repeat: Infinity }}
-        className={`absolute bottom-5 right-5 flex h-14 w-14 items-center justify-center rounded-full border backdrop-blur-sm ${orbitClassName}`}
-      >
-        <AccentIcon className="h-5 w-5" />
-      </motion.div>
-
       <div className="relative">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-4">
@@ -241,12 +205,6 @@ const InclusionCard = ({ type, items }) => {
             </div>
           </div>
 
-          <div
-            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold backdrop-blur-sm ${countClassName}`}
-          >
-            <span>{String(items.length).padStart(2, "0")}</span>
-            <span>{countLabel}</span>
-          </div>
         </div>
 
         <p className={`mt-5 max-w-lg text-sm leading-7 md:text-[15px] ${bodyClassName}`}>
@@ -275,7 +233,7 @@ const InclusionCard = ({ type, items }) => {
                   key={`${type}-${index}-${item}`}
                   variants={itemVariants}
                   whileHover={{ x: 6 }}
-                  className={`relative overflow-hidden rounded-[1.35rem] border p-4 pr-12 md:p-5 ${itemClassName}`}
+                  className={`relative overflow-hidden rounded-[1.35rem] border p-4 md:p-5 ${itemClassName}`}
                 >
                   <div
                     className={`absolute -right-5 top-1/2 h-20 w-20 -translate-y-1/2 rounded-full blur-2xl ${itemGlowClassName}`}
@@ -288,12 +246,7 @@ const InclusionCard = ({ type, items }) => {
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <p
-                        className={`text-[10px] font-semibold uppercase tracking-[0.3em] ${itemMetaClassName}`}
-                      >
-                        Item {String(index + 1).padStart(2, "0")}
-                      </p>
-                      <p className="mt-1.5 text-sm leading-6 md:text-[15px]">
+                      <p className="text-sm leading-6 md:text-[15px]">
                         {item}
                       </p>
                     </div>
@@ -374,7 +327,7 @@ const TrailInclusionsSection = ({
             className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
           >
             <div className="w-full">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#4A3B2A]/10 bg-white/70 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#6B513C] backdrop-blur-sm">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#4A3B2A]/10 bg-white/70 px-4 py-2 text-[15px] font-semibold uppercase tracking-[0.28em] text-[#6B513C] backdrop-blur-sm">
                 <LuSparkles className="h-4 w-4" />
                 Trail Essentials
               </div>
@@ -384,27 +337,6 @@ const TrailInclusionsSection = ({
               </h2>
             </div>
 
-            {sectionChips.length > 0 && (
-              <div className="flex flex-wrap gap-2.5 lg:max-w-sm lg:justify-end">
-                {sectionChips.map((chip, index) => (
-                  <motion.div
-                    key={chip}
-                    variants={itemVariants}
-                    whileHover={{ y: -2 }}
-                    className="inline-flex items-center gap-2 rounded-full border border-[#4A3B2A]/10 bg-white/70 px-4 py-2 text-sm font-medium text-[#5D4837] shadow-[0_10px_22px_rgba(74,59,42,0.06)] backdrop-blur-sm"
-                  >
-                    {index === 0 ? (
-                      <LuCheck className="h-4 w-4 text-[#355441]" />
-                    ) : index === 1 ? (
-                      <LuShield className="h-4 w-4 text-[#7A8F6C]" />
-                    ) : (
-                      <LuX className="h-4 w-4 text-[#9B5C43]" />
-                    )}
-                    {chip}
-                  </motion.div>
-                ))}
-              </div>
-            )}
           </motion.div>
 
           <motion.div

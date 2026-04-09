@@ -155,7 +155,7 @@ const TrailRouteSection = ({ trail }) => {
 
         <div className="relative p-6 md:p-8 lg:p-10">
           <motion.div variants={itemVariants} className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#4A3B2A]/10 bg-white/70 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#6B513C] backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#4A3B2A]/10 bg-white/70 px-4 py-2 text-[15px] font-semibold uppercase tracking-[0.28em] text-[#6B513C] backdrop-blur-sm">
               <LuRoute className="h-4 w-4" />
               Trail Route
             </div>
