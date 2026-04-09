@@ -14,14 +14,14 @@ const EOTCard = ({
   trailId,
 }) => {
   const cardContent = (
-    <div className="group relative overflow-hidden w-full max-w-[400px] p-4 bg-linear-to-bl from-[#CDBB9E] to-[#E3D5C4] border-[6px] border-[#5C4033] outline-1 outline-[#3A281F] ring-2 ring-inset ring-[#8B6A55]/30 rounded-[2.2rem] shadow-[0_10px_30px_rgba(92,64,51,0.2),inset_0_4px_15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(92,64,51,0.3)] font-sans">
+    <div className="group relative overflow-hidden w-full h-full max-w-[400px] p-4 bg-linear-to-bl from-[#CDBB9E] to-[#E3D5C4] border-[6px] border-[#5C4033] outline-1 outline-[#3A281F] ring-2 ring-inset ring-[#8B6A55]/30 rounded-[2.2rem] shadow-[0_10px_30px_rgba(92,64,51,0.2),inset_0_4px_15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(92,64,51,0.3)] font-sans flex flex-col">
       {/* --- Aesthetic Cloud Spots (Background) --- */}
       <div className="absolute -top-10 -right-10 w-52 h-52 bg-white/40 rounded-full blur-2xl pointer-events-none z-0"></div>
       <div className="absolute top-1/2 -left-12 w-64 h-64 bg-white/30 rounded-full blur-[50px] pointer-events-none z-0"></div>
       <div className="absolute -bottom-10 right-10 w-48 h-48 bg-[#FAF6F0]/40 rounded-full blur-2xl pointer-events-none z-0"></div>
 
       {/* Image Section */}
-      <div className="relative z-10 w-full h-[260px] rounded-[1.8rem] overflow-hidden mb-5 shadow-inner">
+      <div className="relative z-10 w-full h-[260px] shrink-0 rounded-[1.8rem] overflow-hidden mb-5 shadow-inner">
         <img
           src={
             imgSrc ||
@@ -55,25 +55,29 @@ const EOTCard = ({
       </div>
 
       {/* Content Section */}
-      <div className="relative z-10 px-2 pb-1 flex flex-col gap-4">
+      <div className="relative z-10 px-2 pb-1 flex-1 flex flex-col gap-4">
         {/* Title, Separator Line & Description Group */}
-        <div className="flex flex-col items-center w-full">
+        <div className="flex flex-col items-center w-full flex-1">
           {/* Title */}
-          <h3 className="text-[21px] font-bold text-[#4A3B2A] text-center leading-tight line-clamp-2">
-            {title}
-          </h3>
+          <div className="min-h-[3.25rem] flex items-center justify-center w-full">
+            <h3 className="text-[21px] font-bold text-[#4A3B2A] text-center leading-tight line-clamp-2">
+              {title}
+            </h3>
+          </div>
 
           {/* Separator Line */}
           <hr className="w-[60%] border-[#4A3B2A]/20 my-2.5" />
 
           {/* 2) Description (Sub-Heading) */}
-          <p className="text-[#4A3B2A]/80 text-[16px] text-center font-medium line-clamp-2 w-full px-2">
-            {description}
-          </p>
+          <div className="min-h-[3rem] flex items-center justify-center w-full">
+            <p className="text-[#4A3B2A]/80 text-[16px] text-center font-medium line-clamp-2 w-full px-2">
+              {description}
+            </p>
+          </div>
         </div>
 
         {/* Info Row: Location (Left) and Duration (Right) */}
-        <div className="flex justify-between items-center w-full text-[#4A3B2A] mt-1 gap-2">
+        <div className="flex justify-between items-center w-full text-[#4A3B2A] mt-auto gap-2">
           {/* 3) Location (Country Name) */}
           <div className="flex items-center gap-1.5 justify-start overflow-hidden">
             <LuMapPin
@@ -94,7 +98,7 @@ const EOTCard = ({
         </div>
 
         {/* 4) Trail Route Text */}
-        <div className="bg-[#F3EFE9]/70 backdrop-blur-sm rounded-2xl p-4 flex justify-center items-center shadow-inner border border-[#4A3B2A]/10 w-full mt-1">
+        <div className="bg-[#F3EFE9]/70 backdrop-blur-sm rounded-2xl p-4 flex justify-center items-center shadow-inner border border-[#4A3B2A]/10 w-full mt-1 min-h-[72px]">
           <span className="text-[#4A3B2A]/80 text-[15px] text-center font-medium line-clamp-2 block w-full px-2">
             {trail}
           </span>
@@ -106,7 +110,7 @@ const EOTCard = ({
   if (!trailId) return cardContent;
 
   return (
-    <Link to={`/trails/${trailId}`} className="block">
+    <Link to={`/trails/${trailId}`} className="block h-full">
       {cardContent}
     </Link>
   );

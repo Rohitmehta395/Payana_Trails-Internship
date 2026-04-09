@@ -344,7 +344,7 @@ const TrailInclusionsSection = ({
         className="relative overflow-hidden rounded-[2.4rem] border border-[#4A3B2A]/10 bg-[linear-gradient(135deg,#fffdf8_0%,#f7ecda_48%,#f0e1c6_100%)] shadow-[0_24px_70px_rgba(74,59,42,0.12)]"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.92),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(122,143,108,0.12),transparent_30%),radial-gradient(circle_at_center_right,rgba(198,140,118,0.14),transparent_28%)]" />
-        <div className="absolute inset-0 opacity-[0.16] [background-image:linear-gradient(rgba(74,59,42,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(74,59,42,0.08)_1px,transparent_1px)] [background-size:28px_28px]" />
+        <div className="absolute inset-0 opacity-[0.16] bg-[linear-gradient(rgba(74,59,42,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(74,59,42,0.08)_1px,transparent_1px)] bg-size-[28px_28px]" />
 
         {floatingSymbols.map((particle, index) => (
           <motion.span
