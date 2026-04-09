@@ -27,6 +27,18 @@ export const api = {
     }
   },
 
+  getTrailById: async (id, isAdmin = false) => {
+    try {
+      const suffix = isAdmin ? "?admin=true" : "";
+      const response = await fetch(`${API_BASE_URL}/trails/${id}${suffix}`);
+      if (!response.ok) throw new Error("Failed to fetch trail details");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getTrailById):", error);
+      throw error;
+    }
+  },
+
   // 2. Fetch Journeys (For your Journeys pages)
   getJourneys: async (category) => {
     try {
@@ -124,10 +136,13 @@ export const api = {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/trails/preview-image-stats`, {
-        method: "POST",
-        body: previewData,
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/trails/preview-image-stats`,
+        {
+          method: "POST",
+          body: previewData,
+        },
+      );
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Failed to preview image compression");
@@ -190,7 +205,8 @@ export const api = {
         body: JSON.stringify({ items }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to reorder trails");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to reorder trails");
       return data;
     } catch (error) {
       throw error;
@@ -203,7 +219,8 @@ export const api = {
         method: "PATCH",
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to toggle trail status");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to toggle trail status");
       return data;
     } catch (error) {
       throw error;
@@ -232,7 +249,8 @@ export const api = {
         body: formData,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to add destination");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to add destination");
       return data;
     } catch (error) {
       throw error;
@@ -246,7 +264,8 @@ export const api = {
         body: formData,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update destination");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to update destination");
       return data;
     } catch (error) {
       throw error;
@@ -259,7 +278,8 @@ export const api = {
         method: "DELETE",
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to delete destination");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to delete destination");
       return data;
     } catch (error) {
       throw error;
@@ -268,11 +288,15 @@ export const api = {
 
   toggleDestinationStatus: async (id) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/destinations/${id}/toggle`, {
-        method: "PATCH",
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/destinations/${id}/toggle`,
+        {
+          method: "PATCH",
+        },
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to toggle destination status");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to toggle destination status");
       return data;
     } catch (error) {
       throw error;
@@ -287,7 +311,8 @@ export const api = {
         body: JSON.stringify({ items }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to reorder destinations");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to reorder destinations");
       return data;
     } catch (error) {
       throw error;

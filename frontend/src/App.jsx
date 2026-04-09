@@ -7,6 +7,8 @@ import PayanaWay from "./pages/PayanaWay";
 import Stories from "./pages/Stories";
 import Connect from "./pages/Connect";
 
+import TrailDetails from "./pages/TrailDetails";
+
 // Import standard journey sections
 import Wildlife from "./components/sections/Journey/Wildlife";
 import Heritage from "./components/sections/Journey/Heritage";
@@ -48,6 +50,7 @@ const App = () => {
                 <Route path="/payana-way" element={<PayanaWay />} />
                 <Route path="/stories" element={<Stories />} />
                 <Route path="/connect" element={<Connect />} />
+                <Route path="/trails/:id" element={<TrailDetails />} />
               </Routes>
             </Layout>
           }

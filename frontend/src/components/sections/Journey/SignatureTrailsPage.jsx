@@ -82,11 +82,14 @@ const SignatureTrailsPage = () => {
           </div>
         )}
 
-        {!loading && !error && filteredTrails.length === 0 && trails.length > 0 && (
-          <div className="text-center text-[#4A3B2A]/70 py-10 text-lg">
-            No trails match your search criteria.
-          </div>
-        )}
+        {!loading &&
+          !error &&
+          filteredTrails.length === 0 &&
+          trails.length > 0 && (
+            <div className="text-center text-[#4A3B2A]/70 py-10 text-lg">
+              No trails match your search criteria.
+            </div>
+          )}
 
         {!loading && !error && trails.length === 0 && (
           <div className="text-center text-[#4A3B2A]/70 py-10 text-lg">
@@ -106,7 +109,10 @@ const SignatureTrailsPage = () => {
                 date={formatDate(trail.journeyDate)}
                 trail={trail.trailRoute}
                 trailType={trail.trailType || ""}
-                imgSrc={trail.heroImage ? `${IMAGE_BASE_URL}${trail.heroImage}` : null}
+                imgSrc={
+                  trail.heroImage ? `${IMAGE_BASE_URL}${trail.heroImage}` : null
+                }
+                trailId={trail._id}
               />
             ))}
           </div>

@@ -35,6 +35,28 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET single trail by id
+router.get("/:id", async (req, res) => {
+  try {
+    const isAdmin = req.query.admin === "true";
+    const filter = isAdmin
+      ? { _id: req.params.id }
+      : { _id: req.params.id, isActive: true };
+
+    const trail = await Trail.findOne(filter);
+    if (!trail) {
+      return res.status(404).json({ message: "Trail not found" });
+    }
+
+    res.status(200).json(trail);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to fetch trail", error: error.message });
+  }
+});
+
+
 // PATCH toggle a trail's active status
 router.patch("/:id/toggle", async (req, res) => {
   try {

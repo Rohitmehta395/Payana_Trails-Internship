@@ -1,5 +1,6 @@
 import React from "react";
-import { LuLuggage, LuMapPin, LuCalendarDays } from "react-icons/lu";
+import { LuMapPin, LuCalendarDays } from "react-icons/lu";
+import { Link } from "react-router-dom";
 
 const EOTCard = ({
   imgSrc,
@@ -10,8 +11,9 @@ const EOTCard = ({
   date = "Oct 12 - Oct 18",
   trail = "Siem Reap - Ho Chi Minh City - Da Nang - Hanoi",
   trailType = "",
+  trailId,
 }) => {
-  return (
+  const cardContent = (
     <div className="group relative overflow-hidden w-full max-w-[400px] p-4 bg-linear-to-bl from-[#CDBB9E] to-[#E3D5C4] border-[6px] border-[#5C4033] outline-1 outline-[#3A281F] ring-2 ring-inset ring-[#8B6A55]/30 rounded-[2.2rem] shadow-[0_10px_30px_rgba(92,64,51,0.2),inset_0_4px_15px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(92,64,51,0.3)] font-sans">
       {/* --- Aesthetic Cloud Spots (Background) --- */}
       <div className="absolute -top-10 -right-10 w-52 h-52 bg-white/40 rounded-full blur-2xl pointer-events-none z-0"></div>
@@ -99,6 +101,14 @@ const EOTCard = ({
         </div>
       </div>
     </div>
+  );
+
+  if (!trailId) return cardContent;
+
+  return (
+    <Link to={`/trails/${trailId}`} className="block">
+      {cardContent}
+    </Link>
   );
 };
 

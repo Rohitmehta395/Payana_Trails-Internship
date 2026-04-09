@@ -149,6 +149,7 @@ const ExploreOurTrails = () => {
                   trail={service.trail}
                   trailType={service.trailType}
                   imgSrc={service.imgSrc}
+                  trailId={service.id}
                 />
               ))
             ) : (

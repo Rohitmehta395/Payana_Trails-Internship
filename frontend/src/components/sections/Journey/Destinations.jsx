@@ -130,11 +130,14 @@ const Destinations = () => {
           { label: "DESTINATIONS" },
         ]}
       />
-      
+
       <div className="max-w-7xl mx-auto pt-2 pb-16 px-6 md:px-12">
         {/* Premium Floating Search Bar */}
         {!loading && !error && !selectedDestination && (
-          <JourneySearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          <JourneySearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
         )}
 
         {loading && (
@@ -150,11 +153,14 @@ const Destinations = () => {
         )}
 
         {/* Not Found via Search */}
-        {!loading && !error && filteredDestinations.length === 0 && destinations.length > 0 && (
-          <div className="text-center text-[#4A3B2A]/70 py-10 text-lg">
-            No destinations match your search criteria.
-          </div>
-        )}
+        {!loading &&
+          !error &&
+          filteredDestinations.length === 0 &&
+          destinations.length > 0 && (
+            <div className="text-center text-[#4A3B2A]/70 py-10 text-lg">
+              No destinations match your search criteria.
+            </div>
+          )}
 
         {/* Empty DB */}
         {!loading && !error && destinations.length === 0 && (
@@ -180,7 +186,9 @@ const Destinations = () => {
                     </h2>
                     <span className="inline-flex items-center rounded-full bg-[#4A3B2A]/8 px-3.5 py-1.5 text-sm font-semibold text-[#4A3B2A] border border-[#4A3B2A]/10">
                       {selectedDestinationTrails.length}{" "}
-                      {selectedDestinationTrails.length === 1 ? "Trail" : "Trails"}
+                      {selectedDestinationTrails.length === 1
+                        ? "Trail"
+                        : "Trails"}
                     </span>
                   </div>
 
@@ -207,63 +215,81 @@ const Destinations = () => {
               </div>
             )}
 
-            {!trailsLoading && !trailsError && selectedDestinationTrails.length === 0 && (
-              <div className="text-center text-[#4A3B2A]/70 py-8 text-lg">
-                No trails are available for {selectedDestination.name} right now.
-              </div>
-            )}
+            {!trailsLoading &&
+              !trailsError &&
+              selectedDestinationTrails.length === 0 && (
+                <div className="text-center text-[#4A3B2A]/70 py-8 text-lg">
+                  No trails are available for {selectedDestination.name} right
+                  now.
+                </div>
+              )}
 
-            {!trailsLoading && !trailsError && selectedDestinationTrails.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 justify-items-center">
-                {selectedDestinationTrails.map((trail) => (
-                  <EOTCard
-                    key={trail._id}
-                    title={trail.trailName}
-                    description={trail.trailSubTitle}
-                    location={trail.trailDestination}
-                    duration={trail.duration}
-                    date={formatDate(trail.journeyDate)}
-                    trail={trail.trailRoute}
-                    trailType={trail.trailType || ""}
-                    imgSrc={trail.heroImage ? `${IMAGE_BASE_URL}${trail.heroImage}` : null}
-                  />
-                ))}
-              </div>
-            )}
+            {!trailsLoading &&
+              !trailsError &&
+              selectedDestinationTrails.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 justify-items-center">
+                  {selectedDestinationTrails.map((trail) => (
+                    <EOTCard
+                      key={trail._id}
+                      title={trail.trailName}
+                      description={trail.trailSubTitle}
+                      location={trail.trailDestination}
+                      duration={trail.duration}
+                      date={formatDate(trail.journeyDate)}
+                      trail={trail.trailRoute}
+                      trailType={trail.trailType || ""}
+                      imgSrc={
+                        trail.heroImage
+                          ? `${IMAGE_BASE_URL}${trail.heroImage}`
+                          : null
+                      }
+                      trailId={trail._id}
+                    />
+                  ))}
+                </div>
+              )}
           </>
         )}
 
         {/* Results Grid & Load More */}
-        {!loading && !error && !selectedDestination && filteredDestinations.length > 0 && (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 justify-items-center">
-              {filteredDestinations.slice(0, visibleCount).map((dest, index) => (
-                <div
-                  key={dest._id}
-                  className="animate-fade-in-up w-full flex justify-center"
-                  style={{ animationDelay: `${(index % 4) * 150}ms` }}
-                >
-                  <DestinationCard
-                    name={dest.name}
-                    image={`${IMAGE_BASE_URL}${dest.heroImage}`}
-                    to={buildDestinationListingPath({
-                      geography: getDestinationGeography(dest),
-                      destination: dest.name,
-                    })}
-                    isSelected={matchesDestination(dest.name, destinationFilter)}
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Load More Button */}
-            {visibleCount < filteredDestinations.length && (
-              <div className="flex justify-center mt-12 md:mt-16">
-                <BrownBtn text="Load More" onClick={handleLoadMore} />
+        {!loading &&
+          !error &&
+          !selectedDestination &&
+          filteredDestinations.length > 0 && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 justify-items-center">
+                {filteredDestinations
+                  .slice(0, visibleCount)
+                  .map((dest, index) => (
+                    <div
+                      key={dest._id}
+                      className="animate-fade-in-up w-full flex justify-center"
+                      style={{ animationDelay: `${(index % 4) * 150}ms` }}
+                    >
+                      <DestinationCard
+                        name={dest.name}
+                        image={`${IMAGE_BASE_URL}${dest.heroImage}`}
+                        to={buildDestinationListingPath({
+                          geography: getDestinationGeography(dest),
+                          destination: dest.name,
+                        })}
+                        isSelected={matchesDestination(
+                          dest.name,
+                          destinationFilter,
+                        )}
+                      />
+                    </div>
+                  ))}
               </div>
-            )}
-          </>
-        )}
+
+              {/* Load More Button */}
+              {visibleCount < filteredDestinations.length && (
+                <div className="flex justify-center mt-12 md:mt-16">
+                  <BrownBtn text="Load More" onClick={handleLoadMore} />
+                </div>
+              )}
+            </>
+          )}
       </div>
     </div>
   );

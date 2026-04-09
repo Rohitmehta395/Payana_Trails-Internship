@@ -57,11 +57,14 @@ const Wildlife = () => {
           { label: "WILDLIFE" },
         ]}
       />
-      
+
       <div className="max-w-7xl mx-auto pt-2 pb-16 px-6 md:px-12">
         {/* Premium Floating Search Bar */}
         {!loading && !error && (
-          <JourneySearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          <JourneySearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
         )}
 
         {loading && (
@@ -76,11 +79,14 @@ const Wildlife = () => {
           </div>
         )}
 
-        {!loading && !error && filteredTrails.length === 0 && trails.length > 0 && (
-          <div className="text-center text-[#4A3B2A]/70 py-10 text-lg">
-            No trails match your search criteria.
-          </div>
-        )}
+        {!loading &&
+          !error &&
+          filteredTrails.length === 0 &&
+          trails.length > 0 && (
+            <div className="text-center text-[#4A3B2A]/70 py-10 text-lg">
+              No trails match your search criteria.
+            </div>
+          )}
 
         {!loading && !error && trails.length === 0 && (
           <div className="text-center text-[#4A3B2A]/70 py-10 text-lg">
@@ -100,7 +106,10 @@ const Wildlife = () => {
                 date={formatDate(trail.journeyDate)}
                 trail={trail.trailRoute}
                 trailType={trail.trailType || ""}
-                imgSrc={trail.heroImage ? `${IMAGE_BASE_URL}${trail.heroImage}` : null}
+                imgSrc={
+                  trail.heroImage ? `${IMAGE_BASE_URL}${trail.heroImage}` : null
+                }
+                trailId={trail._id}
               />
             ))}
           </div>
