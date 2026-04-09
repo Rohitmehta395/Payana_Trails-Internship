@@ -7,6 +7,16 @@ import { FaEnvelopeOpenText } from "react-icons/fa6";
 const StoriesMoments = () => {
   return (
     <section className="bg-[#F3EFE9] w-full py-16 sm:py-20 lg:py-16">
+      {/* === Header Section === */}
+      <div className="text-center mb-16">
+        <div className="flex items-center justify-center gap-6">
+          <div className="h-px w-12 md:w-24 bg-[#4A3B2A] opacity-30"></div>
+          <h2 className="text-3xl md:text-4xl font-serif text-[#4A3B2A] tracking-wide text-center">
+            Stories & Voices from the Trails
+          </h2>
+          <div className="h-[1px] w-12 md:w-24 bg-[#4A3B2A] opacity-30"></div>
+        </div>
+      </div>
       <div className="max-w-350 mx-auto px-4 sm:px-6 lg:px-8">
         {/* Banner Container */}
         <div className="relative w-full h-100 sm:h-112.5 lg:h-125 rounded-4xl overflow-hidden shadow-xl group">
@@ -28,8 +38,8 @@ const StoriesMoments = () => {
             {/* Text container */}
             <div className="relative mt-4 sm:mt-8 lg:mt-8 mr-6 sm:mr-8 max-w-md lg:max-w-lg text-right">
               <h2 className="text-white text-[16px] sm:text-[20px] lg:text-[24px] font-sans italic font-semibold leading-relaxed tracking-wide">
-                "Travel isn't about checking places off a list. It's about the
-                quiet moments you never expected."
+                “Travel isn’t about how many places you see. It’s about the
+                moments that stay with you.”
               </h2>
             </div>
           </div>

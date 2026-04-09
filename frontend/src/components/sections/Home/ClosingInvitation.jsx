@@ -38,12 +38,12 @@ const ClosingInvitation = () => {
           <div className="w-full lg:w-1/2 flex flex-col items-center text-center">
             {/* Elegant Quote */}
             <p className="text-[#4A3B2A] text-[18px] sm:text-[20px] font-serif italic mb-4 opacity-90">
-              "Travel, when designed with care, becomes memory."
+              "Travel, when designed with care, becomes a memory."
             </p>
 
             {/* Main Heading */}
             <h3 className="text-[#4A3B2A] text-[28px] sm:text-[36px] font-serif font-bold leading-tight mb-4">
-              Let's design a journey that suits you.
+              Let's design a journey that’s truly yours.
             </h3>
 
             {/* Supporting Paragraph */}

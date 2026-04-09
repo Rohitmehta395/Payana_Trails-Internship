@@ -4,10 +4,10 @@ import BrownBtn from "../../common/buttons/BrownBtn";
 
 const PayanaWay = () => {
   const features = [
-    "Designed for discerning Senior Travellers",
-    "Expertly Crafted Itineraries",
-    "Journeys Designed Around You",
-    "Trusted & Transparent Pricing",
+    "Personalised Journeys",
+    "Curated Experiences",
+    "Slow & Immersive Travel",
+    "Seamless & Transparent",
   ];
 
   return (
@@ -23,7 +23,7 @@ const PayanaWay = () => {
             <div className="h-[1px] w-12 md:w-24 bg-[#4A3B2A] opacity-30"></div>
           </div>
           <p className="text-[#4A3B2A] text-2xl sm:text-3xl font-serif italic mt-6 opacity-90">
-            A more thoughtful way to travel
+            A more thoughtful way to experience the world
           </p>
         </div>
 
@@ -55,8 +55,10 @@ const PayanaWay = () => {
               </span>
               <p className="text-[16px] sm:text-[18px] font-sans italic leading-relaxed opacity-90 relative z-10">
                 We believe travel should be unhurried, immersive and deeply
-                meaningful. Our journeys are thoughtfully designed to let you
-                slow down, travel at ease, and connect with each destination.
+                meaningful. <br /> Our journeys are thoughtfully designed to let
+                you slow down, travel at ease, and connect with each
+                destination.
+                <br />
                 Because true travel is not about seeing more, but experiencing
                 more.
               </p>
@@ -83,7 +85,7 @@ const PayanaWay = () => {
             {/* Action Button - Replaced with BrownBtn */}
             <div className="flex justify-start">
               <BrownBtn
-                text="Discover The Payana Way &rarr;"
+                text="Explore The Payana Way &rarr;"
                 className="w-full sm:w-fit px-8 py-4 text-[16px] sm:text-[18px] shadow-lg transition-transform duration-300 hover:-translate-y-1"
               />
             </div>

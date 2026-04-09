@@ -19,12 +19,12 @@ const ShareExperience = () => {
             <span>Share The Magic</span>
           </div>
           <h2 className="text-4xl lg:text-5xl font-bold font-serif text-[#4A3B2A] leading-tight mb-5 drop-shadow-sm">
-            Moments Meant to be{" "}
+            Journeys are meaningful when{" "}
             <span className="italic font-light">Shared</span>
           </h2>
           <p className="text-[#4A3B2A]/80 text-lg max-w-2xl mx-auto leading-relaxed">
-            Whether you're exploring the wild with a companion or gifting a
-            once-in-a-lifetime adventure, we make sharing easy and rewarding.
+            Whether travelling with a companion or gifting an experience of a
+            lifetime, we make sharing easy and rewarding.
           </p>
         </div>
 
@@ -51,9 +51,9 @@ const ShareExperience = () => {
               Refer Your Friends
             </h3>
             <p className="text-[#4A3B2A]/80 mb-8 grow leading-relaxed text-[16px]">
-              Know someone who loves meaningful travel? Invite them to the
-              Payana Way. When they book, both of you will receive an exclusive
-              reward on your next journey.
+              Know someone who loves meaningful travel? Invite them to discover
+              a thoughtfully curated Payana Trails journey. Both of you will
+              receive a special benefit on your next Payana Trails journey.
             </p>
 
             {/* Using your custom Button */}
