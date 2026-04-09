@@ -82,7 +82,7 @@ const JourneySnapshot = ({ trail }) => {
             <motion.div
               variants={itemVariants}
               key={item.label}
-              className={`group flex flex-col items-center justify-center p-8 text-center transition-all duration-500 hover:bg-[#F3EFE9]/50 ${
+              className={`group flex flex-1 flex-col items-center justify-center p-8 text-center transition-all duration-500 hover:bg-[#F3EFE9]/50 ${
                 idx === snapshotItems.length - 1 ? "col-span-2 lg:col-span-1" : ""
               }`}
             >
