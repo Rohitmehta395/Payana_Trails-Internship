@@ -191,13 +191,7 @@ const TrailRouteSection = ({ trail }) => {
                       const Icon = scenicIcons[index % scenicIcons.length];
                       const stepOffset = stepOffsets[index % stepOffsets.length];
                       const stepHighlight = stepHighlights[index];
-                      const helperText =
-                        stepHighlight?.description ||
-                        (stepHighlight?.title &&
-                        normalizeText(stepHighlight.title) !==
-                          normalizeText(step)
-                          ? stepHighlight.title
-                          : "");
+                      const helperText = stepHighlight?.description;
 
                       return (
                         <motion.div
@@ -214,7 +208,7 @@ const TrailRouteSection = ({ trail }) => {
                               Stop {String(index + 1).padStart(2, "0")}
                             </p>
                             <h3 className="mt-1 font-serif text-[1.3rem] leading-tight text-[#2F2319] md:text-[1.45rem]">
-                              {step}
+                              {stepHighlight?.title || step}
                             </h3>
 
                             {helperText && (

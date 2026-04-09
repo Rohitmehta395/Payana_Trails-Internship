@@ -9,7 +9,6 @@ import TrailRouteSection from "../components/sections/TrailDetail/TrailRouteSect
 import MovingGallery from "../components/sections/TrailDetail/MovingGallery";
 import BrownBtn from "../components/common/buttons/BrownBtn";
 import TrailActionButtons from "../components/sections/TrailDetail/TrailActionButtons";
-import { parseTrailHighlight } from "../utils/trailUtils";
 
 const TrailDetails = () => {
   const { id } = useParams();
@@ -62,8 +61,6 @@ const TrailDetails = () => {
     );
   }
 
-  const highlightsList = transformed.highlights || [];
-
   return (
     <div className="bg-[#F3EFE9] pb-20">
       <HeroSection trail={transformed} />
@@ -74,58 +71,6 @@ const TrailDetails = () => {
 
       <ContentSection title="Journey Snapshot">
         <JourneySnapshot trail={transformed} />
-      </ContentSection>
-
-      <ContentSection title="Trail Highlights">
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-          {highlightsList.length > 0 ? (
-            highlightsList.map((point, idx, arr) => {
-              const isLastAndOdd =
-                arr.length % 2 !== 0 && idx === arr.length - 1;
-
-              const highlight = parseTrailHighlight(point);
-
-              return (
-                <div
-                  key={idx}
-                  className={`group flex flex-col sm:flex-row items-start gap-4 rounded-2xl bg-white p-5 md:p-6 border border-[#4A3B2A]/5 shadow-[0_4px_20px_rgba(74,59,42,0.03)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(74,59,42,0.08)] ${
-                    isLastAndOdd ? "md:col-span-2" : "md:col-span-1"
-                  }`}
-                >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F3EFE9] font-sans text-lg font-bold text-[#4A3B2A] transition-colors duration-300 group-hover:bg-[#4A3B2A] group-hover:text-[#F3EFE9]">
-                    {String(idx + 1).padStart(2, "0")}
-                  </div>
-
-                  <div className="flex flex-col pt-1">
-                    {highlight.title && (
-                      <h3 className="font-sans text-[1.15rem] font-semibold text-[#3D2C20]">
-                        {highlight.title}
-                      </h3>
-                    )}
-
-                    {highlight.description && (
-                      <p className="mt-1.5 text-[15px] leading-relaxed text-[#5A4738]/80">
-                        {highlight.description}
-                      </p>
-                    )}
-
-                    {!highlight.title && !highlight.description && (
-                      <p className="font-sans text-[1.15rem] font-semibold text-[#3D2C20]">
-                        {typeof point === "string"
-                          ? point
-                          : "Highlight details"}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <p className="col-span-full text-[#5A4738]/80">
-              No highlights available for this trail.
-            </p>
-          )}
-        </div>
       </ContentSection>
 
       <ContentSection title="Is This Journey For You?">
