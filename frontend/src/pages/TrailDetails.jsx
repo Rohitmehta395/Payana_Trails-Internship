@@ -8,7 +8,7 @@ import TrailInclusionsSection from "../components/sections/TrailDetail/TrailIncl
 import TrailRouteSection from "../components/sections/TrailDetail/TrailRouteSection";
 import MovingGallery from "../components/sections/TrailDetail/MovingGallery";
 import BrownBtn from "../components/common/buttons/BrownBtn";
-import CreamBtn from "../components/common/buttons/CreamBtn";
+import TrailActionButtons from "../components/sections/TrailDetail/TrailActionButtons";
 import { parseTrailHighlight } from "../utils/trailUtils";
 
 const TrailDetails = () => {
@@ -146,18 +146,7 @@ const TrailDetails = () => {
         />
       </ContentSection>
 
-      <section className="mx-auto mt-4 flex max-w-7xl flex-wrap gap-4 px-6 md:px-10">
-        <CreamBtn
-          text="View Itinerary"
-          className="!px-8 !py-3 !text-base !border !border-[#4A3B2A]/20"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        />
-        <BrownBtn
-          text="Enquire Now"
-          className="!px-8 !py-3 !text-base"
-          onClick={() => navigate("/connect")}
-        />
-      </section>
+      <TrailActionButtons />
     </div>
   );
 };
