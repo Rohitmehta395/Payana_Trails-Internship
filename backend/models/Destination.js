@@ -3,21 +3,26 @@ const { DESTINATION_GEOGRAPHIES } = require("../constants/destinationGeographies
 
 const destinationSchema = new mongoose.Schema(
   {
+    status: {
+      type: String,
+      enum: ["draft", "published"],
+      default: "published",
+    },
     name: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
       unique: true,
       trim: true,
     },
     geography: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
       enum: DESTINATION_GEOGRAPHIES,
       trim: true,
     },
     heroImage: {
       type: String, // Path to the uploaded image
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     order: {
       type: Number,
@@ -25,7 +30,9 @@ const destinationSchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      default: true,
+      default: function() {
+        return this.status !== 'draft';
+      },
     },
   },
   { timestamps: true }

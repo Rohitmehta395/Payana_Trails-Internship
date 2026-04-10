@@ -25,7 +25,7 @@ const trailFolderResolver = (req) => {
 router.get("/", async (req, res) => {
   try {
     const isAdmin = req.query.admin === "true";
-    const filter = isAdmin ? {} : { isActive: true };
+    const filter = isAdmin ? {} : { isActive: true, status: 'published' };
     const trails = await Trail.find(filter).sort({ order: 1, createdAt: -1 });
     res.status(200).json(trails);
   } catch (error) {
@@ -41,7 +41,7 @@ router.get("/:id", async (req, res) => {
     const isAdmin = req.query.admin === "true";
     const filter = isAdmin
       ? { _id: req.params.id }
-      : { _id: req.params.id, isActive: true };
+      : { _id: req.params.id, isActive: true, status: 'published' };
 
     const trail = await Trail.findOne(filter);
     if (!trail) {
@@ -122,8 +122,8 @@ router.post("/", cpUpload, processImages(trailFolderResolver), async (req, res) 
       whatsNotIncluded: req.body.whatsNotIncluded ? JSON.parse(req.body.whatsNotIncluded) : [],
     };
     
-    if (!trailData.routeMap || !trailData.heroImage) {
-      return res.status(400).json({ message: "Both Route Map and Hero Image are required." });
+    if (trailData.status !== 'draft' && (!trailData.routeMap || !trailData.heroImage)) {
+      return res.status(400).json({ message: "Both Route Map and Hero Image are required for published trails." });
     }
 
     const newTrail = new Trail(trailData);
@@ -181,6 +181,7 @@ router.put("/:id", cpUpload, processImages(trailFolderResolver), async (req, res
 
     const updatedTrail = await Trail.findByIdAndUpdate(trailId, updateData, {
       returnDocument: 'after',
+      runValidators: true,
     });
     if (!updatedTrail)
       return res.status(404).json({ message: "Trail not found" });

@@ -5,8 +5,10 @@ const TrailForm = ({
   formData,
   handleChange,
   handleFileChange,
-  handleSubmit,
+  handleAction,
   loading,
+  isSaving,
+  lastSaved,
   isEditing,
   resetForm,
   setShowForm,
@@ -63,7 +65,19 @@ const TrailForm = ({
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden animate-fade-in">
       <div className="h-1 w-full bg-[#4A3B2A]"></div>
       <div className="p-8">
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
+          <h3 className="text-lg font-bold text-[#4A3B2A] flex items-center gap-3">
+            {isEditing ? "Edit Trail" : "New Trail"}
+            <span className={`px-2 py-0.5 mt-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${formData.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
+              {formData.status === 'published' ? 'Published' : 'Draft'}
+            </span>
+          </h3>
+          <div className="text-xs text-gray-500 flex items-center gap-2">
+            {isSaving && <span className="text-amber-600 font-medium animate-pulse">Autosaving...</span>}
+            {!isSaving && lastSaved && <span>Last saved: {lastSaved.toLocaleTimeString()}</span>}
+          </div>
+        </div>
+        <form className="space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1">
@@ -74,7 +88,6 @@ const TrailForm = ({
                 value={formData.trailTheme}
                 onChange={handleChange}
                 className={`${inputClasses} bg-white`}
-                required
               >
                 <option value="Wildlife">Wildlife</option>
                 <option value="Heritage">Heritage</option>
@@ -104,7 +117,6 @@ const TrailForm = ({
                 value={formData.trailName}
                 onChange={handleChange}
                 className={inputClasses}
-                required
               />
             </div>
             <div>
@@ -117,7 +129,6 @@ const TrailForm = ({
                 value={formData.trailDestination}
                 onChange={handleChange}
                 className={inputClasses}
-                required
               />
             </div>
 
@@ -131,7 +142,6 @@ const TrailForm = ({
                 value={formData.trailSubTitle}
                 onChange={handleChange}
                 className={inputClasses}
-                required
               />
             </div>
 
@@ -145,7 +155,6 @@ const TrailForm = ({
                 value={formData.duration}
                 onChange={handleChange}
                 className={inputClasses}
-                required
               />
             </div>
             <div>
@@ -171,7 +180,6 @@ const TrailForm = ({
                 value={formData.trailRoute}
                 onChange={handleChange}
                 className={inputClasses}
-                required
               />
             </div>
             <div>
@@ -184,7 +192,6 @@ const TrailForm = ({
                 value={formData.visa}
                 onChange={handleChange}
                 className={inputClasses}
-                required
               />
             </div>
 
@@ -198,7 +205,6 @@ const TrailForm = ({
                 value={formData.bestTimeToTravel}
                 onChange={handleChange}
                 className={inputClasses}
-                required
               />
             </div>
             <div>
@@ -211,7 +217,6 @@ const TrailForm = ({
                 value={formData.comfortLevel}
                 onChange={handleChange}
                 className={inputClasses}
-                required
               />
             </div>
 
@@ -256,7 +261,6 @@ const TrailForm = ({
                     accept="image/*"
                     onChange={handleFileChange}
                     className={`${inputClasses} bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer`}
-                    required={!isEditing}
                   />
                   {routeMapFileName && (
                     <p className="mt-2 text-xs text-[#4A3B2A]">
@@ -308,7 +312,6 @@ const TrailForm = ({
                     accept="image/*"
                     onChange={handleHeroImageChange}
                     className={`${inputClasses} bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer`}
-                    required={!isEditing}
                   />
                   {heroImageFileName && (
                     <p className="mt-2 text-xs text-[#4A3B2A]">
@@ -391,7 +394,6 @@ const TrailForm = ({
                 onChange={handleChange}
                 rows="3"
                 className={`${inputClasses} resize-none`}
-                required
               />
             </div>
 
@@ -405,7 +407,6 @@ const TrailForm = ({
                 onChange={handleChange}
                 rows="2"
                 className={`${inputClasses} resize-none`}
-                required
               />
             </div>
 
@@ -463,7 +464,6 @@ const TrailForm = ({
                 onChange={handleChange}
                 rows="4"
                 className={`${inputClasses} resize-none`}
-                required
               />
             </div>
 
@@ -477,12 +477,11 @@ const TrailForm = ({
                 onChange={handleChange}
                 rows="4"
                 className={`${inputClasses} resize-none`}
-                required
               />
             </div>
           </div>
 
-          <div className="mt-8 flex justify-end gap-3 border-t border-gray-100 pt-5">
+          <div className="mt-8 flex flex-wrap justify-end gap-3 border-t border-gray-100 pt-5">
             <button
               type="button"
               onClick={() => {
@@ -494,15 +493,20 @@ const TrailForm = ({
               Cancel
             </button>
             <button
-              type="submit"
-              disabled={loading}
+              type="button"
+              onClick={(e) => handleAction(e, "draft")}
+              disabled={loading || isSaving}
+              className="px-8 py-2.5 rounded text-sm font-medium text-[#4A3B2A] bg-white border border-[#4A3B2A] hover:bg-orange-50 disabled:opacity-50 transition-colors shadow-sm"
+            >
+              {loading && formData.status === 'draft' ? "Saving..." : "Save Draft"}
+            </button>
+            <button
+              type="button"
+              onClick={(e) => handleAction(e, "published")}
+              disabled={loading || isSaving}
               className="bg-[#4A3B2A] text-[#F3EFE9] px-8 py-2.5 rounded text-sm font-medium hover:bg-[#3a2d20] disabled:opacity-50 transition-colors shadow-sm"
             >
-              {loading
-                ? "Saving..."
-                : isEditing
-                  ? "Update Trail"
-                  : "Save Trail"}
+              {loading && formData.status === 'published' ? "Publishing..." : "Publish"}
             </button>
           </div>
         </form>

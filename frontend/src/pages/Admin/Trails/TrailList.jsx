@@ -65,8 +65,13 @@ const TrailList = ({ trails, loadingTrails, handleEdit, handleDelete, handleReor
                         }}
                       />
                     </td>
-                    <td className="p-4 font-medium text-gray-900">
+                    <td className="p-4 font-medium text-gray-900 flex items-center gap-2">
                       {trail.trailName}
+                      {trail.status === 'draft' && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800">
+                          Draft
+                        </span>
+                      )}
                     </td>
                     <td className="p-4">
                       <span className="bg-[#F3EFE9] text-[#4A3B2A] px-2.5 py-1 rounded-full text-xs font-semibold">

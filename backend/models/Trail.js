@@ -9,9 +9,14 @@ const arrayLimit = (limit) => {
 
 const trailSchema = new mongoose.Schema(
   {
+    status: {
+      type: String,
+      enum: ["draft", "published"],
+      default: "published",
+    },
     trailTheme: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
       // You can keep your enums here if needed:
       // enum: ["Wildlife", "Heritage", "Cultural"],
     },
@@ -20,58 +25,61 @@ const trailSchema = new mongoose.Schema(
     },
     trailName: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     trailDestination: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     trailSubTitle: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     duration: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     journeyDate: {
       type: Date,
     },
     trailRoute: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     visa: {
       type: String,
     },
     bestTimeToTravel: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     comfortLevel: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     overview: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     highlights: {
       type: [String], // Array of strings is best for rendering bullet points
-      required: true,
-      validate: [arrayLimit(8), "Highlights cannot exceed 6 bullet points"],
+      required: function() { return this.status === 'published'; },
+      validate: [
+        function(val) { return this.status === 'draft' || val.length <= 8; },
+        "Highlights cannot exceed 8 bullet points"
+      ],
     },
     isThisJourneyForYou: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     routeMap: {
       type: String, // Storing the image URL or Cloudinary path
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     heroImage: {
       type: String,
-      required: true,
+      required: function() { return this.status === 'published'; },
     },
     trailImages: {
       type: [String],
@@ -79,13 +87,19 @@ const trailSchema = new mongoose.Schema(
     },
     whatsIncluded: {
       type: [String],
-      required: true,
-      validate: [arrayLimit(18), "Inclusions cannot exceed 8 bullet points"],
+      required: function() { return this.status === 'published'; },
+      validate: [
+        function(val) { return this.status === 'draft' || val.length <= 18; },
+        "Inclusions cannot exceed 18 bullet points"
+      ],
     },
     whatsNotIncluded: {
       type: [String],
-      required: true,
-      validate: [arrayLimit(18), "Exclusions cannot exceed 8 bullet points"],
+      required: function() { return this.status === 'published'; },
+      validate: [
+        function(val) { return this.status === 'draft' || val.length <= 18; },
+        "Exclusions cannot exceed 18 bullet points"
+      ],
     },
     order: {
       type: Number,
@@ -93,7 +107,9 @@ const trailSchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      default: true,
+      default: function() {
+        return this.status !== 'draft';
+      },
     },
   },
   { timestamps: true },

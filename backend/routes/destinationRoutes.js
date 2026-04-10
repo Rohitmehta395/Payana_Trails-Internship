@@ -26,7 +26,7 @@ const destFolderResolver = (req) => {
 router.get("/", async (req, res) => {
   try {
     const isAdmin = req.query.admin === "true";
-    const filter = isAdmin ? {} : { isActive: true };
+    const filter = isAdmin ? {} : { isActive: true, status: 'published' };
     const destinations = await Destination.find(filter).sort({ order: 1, createdAt: -1 });
     res.status(200).json(destinations);
   } catch (error) {
@@ -96,10 +96,10 @@ router.post("/", (req, res) => {
             ? basePath + req.files["heroImage"][0].filename
             : "";
 
-        if (!heroImage) {
+        if (req.body.status !== 'draft' && !heroImage) {
           return res.status(400).json({
             success: false,
-            message: "Hero image is required",
+            message: "Hero image is required for published destinations",
           });
         }
 
@@ -107,6 +107,7 @@ router.post("/", (req, res) => {
           name: req.body.name,
           geography: req.body.geography,
           heroImage,
+          status: req.body.status || 'draft',
         });
 
         res.status(201).json({

@@ -3,6 +3,7 @@ import { api, IMAGE_BASE_URL } from "../../../services/api";
 import DraggableTableBody from "../../../components/admin/DraggableTableBody";
 import StatusToggle from "../../../components/admin/StatusToggle";
 import useScrollToTop from "../../../hooks/useScrollToTop";
+import { useAutoSave } from "../../../hooks/useAutoSave";
 import {
   DESTINATION_GEOGRAPHIES,
   getDestinationGeography,
@@ -21,6 +22,7 @@ const DestinationManager = () => {
   const [destinations, setDestinations] = useState([]);
   const [name, setName] = useState("");
   const [geography, setGeography] = useState("");
+  const [status, setStatus] = useState("draft");
   const [heroImageFile, setHeroImageFile] = useState(null);
   const [currentHeroImage, setCurrentHeroImage] = useState("");
   const [heroImagePreview, setHeroImagePreview] = useState("");
@@ -66,6 +68,7 @@ const DestinationManager = () => {
   const resetForm = () => {
     setName("");
     setGeography("");
+    setStatus("draft");
     setHeroImageFile(null);
     setCurrentHeroImage("");
     setIsEditing(false);
@@ -75,59 +78,87 @@ const DestinationManager = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage({ type: "", text: "" });
+  const buildFormData = (targetStatus) => {
+    const fd = new FormData();
+    fd.append("name", name);
+    fd.append("geography", geography);
+    fd.append("status", targetStatus);
+    if (heroImageFile) fd.append("heroImage", heroImageFile);
+    return fd;
+  };
 
-    if (!isEditing && (!name || !geography || !heroImageFile)) {
-      setMessage({
-        type: "error",
-        text: "Please fill all fields, select a geography, and upload an image.",
-      });
-      return;
+  const [hasAutosaved, setHasAutosaved] = useState(false);
+
+  const internalSave = async (targetStatus, isAutoSave = false) => {
+    if (!isAutoSave) {
+      setLoading(true);
+      setMessage({ type: "", text: "" });
     }
 
-    if (isEditing && (!name || !geography)) {
+    if (targetStatus === 'published' && (!isEditing && !hasAutosaved && (!name || !geography || !heroImageFile))) {
       setMessage({
         type: "error",
-        text: "Destination name and geography are required.",
+        text: "Please fill all fields, select a geography, and upload an image for published destinations.",
       });
-      return;
-    }
-
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("geography", geography);
-    if (heroImageFile) {
-      formData.append("heroImage", heroImageFile);
+      if (!isAutoSave) setLoading(false);
+      return false;
     }
 
     try {
-      if (isEditing) {
-        const result = await api.updateDestination(currentId, formData);
+      const fd = buildFormData(targetStatus);
+      let responseId = currentId;
+
+      if (isEditing || hasAutosaved) {
+        const result = await api.updateDestination(responseId, fd);
         const statsMsg = buildStatsMessage(result.imageStats);
-        setMessage({ type: "success", text: `Destination updated successfully!${statsMsg}` });
+        if (!isAutoSave) setMessage({ type: "success", text: `Destination updated successfully!${statsMsg}` });
       } else {
-        const result = await api.addDestination(formData);
+        const result = await api.addDestination(fd);
+        responseId = result.data._id;
+        setCurrentId(responseId);
+        setHasAutosaved(true);
         const statsMsg = buildStatsMessage(result.imageStats);
-        setMessage({ type: "success", text: `Destination added successfully!${statsMsg}` });
+        if (!isAutoSave) setMessage({ type: "success", text: `Destination added successfully!${statsMsg}` });
       }
-      resetForm();
-      setShowForm(false);
+
       fetchDestinations();
-      setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+
+      if (!isAutoSave) {
+        resetForm();
+        setShowForm(false);
+        setHasAutosaved(false);
+        setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+      }
+      return true;
     } catch (error) {
       console.error(error);
-      setMessage({ type: "error", text: "Failed to save destination." });
+      if (!isAutoSave) setMessage({ type: "error", text: error.message || "Failed to save destination." });
+      return false;
     } finally {
-      setLoading(false);
+      if (!isAutoSave) setLoading(false);
     }
   };
+
+  const handleAction = async (e, targetStatus) => {
+    if (e) e.preventDefault();
+    setStatus(targetStatus);
+    await internalSave(targetStatus, false);
+  };
+
+  const { isSaving, lastSaved } = useAutoSave(
+    { name, geography },
+    async () => {
+      if (!name) return;
+      await internalSave("draft", true);
+    },
+    3000,
+    showForm
+  );
 
   const handleEdit = (dest) => {
     setName(dest.name);
     setGeography(getDestinationGeography(dest));
+    setStatus(dest.status || "draft");
     setHeroImageFile(null);
     setCurrentHeroImage(dest.heroImage || "");
     setIsEditing(true);
@@ -225,10 +256,19 @@ const DestinationManager = () => {
 
       {showForm && (
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <form
-            onSubmit={handleSubmit}
-            className="bg-[#F8F6F3] p-6 rounded-xl border border-[#4A3B2A]/10"
-          >
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
+            <h3 className="text-lg font-bold text-[#4A3B2A] flex items-center gap-3">
+              {isEditing ? "Edit Destination" : "New Destination"}
+              <span className={`px-2 py-0.5 mt-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${status === 'published' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}`}>
+                {status === 'published' ? 'Published' : 'Draft'}
+              </span>
+            </h3>
+            <div className="text-xs text-gray-500 flex items-center gap-2">
+              {isSaving && <span className="text-amber-600 font-medium animate-pulse">Autosaving...</span>}
+              {!isSaving && lastSaved && <span>Last saved: {lastSaved.toLocaleTimeString()}</span>}
+            </div>
+          </div>
+          <form className="bg-[#F8F6F3] p-6 rounded-xl border border-[#4A3B2A]/10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -240,7 +280,6 @@ const DestinationManager = () => {
                   onChange={(e) => setName(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A3B2A] focus:border-transparent"
                   placeholder="e.g. Kenya"
-                  required
                 />
               </div>
               <div>
@@ -251,7 +290,6 @@ const DestinationManager = () => {
                   value={geography}
                   onChange={(e) => setGeography(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A3B2A] focus:border-transparent bg-white"
-                  required
                 >
                   <option value="">Select Geography</option>
                   {DESTINATION_GEOGRAPHIES.map((option) => (
@@ -300,7 +338,6 @@ const DestinationManager = () => {
                     accept="image/*"
                     onChange={(e) => setHeroImageFile(e.target.files[0])}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A3B2A] focus:border-transparent bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3EFE9] file:text-[#4A3B2A] hover:file:bg-[#e6dfd3] cursor-pointer"
-                    required={!isEditing}
                   />
                   {heroImageFile && (
                     <p className="mt-2 text-xs text-[#4A3B2A]">
@@ -311,17 +348,34 @@ const DestinationManager = () => {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-6 bg-[#4A3B2A] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#3d3022] transition-colors disabled:opacity-50"
-            >
-              {loading
-                ? "Saving..."
-                : isEditing
-                  ? "Update Destination"
-                  : "Add Destination"}
-            </button>
+            <div className="mt-6 flex gap-3 justify-end border-t border-[#4A3B2A]/10 pt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  resetForm();
+                  setShowForm(false);
+                }}
+                className="px-6 py-2 rounded-lg text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+               >
+                 Cancel
+               </button>
+               <button
+                 type="button"
+                 onClick={(e) => handleAction(e, "draft")}
+                 disabled={loading || isSaving}
+                 className="px-6 py-2 rounded-lg text-sm font-medium text-[#4A3B2A] bg-white border border-[#4A3B2A] hover:bg-orange-50 disabled:opacity-50 transition-colors shadow-sm"
+               >
+                 {loading && status === 'draft' ? "Saving..." : "Save Draft"}
+               </button>
+               <button
+                 type="button"
+                 onClick={(e) => handleAction(e, "published")}
+                 disabled={loading || isSaving}
+                 className="bg-[#4A3B2A] text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-[#3d3022] disabled:opacity-50 transition-colors"
+               >
+                 {loading && status === 'published' ? "Publishing..." : "Publish"}
+               </button>
+            </div>
           </form>
         </div>
       )}
@@ -380,8 +434,13 @@ const DestinationManager = () => {
                         className="w-24 h-16 object-cover rounded shadow-sm border border-gray-200"
                       />
                     </td>
-                    <td className="p-4 font-bold text-[#4A3B2A]">
+                    <td className="p-4 font-bold text-[#4A3B2A] flex items-center gap-2">
                       {dest.name}
+                      {dest.status === 'draft' && (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800">
+                          Draft
+                        </span>
+                      )}
                     </td>
                     <td className="p-4 text-gray-600">
                       {getDestinationGeography(dest) || "Not set"}

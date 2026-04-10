@@ -3,6 +3,7 @@ import { api, IMAGE_BASE_URL } from "../../../services/api";
 import TrailList from "./TrailList";
 import TrailForm from "./TrailForm";
 import useScrollToTop from "../../../hooks/useScrollToTop";
+import { useAutoSave } from "../../../hooks/useAutoSave";
 
 const createEmptyCompressionPreviews = () => ({
   routeMap: [],
@@ -66,6 +67,7 @@ const AddTrail = () => {
     highlights: [{ title: "", description: "" }],
     whatsIncluded: "",
     whatsNotIncluded: "",
+    status: "draft",
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -252,6 +254,7 @@ const AddTrail = () => {
     resetCompressionPreviewState();
     setIsEditing(false);
     setCurrentTrailId(null);
+    setHasAutosaved(false);
     if (document.getElementById("imageInput")) {
       document.getElementById("imageInput").value = "";
     }
@@ -263,79 +266,113 @@ const AddTrail = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    cancelPendingCompressionPreviews();
-    setLoading(true);
-    setMessage({ type: "", text: "" });
+  const buildFormData = (statusToSave) => {
+    const submitData = new FormData();
+    submitData.append("trailName", formData.trailName);
+    submitData.append("status", statusToSave);
 
-    if (!isEditing && (!imageFile || !heroImageFile)) {
+    Object.keys(formData).forEach((key) => {
+      if (key === "trailName" || key === "status") return;
+      if (key === "highlights") {
+        const arrayValue = formData.highlights
+          .filter((h) => h.title.trim() || h.description.trim())
+          .map((h) => {
+            if (h.title.trim() && h.description.trim()) {
+              return `*${h.title.trim()}* ${h.description.trim()}`;
+            } else if (h.title.trim()) {
+              return `*${h.title.trim()}*`;
+            }
+
+            return h.description.trim();
+          });
+        submitData.append(key, JSON.stringify(arrayValue));
+      } else if (["whatsIncluded", "whatsNotIncluded"].includes(key)) {
+        const arrayValue = formData[key]
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean);
+        submitData.append(key, JSON.stringify(arrayValue));
+      } else {
+        submitData.append(key, formData[key]);
+      }
+    });
+
+    if (imageFile) submitData.append("routeMap", imageFile);
+    if (heroImageFile) submitData.append("heroImage", heroImageFile);
+    trailImageFiles.forEach((file) => submitData.append("trailImages", file));
+
+    if (isEditing || hasAutosaved) {
+      submitData.append("existingTrailImages", JSON.stringify(existingTrailImages));
+      submitData.append("imagesToDelete", JSON.stringify(imagesToDelete));
+    }
+    return submitData;
+  };
+
+  const [hasAutosaved, setHasAutosaved] = useState(false);
+
+  const internalSave = async (status, isAutoSave = false) => {
+    cancelPendingCompressionPreviews();
+    if (!isAutoSave) {
+      setLoading(true);
+      setMessage({ type: "", text: "" });
+    }
+
+    if (status === 'published' && (!isEditing && !hasAutosaved && (!imageFile || !heroImageFile))) {
       setMessage({
         type: "error",
-        text: "Please select both Route Map and Hero Image.",
+        text: "Please select both Route Map and Hero Image for published trails.",
       });
-      setLoading(false);
-      return;
+      if (!isAutoSave) setLoading(false);
+      return false;
     }
 
     try {
-      const submitData = new FormData();
-      submitData.append("trailName", formData.trailName);
+      const submitData = buildFormData(status);
+      let responseId = currentTrailId;
 
-      Object.keys(formData).forEach((key) => {
-        if (key === "trailName") return;
-        if (key === "highlights") {
-          const arrayValue = formData.highlights
-            .filter((h) => h.title.trim() || h.description.trim())
-            .map((h) => {
-              if (h.title.trim() && h.description.trim()) {
-                return `*${h.title.trim()}* ${h.description.trim()}`;
-              } else if (h.title.trim()) {
-                return `*${h.title.trim()}*`;
-              }
-
-              return h.description.trim();
-            });
-          submitData.append(key, JSON.stringify(arrayValue));
-        } else if (["whatsIncluded", "whatsNotIncluded"].includes(key)) {
-          const arrayValue = formData[key]
-            .split("\n")
-            .map((item) => item.trim())
-            .filter(Boolean);
-          submitData.append(key, JSON.stringify(arrayValue));
-        } else {
-          submitData.append(key, formData[key]);
-        }
-      });
-
-      if (imageFile) submitData.append("routeMap", imageFile);
-      if (heroImageFile) submitData.append("heroImage", heroImageFile);
-      trailImageFiles.forEach((file) => submitData.append("trailImages", file));
-
-      if (isEditing) {
-        submitData.append("existingTrailImages", JSON.stringify(existingTrailImages));
-        submitData.append("imagesToDelete", JSON.stringify(imagesToDelete));
-      }
-
-      if (isEditing) {
-        await api.updateTrail(currentTrailId, submitData);
-        setMessage({ type: "success", text: "Trail updated successfully!" });
+      if (isEditing || hasAutosaved) {
+        const res = await api.updateTrail(responseId, submitData);
+        if (!isAutoSave) setMessage({ type: "success", text: "Trail updated successfully!" });
       } else {
-        await api.createTrail(submitData);
-        setMessage({ type: "success", text: "Trail created successfully!" });
+        const res = await api.createTrail(submitData);
+        responseId = res.trail._id;
+        setCurrentTrailId(responseId);
+        setHasAutosaved(true);
+        if (!isAutoSave) setMessage({ type: "success", text: "Trail created successfully!" });
       }
 
-      resetForm();
-      setShowForm(false);
       fetchExistingTrails();
 
-      setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+      if (!isAutoSave) {
+        resetForm();
+        setShowForm(false);
+        setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+      }
+      return true;
     } catch (error) {
-      setMessage({ type: "error", text: error.message || "Operation failed." });
+      console.error(error);
+      if (!isAutoSave) setMessage({ type: "error", text: error.message || "Operation failed." });
+      return false;
     } finally {
-      setLoading(false);
+      if (!isAutoSave) setLoading(false);
     }
   };
+
+  const handleAction = async (e, targetStatus) => {
+    if (e) e.preventDefault();
+    await internalSave(targetStatus, false);
+  };
+
+  const { isSaving, lastSaved } = useAutoSave(
+    { formData, imageFile, heroImageFile, trailImageFiles },
+    async () => {
+      // Autosave only if we have at least a trail name
+      if (!formData.trailName) return;
+      await internalSave("draft", true);
+    },
+    3000,
+    showForm // only run autosave when form is open
+  );
 
   // --- EDIT & DELETE HANDLERS ---
   const handleEdit = (trail) => {
@@ -461,8 +498,10 @@ const AddTrail = () => {
           formData={formData}
           handleChange={handleChange}
           handleFileChange={handleFileChange}
-          handleSubmit={handleSubmit}
+          handleAction={handleAction}
           loading={loading}
+          isSaving={isSaving}
+          lastSaved={lastSaved}
           isEditing={isEditing}
           resetForm={resetForm}
           setShowForm={setShowForm}
