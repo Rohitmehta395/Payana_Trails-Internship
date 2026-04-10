@@ -1,16 +1,6 @@
 import React from "react";
 import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable";
@@ -56,43 +46,18 @@ const SortableRow = ({ item, renderRow }) => {
   );
 };
 
-const DraggableTableBody = ({ items, onReorder, renderRow }) => {
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-
-    if (active && over && active.id !== over.id) {
-      const oldIndex = items.findIndex((item) => item._id === active.id);
-      const newIndex = items.findIndex((item) => item._id === over.id);
-      
-      const newItems = arrayMove(items, oldIndex, newIndex);
-      onReorder(newItems);
-    }
-  };
-
+const DraggableTableBody = ({ items, renderRow }) => {
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
-      <tbody className="text-sm text-gray-700 bg-white">
-        <SortableContext
-          items={items.map((i) => i._id)}
-          strategy={verticalListSortingStrategy}
-        >
-          {items.map((item) => (
-            <SortableRow key={item._id} item={item} renderRow={renderRow} />
-          ))}
-        </SortableContext>
-      </tbody>
-    </DndContext>
+    <tbody className="text-sm text-gray-700 bg-white">
+      <SortableContext
+        items={items.map((i) => i._id)}
+        strategy={verticalListSortingStrategy}
+      >
+        {items.map((item) => (
+          <SortableRow key={item._id} item={item} renderRow={renderRow} />
+        ))}
+      </SortableContext>
+    </tbody>
   );
 };
 
