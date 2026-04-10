@@ -136,7 +136,7 @@ const SignatureJourneys = () => {
                         ? `${IMAGE_BASE_URL}${journey.heroImage}`
                         : null
                     }
-                    trailId={journey._id}
+                    trailSlug={journey.slug}
                   />
                 </div>
               ))}

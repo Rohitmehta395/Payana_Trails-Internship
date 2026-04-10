@@ -11,7 +11,7 @@ import BrownBtn from "../components/common/buttons/BrownBtn";
 import TrailActionButtons from "../components/sections/TrailDetail/TrailActionButtons";
 
 const TrailDetails = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [trail, setTrail] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +19,7 @@ const TrailDetails = () => {
   useEffect(() => {
     const fetchTrail = async () => {
       try {
-        const data = await api.getTrailById(id);
+        const data = await api.getTrailById(slug);
         setTrail(data);
       } catch (error) {
         console.error("Failed to fetch trail details", error);
@@ -28,7 +28,7 @@ const TrailDetails = () => {
       }
     };
     fetchTrail();
-  }, [id]);
+  }, [slug]);
 
   const transformed = useMemo(() => {
     if (!trail) return null;

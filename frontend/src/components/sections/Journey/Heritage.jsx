@@ -109,7 +109,7 @@ const Heritage = () => {
                 imgSrc={
                   trail.heroImage ? `${IMAGE_BASE_URL}${trail.heroImage}` : null
                 }
-                trailId={trail._id}
+                trailSlug={trail.slug}
               />
             ))}
           </div>

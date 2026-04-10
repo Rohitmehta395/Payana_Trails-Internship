@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const mongoose = require("mongoose");
 const Trail = require("../models/Trail");
 const { processImages, resolveUploadPath, getImageStats } = require("../middlewares/processImage");
 
@@ -27,7 +28,25 @@ router.get("/", async (req, res) => {
     const isAdmin = req.query.admin === "true";
     const filter = isAdmin ? {} : { isActive: true, status: 'published' };
     const trails = await Trail.find(filter).sort({ order: 1, createdAt: -1 });
-    res.status(200).json(trails);
+
+    // Self-healing: Ensure every trail in the response has a slug for the frontend
+    const trailsWithSlugs = trails.map((trail) => {
+      const trailObj = trail.toObject();
+      if (!trailObj.slug) {
+        // Fallback slug generation for items already in DB without slugs
+        trailObj.slug = (trailObj.trailName || "unnamed")
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+        
+        // If still empty, use ID
+        if (!trailObj.slug) trailObj.slug = trailObj._id.toString();
+      }
+      return trailObj;
+    });
+
+    res.status(200).json(trailsWithSlugs);
   } catch (error) {
     res
       .status(500)
@@ -35,15 +54,42 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET single trail by id
-router.get("/:id", async (req, res) => {
+// GET single trail by id or slug
+router.get("/:identifier", async (req, res) => {
   try {
+    const { identifier } = req.params;
     const isAdmin = req.query.admin === "true";
-    const filter = isAdmin
-      ? { _id: req.params.id }
-      : { _id: req.params.id, isActive: true, status: 'published' };
+    
+    let filter = {};
+    const isObjectId = mongoose.Types.ObjectId.isValid(identifier);
+    
+    if (isObjectId) {
+      filter = { _id: identifier };
+    } else {
+      filter = { slug: identifier };
+    }
 
-    const trail = await Trail.findOne(filter);
+    if (!isAdmin) {
+      filter.isActive = true;
+      filter.status = 'published';
+    }
+
+    let trail = await Trail.findOne(filter);
+
+    // Fallback: If not found by slug and identifier is not an ID, 
+    // try to find by slugifying all trail names (handles legacy records)
+    if (!trail && !isObjectId) {
+      const allTrails = await Trail.find(isAdmin ? {} : { isActive: true, status: 'published' });
+      trail = allTrails.find(t => {
+        const s = (t.trailName || "")
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+        return s === identifier;
+      });
+    }
+
     if (!trail) {
       return res.status(404).json({ message: "Trail not found" });
     }
@@ -55,6 +101,7 @@ router.get("/:id", async (req, res) => {
       .json({ message: "Failed to fetch trail", error: error.message });
   }
 });
+
 
 
 // PATCH toggle a trail's active status

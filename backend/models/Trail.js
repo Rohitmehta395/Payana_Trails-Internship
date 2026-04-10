@@ -111,8 +111,47 @@ const trailSchema = new mongoose.Schema(
         return this.status !== 'draft';
       },
     },
+    slug: {
+      type: String,
+      unique: true,
+      sparse: true, // Allow multiple nulls if necessary, though we aim to populate it
+    },
   },
   { timestamps: true },
 );
 
+// Helper function to generate slug
+const slugify = (text) => {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
+};
+
+trailSchema.pre("save", async function (next) {
+  if (this.isModified("trailName") || !this.slug) {
+    let baseSlug = slugify(this.trailName || "unnamed-trail");
+    let uniqueSlug = baseSlug;
+    let counter = 1;
+
+    // Check for uniqueness
+    while (true) {
+      const existingTrail = await mongoose.models.Trail.findOne({
+        slug: uniqueSlug,
+        _id: { $ne: this._id },
+      });
+      if (!existingTrail) break;
+      uniqueSlug = `${baseSlug}-${counter++}`;
+    }
+    this.slug = uniqueSlug;
+  }
+  next();
+});
+
 module.exports = mongoose.model("Trail", trailSchema);
+

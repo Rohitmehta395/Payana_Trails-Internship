@@ -37,6 +37,7 @@ const ExploreOurTrails = () => {
             date: dateStr,
             trail: trail.trailRoute,
             trailType: trail.trailType || "",
+            slug: trail.slug,
             // Assuming the hero image is returned as a relative path
             imgSrc: trail.heroImage
               ? `${IMAGE_BASE_URL}${trail.heroImage}`
@@ -149,7 +150,7 @@ const ExploreOurTrails = () => {
                   trail={service.trail}
                   trailType={service.trailType}
                   imgSrc={service.imgSrc}
-                  trailId={service.id}
+                  trailSlug={service.slug}
                 />
               ))
             ) : (

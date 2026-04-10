@@ -27,10 +27,10 @@ export const api = {
     }
   },
 
-  getTrailById: async (id, isAdmin = false) => {
+  getTrailById: async (identifier, isAdmin = false) => {
     try {
       const suffix = isAdmin ? "?admin=true" : "";
-      const response = await fetch(`${API_BASE_URL}/trails/${id}${suffix}`);
+      const response = await fetch(`${API_BASE_URL}/trails/${identifier}${suffix}`);
       if (!response.ok) throw new Error("Failed to fetch trail details");
       return await response.json();
     } catch (error) {
