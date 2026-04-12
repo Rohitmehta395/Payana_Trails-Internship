@@ -98,9 +98,9 @@ export default function Header() {
           name: "Trails",
           path: "/journeys",
           submenu: [
+            { name: "Signature Trails", path: "/journeys/signature" },
             { name: "Wildlife Trails", path: "/journeys/wildlife" },
             { name: "Heritage Trails", path: "/journeys/heritage" },
-            { name: "Signature Trails", path: "/journeys/signature" },
             { name: "Cultural & Immersive Trails", path: "/journeys/cultural" },
           ],
         },

@@ -254,12 +254,14 @@ router.put("/:id", cpUpload, processImages(trailFolderResolver), async (req, res
       updateData.isActive = updateData.status === 'published';
     }
 
-    const updatedTrail = await Trail.findByIdAndUpdate(trailId, updateData, {
-      returnDocument: 'after',
-      runValidators: true,
+    // Apply updates to the already-fetched existingTrail (avoid redundant DB call)
+    // Exclude 'slug' from updateData so the pre-save hook always controls it
+    delete updateData.slug;
+    Object.keys(updateData).forEach(key => {
+      existingTrail[key] = updateData[key];
     });
-    if (!updatedTrail)
-      return res.status(404).json({ message: "Trail not found" });
+
+    const updatedTrail = await existingTrail.save();
 
     res.status(200).json({ trail: updatedTrail, imageStats: req.imageStats || [] });
   } catch (error) {

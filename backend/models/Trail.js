@@ -133,15 +133,18 @@ const slugify = (text) => {
     .replace(/-+$/, '');
 };
 
+// Always regenerate slug from trailName on every save so the link stays in sync
 trailSchema.pre("save", async function () {
-  if (this.isModified("trailName") || !this.slug) {
-    let baseSlug = slugify(this.trailName || "unnamed-trail");
+  // Regenerate slug whenever trailName is present — always keep them in sync
+  if (this.trailName) {
+    let baseSlug = slugify(this.trailName);
     let uniqueSlug = baseSlug;
     let counter = 1;
 
-    // Check for uniqueness
+    // Check for uniqueness (exclude the current document)
     while (true) {
-      const existingTrail = await mongoose.models.Trail.findOne({
+      const Model = this.constructor;
+      const existingTrail = await Model.findOne({
         slug: uniqueSlug,
         _id: { $ne: this._id },
       });
@@ -149,6 +152,9 @@ trailSchema.pre("save", async function () {
       uniqueSlug = `${baseSlug}-${counter++}`;
     }
     this.slug = uniqueSlug;
+  } else if (!this.slug) {
+    // Fallback: no name yet (pure draft), assign a placeholder
+    this.slug = `unnamed-trail-${this._id}`;
   }
 });
 

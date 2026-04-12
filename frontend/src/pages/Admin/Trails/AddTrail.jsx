@@ -309,59 +309,79 @@ const AddTrail = () => {
   };
 
   const [hasAutosaved, setHasAutosaved] = useState(false);
+  const activeSavePromise = useRef(null);
 
-  const internalSave = async (status, isAutoSave = false) => {
-    cancelPendingCompressionPreviews();
-    if (!isAutoSave) {
-      setLoading(true);
-      setMessage({ type: "", text: "" });
+
+  const internalSave = async (targetStatus, isAutoSave = false) => {
+    // If a save is already in progress, wait for it before starting this one
+    if (activeSavePromise.current) {
+      try {
+        await activeSavePromise.current;
+      } catch (e) {
+        // Even if the previous one failed, we can try again
+      }
     }
 
-    if (status === 'published' && (!isEditing && !hasAutosaved && (!imageFile || !heroImageFile))) {
-      setMessage({
-        type: "error",
-        text: "Please select both Route Map and Hero Image for published trails.",
-      });
-      if (!isAutoSave) setLoading(false);
-      return false;
-    }
-
-    try {
-      const submitData = buildFormData(status);
-      let responseId = currentTrailId;
-
-      if (isEditing || hasAutosaved) {
-        const res = await api.updateTrail(responseId, submitData);
-        if (!isAutoSave) setMessage({ type: "success", text: "Trail updated successfully!" });
-      } else {
-        const res = await api.createTrail(submitData);
-        responseId = res.trail._id;
-        setCurrentTrailId(responseId);
-        setHasAutosaved(true);
-        if (!isAutoSave) setMessage({ type: "success", text: "Trail created successfully!" });
+    // Now start our save and store the promise
+    activeSavePromise.current = (async () => {
+      cancelPendingCompressionPreviews();
+      if (!isAutoSave) {
+        setLoading(true);
+        setMessage({ type: "", text: "" });
       }
 
-      fetchExistingTrails();
-
-      if (!isAutoSave) {
-        resetForm();
-        setShowForm(false);
-        setTimeout(() => setMessage({ type: "", text: "" }), 3000);
-      }
-      return true;
-    } catch (error) {
-      console.error(error);
-      if (!isAutoSave) {
-        // Use the error message from the API if available
-        setMessage({ 
-          type: "error", 
-          text: error.message || "Operation failed." 
+      if (targetStatus === 'published' && (!isEditing && !hasAutosaved && (!imageFile || !heroImageFile))) {
+        setMessage({
+          type: "error",
+          text: "Please select both Route Map and Hero Image for published trails.",
         });
+        if (!isAutoSave) setLoading(false);
+        return false;
       }
-      return false;
-    } finally {
-      if (!isAutoSave) setLoading(false);
-    }
+
+      try {
+        // Build formData with the requested status
+        const submitData = buildFormData(targetStatus);
+        
+        // We capture the ID at this exact moment in case it was updated by the previous awaited promise
+        let responseId = currentTrailId;
+
+        if (isEditing || hasAutosaved) {
+          await api.updateTrail(responseId, submitData);
+          if (!isAutoSave) setMessage({ type: "success", text: "Trail updated successfully!" });
+        } else {
+          const res = await api.createTrail(submitData);
+          const newId = res.trail._id;
+          setCurrentTrailId(newId);
+          setHasAutosaved(true);
+          if (!isAutoSave) setMessage({ type: "success", text: "Trail created successfully!" });
+        }
+
+        fetchExistingTrails();
+
+        if (!isAutoSave) {
+          resetForm();
+          setShowForm(false);
+          setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+        }
+        return true;
+      } catch (error) {
+        console.error(error);
+        if (!isAutoSave) {
+          setMessage({ 
+            type: "error", 
+            text: error.message || "Operation failed." 
+          });
+        }
+        return false;
+      } finally {
+        if (!isAutoSave) setLoading(false);
+      }
+    })();
+
+    const result = await activeSavePromise.current;
+    activeSavePromise.current = null;
+    return result;
   };
 
   const handleAction = async (e, targetStatus) => {
