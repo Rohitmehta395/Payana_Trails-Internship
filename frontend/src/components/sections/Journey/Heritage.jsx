@@ -4,12 +4,15 @@ import heritageImg from "../../../assets/Journey/Heritage_Main.webp";
 import EOTCard from "../../common/cards/EOTCard";
 import JourneySearchBar from "./JourneySearchBar";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
+import usePageHeroImages from "../../../hooks/usePageHeroImages";
 
 const Heritage = () => {
   const [trails, setTrails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const { images: heroImgs } = usePageHeroImages("journeys/heritage");
+  const heroBg = heroImgs.length > 0 ? (heroImgs[0].desktop || heroImgs[0]) : heritageImg;
 
   useEffect(() => {
     const fetchTrails = async () => {
@@ -50,7 +53,7 @@ const Heritage = () => {
       <CommonHero
         title="Explore Our Heritage Trails"
         description="Discover the stories, architecture and legacies that have shaped civilisations across time."
-        bgImage={heritageImg}
+        bgImage={heroBg}
         breadcrumbs={[
           { label: "HOME", path: "/" },
           { label: "JOURNEY", path: "/journeys" },

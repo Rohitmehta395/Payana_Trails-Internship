@@ -7,6 +7,7 @@ import PayanaWay from "../components/sections/Home/PayanaWay";
 import StoriesMoments from "../components/sections/Home/StoriesMoments";
 import ClosingInvitation from "../components/sections/Home/ClosingInvitation";
 import ShareExperience from "../components/sections/Home/ShareExperience";
+import usePageHeroImages from "../hooks/usePageHeroImages";
 
 //HardCoded Hero Images
 //Desktop
@@ -38,25 +39,28 @@ import imgM11 from "../assets/Home/hero/Mobile/11.FloatingMarket-Thailand-Portra
 import imgM12 from "../assets/Home/hero/Mobile/12.MountKailas-Tibet-Portrait.jpg";
 import ExploreDestination from "../components/sections/Home/ExploreDestination";
 
+// Static fallback images
+const FALLBACK_IMAGES = [
+  { desktop: "/heroBg-desktop.webp", mobile: "/heroBg-mobile.jpg" },
+  { desktop: imgD2, mobile: imgM2 },
+  { desktop: imgD3, mobile: imgM3 },
+  { desktop: imgD4, mobile: imgM4 },
+  { desktop: imgD5, mobile: imgM5 },
+  { desktop: imgD6, mobile: imgM6 },
+  { desktop: imgD7, mobile: imgM7 },
+  { desktop: imgD8, mobile: imgM8 },
+  { desktop: imgD9, mobile: imgM9 },
+  { desktop: imgD10, mobile: imgM10 },
+  { desktop: imgD11, mobile: imgM11 },
+  { desktop: imgD12, mobile: imgM12 },
+];
+
 const Home = () => {
   const SITE_URL = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
   const OG_IMAGE = `${SITE_URL}/heroBg-desktop.webp`;
 
-  const heroImages = [
-    { desktop: "/heroBg-desktop.webp", mobile: "/heroBg-mobile.jpg" },
-    // { desktop: imgD1, mobile: imgM1 },
-    { desktop: imgD2, mobile: imgM2 },
-    { desktop: imgD3, mobile: imgM3 },
-    { desktop: imgD4, mobile: imgM4 },
-    { desktop: imgD5, mobile: imgM5 },
-    { desktop: imgD6, mobile: imgM6 },
-    { desktop: imgD7, mobile: imgM7 },
-    { desktop: imgD8, mobile: imgM8 },
-    { desktop: imgD9, mobile: imgM9 },
-    { desktop: imgD10, mobile: imgM10 },
-    { desktop: imgD11, mobile: imgM11 },
-    { desktop: imgD12, mobile: imgM12 },
-  ];
+  // Pull images from DB; fall back to static assets if DB has none
+  const { images: heroImages } = usePageHeroImages("home", FALLBACK_IMAGES);
   return (
     <>
       <Helmet>

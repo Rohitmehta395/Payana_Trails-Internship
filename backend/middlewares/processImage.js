@@ -11,9 +11,11 @@ const fs = require("fs");
  * trailImages→ 1200 × 800   (gallery cards)
  */
 const RESIZE_PRESETS = {
-  heroImage:   { width: 1920, height: 1080 },
-  routeMap:    { width: 1200, height: 900  },
-  trailImages: { width: 1920, height: 1080 },
+  heroImage:             { width: 1920, height: 1080 },
+  routeMap:              { width: 1200, height: 900  },
+  trailImages:           { width: 1920, height: 1080 },
+  pageHeroImages:        { width: 1920, height: 1080 }, // Page hero – desktop landscape
+  pageHeroImagesMobile:  { width: 768,  height: 1024 }, // Page hero – mobile portrait
 };
 
 const buildSharpPipeline = (file, fieldname) => {

@@ -4,12 +4,15 @@ import JourneySearchBar from "./JourneySearchBar";
 import EOTCard from "../../common/cards/EOTCard";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
 import destinationsImg from "../../../assets/Journey/Destination_Main.webp";
+import usePageHeroImages from "../../../hooks/usePageHeroImages";
 
 const SignatureTrailsPage = () => {
   const [trails, setTrails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const { images: heroImgs } = usePageHeroImages("journeys/signature");
+  const heroBg = heroImgs.length > 0 ? (heroImgs[0].desktop || heroImgs[0]) : destinationsImg;
 
   useEffect(() => {
     const fetchTrails = async () => {
@@ -54,7 +57,7 @@ const SignatureTrailsPage = () => {
       <CommonHero
         title="Explore Our Signature Trails"
         description="A handpicked collection of Payana Trails journeys, designed to bring together the most memorable landscapes, stories, and experiences."
-        bgImage={destinationsImg}
+        bgImage={heroBg}
         breadcrumbs={[
           { label: "HOME", path: "/" },
           { label: "JOURNEY", path: "/journeys" },

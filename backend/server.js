@@ -24,11 +24,13 @@ app.use(ogMiddleware);
 const trailRoutes = require("./routes/trailRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const destinationRoutes = require("./routes/destinationRoutes");
+const pageHeroRoutes = require("./routes/pageHeroRoutes");
 
 // Routes
 app.use("/api/admin", adminRoutes);
 app.use("/api/trails", trailRoutes);
 app.use("/api/destinations", destinationRoutes);
+app.use("/api/page-heroes", pageHeroRoutes);
 
 // ── Serve React frontend (production) ────────────────────────────────────────
 // In production the React app is built into ../frontend/dist. Express serves it

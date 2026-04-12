@@ -329,6 +329,7 @@ export const api = {
     }
   },
 
+
   reorderDestinations: async (items) => {
     try {
       const response = await fetch(`${API_BASE_URL}/destinations/reorder`, {
@@ -344,4 +345,135 @@ export const api = {
       throw error;
     }
   },
+
+  // --- PAGE HERO IMAGE ROUTES ---
+  /** Fetch all pages (admin: full map + page keys) */
+  getAllPageHeroes: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/page-heroes`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to fetch page heroes");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /** Fetch hero images for a specific page (public or admin) */
+  getPageHeroImages: async (pageKey) => {
+    try {
+      const pk = pageKey.replace(/\//g, "~");
+      const response = await fetch(`${API_BASE_URL}/page-heroes/${pk}?t=${Date.now()}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to fetch page hero images");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /** Preview compression stats without saving */
+  previewPageHeroCompression: async (pageKey, files) => {
+    const pk = pageKey.replace(/\//g, "~");
+    const formData = new FormData();
+    const fileArr = Array.isArray(files) ? files : [files];
+    fileArr.filter(Boolean).forEach((f) => formData.append("pageHeroImages", f));
+    if (![...formData.keys()].length) return { imageStats: [] };
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/page-heroes/${pk}/preview-compression`,
+        { method: "POST", body: formData }
+      );
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to preview compression");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /** Upload new hero images (appended). desktopFiles and mobileFiles paired by index. */
+  uploadPageHeroImages: async (pageKey, desktopFiles, mobileFiles = [], alt = "") => {
+    const pk = pageKey.replace(/\//g, "~");
+    const formData = new FormData();
+    const dArr = Array.isArray(desktopFiles) ? desktopFiles : [desktopFiles];
+    const mArr = Array.isArray(mobileFiles)  ? mobileFiles  : (mobileFiles ? [mobileFiles] : []);
+    dArr.forEach((f) => formData.append("pageHeroImages", f));
+    mArr.filter(Boolean).forEach((f) => formData.append("pageHeroImagesMobile", f));
+    formData.append("alt", alt);
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/page-heroes/${pk}/images`,
+        { method: "POST", body: formData }
+      );
+      if (response.status === 413)
+        throw new Error("Files are too large. Please reduce image size.");
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to upload hero images");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /** Reorder images for a page */
+  reorderPageHeroImages: async (pageKey, orderedIds) => {
+    const pk = pageKey.replace(/\//g, "~");
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/page-heroes/${pk}/images/reorder`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderedIds }),
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to reorder hero images");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /** Edit a single image.
+   *  payload: { alt?, isActive?, file? (desktop), mobileFile?, removeMobile? }
+   */
+  updatePageHeroImage: async (pageKey, imageId, payload) => {
+    const pk = pageKey.replace(/\//g, "~");
+    const formData = new FormData();
+    if (payload.alt      !== undefined) formData.append("alt",           payload.alt);
+    if (payload.isActive !== undefined) formData.append("isActive",      payload.isActive);
+    if (payload.removeMobile)           formData.append("removeMobile",  "true");
+    if (payload.file)                   formData.append("pageHeroImages",       payload.file);
+    if (payload.mobileFile)             formData.append("pageHeroImagesMobile", payload.mobileFile);
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/page-heroes/${pk}/images/${imageId}`,
+        { method: "PATCH", body: formData }
+      );
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update hero image");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /** Delete a single image */
+  deletePageHeroImage: async (pageKey, imageId) => {
+    const pk = pageKey.replace(/\//g, "~");
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/page-heroes/${pk}/images/${imageId}`,
+        { method: "DELETE" }
+      );
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to delete hero image");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
+

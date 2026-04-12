@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AddTrail from "./Trails/AddTrail";
 import DestinationManager from "./Destinations/DestinationManager";
+import HeroImageManager from "./HeroImages/HeroImageManager";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("trails");
+  // tabs: "trails" | "destinations" | "heroImages"
 
   useEffect(() => {
     const token = sessionStorage.getItem("adminToken");
@@ -85,6 +87,30 @@ const AdminDashboard = () => {
               </svg>
               Destinations
             </button>
+
+            <button
+              onClick={() => setActiveTab("heroImages")}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-md transition-colors text-sm font-medium ${
+                activeTab === "heroImages"
+                  ? "bg-[#4A3B2A] text-[#F3EFE9]"
+                  : "text-gray-500 hover:bg-[#F3EFE9] hover:text-[#4A3B2A]"
+              }`}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              Hero Images
+            </button>
           </nav>
         </div>
 
@@ -137,7 +163,9 @@ const AdminDashboard = () => {
           {/* Header Text */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-[#4A3B2A] mb-1">
-              {activeTab === "trails" ? "Trail Management" : "Destinations Management"}
+              {activeTab === "trails" && "Trail Management"}
+              {activeTab === "destinations" && "Destinations Management"}
+              {activeTab === "heroImages" && "Hero Image Management"}
             </h1>
             <p className="text-gray-600 text-sm">
               Manage your website content and settings.
@@ -147,6 +175,7 @@ const AdminDashboard = () => {
           {/* Render Active Component */}
           {activeTab === "trails" && <AddTrail />}
           {activeTab === "destinations" && <DestinationManager />}
+          {activeTab === "heroImages" && <HeroImageManager />}
         </div>
       </div>
     </div>

@@ -4,12 +4,15 @@ import wildlifeImg from "../../../assets/Journey/Wildlife_Main.avif";
 import EOTCard from "../../common/cards/EOTCard";
 import JourneySearchBar from "./JourneySearchBar";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
+import usePageHeroImages from "../../../hooks/usePageHeroImages";
 
 const Wildlife = () => {
   const [trails, setTrails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const { images: heroImgs } = usePageHeroImages("journeys/wildlife");
+  const heroBg = heroImgs.length > 0 ? (heroImgs[0].desktop || heroImgs[0]) : wildlifeImg;
 
   useEffect(() => {
     const fetchTrails = async () => {
@@ -50,7 +53,7 @@ const Wildlife = () => {
       <CommonHero
         title="Explore Our Wildlife Trails"
         description="Where every sighting unfolds at nature’s pace, in journeys designed for depth and comfort."
-        bgImage={wildlifeImg}
+        bgImage={heroBg}
         breadcrumbs={[
           { label: "HOME", path: "/" },
           { label: "JOURNEY", path: "/journeys" },

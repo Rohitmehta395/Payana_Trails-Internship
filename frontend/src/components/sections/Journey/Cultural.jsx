@@ -4,12 +4,15 @@ import culturalImg from "../../../assets/Journey/Cultural_Main.webp";
 import EOTCard from "../../common/cards/EOTCard";
 import JourneySearchBar from "./JourneySearchBar";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
+import usePageHeroImages from "../../../hooks/usePageHeroImages";
 
 const Cultural = () => {
   const [trails, setTrails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const { images: heroImgs } = usePageHeroImages("journeys/cultural");
+  const heroBg = heroImgs.length > 0 ? (heroImgs[0].desktop || heroImgs[0]) : culturalImg;
 
   useEffect(() => {
     const fetchTrails = async () => {
@@ -50,7 +53,7 @@ const Cultural = () => {
       <CommonHero
         title="Explore Our Cultural & Immersive Trails"
         description="Meaningful encounters that connect you with the people, traditions and spirit of each destination."
-        bgImage={culturalImg}
+        bgImage={heroBg}
         breadcrumbs={[
           { label: "HOME", path: "/" },
           { label: "JOURNEY", path: "/journeys" },
