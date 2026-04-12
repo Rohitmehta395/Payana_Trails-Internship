@@ -133,7 +133,7 @@ const slugify = (text) => {
     .replace(/-+$/, '');
 };
 
-trailSchema.pre("save", async function (next) {
+trailSchema.pre("save", async function () {
   if (this.isModified("trailName") || !this.slug) {
     let baseSlug = slugify(this.trailName || "unnamed-trail");
     let uniqueSlug = baseSlug;
@@ -150,7 +150,6 @@ trailSchema.pre("save", async function (next) {
     }
     this.slug = uniqueSlug;
   }
-  next();
 });
 
 module.exports = mongoose.model("Trail", trailSchema);

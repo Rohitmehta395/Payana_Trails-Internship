@@ -171,8 +171,10 @@ export const api = {
         throw new Error(`Server error (${response.status}). If uploading images, they might be too large.`);
       }
 
-      if (!response.ok)
+      if (!response.ok) {
+        console.error("API Error Response Data:", data);
         throw new Error(data.message || "Failed to create trail");
+      }
       return data;
     } catch (error) {
       throw error;
@@ -197,8 +199,10 @@ export const api = {
         throw new Error(`Server error (${response.status}). If uploading images, they might be too large.`);
       }
 
-      if (!response.ok)
+      if (!response.ok) {
+        console.error("API Error Response Data:", data);
         throw new Error(data.message || "Failed to update trail");
+      }
       return data;
     } catch (error) {
       throw error;

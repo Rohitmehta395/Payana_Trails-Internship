@@ -169,6 +169,15 @@ router.post("/", cpUpload, processImages(trailFolderResolver), async (req, res) 
       whatsNotIncluded: req.body.whatsNotIncluded ? JSON.parse(req.body.whatsNotIncluded) : [],
     };
     
+    // Handle empty journeyDate string from frontend FormData
+    if (trailData.journeyDate === "") {
+      trailData.journeyDate = null;
+    }
+
+    if (trailData.status) {
+      trailData.isActive = trailData.status === 'published';
+    }
+
     if (trailData.status !== 'draft' && (!trailData.routeMap || !trailData.heroImage)) {
       return res.status(400).json({ message: "Both Route Map and Hero Image are required for published trails." });
     }
@@ -177,7 +186,13 @@ router.post("/", cpUpload, processImages(trailFolderResolver), async (req, res) 
     const savedTrail = await newTrail.save();
     res.status(201).json({ trail: savedTrail, imageStats: req.imageStats || [] });
   } catch (error) {
-    res.status(400).json({ message: "Failed to create trail", error: error.message });
+    console.error("Error creating trail:", error);
+    let errMsg = error.message || "Failed to create trail";
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      errMsg = "Validation Error: " + messages.join(", ");
+    }
+    res.status(400).json({ message: errMsg });
   }
 });
 
@@ -185,8 +200,11 @@ router.post("/", cpUpload, processImages(trailFolderResolver), async (req, res) 
 router.put("/:id", cpUpload, processImages(trailFolderResolver), async (req, res) => {
   try {
     const trailId = req.params.id;
+    const existingTrail = await Trail.findById(trailId);
+    if (!existingTrail) return res.status(404).json({ message: "Trail not found" });
+
     let updateData = { ...req.body };
-    const sanitizedName = (updateData.trailName || "Unnamed_Trail").replace(/[^a-z0-9]/gi, '_');
+    const sanitizedName = (updateData.trailName || existingTrail.trailName || "Unnamed_Trail").replace(/[^a-z0-9]/gi, '_');
     const basePath = `/uploads/Trails/${sanitizedName}/`;
 
     // Parse arrays
@@ -194,12 +212,17 @@ router.put("/:id", cpUpload, processImages(trailFolderResolver), async (req, res
     if (updateData.whatsIncluded) updateData.whatsIncluded = JSON.parse(updateData.whatsIncluded);
     if (updateData.whatsNotIncluded) updateData.whatsNotIncluded = JSON.parse(updateData.whatsNotIncluded);
 
+    // Track old files to delete
+    const filesToDelete = [];
+
     // If new images were uploaded, update the image paths
     if (req.files && req.files['routeMap']) {
       updateData.routeMap = basePath + req.files['routeMap'][0].filename;
+      if (existingTrail.routeMap) filesToDelete.push(existingTrail.routeMap);
     }
     if (req.files && req.files['heroImage']) {
       updateData.heroImage = basePath + req.files['heroImage'][0].filename;
+      if (existingTrail.heroImage) filesToDelete.push(existingTrail.heroImage);
     }
     
     // Process multiple trail images
@@ -215,15 +238,20 @@ router.put("/:id", cpUpload, processImages(trailFolderResolver), async (req, res
     // Remove deleted images from disk
     if (req.body.imagesToDelete) {
       const toDelete = JSON.parse(req.body.imagesToDelete);
-      toDelete.forEach(img => {
-        // resolveUploadPath strips the leading "/" so path.resolve works correctly
-        // on both Windows and Linux, avoiding the drive-root-relative trap.
-        const filePath = resolveUploadPath(img);
-        fs.unlink(filePath, (err) => {
-          if (err) console.error("Failed to delete old image file:", filePath, err.message);
-          else console.log("Deleted old image:", filePath);
-        });
+      filesToDelete.push(...toDelete);
+    }
+
+    filesToDelete.forEach(img => {
+      const filePath = resolveUploadPath(img);
+      fs.unlink(filePath, (err) => {
+        if (err && err.code !== 'ENOENT') {
+          console.error("Failed to delete old image file:", filePath, err.message);
+        }
       });
+    });
+
+    if (updateData.status) {
+      updateData.isActive = updateData.status === 'published';
     }
 
     const updatedTrail = await Trail.findByIdAndUpdate(trailId, updateData, {
@@ -236,9 +264,12 @@ router.put("/:id", cpUpload, processImages(trailFolderResolver), async (req, res
     res.status(200).json({ trail: updatedTrail, imageStats: req.imageStats || [] });
   } catch (error) {
     console.error("Error updating trail:", error);
-    res
-      .status(400)
-      .json({ message: "Failed to update trail", error: error.message });
+    let errMsg = error.message || "Failed to update trail";
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      errMsg = "Validation Error: " + messages.join(", ");
+    }
+    res.status(400).json({ message: errMsg });
   }
 });
 
@@ -251,24 +282,31 @@ router.delete("/:id", async (req, res) => {
     if (!trailToDelete)
       return res.status(404).json({ message: "Trail not found" });
 
-    // Delete the entire trail images folder from the server
-    const sanitizedName = (trailToDelete.trailName || "Unnamed_Trail").replace(/[^a-z0-9]/gi, '_');
-    const folderPath = path.join(__dirname, "..", "uploads", "Trails", sanitizedName);
-    
-    if (fs.existsSync(folderPath)) {
-      fs.rmSync(folderPath, { recursive: true, force: true });
-    } else {
-      // Fallback clean up for old images that weren't in a named folder
-      if (trailToDelete.routeMap) {
-        fs.unlink(path.join(__dirname, "..", trailToDelete.routeMap), () => {});
+    // Extract all unique folders where this trail's images reside
+    const allImages = [
+      trailToDelete.routeMap,
+      trailToDelete.heroImage,
+      ...(trailToDelete.trailImages || [])
+    ].filter(Boolean); // removes empty/null ones
+
+    const foldersToDelete = new Set();
+    allImages.forEach(imgPath => {
+      try {
+        const absolutePath = resolveUploadPath(imgPath);
+        foldersToDelete.add(path.dirname(absolutePath));
+      } catch (e) {}
+    });
+
+    // Delete the identified folders
+    foldersToDelete.forEach(folderPath => {
+      if (fs.existsSync(folderPath)) {
+        try {
+          fs.rmSync(folderPath, { recursive: true, force: true });
+        } catch (e) {
+          console.error(`Failed to delete folder: ${folderPath}`, e);
+        }
       }
-      if (trailToDelete.heroImage) {
-        fs.unlink(path.join(__dirname, "..", trailToDelete.heroImage), () => {});
-      }
-      if (trailToDelete.trailImages) {
-        trailToDelete.trailImages.forEach(img => fs.unlink(path.join(__dirname, "..", img), () => {}));
-      }
-    }
+    });
 
     await Trail.findByIdAndDelete(trailId);
     res.status(200).json({ message: "Trail deleted successfully" });

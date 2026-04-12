@@ -351,7 +351,13 @@ const AddTrail = () => {
       return true;
     } catch (error) {
       console.error(error);
-      if (!isAutoSave) setMessage({ type: "error", text: error.message || "Operation failed." });
+      if (!isAutoSave) {
+        // Use the error message from the API if available
+        setMessage({ 
+          type: "error", 
+          text: error.message || "Operation failed." 
+        });
+      }
       return false;
     } finally {
       if (!isAutoSave) setLoading(false);
