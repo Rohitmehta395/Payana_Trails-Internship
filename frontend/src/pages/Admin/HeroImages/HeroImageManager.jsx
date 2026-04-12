@@ -9,7 +9,8 @@ import {
 } from "@dnd-kit/core";
 import {
   SortableContext,
-  horizontalListSortingStrategy,
+  // horizontalListSortingStrategy,
+  rectSortingStrategy,
   useSortable,
   arrayMove,
 } from "@dnd-kit/sortable";
@@ -909,9 +910,29 @@ const HeroImageManager = () => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = images.findIndex((img) => img._id === active.id);
-    const newIndex = images.findIndex((img) => img._id === over.id);
-    const newOrder = arrayMove(images, oldIndex, newIndex);
+    // const oldIndex = images.findIndex((img) => img._id === active.id);
+    // const newIndex = images.findIndex((img) => img._id === over.id);
+    // const newOrder = arrayMove(images, oldIndex, newIndex);
+
+    const isMobileView = uploadVariant === "mobile";
+    const displayImages = isMobileView
+      ? images.filter((img) => img.mobileUrl)
+      : images;
+
+    const oldIndex = displayImages.findIndex((img) => img._id === active.id);
+    const newIndex = displayImages.findIndex((img) => img._id === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+
+    const reorderedDisplay = arrayMove(displayImages, oldIndex, newIndex);
+
+    const newOrder = isMobileView
+      ? (() => {
+          const reorderedIds = new Set(reorderedDisplay.map((img) => img._id));
+          const untouched = images.filter((img) => !reorderedIds.has(img._id));
+          return [...reorderedDisplay, ...untouched];
+        })()
+      : reorderedDisplay;
+
     setImages(newOrder);
 
     try {
@@ -1287,7 +1308,8 @@ const HeroImageManager = () => {
               >
                 <SortableContext
                   items={displayImages.map((img) => img._id)}
-                  strategy={horizontalListSortingStrategy}
+                  // strategy={horizontalListSortingStrategy}
+                  strategy={rectSortingStrategy}  
                 >
                   <div
                     className={`grid gap-4 ${
