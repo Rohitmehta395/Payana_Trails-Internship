@@ -6,6 +6,7 @@ const fs = require("fs");
 const mongoose = require("mongoose");
 const Trail = require("../models/Trail");
 const { processImages, resolveUploadPath, getImageStats } = require("../middlewares/processImage");
+const { requireAdmin, requireAdminIfRequested } = require("../middlewares/adminAuth");
 
 // Use memoryStorage so Sharp can intercept buffers before writing to disk
 const upload = multer({ storage: multer.memoryStorage() });
@@ -21,9 +22,30 @@ const trailFolderResolver = (req) => {
   return path.join(__dirname, "..", "uploads", "Trails", sanitizedName);
 };
 
+const normalizeItinerary = (itinerary) =>
+  itinerary
+    .map((day) => ({
+      title: typeof day?.title === "string" ? day.title.trim() : "",
+      points: Array.isArray(day?.points)
+        ? day.points
+            .map((point) => (typeof point === "string" ? point.trim() : ""))
+            .filter(Boolean)
+        : [],
+      accommodation:
+        typeof day?.accommodation === "string" ? day.accommodation.trim() : "",
+      meals: typeof day?.meals === "string" ? day.meals.trim() : "",
+    }))
+    .filter(
+      (day) =>
+        day.title ||
+        day.points.length > 0 ||
+        day.accommodation ||
+        day.meals,
+    );
+
 // GET all trails
 // Admin panel gets everything; public pages only get active trails
-router.get("/", async (req, res) => {
+router.get("/", requireAdminIfRequested, async (req, res) => {
   try {
     const isAdmin = req.query.admin === "true";
     const filter = isAdmin ? {} : { isActive: true, status: 'published' };
@@ -32,6 +54,9 @@ router.get("/", async (req, res) => {
     // Self-healing: Ensure every trail in the response has a slug for the frontend
     const trailsWithSlugs = trails.map((trail) => {
       const trailObj = trail.toObject();
+      if (!isAdmin) {
+        delete trailObj.itineraryDraft;
+      }
       if (!trailObj.slug) {
         // Fallback slug generation for items already in DB without slugs
         trailObj.slug = (trailObj.trailName || "unnamed")
@@ -55,7 +80,7 @@ router.get("/", async (req, res) => {
 });
 
 // GET single trail by id or slug
-router.get("/:identifier", async (req, res) => {
+router.get("/:identifier", requireAdminIfRequested, async (req, res) => {
   try {
     const { identifier } = req.params;
     const isAdmin = req.query.admin === "true";
@@ -94,7 +119,12 @@ router.get("/:identifier", async (req, res) => {
       return res.status(404).json({ message: "Trail not found" });
     }
 
-    res.status(200).json(trail);
+    const trailResponse = trail.toObject();
+    if (!isAdmin) {
+      delete trailResponse.itineraryDraft;
+    }
+
+    res.status(200).json(trailResponse);
   } catch (error) {
     res
       .status(500)
@@ -105,7 +135,7 @@ router.get("/:identifier", async (req, res) => {
 
 
 // PATCH toggle a trail's active status
-router.patch("/:id/toggle", async (req, res) => {
+router.patch("/:id/toggle", requireAdmin, async (req, res) => {
   try {
     const trail = await Trail.findById(req.params.id);
     if (!trail) return res.status(404).json({ message: "Trail not found" });
@@ -118,7 +148,7 @@ router.patch("/:id/toggle", async (req, res) => {
 });
 
 // PUT (Reorder) trails
-router.put("/reorder", async (req, res) => {
+router.put("/reorder", requireAdmin, async (req, res) => {
   try {
     const { items } = req.body;
     if (!items || !Array.isArray(items)) {
@@ -140,7 +170,7 @@ router.put("/reorder", async (req, res) => {
 });
 
 // POST image compression preview for admin uploads
-router.post("/preview-image-stats", cpUpload, async (req, res) => {
+router.post("/preview-image-stats", requireAdmin, cpUpload, async (req, res) => {
   try {
     const imageStats = await getImageStats(req.files || {});
     res.status(200).json({ imageStats });
@@ -154,7 +184,7 @@ router.post("/preview-image-stats", cpUpload, async (req, res) => {
 });
 
 // POST a new trail
-router.post("/", cpUpload, processImages(trailFolderResolver), async (req, res) => {
+router.post("/", requireAdmin, cpUpload, processImages(trailFolderResolver), async (req, res) => {
   try {
     const sanitizedName = (req.body.trailName || "Unnamed_Trail").replace(/[^a-z0-9]/gi, '_');
     const basePath = `/uploads/Trails/${sanitizedName}/`;
@@ -197,7 +227,7 @@ router.post("/", cpUpload, processImages(trailFolderResolver), async (req, res) 
 });
 
 // --- NEW: PUT (Update) a trail ---
-router.put("/:id", cpUpload, processImages(trailFolderResolver), async (req, res) => {
+router.put("/:id", requireAdmin, cpUpload, processImages(trailFolderResolver), async (req, res) => {
   try {
     const trailId = req.params.id;
     const existingTrail = await Trail.findById(trailId);
@@ -211,6 +241,7 @@ router.put("/:id", cpUpload, processImages(trailFolderResolver), async (req, res
     if (updateData.highlights) updateData.highlights = JSON.parse(updateData.highlights);
     if (updateData.whatsIncluded) updateData.whatsIncluded = JSON.parse(updateData.whatsIncluded);
     if (updateData.whatsNotIncluded) updateData.whatsNotIncluded = JSON.parse(updateData.whatsNotIncluded);
+    if (updateData.itinerary) updateData.itinerary = JSON.parse(updateData.itinerary);
 
     // Track old files to delete
     const filesToDelete = [];
@@ -275,8 +306,42 @@ router.put("/:id", cpUpload, processImages(trailFolderResolver), async (req, res
   }
 });
 
+// PATCH update itinerary for a trail (JSON body, no file upload needed)
+router.patch("/:id/itinerary", requireAdmin, async (req, res) => {
+  try {
+    const trail = await Trail.findById(req.params.id);
+    if (!trail) return res.status(404).json({ message: "Trail not found" });
+
+    const { itinerary, mode = "save" } = req.body;
+    if (!Array.isArray(itinerary)) {
+      return res.status(400).json({ message: "itinerary must be an array" });
+    }
+
+    const normalizedItinerary = normalizeItinerary(itinerary);
+
+    if (mode === "draft") {
+      trail.itineraryDraft = normalizedItinerary;
+    } else {
+      trail.itinerary = normalizedItinerary;
+      trail.itineraryDraft = normalizedItinerary;
+    }
+
+    await trail.save();
+    res.status(200).json({
+      trail,
+      message:
+        mode === "draft"
+          ? "Itinerary draft saved successfully"
+          : "Itinerary saved successfully",
+    });
+  } catch (error) {
+    console.error("Error saving itinerary:", error);
+    res.status(500).json({ message: "Failed to save itinerary", error: error.message });
+  }
+});
+
 // --- NEW: DELETE a trail ---
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", requireAdmin, async (req, res) => {
   try {
     const trailId = req.params.id;
     const trailToDelete = await Trail.findById(trailId);

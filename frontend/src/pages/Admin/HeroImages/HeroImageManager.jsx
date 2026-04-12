@@ -1226,7 +1226,9 @@ const HeroImageManager = () => {
                   <>
                     ({images.filter((i) => i.mobileUrl).length} with
                     mobile&#160;·&#160;
-                    {images.filter((i) => i.mobileUrl && i.isActive).length}{" "}
+                    {
+                      images.filter((i) => i.mobileUrl && i.isActive).length
+                    }{" "}
                     active)
                   </>
                 ) : (

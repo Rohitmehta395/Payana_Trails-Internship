@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
-import TrailList from "./TrailList";
+import TrailListPanel from "./TrailListPanel";
 import TrailForm from "./TrailForm";
 import useScrollToTop from "../../../hooks/useScrollToTop";
 import { useAutoSave } from "../../../hooks/useAutoSave";
@@ -37,6 +37,21 @@ const formatCompressionStat = (stat) => {
 
   return `${stat.originalName}: ${formatBytes(stat.originalSize)} -> ${formatBytes(stat.compressedSize)} (${savedLabel})`;
 };
+
+const NON_FORM_FIELDS = new Set([
+  "_id",
+  "__v",
+  "createdAt",
+  "updatedAt",
+  "order",
+  "isActive",
+  "slug",
+  "routeMap",
+  "heroImage",
+  "trailImages",
+  "itinerary",
+  "itineraryDraft",
+]);
 
 const AddTrail = () => {
   // --- UI STATE ---
@@ -272,6 +287,7 @@ const AddTrail = () => {
     submitData.append("status", statusToSave);
 
     Object.keys(formData).forEach((key) => {
+      if (NON_FORM_FIELDS.has(key)) return;
       if (key === "trailName" || key === "status") return;
       if (key === "highlights") {
         const arrayValue = formData.highlights
@@ -311,6 +327,19 @@ const AddTrail = () => {
   const [hasAutosaved, setHasAutosaved] = useState(false);
   const activeSavePromise = useRef(null);
 
+  const syncTrailInState = (updatedTrail) => {
+    if (!updatedTrail?._id) return;
+
+    setTrails((prev) => {
+      const exists = prev.some((trail) => trail._id === updatedTrail._id);
+      if (!exists) return prev;
+
+      return prev.map((trail) =>
+        trail._id === updatedTrail._id ? { ...trail, ...updatedTrail } : trail,
+      );
+    });
+  };
+
 
   const internalSave = async (targetStatus, isAutoSave = false) => {
     // If a save is already in progress, wait for it before starting this one
@@ -347,19 +376,20 @@ const AddTrail = () => {
         let responseId = currentTrailId;
 
         if (isEditing || hasAutosaved) {
-          await api.updateTrail(responseId, submitData);
+          const response = await api.updateTrail(responseId, submitData);
+          syncTrailInState(response.trail);
           if (!isAutoSave) setMessage({ type: "success", text: "Trail updated successfully!" });
         } else {
           const res = await api.createTrail(submitData);
           const newId = res.trail._id;
           setCurrentTrailId(newId);
           setHasAutosaved(true);
+          setTrails((prev) => [res.trail, ...prev]);
           if (!isAutoSave) setMessage({ type: "success", text: "Trail created successfully!" });
         }
 
-        fetchExistingTrails();
-
         if (!isAutoSave) {
+          await fetchExistingTrails();
           resetForm();
           setShowForm(false);
           setTimeout(() => setMessage({ type: "", text: "" }), 3000);
@@ -469,6 +499,20 @@ const AddTrail = () => {
     }
   };
 
+  // Full save — shows toast + refreshes list
+  const handleItinerarySave = async (trailId, itinerary) => {
+    const response = await api.updateTrailItinerary(trailId, itinerary, "save");
+    syncTrailInState(response.trail);
+    setMessage({ type: "success", text: "Itinerary saved successfully!" });
+    setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+  };
+
+  // Silent autosave — no toast, no list flicker
+  const handleItineraryAutoSave = async (trailId, itinerary) => {
+    const response = await api.updateTrailItinerary(trailId, itinerary, "draft");
+    syncTrailInState(response.trail);
+  };
+
   const handleToggle = async (id) => {
     setTrails((prev) =>
       prev.map((t) => (t._id === id ? { ...t, isActive: !t.isActive } : t)),
@@ -550,13 +594,15 @@ const AddTrail = () => {
         />
       )}
 
-      <TrailList
+      <TrailListPanel
         trails={trails}
         loadingTrails={loadingTrails}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
         handleReorder={handleReorder}
         handleToggle={handleToggle}
+        handleItinerarySave={handleItinerarySave}
+        handleItineraryAutoSave={handleItineraryAutoSave}
       />
     </div>
   );

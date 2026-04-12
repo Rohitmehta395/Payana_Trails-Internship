@@ -65,8 +65,14 @@ export const useAutoSave = (data, saveFunction, delay = 3000, enabled = true) =>
     const handleVisibilityChange = () => {
       // Trigger a save when the tab or app is hidden or closed
       if (document.visibilityState === "hidden" && hasUnsavedChanges) {
-        saveFunction(dataRef.current).catch((err) => console.error("Visibility auto-save failed", err));
-        setHasUnsavedChanges(false); // Optimistically clear
+        setIsSaving(true);
+        saveFunction(dataRef.current)
+          .then(() => {
+            setLastSaved(new Date());
+            setHasUnsavedChanges(false);
+          })
+          .catch((err) => console.error("Visibility auto-save failed", err))
+          .finally(() => setIsSaving(false));
       }
     };
     

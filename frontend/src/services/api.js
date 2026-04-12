@@ -9,6 +9,21 @@ export const IMAGE_BASE_URL = import.meta.env.VITE_API_BASE_URL
   ? import.meta.env.VITE_API_BASE_URL.replace("/api", "")
   : "http://localhost:8000";
 
+const getAdminToken = () => {
+  if (typeof window === "undefined") return null;
+  return window.sessionStorage.getItem("adminToken");
+};
+
+const withAdminAuth = (headers = {}) => {
+  const token = getAdminToken();
+  if (!token) return headers;
+
+  return {
+    ...headers,
+    Authorization: `Bearer ${token}`,
+  };
+};
+
 export const api = {
   // 1. Fetch Trails (For ExploreOurTrails component)
   getTrails: async (category = "All", isAdmin = false) => {
@@ -18,7 +33,9 @@ export const api = {
       if (isAdmin) params.set("admin", "true");
       const url = `${API_BASE_URL}/trails${params.toString() ? "?" + params.toString() : ""}`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: isAdmin ? withAdminAuth() : undefined,
+      });
       if (!response.ok) throw new Error("Failed to fetch trails");
       return await response.json();
     } catch (error) {
@@ -30,7 +47,9 @@ export const api = {
   getTrailById: async (identifier, isAdmin = false) => {
     try {
       const suffix = isAdmin ? "?admin=true" : "";
-      const response = await fetch(`${API_BASE_URL}/trails/${identifier}${suffix}`);
+      const response = await fetch(`${API_BASE_URL}/trails/${identifier}${suffix}`, {
+        headers: isAdmin ? withAdminAuth() : undefined,
+      });
       if (!response.ok) throw new Error("Failed to fetch trail details");
       return await response.json();
     } catch (error) {
@@ -140,6 +159,7 @@ export const api = {
         `${API_BASE_URL}/trails/preview-image-stats`,
         {
           method: "POST",
+          headers: withAdminAuth(),
           body: previewData,
         },
       );
@@ -157,6 +177,7 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/trails`, {
         method: "POST",
+        headers: withAdminAuth(),
         body: trailFormData,
       });
       
@@ -185,6 +206,7 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/trails/${id}`, {
         method: "PUT",
+        headers: withAdminAuth(),
         body: trailFormData, // FormData handles Content-Type automatically
       });
 
@@ -213,6 +235,7 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/trails/${id}`, {
         method: "DELETE",
+        headers: withAdminAuth(),
       });
       const data = await response.json();
       if (!response.ok)
@@ -227,7 +250,7 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/trails/reorder`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
         body: JSON.stringify({ items }),
       });
       const data = await response.json();
@@ -243,10 +266,27 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/trails/${id}/toggle`, {
         method: "PATCH",
+        headers: withAdminAuth(),
       });
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.message || "Failed to toggle trail status");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  updateTrailItinerary: async (id, itinerary, mode = "save") => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/trails/${id}/itinerary`, {
+        method: "PATCH",
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ itinerary, mode }),
+      });
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || "Failed to save itinerary");
       return data;
     } catch (error) {
       throw error;

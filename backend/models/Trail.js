@@ -7,6 +7,16 @@ const arrayLimit = (limit) => {
   };
 };
 
+const itineraryDaySchema = new mongoose.Schema(
+  {
+    title: { type: String, default: "" },
+    points: { type: [String], default: [] },
+    accommodation: { type: String, default: "" },
+    meals: { type: String, default: "" },
+  },
+  { _id: false },
+);
+
 const trailSchema = new mongoose.Schema(
   {
     status: {
@@ -100,6 +110,14 @@ const trailSchema = new mongoose.Schema(
         function(val) { return this.status === 'draft' || val.length <= 18; },
         "Exclusions cannot exceed 18 bullet points"
       ],
+    },
+    itinerary: {
+      type: [itineraryDaySchema],
+      default: [],
+    },
+    itineraryDraft: {
+      type: [itineraryDaySchema],
+      default: [],
     },
     order: {
       type: Number,
