@@ -27,7 +27,7 @@ export default function Hero({ images = defaultImages }) {
     if (images.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 6000); // 6 seconds per image
+    }, 4500); // 4.5 seconds per image
     return () => clearInterval(timer);
   }, [images.length]);
 

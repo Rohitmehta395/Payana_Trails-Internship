@@ -91,7 +91,6 @@ const Destinations = () => {
   const normalizeValue = (value = "") =>
     value.trim().toLowerCase().replace(/\s+/g, " ");
   const { images: heroImgs } = usePageHeroImages("journeys/destinations");
-  const heroBg = heroImgs.length > 0 ? (heroImgs[0].desktop || heroImgs[0]) : destinationsImg;
 
   const matchesDestination = (trailDestination, destinationName) => {
     const normalizedTrailDestination = normalizeValue(trailDestination);
@@ -195,7 +194,8 @@ const Destinations = () => {
       <CommonHero
         title="OUR DESTINATIONS"
         description="The world is full of wonders waiting to be explored. Our handpicked destinations offer a gateway to extraordinary experiences."
-        bgImage={heroBg}
+        images={heroImgs}
+        bgImage={destinationsImg}
         breadcrumbs={[
           { label: "HOME", path: "/" },
           { label: "JOURNEY", path: "/journeys" },

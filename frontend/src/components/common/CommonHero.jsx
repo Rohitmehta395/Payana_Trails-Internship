@@ -1,24 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
-const CommonHero = ({ title, description, bgImage, breadcrumbs }) => {
+const CommonHero = ({ title, description, images = [], bgImage, breadcrumbs }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
 
-  // 1. The Master Orchestrator: This now wraps the ENTIRE component
+  // Normalize images: convert bgImage string into the array format if needed
+  const heroImages =
+    images.length > 0
+      ? images
+      : bgImage
+      ? [{ desktop: bgImage, mobile: bgImage }]
+      : [];
+
+  useEffect(() => {
+    if (heroImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % heroImages.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+
   const staggerContainer = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15, // The perfectly synced delay between each element
-        delayChildren: 0.1, // Initial pause before the sequence starts
+        staggerChildren: 0.15,
+        delayChildren: 0.1,
       },
     },
   };
 
-  // 2. The Individual Item Animation
   const fadeUpItem = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -28,7 +43,6 @@ const CommonHero = ({ title, description, bgImage, breadcrumbs }) => {
     },
   };
 
-  // Extracted button to keep code clean
   const renderBackButton = () => (
     <button
       onClick={() => navigate(-1)}
@@ -44,15 +58,38 @@ const CommonHero = ({ title, description, bgImage, breadcrumbs }) => {
       initial="hidden"
       animate="visible"
       variants={staggerContainer}
-      className="relative w-full h-[60vh] md:h-[80vh] flex flex-col justify-center items-center text-center bg-cover bg-center overflow-hidden"
-      style={{ backgroundImage: `url(${bgImage})` }}
+      className="relative w-full h-[60vh] md:h-[80vh] flex flex-col justify-center items-center text-center overflow-hidden bg-[#110C08]"
     >
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-linear-to-b from-[#4A3B2A]/60 via-[#4A3B2A]/20 to-[#4A3B2A]/60"></div>
+      {/* Background Image Slider (Cross-fade) */}
+      <div className="absolute inset-0 z-0">
+        {heroImages.map((img, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-[1500ms] ease-in-out ${
+              index === currentIndex ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {/* Mobile Background */}
+            <div
+              className="absolute inset-0 bg-cover bg-center sm:hidden"
+              style={{ backgroundImage: `url(${img.mobile || img.desktop || img})` }}
+            />
+            {/* Desktop Background */}
+            <div
+              className="absolute inset-0 bg-cover bg-center hidden sm:block"
+              style={{ backgroundImage: `url(${img.desktop || img})` }}
+            />
+          </div>
+        ))}
+        
+        {/* Background Gradient Overlays for Readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#4A3B2A]/40 via-transparent to-[#4A3B2A]/60 z-10" />
+        <div className="absolute inset-0 bg-black/20 z-10" />
+      </div>
 
       {/* Top Left Controls: Back Button (Desktop Only) */}
       <motion.div
-        variants={fadeUpItem} // Now perfectly synced in the queue
+        variants={fadeUpItem}
         className="hidden md:block absolute top-24 left-6 md:top-32 md:left-12 z-10"
       >
         {renderBackButton()}
@@ -78,7 +115,7 @@ const CommonHero = ({ title, description, bgImage, breadcrumbs }) => {
           </motion.p>
         )}
 
-        {/* Shifted & Styled Breadcrumbs (Pill Design) */}
+        {/* Breadcrumbs */}
         {breadcrumbs && breadcrumbs.length > 0 && (
           <motion.nav
             variants={fadeUpItem}
@@ -98,8 +135,6 @@ const CommonHero = ({ title, description, bgImage, breadcrumbs }) => {
                     {crumb.label}
                   </span>
                 )}
-
-                {/* The >> divider */}
                 {index < breadcrumbs.length - 1 && (
                   <span className="opacity-70 text-xs font-bold tracking-tighter mx-1 drop-shadow-sm">
                     &gt;&gt;
@@ -110,9 +145,9 @@ const CommonHero = ({ title, description, bgImage, breadcrumbs }) => {
           </motion.nav>
         )}
 
-        {/* Go Back Button (Mobile Only - Centered Under Breadcrumbs) */}
+        {/* Go Back Button (Mobile Only) */}
         <motion.div
-          variants={fadeUpItem} // Also perfectly synced for smaller screens
+          variants={fadeUpItem}
           className="md:hidden mt-8 flex justify-center w-full"
         >
           {renderBackButton()}
@@ -122,4 +157,4 @@ const CommonHero = ({ title, description, bgImage, breadcrumbs }) => {
   );
 };
 
-export default CommonHero; 
+export default CommonHero;

@@ -53,7 +53,8 @@ const Heritage = () => {
       <CommonHero
         title="Explore Our Heritage Trails"
         description="Discover the stories, architecture and legacies that have shaped civilisations across time."
-        bgImage={heroBg}
+        images={heroImgs}
+        bgImage={heritageImg}
         breadcrumbs={[
           { label: "HOME", path: "/" },
           { label: "JOURNEY", path: "/journeys" },

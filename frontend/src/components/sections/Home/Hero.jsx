@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CreamBtn from "../../common/buttons/CreamBtn";
 
-export default function Hero({ images = [] }) {
+export default function Hero({ images = [], loading = false }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isUiHidden, setIsUiHidden] = useState(false);
 
@@ -9,7 +9,7 @@ export default function Hero({ images = [] }) {
     if (images.length <= 1) return;
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 8000);
+    }, 4500);
     return () => clearInterval(timer);
   }, [images.length]);
 
@@ -20,6 +20,14 @@ export default function Hero({ images = [] }) {
       new CustomEvent("toggle-ui-mode", { detail: newState }),
     );
   };
+
+  if (loading)
+    return (
+      <section className="relative w-full h-[100dvh] bg-[#110C08] flex items-center justify-center">
+        {/* Simple elegant loader or just a void to prevent flash */}
+        <div className="w-8 h-8 border-2 border-[#F3EFE9]/20 border-t-[#F3EFE9] rounded-full animate-spin opacity-50" />
+      </section>
+    );
 
   if (images.length === 0)
     return (

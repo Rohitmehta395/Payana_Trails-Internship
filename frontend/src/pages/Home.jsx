@@ -60,7 +60,7 @@ const Home = () => {
   const OG_IMAGE = `${SITE_URL}/heroBg-desktop.webp`;
 
   // Pull images from DB; fall back to static assets if DB has none
-  const { images: heroImages } = usePageHeroImages("home", FALLBACK_IMAGES);
+  const { images: heroImages, loading: heroLoading } = usePageHeroImages("home", FALLBACK_IMAGES);
   return (
     <>
       <Helmet>
@@ -85,7 +85,7 @@ const Home = () => {
       </Helmet>
 
       <div>
-      <Hero images={heroImages} />
+      <Hero images={heroImages} loading={heroLoading} />
       <ExploreOurTrails />
       {/* <SignatureTrails /> */}
       <ExploreDestination />

@@ -53,7 +53,8 @@ const Cultural = () => {
       <CommonHero
         title="Explore Our Cultural & Immersive Trails"
         description="Meaningful encounters that connect you with the people, traditions and spirit of each destination."
-        bgImage={heroBg}
+        images={heroImgs}
+        bgImage={culturalImg}
         breadcrumbs={[
           { label: "HOME", path: "/" },
           { label: "JOURNEY", path: "/journeys" },

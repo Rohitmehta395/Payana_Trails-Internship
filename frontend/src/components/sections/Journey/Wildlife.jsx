@@ -53,7 +53,8 @@ const Wildlife = () => {
       <CommonHero
         title="Explore Our Wildlife Trails"
         description="Where every sighting unfolds at nature’s pace, in journeys designed for depth and comfort."
-        bgImage={heroBg}
+        images={heroImgs}
+        bgImage={wildlifeImg}
         breadcrumbs={[
           { label: "HOME", path: "/" },
           { label: "JOURNEY", path: "/journeys" },

@@ -57,7 +57,8 @@ const SignatureTrailsPage = () => {
       <CommonHero
         title="Explore Our Signature Trails"
         description="A handpicked collection of Payana Trails journeys, designed to bring together the most memorable landscapes, stories, and experiences."
-        bgImage={heroBg}
+        images={heroImgs}
+        bgImage={destinationsImg}
         breadcrumbs={[
           { label: "HOME", path: "/" },
           { label: "JOURNEY", path: "/journeys" },
