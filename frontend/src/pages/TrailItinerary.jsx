@@ -691,7 +691,7 @@ const TrailItinerary = () => {
             <Trees className="h-36 w-36 md:h-52 md:w-52" strokeWidth={1} />
           </motion.div>
 
-          <div className="relative mx-auto flex min-h-[85vh] max-w-[76rem] items-end px-6 pb-14 pt-28 md:px-10 md:pb-16 lg:px-12 lg:pb-20">
+          <div className="relative mx-auto flex min-h-[85vh] max-w-[82rem] items-end px-6 pb-14 pt-28 md:px-10 md:pb-16 lg:px-12 lg:pb-20">
             <motion.div
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
@@ -729,22 +729,24 @@ const TrailItinerary = () => {
           </div>
         </section>
 
-        <section className="relative mx-auto max-w-[76rem] px-6 py-12 md:px-10 md:py-16 lg:px-12">
+        <section className="relative mx-auto max-w-[82rem] px-6 py-12 md:px-10 md:py-16 lg:px-12">
           <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#8B6B50]/20 to-transparent md:inset-x-10 lg:inset-x-12" />
 
-          <div className="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)] xl:gap-10">
+          <div className="grid gap-8 lg:grid-cols-[380px_minmax(0,1fr)] xl:gap-10">
             <aside className="h-max lg:sticky lg:top-24">
               <div className="rounded-[32px] border border-[#E5D7C5] bg-[#FCF8F2] p-6 shadow-[0_18px_40px_rgba(74,59,42,0.05)]">
-                <p className="text-[14px] font-semibold uppercase tracking-[0.16em] text-[#8B6B50]">
-                  Journey notes
-                </p>
+                <div className="text-center">
+                  <p className="text-[14px] font-semibold uppercase tracking-[0.16em] text-[#8B6B50]">
+                    Journey notes
+                  </p>
 
-                <h2 className="mt-4 font-serif text-3xl leading-tight text-[#4A3B2A]">
-                  Follow the trail, one chapter at a time.
-                </h2>
+                  <h2 className="mt-4 font-serif text-3xl leading-tight text-[#4A3B2A]">
+                    Follow the trail, one chapter at a time.
+                  </h2>
+                </div>
 
                 <div className="mt-6 grid grid-cols-3 gap-3">
-                  <div className="rounded-2xl border border-[#E5D7C5] bg-white p-4">
+                  <div className="flex flex-col items-center text-center rounded-2xl border border-[#E5D7C5] bg-white p-4">
                     <Compass className="h-4 w-4 text-[#8B6B50]" />
                     <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">
                       Route
@@ -754,7 +756,7 @@ const TrailItinerary = () => {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-[#E5D7C5] bg-white p-4">
+                  <div className="flex flex-col items-center text-center rounded-2xl border border-[#E5D7C5] bg-white p-4">
                     <Trees className="h-4 w-4 text-[#8B6B50]" />
                     <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">
                       Stops
@@ -764,7 +766,7 @@ const TrailItinerary = () => {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-[#E5D7C5] bg-white p-4">
+                  <div className="flex flex-col items-center text-center rounded-2xl border border-[#E5D7C5] bg-white p-4">
                     <Home className="h-4 w-4 text-[#8B6B50]" />
                     <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">
                       Comfort
@@ -775,7 +777,7 @@ const TrailItinerary = () => {
                   </div>
                 </div>
 
-                <div className="mt-8">
+                <div className="mt-8 text-center">
                   <p className="mb-3 text-[14px] font-semibold uppercase tracking-[0.16em] text-[#8B6B50]">
                     Browse the days
                   </p>
