@@ -114,7 +114,8 @@ const DayCard = ({ day, dayNumber, isOpen, onToggle }) => {
                       Day highlights
                     </p>
                     <p className="text-sm text-[#8B6B50]">
-                      Key moments, route notes, and places worth pausing for.
+                      Key experiences, route insights, and meaningful stops
+                      along the way.
                     </p>
                   </div>
                 </div>
@@ -592,9 +593,8 @@ const TrailItinerary = () => {
                   </div>
 
                   <p className="text-sm leading-relaxed text-[#8B6B50] md:text-base">
-                    Open a chapter to see the highlights of the day, along with
-                    meals and overnight stays whenever those details are
-                    available.
+                    Explore each chapter to discover the day’s highlights, along
+                    with included meals and overnight stays where available.
                   </p>
                 </div>
               </div>
