@@ -127,7 +127,16 @@ const TrailDetails = () => {
         trailSlug={transformed.slug || slug}
         trailState={trail}
         hasItinerary={
-          Array.isArray(transformed.itinerary) && transformed.itinerary.length > 0
+          (Array.isArray(transformed.itinerary) && transformed.itinerary.length > 0) ||
+          (Array.isArray(transformed.optionalExperiences) &&
+            transformed.optionalExperiences.some((ex) => ex?.trim())) ||
+          (transformed.flights &&
+            (transformed.flights.domesticIntro?.trim() ||
+              (transformed.flights.domesticLines &&
+                transformed.flights.domesticLines.some((l) => l?.trim())) ||
+              transformed.flights.internationalIntro?.trim() ||
+              transformed.flights.arrivalAirport?.trim() ||
+              transformed.flights.departureAirport?.trim()))
         }
       />
       </div>

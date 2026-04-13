@@ -51,6 +51,8 @@ const NON_FORM_FIELDS = new Set([
   "trailImages",
   "itinerary",
   "itineraryDraft",
+  "optionalExperiences",
+  "flights",
 ]);
 
 const AddTrail = () => {
@@ -500,18 +502,19 @@ const AddTrail = () => {
   };
 
   // Full save — shows toast + refreshes list
-  const handleItinerarySave = async (trailId, itinerary) => {
-    const response = await api.updateTrailItinerary(trailId, itinerary, "save");
+  const handleItinerarySave = async (trailId, itinerary, optionalExperiences, flights) => {
+    const response = await api.updateTrailItinerary(trailId, itinerary, "save", optionalExperiences, flights);
     syncTrailInState(response.trail);
     setMessage({ type: "success", text: "Itinerary saved successfully!" });
     setTimeout(() => setMessage({ type: "", text: "" }), 3000);
   };
 
   // Silent autosave — no toast, no list flicker
-  const handleItineraryAutoSave = async (trailId, itinerary) => {
-    const response = await api.updateTrailItinerary(trailId, itinerary, "draft");
+  const handleItineraryAutoSave = async (trailId, itinerary, optionalExperiences, flights) => {
+    const response = await api.updateTrailItinerary(trailId, itinerary, "draft", optionalExperiences, flights);
     syncTrailInState(response.trail);
   };
+
 
   const handleToggle = async (id) => {
     setTrails((prev) =>

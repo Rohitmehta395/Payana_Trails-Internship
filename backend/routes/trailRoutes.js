@@ -43,6 +43,27 @@ const normalizeItinerary = (itinerary) =>
         day.meals,
     );
 
+const normalizeStringArray = (arr, maxLen) => {
+  if (!Array.isArray(arr)) return [];
+  return arr
+    .map((s) => (typeof s === "string" ? s.slice(0, maxLen) : ""))
+    .slice(0, 4);
+};
+
+const normalizeFlights = (raw) => {
+  if (!raw || typeof raw !== "object") return {};
+  return {
+    domesticIntro:      typeof raw.domesticIntro === "string"      ? raw.domesticIntro.slice(0, 200)      : "",
+    domesticLines:      normalizeStringArray(raw.domesticLines, 200),
+    internationalIntro: typeof raw.internationalIntro === "string" ? raw.internationalIntro.slice(0, 200) : "",
+    arrivalAirport:     typeof raw.arrivalAirport === "string"     ? raw.arrivalAirport.slice(0, 200)     : "",
+    arrivalOptions:     normalizeStringArray(raw.arrivalOptions, 200),
+    departureAirport:   typeof raw.departureAirport === "string"   ? raw.departureAirport.slice(0, 200)   : "",
+    departureOptions:   normalizeStringArray(raw.departureOptions, 200),
+  };
+};
+
+
 // GET all trails
 // Admin panel gets everything; public pages only get active trails
 router.get("/", requireAdminIfRequested, async (req, res) => {
@@ -312,18 +333,28 @@ router.patch("/:id/itinerary", requireAdmin, async (req, res) => {
     const trail = await Trail.findById(req.params.id);
     if (!trail) return res.status(404).json({ message: "Trail not found" });
 
-    const { itinerary, mode = "save" } = req.body;
+    const { itinerary, mode = "save", optionalExperiences, flights } = req.body;
     if (!Array.isArray(itinerary)) {
       return res.status(400).json({ message: "itinerary must be an array" });
     }
 
-    const normalizedItinerary = normalizeItinerary(itinerary);
+    const normalizedItinerary      = normalizeItinerary(itinerary);
+    const normalizedExperiences    = Array.isArray(optionalExperiences)
+      ? optionalExperiences.map((s) => (typeof s === "string" ? s.slice(0, 300) : "")).slice(0, 4)
+      : trail.optionalExperiences;
+    const normalizedFlights        = flights !== undefined
+      ? normalizeFlights(flights)
+      : trail.flights;
 
     if (mode === "draft") {
-      trail.itineraryDraft = normalizedItinerary;
+      trail.itineraryDraft      = normalizedItinerary;
+      trail.optionalExperiences = normalizedExperiences;
+      trail.flights             = normalizedFlights;
     } else {
-      trail.itinerary = normalizedItinerary;
-      trail.itineraryDraft = normalizedItinerary;
+      trail.itinerary           = normalizedItinerary;
+      trail.itineraryDraft      = normalizedItinerary;
+      trail.optionalExperiences = normalizedExperiences;
+      trail.flights             = normalizedFlights;
     }
 
     await trail.save();

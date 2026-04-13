@@ -11,6 +11,10 @@ import {
   Compass,
   Trees,
   MapPin,
+  Sparkles,
+  Plane,
+  PlaneLanding,
+  PlaneTakeoff,
 } from "lucide-react";
 import BrownBtn from "../components/common/buttons/BrownBtn";
 import { api } from "../services/api";
@@ -207,6 +211,229 @@ const DayCard = ({ day, dayNumber, isOpen, onToggle }) => {
   );
 };
 
+// ─── Optional Experiences Section ────────────────────────────────────────────
+const OptionalExperiencesSection = ({ lines }) => {
+  const filled = lines.filter((l) => l && l.trim());
+  if (!filled.length) return null;
+
+  return (
+    <div id="itinerary-optional" className="w-full rounded-[28px] border border-[#E5D7C5]/80 bg-[#FAF7F2] p-6 md:p-8 shadow-[0_12px_30px_rgba(74,59,42,0.04)] scroll-mt-24">
+      {/* Section label */}
+      <div className="mb-6 flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5D7C5] bg-[#FDFBF7] text-[#8B6B50]">
+          <Sparkles className="h-4 w-4" />
+        </div>
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8B6B50]">
+            Optional experiences
+          </p>
+          <p className="text-sm text-[#8B6B50]">
+            Key experiences, route insights, and meaningful stops along the way.
+          </p>
+        </div>
+      </div>
+
+      {/* Experience lines */}
+      <div className="space-y-4">
+        {filled.map((line, idx) => (
+          <div
+            key={idx}
+            className="flex gap-4 rounded-2xl border border-white/60 bg-white/70 px-4 py-4"
+          >
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#4A3B2A] text-xs font-semibold text-[#FDFBF7]">
+              {String(idx + 1).padStart(2, "0")}
+            </div>
+            <p className="text-[15px] leading-relaxed text-[#5A4738] md:text-base pt-0.5">
+              {line.trim()}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── Flights Section ──────────────────────────────────────────────────────────
+const FlightsSection = ({ flights }) => {
+  if (!flights) return null;
+
+  const {
+    domesticIntro, domesticLines,
+    internationalIntro,
+    arrivalAirport, arrivalOptions,
+    departureAirport, departureOptions,
+  } = flights;
+
+  const filledDomesticLines    = (domesticLines    || []).filter((l) => l && l.trim());
+  const filledArrivalOptions   = (arrivalOptions   || []).filter((o) => o && o.trim());
+  const filledDepartureOptions = (departureOptions || []).filter((o) => o && o.trim());
+
+  const hasDomestic = domesticIntro?.trim() || filledDomesticLines.length;
+  const hasInternational =
+    internationalIntro?.trim() ||
+    arrivalAirport?.trim()     || filledArrivalOptions.length ||
+    departureAirport?.trim()   || filledDepartureOptions.length;
+
+  if (!hasDomestic && !hasInternational) return null;
+
+  return (
+    <div className="w-full rounded-[28px] border border-[#E5D7C5]/80 bg-[#FAF7F2] shadow-[0_12px_30px_rgba(74,59,42,0.04)] overflow-hidden">
+      {/* Section label */}
+      <div className="flex items-center gap-3 px-6 py-6 md:px-8">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5D7C5] bg-[#FDFBF7] text-[#8B6B50]">
+          <Plane className="h-4 w-4" />
+        </div>
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8B6B50]">
+            Flights
+          </p>
+          <p className="text-sm text-[#8B6B50]">
+            Domestic and international connections for this journey.
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-0 border-t border-[#4A3B2A]/10">
+
+        {/* ── Domestic ── */}
+        {hasDomestic ? (
+          <div id="itinerary-domestic" className="px-6 py-6 md:px-8 scroll-mt-24">
+            {/* Sub-label */}
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5D7C5] bg-[#FDFBF7] text-[#8B6B50]">
+                <PlaneLanding className="h-4 w-4" />
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8B6B50]">
+                  Domestic flights
+                </p>
+                {domesticIntro?.trim() && (
+                  <p className="mt-0.5 text-sm text-[#8B6B50]">{domesticIntro.trim()}</p>
+                )}
+              </div>
+            </div>
+
+            {filledDomesticLines.length > 0 && (
+              <div className="space-y-3">
+                {filledDomesticLines.map((line, idx) => (
+                  <div
+                    key={idx}
+                    className="flex gap-4 rounded-2xl border border-white/60 bg-white/70 px-4 py-3.5"
+                  >
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#4A3B2A] text-xs font-semibold text-[#FDFBF7]">
+                      {String(idx + 1).padStart(2, "0")}
+                    </div>
+                    <p className="text-[15px] leading-relaxed text-[#5A4738] md:text-base pt-0.5">
+                      {line.trim()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        {/* ── International ── */}
+        {hasInternational ? (
+          <div id="itinerary-international" className={`px-6 py-6 md:px-8 space-y-5 scroll-mt-24 ${
+            hasDomestic ? "border-t border-[#4A3B2A]/10" : ""
+          }`}>
+            {/* Sub-label */}
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5D7C5] bg-[#FDFBF7] text-[#8B6B50]">
+                <PlaneTakeoff className="h-4 w-4" />
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8B6B50]">
+                  International flights
+                </p>
+                {internationalIntro?.trim() && (
+                  <p className="mt-0.5 text-sm text-[#8B6B50]">{internationalIntro.trim()}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Arrival sub-card */}
+            {(arrivalAirport?.trim() || filledArrivalOptions.length > 0) && (
+              <div className="rounded-[24px] border border-[#E5D7C5] bg-white p-5">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FAF7F2] text-[#8B6B50]">
+                    <PlaneLanding className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8B6B50]">
+                      Arrival
+                    </p>
+                    {arrivalAirport?.trim() && (
+                      <p className="text-sm font-medium text-[#4A3B2A]">
+                        {arrivalAirport.trim()}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {filledArrivalOptions.length > 0 && (
+                  <div className="space-y-3">
+                    {filledArrivalOptions.map((opt, idx) => (
+                      <div
+                        key={idx}
+                        className="flex gap-4 rounded-2xl border border-[#E5D7C5]/60 bg-[#FAF7F2] px-4 py-3.5"
+                      >
+                        <div className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#D4A373] shadow-sm" />
+                        <p className="text-sm leading-relaxed text-[#5A4738]">
+                          {opt.trim()}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Departure sub-card */}
+            {(departureAirport?.trim() || filledDepartureOptions.length > 0) && (
+              <div className="rounded-[24px] border border-[#E5D7C5] bg-white p-5">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FAF7F2] text-[#8B6B50]">
+                    <PlaneTakeoff className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8B6B50]">
+                      Departure
+                    </p>
+                    {departureAirport?.trim() && (
+                      <p className="text-sm font-medium text-[#4A3B2A]">
+                        {departureAirport.trim()}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {filledDepartureOptions.length > 0 && (
+                  <div className="space-y-3">
+                    {filledDepartureOptions.map((opt, idx) => (
+                      <div
+                        key={idx}
+                        className="flex gap-4 rounded-2xl border border-[#E5D7C5]/60 bg-[#FAF7F2] px-4 py-3.5"
+                      >
+                        <div className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#D4A373] shadow-sm" />
+                        <p className="text-sm leading-relaxed text-[#5A4738]">
+                          {opt.trim()}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
 const TrailItinerary = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -273,6 +500,14 @@ const TrailItinerary = () => {
         const target = document.getElementById(`itinerary-day-${index + 1}`);
         target?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
+    }
+  };
+
+  const scrollToId = (id) => {
+    setOpenDay(null); // Optional: close day accordion if navigating to general section
+    if (typeof window !== "undefined") {
+      const target = document.getElementById(id);
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -575,6 +810,61 @@ const TrailItinerary = () => {
                         </div>
                       </button>
                     ))}
+
+                    {/* ── Additional Shortcuts ── */}
+                    {transformed.optionalExperiences?.some(ex => ex?.trim()) && (
+                      <button
+                        type="button"
+                        onClick={() => scrollToId("itinerary-optional")}
+                        className="w-full rounded-2xl border border-[#E5D7C5] bg-[#FAF7F2] px-4 py-3 text-left transition-all duration-300 hover:border-[#8B6B50]/25 hover:bg-white"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#FDFBF7] text-[#8B6B50]">
+                            <Sparkles className="h-4 w-4" />
+                          </span>
+                          <div className="min-w-0">
+                            <p className="text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">Suggested</p>
+                            <p className="truncate text-sm font-medium text-[#4A3B2A]">Optional Experiences</p>
+                          </div>
+                        </div>
+                      </button>
+                    )}
+
+                    {(transformed.flights?.domesticIntro?.trim() || transformed.flights?.domesticLines?.some(l => l?.trim())) && (
+                      <button
+                        type="button"
+                        onClick={() => scrollToId("itinerary-domestic")}
+                        className="w-full rounded-2xl border border-[#E5D7C5] bg-[#FAF7F2] px-4 py-3 text-left transition-all duration-300 hover:border-[#8B6B50]/25 hover:bg-white"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#FDFBF7] text-[#8B6B50]">
+                            <PlaneLanding className="h-4 w-4" />
+                          </span>
+                          <div className="min-w-0">
+                            <p className="text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">Internal</p>
+                            <p className="truncate text-sm font-medium text-[#4A3B2A]">Domestic Flights</p>
+                          </div>
+                        </div>
+                      </button>
+                    )}
+
+                    {(transformed.flights?.internationalIntro?.trim() || transformed.flights?.arrivalAirport?.trim() || transformed.flights?.departureAirport?.trim()) && (
+                      <button
+                        type="button"
+                        onClick={() => scrollToId("itinerary-international")}
+                        className="w-full rounded-2xl border border-[#E5D7C5] bg-[#FAF7F2] px-4 py-3 text-left transition-all duration-300 hover:border-[#8B6B50]/25 hover:bg-white"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#FDFBF7] text-[#8B6B50]">
+                            <PlaneTakeoff className="h-4 w-4" />
+                          </span>
+                          <div className="min-w-0">
+                            <p className="text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">Logistics</p>
+                            <p className="truncate text-sm font-medium text-[#4A3B2A]">International Flights</p>
+                          </div>
+                        </div>
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -593,7 +883,7 @@ const TrailItinerary = () => {
                   </div>
 
                   <p className="text-sm leading-relaxed text-[#8B6B50] md:text-base">
-                    Explore each chapter to discover the day’s highlights, along
+                    Explore each chapter to discover the day's highlights, along
                     with included meals and overnight stays where available.
                   </p>
                 </div>
@@ -608,6 +898,14 @@ const TrailItinerary = () => {
                   onToggle={() => toggleDay(index)}
                 />
               ))}
+
+              {/* ── Optional Experiences ── */}
+              <OptionalExperiencesSection
+                lines={transformed.optionalExperiences || []}
+              />
+
+              {/* ── Flights ── */}
+              <FlightsSection flights={transformed.flights} />
             </div>
           </div>
         </section>

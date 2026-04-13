@@ -180,11 +180,11 @@ export const api = {
         headers: withAdminAuth(),
         body: trailFormData,
       });
-      
+
       if (response.status === 413) {
         throw new Error("Files are too large. Please upload smaller images (limit: 1MB on your VPS).");
       }
-      
+
       let data;
       try {
         data = await response.json();
@@ -213,7 +213,7 @@ export const api = {
       if (response.status === 413) {
         throw new Error("Files are too large. Please upload smaller images (limit: 1MB on your VPS).");
       }
-      
+
       let data;
       try {
         data = await response.json();
@@ -277,12 +277,12 @@ export const api = {
     }
   },
 
-  updateTrailItinerary: async (id, itinerary, mode = "save") => {
+  updateTrailItinerary: async (id, itinerary, mode = "save", optionalExperiences, flights) => {
     try {
       const response = await fetch(`${API_BASE_URL}/trails/${id}/itinerary`, {
         method: "PATCH",
         headers: withAdminAuth({ "Content-Type": "application/json" }),
-        body: JSON.stringify({ itinerary, mode }),
+        body: JSON.stringify({ itinerary, mode, optionalExperiences, flights }),
       });
       const data = await response.json();
       if (!response.ok)
@@ -368,7 +368,6 @@ export const api = {
       throw error;
     }
   },
-
 
   reorderDestinations: async (items) => {
     try {
@@ -516,4 +515,3 @@ export const api = {
     }
   },
 };
-

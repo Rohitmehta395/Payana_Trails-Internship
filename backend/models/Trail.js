@@ -119,6 +119,23 @@ const trailSchema = new mongoose.Schema(
       type: [itineraryDaySchema],
       default: [],
     },
+    optionalExperiences: {
+      type: [String],
+      default: [],
+      validate: [
+        (val) => val.length <= 4,
+        "Optional experiences cannot exceed 4 lines"
+      ],
+    },
+    flights: {
+      domesticIntro:      { type: String, default: "" },
+      domesticLines:      { type: [String], default: [] },
+      internationalIntro: { type: String, default: "" },
+      arrivalAirport:     { type: String, default: "" },
+      arrivalOptions:     { type: [String], default: [] },
+      departureAirport:   { type: String, default: "" },
+      departureOptions:   { type: [String], default: [] },
+    },
     order: {
       type: Number,
       default: 0,
