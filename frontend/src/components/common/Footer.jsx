@@ -11,8 +11,10 @@ import {
   FaLinkedin,
 } from "react-icons/fa6";
 import logoImg from "/logo.svg";
+import { useNewsletter } from "../../context/NewsletterContext";
 
 const Footer = () => {
+  const { openNewsletterModal } = useNewsletter();
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Journeys", path: "/journeys" },
@@ -179,7 +181,14 @@ const Footer = () => {
                       <Link
                         to={link.path}
                         className="text-[14px] opacity-70 hover:opacity-100 hover:text-white transition-all duration-300 inline-block hover:translate-x-1"
-                        onClick={() => window.scrollTo(0, 0)}
+                        onClick={(e) => {
+                          if (link.name === "Newsletter") {
+                            e.preventDefault();
+                            openNewsletterModal();
+                          } else {
+                            window.scrollTo(0, 0);
+                          }
+                        }}
                       >
                         {link.name}
                       </Link>

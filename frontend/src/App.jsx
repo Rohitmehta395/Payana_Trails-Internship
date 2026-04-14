@@ -20,50 +20,56 @@ import SignatureTrailsPage from "./components/sections/Journey/SignatureTrailsPa
 // Import Destinations
 import Destinations from "./components/sections/Journey/Destinations";
 
+import { NewsletterProvider } from "./context/NewsletterContext";
+import Unsubscribe from "./pages/Unsubscribe";
+
 //Admin
 import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+    <NewsletterProvider>
+      <Router>
+        <Routes>
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
-        <Route
-          path="/*"
-          element={
-            <Layout>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/journeys" element={<Journeys />} />
-                <Route path="/journeys/wildlife" element={<Wildlife />} />
-                <Route path="/journeys/heritage" element={<Heritage />} />
-                <Route
-                  path="/journeys/signature"
-                  element={<SignatureTrailsPage />}
-                />
-                <Route path="/journeys/cultural" element={<Cultural />} />
-                <Route
-                  path="/journeys/destinations"
-                  element={<Destinations />}
-                />
-                <Route path="/payana-way" element={<PayanaWay />} />
-                <Route path="/stories" element={<Stories />} />
-                <Route path="/connect" element={<Connect />} />
-                <Route path="/trails/:slug" element={<TrailDetails />} />
-                <Route
-                  path="/trails/:slug/itinerary"
-                  element={<TrailItinerary />}
-                />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Layout>
-          }
-        />
-      </Routes>
-    </Router>
+          <Route
+            path="/*"
+            element={
+              <Layout>
+                <Routes>
+                  <Route index element={<Home />} />
+                  <Route path="journeys" element={<Journeys />} />
+                  <Route path="journeys/wildlife" element={<Wildlife />} />
+                  <Route path="journeys/heritage" element={<Heritage />} />
+                  <Route
+                    path="journeys/signature"
+                    element={<SignatureTrailsPage />}
+                  />
+                  <Route path="journeys/cultural" element={<Cultural />} />
+                  <Route
+                    path="journeys/destinations"
+                    element={<Destinations />}
+                  />
+                  <Route path="payana-way" element={<PayanaWay />} />
+                  <Route path="stories" element={<Stories />} />
+                  <Route path="connect" element={<Connect />} />
+                  <Route path="unsubscribe" element={<Unsubscribe />} />
+                  <Route path="trails/:slug" element={<TrailDetails />} />
+                  <Route
+                    path="trails/:slug/itinerary"
+                    element={<TrailItinerary />}
+                  />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Layout>
+            }
+          />
+        </Routes>
+      </Router>
+    </NewsletterProvider>
   );
 };
 

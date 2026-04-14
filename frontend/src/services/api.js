@@ -514,4 +514,33 @@ export const api = {
       throw error;
     }
   },
+
+  // --- NEWSLETTER ROUTES ---
+  subscribeNewsletter: async (subscriberData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/newsletter/subscribe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(subscriberData),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to subscribe");
+      return data;
+    } catch (error) {
+      console.error("API Error (subscribeNewsletter):", error);
+      throw error;
+    }
+  },
+
+  unsubscribeNewsletter: async (token) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/newsletter/unsubscribe/${token}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to unsubscribe");
+      return data;
+    } catch (error) {
+      console.error("API Error (unsubscribeNewsletter):", error);
+      throw error;
+    }
+  },
 };

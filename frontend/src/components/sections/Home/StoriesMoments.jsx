@@ -3,8 +3,11 @@ import CreamBtn from "../../common/buttons/CreamBtn";
 import BrownBtn from "../../common/buttons/BrownBtn";
 import storyImg from "../../../assets/Home/Stories/stories-moments.webp";
 import { FaEnvelopeOpenText } from "react-icons/fa6";
+import { useNewsletter } from "../../../context/NewsletterContext";
 
 const StoriesMoments = () => {
+  const { openNewsletterModal } = useNewsletter();
+
   return (
     <section className="bg-[#F3EFE9] w-full py-16 sm:py-20 lg:py-16">
       {/* === Header Section === */}
@@ -76,7 +79,7 @@ const StoriesMoments = () => {
             <BrownBtn
               text="Subscribe to our Newsletter &rarr;"
               className="w-full sm:w-auto px-8 py-4 shadow-md hover:shadow-xl shadow-[#4A3B2A]/20"
-              onClick={() => console.log("Newsletter Clicked")}
+              onClick={openNewsletterModal}
             />
           </div>
         </div>
