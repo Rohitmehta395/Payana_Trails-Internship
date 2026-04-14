@@ -32,7 +32,7 @@ export default function Hero({ images = [], loading = false }) {
   if (images.length === 0)
     return (
       <div className="w-full h-screen bg-gray-200 flex items-center justify-center">
-        No images founds
+        No images found
       </div>
     );
 
