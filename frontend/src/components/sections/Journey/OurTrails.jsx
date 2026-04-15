@@ -107,12 +107,12 @@ export default function OurTrails() {
                 <div className="absolute inset-x-10 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(74,59,42,0.25),transparent)]"></div>
 
                 <div className="mb-auto flex w-full flex-col items-center">
-                  <div className="relative mb-6 flex h-24 w-24 items-center justify-center rounded-[22px] bg-[linear-gradient(145deg,#fff8ef_0%,#eadcc9_52%,#d9c1a1_100%)] shadow-[inset_0_2px_12px_rgba(255,255,255,0.75),0_12px_24px_rgba(74,59,42,0.08)] transition-transform duration-300 group-hover:scale-105 md:h-28 md:w-28">
-                    <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white/50 md:h-22 md:w-22">
+                  <div className="relative mb-6 flex h-24 w-24 items-center justify-center rounded-[22px] bg-[linear-gradient(145deg,#fff8ef_0%,#eadcc9_52%,#d9c1a1_100%)] shadow-[inset_0_2px_12px_rgba(255,255,255,0.75),0_12px_24px_rgba(74,59,42,0.08)] transition-transform duration-300 group-hover:scale-105 md:h-35 md:w-35">
+                    <div className="flex h-25 w-25 items-center justify-center rounded-2xl bg-white/50 md:h-30 md:w-30">
                       <img
                         src={trail.icon}
                         alt={trail.title}
-                        className="h-16 w-16 object-contain md:h-18 md:w-18 rounded-xl"
+                        className="h-16 w-16 object-contain md:h-24 md:w-24 rounded-xl"
                       />
                     </div>
                   </div>
