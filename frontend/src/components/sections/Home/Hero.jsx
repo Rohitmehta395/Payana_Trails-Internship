@@ -72,7 +72,7 @@ export default function Hero({ images = [], loading = false }) {
           </h1>
 
           <p className="text-[#F3EFE9] text-sm sm:text-md lg:text-[16px] font-medium mb-8 sm:mb-10 [text-shadow:0_2px_10px_#4A3B2A]">
-            Small groups. Deeper experiences. Thoughtfully designed Journeys.
+            Small groups. Deeper experiences. Thoughtfully designed journeys.
           </p>
 
           <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2 sm:gap-3 mb-8 sm:mb-10">

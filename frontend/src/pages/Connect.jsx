@@ -1,6 +1,7 @@
 import React from 'react';
 import CommonHero from '../components/common/CommonHero';
 import usePageHeroImages from '../hooks/usePageHeroImages';
+import EnquiryForm from '../components/sections/Connect/EnquiryForm';
 
 const Connect = () => {
   const { images: heroImgs } = usePageHeroImages("connect");
@@ -16,7 +17,8 @@ const Connect = () => {
           { label: "CONNECT" },
         ]}
       />
-      {/* Rest of your Connect content goes here */}
+      
+      <EnquiryForm />
     </div>
   );
 }

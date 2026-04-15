@@ -92,6 +92,27 @@ export const api = {
     }
   },
 
+  // 4. Submit Enquiry Form (For the premium form)
+  submitEnquiry: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/enquiries`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to submit enquiry");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (submitEnquiry):", error);
+      throw error;
+    }
+  },
+
   // --- ADMIN ROUTES ---
   adminLogin: async (credentials) => {
     try {
