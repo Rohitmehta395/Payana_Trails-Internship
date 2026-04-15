@@ -113,7 +113,7 @@ const Footer = () => {
     {
       title: "Connect",
       links: [
-        { name: "Enquiry", path: "/enquiry" },
+        { name: "Enquiry", path: "/connect" },
         { name: "Connect With Us", path: "/connect" },
         { name: "FAQs", path: "/faqs" },
         { name: "Refer Your Friends", path: "/refer" },

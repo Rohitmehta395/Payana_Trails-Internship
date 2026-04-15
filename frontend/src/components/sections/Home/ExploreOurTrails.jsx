@@ -208,13 +208,7 @@ const ExploreOurTrails = () => {
               </span>
             }
             onClick={() => {
-              navigate("/journeys");
-              setTimeout(() => {
-                const element = document.getElementById("our-trails");
-                if (element) {
-                  element.scrollIntoView({ behavior: "smooth" });
-                }
-              }, 100);
+              navigate("/journeys#our-trails");
             }}
             className="group px-8 py-4 sm:px-10 text-lg font-semibold min-w-[240px] shadow-md hover:shadow-lg transition-all duration-300"
           />

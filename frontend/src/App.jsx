@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/common/ScrollToTop";
 import Layout from "./components/common/layout/Layout";
 import Home from "./pages/Home";
 import Journeys from "./pages/Journeys";
@@ -31,6 +32,7 @@ const App = () => {
   return (
     <NewsletterProvider>
       <Router>
+        <ScrollToTop />
         <Routes>
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />

@@ -289,6 +289,7 @@ const TrailInclusionsSection = ({
   trailSlug,
   trailState,
   hasItinerary = false,
+  isWrapped = false,
 }) => {
   const navigate = useNavigate();
   const [isHoveringEnquire, setIsHoveringEnquire] = React.useState(false);
@@ -299,7 +300,7 @@ const TrailInclusionsSection = ({
 
   const handleEnquireClick = () => {
     setTimeout(() => {
-      navigate("/connect");
+      navigate("/connect", { state: { trailName: trailState?.trailName } });
     }, 400);
   };
 
@@ -311,18 +312,26 @@ const TrailInclusionsSection = ({
   };
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-6 py-8 md:px-10">
+    <section className={isWrapped ? "w-full" : "mx-auto w-full max-w-7xl px-6 py-8 md:px-10"}>
       <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.18 }}
         variants={containerVariants}
-        className="relative overflow-hidden rounded-[2.4rem] border border-[#4A3B2A]/10 bg-[linear-gradient(135deg,#fffdf8_0%,#f7ecda_48%,#f0e1c6_100%)] shadow-[0_24px_70px_rgba(74,59,42,0.12)]"
+        className={`relative overflow-hidden ${
+          isWrapped
+            ? ""
+            : "rounded-[2.4rem] border border-[#4A3B2A]/10 bg-[linear-gradient(135deg,#fffdf8_0%,#f7ecda_48%,#f0e1c6_100%)] shadow-[0_24px_70px_rgba(74,59,42,0.12)]"
+        }`}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.92),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(122,143,108,0.12),transparent_30%),radial-gradient(circle_at_center_right,rgba(198,140,118,0.14),transparent_28%)]" />
-        <div className="absolute inset-0 opacity-[0.16] bg-[linear-gradient(rgba(74,59,42,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(74,59,42,0.08)_1px,transparent_1px)] bg-size-[28px_28px]" />
+        {!isWrapped && (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.92),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(122,143,108,0.12),transparent_30%),radial-gradient(circle_at_center_right,rgba(198,140,118,0.14),transparent_28%)]" />
+            <div className="absolute inset-0 opacity-[0.16] bg-[linear-gradient(rgba(74,59,42,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(74,59,42,0.08)_1px,transparent_1px)] bg-size-[28px_28px]" />
+          </>
+        )}
 
-        {floatingSymbols.map((particle, index) => (
+        {!isWrapped && floatingSymbols.map((particle, index) => (
           <motion.span
             key={`${particle.symbol}-${particle.className}`}
             aria-hidden="true"
@@ -344,7 +353,7 @@ const TrailInclusionsSection = ({
           </motion.span>
         ))}
 
-        <div className="relative p-6 md:p-8 lg:p-10">
+        <div className={`relative ${isWrapped ? "px-6 pt-8 pb-4 md:px-10 md:pt-12 md:pb-6" : "p-6 md:p-8 lg:p-10"}`}>
           <motion.div
             variants={itemVariants}
             className="w-full"
@@ -370,7 +379,7 @@ const TrailInclusionsSection = ({
           {/* Action Buttons at the Bottom Center */}
           <motion.div
             variants={itemVariants}
-            className="mt-12 flex flex-wrap items-center justify-center gap-6"
+            className={`${isWrapped ? "mt-10" : "mt-12"} flex flex-wrap items-center justify-center gap-6`}
           >
             {/* View Itinerary Button */}
             <motion.button

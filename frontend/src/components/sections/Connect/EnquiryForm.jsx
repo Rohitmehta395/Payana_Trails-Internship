@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { api } from "../../../services/api";
 import { FiSend, FiAlertCircle } from "react-icons/fi";
@@ -15,6 +16,7 @@ import ConnectSection from "./EnquiryForm/sections/ConnectSection";
 import { validateField } from "./EnquiryForm/validation";
 
 const EnquiryForm = () => {
+  const location = useLocation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -45,6 +47,12 @@ const EnquiryForm = () => {
     };
     fetchDestinations();
   }, []);
+
+  useEffect(() => {
+    if (location.state?.trailName) {
+      setFormData((prev) => ({ ...prev, trailName: location.state.trailName }));
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -133,7 +141,7 @@ const EnquiryForm = () => {
   }
 
   return (
-    <section id="enquiry-form-section" className="py-16 px-4 bg-[#F3EFE9]">
+    <section id="enquiry-form-section" className="py-16 px-4 bg-[#F3EFE9] scroll-mt-24">
       <div className="max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
           {/* Sidebar */}

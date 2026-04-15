@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Maximize2, X, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 
 // A simple particle component to generate floating particles around the gallery
-const Particles = () => {
+export const Particles = () => {
   const [particles, setParticles] = useState([]);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const Particles = () => {
   );
 };
 
-const MovingGallery = ({ images = [], trailName = "Trail" }) => {
+const MovingGallery = ({ images = [], trailName = "Trail", isWrapped = false }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [startIndex, setStartIndex] = useState(0);
 
@@ -121,13 +121,17 @@ const MovingGallery = ({ images = [], trailName = "Trail" }) => {
   };
 
   return (
-    <div className="relative mx-auto w-full max-w-7xl px-4 py-8 md:px-10 md:py-12">
-      <div className="relative overflow-hidden rounded-[2.5rem] border border-[#4A3B2A]/12 bg-[linear-gradient(145deg,#fffdf8_0%,#f9f3e9_50%,#f2e9d8_100%)] p-6 md:p-10 lg:p-12 shadow-[0_20px_50px_rgba(74,59,42,0.1)]">
+    <div className={isWrapped ? "relative w-full" : "relative mx-auto w-full max-w-7xl px-4 py-8 md:px-10 md:py-12"}>
+      <div className={`relative overflow-hidden ${
+        isWrapped
+          ? ""
+          : "rounded-[2.5rem] border border-[#4A3B2A]/12 bg-[linear-gradient(145deg,#fffdf8_0%,#f9f3e9_50%,#f2e9d8_100%)] p-6 md:p-10 lg:p-12 shadow-[0_20px_50px_rgba(74,59,42,0.1)]"
+      }`}>
         {/* Dynamic Background Particles */}
-        <Particles />
+        {!isWrapped && <Particles />}
 
         {/* Header Section */}
-        <div className="relative z-10 mb-10">
+        <div className={`relative z-10 ${isWrapped ? "mb-8 pt-8 md:pt-10 px-6 md:px-10" : "mb-10"}`}>
           <div className="inline-flex items-center gap-2 rounded-full border border-[#4A3B2A]/10 bg-white/70 px-4 py-2 text-[15px] font-semibold uppercase tracking-[0.28em] text-[#6B513C] backdrop-blur-sm">
             <Sparkles className="h-4 w-4" />
             Glimpses of the Trail
@@ -139,7 +143,7 @@ const MovingGallery = ({ images = [], trailName = "Trail" }) => {
         </div>
 
         {/* Grid Layout Container */}
-        <div className="relative z-10 grid grid-cols-1 gap-4 md:h-[600px] md:grid-cols-4 md:grid-rows-2">
+        <div className={`relative z-10 grid grid-cols-1 gap-4 md:h-[600px] md:grid-cols-4 md:grid-rows-2 ${isWrapped ? "px-6 pb-12 md:px-10 md:pb-16" : ""}`}>
           {currentImages.map((img, index) => (
             <motion.div
               key={index} // Using pure index so layout wrapper stays constant, only content animates

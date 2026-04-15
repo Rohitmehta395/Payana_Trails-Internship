@@ -54,7 +54,7 @@ export default function OurTrails() {
   return (
     <section
       id="our-trails"
-      className="relative overflow-hidden bg-[#F3EFE9] py-20 md:py-28"
+      className="relative overflow-hidden bg-[#F3EFE9] py-20 md:py-28 scroll-mt-20 md:scroll-mt-28"
     >
       <div className="absolute inset-x-0 inset-y-6 md:inset-y-10 mx-auto w-[96%] max-w-[84rem] rounded-[48px] bg-[linear-gradient(135deg,rgba(238,228,213,0.85)_0%,rgba(247,242,234,0.4)_55%,rgba(223,207,187,0.55)_100%)]"></div>
       <div className="absolute top-10 left-[8%] h-48 w-48 rounded-full bg-[#D7C3AA]/30 blur-3xl"></div>

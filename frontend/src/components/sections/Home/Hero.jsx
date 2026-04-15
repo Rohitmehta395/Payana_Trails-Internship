@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import CreamBtn from "../../common/buttons/CreamBtn";
 
 export default function Hero({ images = [], loading = false }) {
+  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isUiHidden, setIsUiHidden] = useState(false);
 
@@ -96,6 +98,7 @@ export default function Hero({ images = [], loading = false }) {
           <div className="flex justify-center sm:justify-start w-full drop-shadow-[0_4px_15px_rgba(74,59,42,0.5)]">
             <CreamBtn
               text="Plan Your Journey &rarr;"
+              onClick={() => navigate("/journeys")}
               className="py-3 px-8 sm:px-10 text-[16px] sm:text-[18px] w-[90%] sm:w-auto"
             />
           </div>

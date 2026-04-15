@@ -7,7 +7,7 @@ import ContentSection from "../components/sections/TrailDetail/ContentSection";
 import JourneySnapshot from "../components/sections/TrailDetail/JourneySnapshot";
 import TrailInclusionsSection from "../components/sections/TrailDetail/TrailInclusionsSection";
 import TrailRouteSection from "../components/sections/TrailDetail/TrailRouteSection";
-import MovingGallery from "../components/sections/TrailDetail/MovingGallery";
+import MovingGallery, { Particles } from "../components/sections/TrailDetail/MovingGallery";
 import BrownBtn from "../components/common/buttons/BrownBtn";
 import { transformTrailMedia } from "../utils/trailPresentation";
 
@@ -112,29 +112,37 @@ const TrailDetails = () => {
 
       <TrailRouteSection trail={transformed} />
 
-      <TrailInclusionsSection
-        includedItems={transformed.whatsIncluded || []}
-        excludedItems={transformed.whatsNotIncluded || []}
-        trailSlug={transformed.slug || slug}
-        trailState={trail}
-        hasItinerary={
-          (Array.isArray(transformed.itinerary) && transformed.itinerary.length > 0) ||
-          (Array.isArray(transformed.optionalExperiences) &&
-            transformed.optionalExperiences.some((ex) => ex?.trim())) ||
-          (transformed.flights &&
-            (transformed.flights.domesticIntro?.trim() ||
-              (transformed.flights.domesticLines &&
-                transformed.flights.domesticLines.some((l) => l?.trim())) ||
-              transformed.flights.internationalIntro?.trim() ||
-              transformed.flights.arrivalAirport?.trim() ||
-              transformed.flights.departureAirport?.trim()))
-        }
-      />
+      {/* Unified Essentials & Moments Section */}
+      <section className="mx-auto w-full max-w-7xl px-4 py-8 md:px-10">
+        <div className="relative overflow-hidden rounded-[2.5rem] border border-[#4A3B2A]/12 bg-[linear-gradient(145deg,#fffdf8_0%,#f9f3e9_50%,#f2e9d8_100%)] shadow-[0_20px_50px_rgba(74,59,42,0.1)]">
+          <Particles />
+          <TrailInclusionsSection
+            includedItems={transformed.whatsIncluded || []}
+            excludedItems={transformed.whatsNotIncluded || []}
+            trailSlug={transformed.slug || slug}
+            trailState={trail}
+            isWrapped={true}
+            hasItinerary={
+              (Array.isArray(transformed.itinerary) && transformed.itinerary.length > 0) ||
+              (Array.isArray(transformed.optionalExperiences) &&
+                transformed.optionalExperiences.some((ex) => ex?.trim())) ||
+              (transformed.flights &&
+                (transformed.flights.domesticIntro?.trim() ||
+                  (transformed.flights.domesticLines &&
+                    transformed.flights.domesticLines.some((l) => l?.trim())) ||
+                  transformed.flights.internationalIntro?.trim() ||
+                  transformed.flights.arrivalAirport?.trim() ||
+                  transformed.flights.departureAirport?.trim()))
+            }
+          />
 
-      <MovingGallery
-        images={transformed.gallery}
-        trailName={transformed.trailName}
-      />
+          <MovingGallery
+            images={transformed.gallery}
+            trailName={transformed.trailName}
+            isWrapped={true}
+          />
+        </div>
+      </section>
       </div>
     </>
   );
