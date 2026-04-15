@@ -10,7 +10,7 @@ const TrailActionButtons = ({ trailSlug, trailState, hasItinerary = false }) => 
   const handleEnquireClick = () => {
     // Slight delay before navigation for effect
     setTimeout(() => {
-      navigate("/connect");
+      navigate("/connect#enquiry-section");
     }, 400);
   };
 

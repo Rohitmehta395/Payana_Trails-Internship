@@ -113,11 +113,11 @@ const Footer = () => {
     {
       title: "Connect",
       links: [
-        { name: "Enquiry", path: "/connect" },
-        { name: "Connect With Us", path: "/connect" },
+        { name: "Enquiry", path: "/connect#enquiry-section" },
+        { name: "Connect With Us", path: "/connect#enquiry-section" },
         { name: "FAQs", path: "/faqs" },
-        { name: "Refer Your Friends", path: "/refer" },
-        { name: "Gift a Journey", path: "/gift" },
+        { name: "Refer Your Friends", path: "/connect#referral-section" },
+        { name: "Gift a Journey", path: "/connect#gift-section" },
       ],
     },
   ];
@@ -186,7 +186,9 @@ const Footer = () => {
                             e.preventDefault();
                             openNewsletterModal();
                           } else {
-                            window.scrollTo(0, 0);
+                            if (!link.path.includes("#")) {
+                              window.scrollTo(0, 0);
+                            }
                           }
                         }}
                       >

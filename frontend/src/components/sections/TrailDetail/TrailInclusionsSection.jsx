@@ -300,7 +300,7 @@ const TrailInclusionsSection = ({
 
   const handleEnquireClick = () => {
     setTimeout(() => {
-      navigate("/connect", { state: { trailName: trailState?.trailName } });
+      navigate("/connect#enquiry-section", { state: { trailName: trailState?.trailName } });
     }, 400);
   };
 

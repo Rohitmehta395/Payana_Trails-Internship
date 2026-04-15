@@ -113,6 +113,48 @@ export const api = {
     }
   },
 
+  // 5. Submit Referral Form
+  submitReferral: async (referralData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/referrals`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(referralData),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to submit referral");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (submitReferral):", error);
+      throw error;
+    }
+  },
+
+  // 6. Submit Gift Form
+  submitGift: async (giftData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/gifts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(giftData),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to submit gift request");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (submitGift):", error);
+      throw error;
+    }
+  },
+
   // --- ADMIN ROUTES ---
   adminLogin: async (credentials) => {
     try {

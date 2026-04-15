@@ -15,7 +15,7 @@ import ConnectSection from "./EnquiryForm/sections/ConnectSection";
 // Helpers
 import { validateField } from "./EnquiryForm/validation";
 
-const EnquiryForm = () => {
+const EnquiryForm = ({ onSuccess }) => {
   const location = useLocation();
   const [formData, setFormData] = useState({
     name: "",
@@ -103,6 +103,7 @@ const EnquiryForm = () => {
 
     try {
       await api.submitEnquiry(formData);
+      if (onSuccess) onSuccess(formData);
       setSubmitted(true);
       if (formData.connectMethod === "Google Meet") {
         window.open(
@@ -126,7 +127,7 @@ const EnquiryForm = () => {
       });
       setTouched({});
       window.scrollTo({
-        top: document.getElementById("enquiry-form-section").offsetTop - 100,
+        top: document.getElementById("enquiry-section").offsetTop - 100,
         behavior: "smooth",
       });
     } catch (err) {
@@ -137,11 +138,15 @@ const EnquiryForm = () => {
   };
 
   if (submitted) {
-    return <FormSuccess onReset={() => setSubmitted(false)} />;
+    return (
+      <FormSuccess
+        onReset={() => setSubmitted(false)}
+      />
+    );
   }
 
   return (
-    <section id="enquiry-form-section" className="py-16 px-4 bg-[#F3EFE9] scroll-mt-24">
+    <section id="enquiry-section" className="py-16 px-4 bg-[#F3EFE9] scroll-mt-24">
       <div className="max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
           {/* Sidebar */}

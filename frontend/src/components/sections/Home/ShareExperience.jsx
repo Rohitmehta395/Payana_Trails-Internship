@@ -1,10 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { FaUserPlus, FaGift, FaHeart } from "react-icons/fa6";
 import BrownBtn from "../../common/buttons/BrownBtn";
 import referFriendPic from "../../../assets/Home/Refer/referFriendPic.webp";
 import giftAJourney from "../../../assets/Home/Refer/Gift.webp";
 
 const ShareExperience = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative w-full bg-[#F3EFE9] py-24 px-6 lg:px-12 overflow-hidden font-sans">
       {/* Decorative Background Elements */}
@@ -61,7 +63,7 @@ const ShareExperience = () => {
               <BrownBtn
                 text="Get Referral Link"
                 className="w-full sm:w-auto shadow-md hover:shadow-lg"
-                onClick={() => console.log("Refer a friend clicked")}
+                onClick={() => navigate("/connect#referral-section")}
               />
             </div>
           </div>
@@ -97,7 +99,7 @@ const ShareExperience = () => {
               <BrownBtn
                 text="Explore Gift Cards"
                 className="w-full sm:w-auto shadow-md hover:shadow-lg"
-                onClick={() => console.log("Gift a journey clicked")}
+                onClick={() => navigate("/connect#gift-section")}
               />
             </div>
           </div>
