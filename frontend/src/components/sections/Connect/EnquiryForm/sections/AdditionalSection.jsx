@@ -1,18 +1,15 @@
 import React from "react";
 import { FiMessageSquare } from "react-icons/fi";
-import { SelectField, SectionHeader } from "../FormUI";
-import { roomPreferences } from "../constants";
+import { SelectField } from "../FormFields";
+import { validateField } from "../validation";
+import { roomPreferences } from "../constants.jsx";
 
-const AdditionalSection = ({
-  formData,
-  touched,
-  validateField,
-  handleSelectChange,
-  handleChange,
-}) => {
+const AdditionalSection = ({ formData, touched, handleChange, handleSelectChange, handleBlur }) => {
   return (
     <div>
-      <SectionHeader icon={FiMessageSquare} title="Additional Details" />
+      <h4 className="text-lg font-medium text-[#4A3B2A] mb-4 flex items-center gap-2">
+        <FiMessageSquare className="text-[#4A3B2A]" /> Additional Details
+      </h4>
       <div className="space-y-6">
         <SelectField
           name="roomPreference"
@@ -21,8 +18,10 @@ const AdditionalSection = ({
           options={roomPreferences}
           value={formData.roomPreference}
           onChange={(e) => handleSelectChange("roomPreference", e.target.value)}
+          onBlur={handleBlur}
           error={
-            touched.roomPreference && validateField("roomPreference", formData.roomPreference)
+            touched.roomPreference &&
+            validateField("roomPreference", formData.roomPreference)
           }
         />
         <div className="space-y-2">

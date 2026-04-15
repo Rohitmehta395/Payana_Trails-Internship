@@ -1,5 +1,5 @@
 import React from "react";
-import { connectOptions } from "../constants";
+import { connectOptions } from "../constants.jsx";
 
 const ConnectSection = ({ formData, handleSelectChange }) => {
   return (

@@ -19,8 +19,8 @@ const FormSidebar = () => {
             <span className="text-[#4A3B2A] italic">Personal Trail</span>
           </h2>
           <p className="text-[#4A3B2A]/70 mt-4 text-lg">
-            Share your travel preferences and we'll craft a unique journey
-            just for you.
+            Share your travel preferences and we'll craft a unique journey just
+            for you.
           </p>
         </div>
 
@@ -34,12 +34,12 @@ const FormSidebar = () => {
               review your preferences within 24 hours.
             </li>
             <li className="flex gap-3">
-              <span className="font-medium text-[#4A3B2A]">2.</span> A
-              travel expert will contact you via your preferred method.
+              <span className="font-medium text-[#4A3B2A]">2.</span> A travel
+              expert will contact you via your preferred method.
             </li>
             <li className="flex gap-3">
-              <span className="font-medium text-[#4A3B2A]">3.</span>{" "}
-              You'll receive a personalized itinerary draft.
+              <span className="font-medium text-[#4A3B2A]">3.</span> You'll
+              receive a personalized itinerary draft.
             </li>
           </ul>
         </div>

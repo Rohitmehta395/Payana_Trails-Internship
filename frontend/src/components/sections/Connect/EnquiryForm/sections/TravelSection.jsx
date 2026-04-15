@@ -1,21 +1,23 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMapPin, FiCalendar, FiUsers } from "react-icons/fi";
-import { InputField, SelectField, SectionHeader } from "../FormUI";
-import { months, years, guestOptions } from "../constants";
+import { InputField, SelectField } from "../FormFields";
+import { validateField } from "../validation";
+import { months, years, guestOptions } from "../constants.jsx";
 
 const TravelSection = ({
   formData,
-  destinations,
   touched,
-  validateField,
-  handleSelectChange,
+  destinations,
   handleChange,
+  handleSelectChange,
   handleBlur,
 }) => {
   return (
     <div>
-      <SectionHeader icon={FiMapPin} title="Travel Plans" />
+      <h4 className="text-lg font-medium text-[#4A3B2A] mb-4 flex items-center gap-2">
+        <FiMapPin className="text-[#4A3B2A]" /> Travel Plans
+      </h4>
       <div className="space-y-6">
         <SelectField
           icon={FiMapPin}
@@ -73,10 +75,13 @@ const TravelSection = ({
                 options={months}
                 value={formData.travelMonth}
                 required={false}
-                onChange={(e) => handleSelectChange("travelMonth", e.target.value)}
+                onChange={(e) =>
+                  handleSelectChange("travelMonth", e.target.value)
+                }
                 onBlur={handleBlur}
                 error={
-                  touched.travelMonth && validateField("travelMonth", formData.travelMonth)
+                  touched.travelMonth &&
+                  validateField("travelMonth", formData.travelMonth)
                 }
               />
               <SelectField
@@ -85,9 +90,14 @@ const TravelSection = ({
                 options={years}
                 value={formData.travelYear}
                 required={false}
-                onChange={(e) => handleSelectChange("travelYear", e.target.value)}
+                onChange={(e) =>
+                  handleSelectChange("travelYear", e.target.value)
+                }
                 onBlur={handleBlur}
-                error={touched.travelYear && validateField("travelYear", formData.travelYear)}
+                error={
+                  touched.travelYear &&
+                  validateField("travelYear", formData.travelYear)
+                }
               />
             </div>
           </div>

@@ -1,11 +1,14 @@
 import React from "react";
 import { FiUser, FiMail, FiPhone } from "react-icons/fi";
-import { InputField, SectionHeader } from "../FormUI";
+import { InputField } from "../FormFields";
+import { validateField } from "../validation";
 
-const ContactSection = ({ formData, touched, validateField, handleChange, handleBlur }) => {
+const ContactSection = ({ formData, touched, handleChange, handleBlur }) => {
   return (
     <div>
-      <SectionHeader icon={FiUser} title="Contact Information" />
+      <h4 className="text-lg font-medium text-[#4A3B2A] mb-4 flex items-center gap-2">
+        <FiUser className="text-[#4A3B2A]" /> Contact Information
+      </h4>
       <div className="grid md:grid-cols-2 gap-6">
         <InputField
           icon={FiUser}

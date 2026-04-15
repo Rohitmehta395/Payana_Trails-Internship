@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { api } from "../../../services/api";
-import { FiSend } from "react-icons/fi";
+import { FiSend, FiAlertCircle } from "react-icons/fi";
 
 // Sub-components
 import FormSidebar from "./EnquiryForm/FormSidebar";
@@ -10,6 +10,9 @@ import ContactSection from "./EnquiryForm/sections/ContactSection";
 import TravelSection from "./EnquiryForm/sections/TravelSection";
 import AdditionalSection from "./EnquiryForm/sections/AdditionalSection";
 import ConnectSection from "./EnquiryForm/sections/ConnectSection";
+
+// Helpers
+import { validateField } from "./EnquiryForm/validation";
 
 const EnquiryForm = () => {
   const [formData, setFormData] = useState({
@@ -59,14 +62,6 @@ const EnquiryForm = () => {
     setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
-  const validateField = (name, value) => {
-    if (!value && name !== "otherDestination" && name !== "message")
-      return "This field is required";
-    if (name === "email" && value && !/^\S+@\S+\.\S+$/.test(value))
-      return "Please enter a valid email";
-    return null;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -92,19 +87,22 @@ const EnquiryForm = () => {
       setLoading(false);
       return;
     }
+    if (formData.email && !/^\S+@\S+\.\S+$/.test(formData.email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
 
     try {
       await api.submitEnquiry(formData);
       setSubmitted(true);
-      
       if (formData.connectMethod === "Google Meet") {
         window.open(
           "https://calendar.app.google/UyT5meYWKpCyKy7S7",
           "_blank",
-          "noopener,noreferrer"
+          "noopener,noreferrer",
         );
       }
-      
       setFormData({
         name: "",
         email: "",
@@ -138,8 +136,10 @@ const EnquiryForm = () => {
     <section id="enquiry-form-section" className="py-16 px-4 bg-[#F3EFE9]">
       <div className="max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+          {/* Sidebar */}
           <FormSidebar />
 
+          {/* Form */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -147,40 +147,46 @@ const EnquiryForm = () => {
           >
             <div className="bg-white rounded-3xl shadow-xl border border-[#4A3B2A]/10 overflow-hidden">
               <div className="p-6 md:p-8 border-b border-[#4A3B2A]/10 bg-[#F3EFE9]/30">
-                <h3 className="text-xl font-semibold text-[#4A3B2A]">Enquiry Form</h3>
-                <p className="text-[#4A3B2A]/60 text-sm mt-1">Fields marked with * are required</p>
+                <h3 className="text-xl font-semibold text-[#4A3B2A]">
+                  Enquiry Form
+                </h3>
+                <p className="text-[#4A3B2A]/60 text-sm mt-1">
+                  Fields marked with * are required
+                </p>
               </div>
 
               <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">
-                <ContactSection 
-                  formData={formData} 
-                  touched={touched} 
-                  validateField={validateField} 
-                  handleChange={handleChange} 
-                  handleBlur={handleBlur} 
-                />
-                
-                <TravelSection 
-                  formData={formData} 
-                  destinations={destinations} 
-                  touched={touched} 
-                  validateField={validateField} 
-                  handleSelectChange={handleSelectChange} 
-                  handleChange={handleChange} 
-                  handleBlur={handleBlur} 
+                {/* Contact Section */}
+                <ContactSection
+                  formData={formData}
+                  touched={touched}
+                  handleChange={handleChange}
+                  handleBlur={handleBlur}
                 />
 
-                <AdditionalSection 
-                  formData={formData} 
-                  touched={touched} 
-                  validateField={validateField} 
-                  handleSelectChange={handleSelectChange} 
-                  handleChange={handleChange} 
+                {/* Travel Section */}
+                <TravelSection
+                  formData={formData}
+                  touched={touched}
+                  destinations={destinations}
+                  handleChange={handleChange}
+                  handleSelectChange={handleSelectChange}
+                  handleBlur={handleBlur}
                 />
 
-                <ConnectSection 
-                  formData={formData} 
-                  handleSelectChange={handleSelectChange} 
+                {/* Additional Section */}
+                <AdditionalSection
+                  formData={formData}
+                  touched={touched}
+                  handleChange={handleChange}
+                  handleSelectChange={handleSelectChange}
+                  handleBlur={handleBlur}
+                />
+
+                {/* Connect Section */}
+                <ConnectSection
+                  formData={formData}
+                  handleSelectChange={handleSelectChange}
                 />
 
                 {error && (
@@ -189,6 +195,7 @@ const EnquiryForm = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-600"
                   >
+                    <FiAlertCircle size={20} />{" "}
                     <span className="text-sm">{error}</span>
                   </motion.div>
                 )}
@@ -198,7 +205,35 @@ const EnquiryForm = () => {
                   disabled={loading}
                   className="w-full py-4 bg-[#4A3B2A] text-[#F3EFE9] rounded-xl font-semibold text-lg hover:bg-[#3A2E21] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-[#4A3B2A]/20"
                 >
-                  {loading ? "Processing..." : <>Submit Enquiry <FiSend /></>}
+                  {loading ? (
+                    <>
+                      <svg
+                        className="animate-spin h-5 w-5 text-[#F3EFE9]"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      Submit Enquiry <FiSend />
+                    </>
+                  )}
                 </button>
 
                 <p className="text-xs text-[#4A3B2A]/50 text-center mt-4">

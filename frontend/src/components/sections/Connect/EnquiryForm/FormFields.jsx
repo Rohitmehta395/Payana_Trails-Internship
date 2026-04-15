@@ -106,9 +106,3 @@ export const SelectField = memo(
     </div>
   ),
 );
-
-export const SectionHeader = ({ icon: Icon, title }) => (
-  <h4 className="text-lg font-medium text-[#4A3B2A] mb-4 flex items-center gap-2">
-    {Icon && <Icon className="text-[#4A3B2A]" />} {title}
-  </h4>
-);
