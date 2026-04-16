@@ -16,7 +16,7 @@ const OptionalExperiences = ({ lines }) => {
         </div>
         <div>
           <p className="text-[14px] font-semibold uppercase tracking-[0.16em] text-[#8B6B50]">
-            Optional experiences
+            Optional Experiences & Journey Enhancements
           </p>
           <p className="text-sm text-[#8B6B50]">
             Additional experiences along the way - some included, others

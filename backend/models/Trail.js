@@ -126,8 +126,8 @@ const trailSchema = new mongoose.Schema(
       type: [String],
       default: [],
       validate: [
-        (val) => val.length <= 4,
-        "Optional experiences cannot exceed 4 lines"
+        (val) => val.length <= 6,
+        "Optional experiences cannot exceed 6 lines"
       ],
     },
     flights: {

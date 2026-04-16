@@ -30,8 +30,7 @@ const createEditableDay = (day = {}) => ({
     Array.isArray(day.points) && day.points.length > 0
       ? day.points.map((point) => (typeof point === "string" ? point : ""))
       : [""],
-  accommodation:
-    typeof day.accommodation === "string" ? day.accommodation : "",
+  accommodation: typeof day.accommodation === "string" ? day.accommodation : "",
   meals: typeof day.meals === "string" ? day.meals : "",
 });
 
@@ -50,10 +49,7 @@ const normalizePersistedDays = (rawDays = []) =>
     }))
     .filter(
       (day) =>
-        day.title ||
-        day.points.length > 0 ||
-        day.accommodation ||
-        day.meals,
+        day.title || day.points.length > 0 || day.accommodation || day.meals,
     );
 
 const buildEditableDays = (trail) => {
@@ -83,13 +79,16 @@ const initFlights = (trail) => {
     return base.slice(0, len);
   };
   return {
-    domesticIntro:      typeof f.domesticIntro === "string"      ? f.domesticIntro      : "",
-    domesticLines:      pad(f.domesticLines, 4),
-    internationalIntro: typeof f.internationalIntro === "string" ? f.internationalIntro : "",
-    arrivalAirport:     typeof f.arrivalAirport === "string"     ? f.arrivalAirport     : "",
-    arrivalOptions:     pad(f.arrivalOptions, 4),
-    departureAirport:   typeof f.departureAirport === "string"   ? f.departureAirport   : "",
-    departureOptions:   pad(f.departureOptions, 4),
+    domesticIntro: typeof f.domesticIntro === "string" ? f.domesticIntro : "",
+    domesticLines: pad(f.domesticLines, 4),
+    internationalIntro:
+      typeof f.internationalIntro === "string" ? f.internationalIntro : "",
+    arrivalAirport:
+      typeof f.arrivalAirport === "string" ? f.arrivalAirport : "",
+    arrivalOptions: pad(f.arrivalOptions, 4),
+    departureAirport:
+      typeof f.departureAirport === "string" ? f.departureAirport : "",
+    departureOptions: pad(f.departureOptions, 4),
   };
 };
 
@@ -97,8 +96,8 @@ const initOptionalExperiences = (trail) => {
   const arr = Array.isArray(trail.optionalExperiences)
     ? trail.optionalExperiences.map((s) => s || "")
     : [];
-  while (arr.length < 4) arr.push("");
-  return arr.slice(0, 4);
+  while (arr.length < 6) arr.push("");
+  return arr.slice(0, 6);
 };
 
 const areDaysDifferent = (left = [], right = []) =>
@@ -110,36 +109,55 @@ const CharCount = ({ value, max }) => {
   const len = (value || "").length;
   const over = len > max;
   return (
-    <span className={`text-[10px] font-medium tabular-nums ${over ? "text-red-500" : "text-stone-400"}`}>
+    <span
+      className={`text-[10px] font-medium tabular-nums ${over ? "text-red-500" : "text-stone-400"}`}
+    >
       {len}/{max}
     </span>
   );
 };
 
 // ─── Section Toggle Header ──────────────────────────────────────────────────
-const SectionHeader = ({ icon: Icon, title, subtitle, isOpen, onToggle, accentClass = "bg-[#4A3B2A]/8 text-[#4A3B2A]" }) => (
+const SectionHeader = ({
+  icon: Icon,
+  title,
+  subtitle,
+  isOpen,
+  onToggle,
+  accentClass = "bg-[#4A3B2A]/8 text-[#4A3B2A]",
+}) => (
   <button
     type="button"
     onClick={onToggle}
     className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition hover:bg-stone-50/60"
   >
     <div className="flex items-center gap-3">
-      <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${accentClass}`}>
+      <div
+        className={`flex h-9 w-9 items-center justify-center rounded-xl ${accentClass}`}
+      >
         <Icon size={16} />
       </div>
       <div>
         <p className="text-sm font-semibold text-stone-900">{title}</p>
-        {subtitle && <p className="text-[11px] text-stone-400 mt-0.5">{subtitle}</p>}
+        {subtitle && (
+          <p className="text-[11px] text-stone-400 mt-0.5">{subtitle}</p>
+        )}
       </div>
     </div>
-    {isOpen ? <ChevronUp size={16} className="text-stone-400 flex-shrink-0" /> : <ChevronDown size={16} className="text-stone-400 flex-shrink-0" />}
+    {isOpen ? (
+      <ChevronUp size={16} className="text-stone-400 flex-shrink-0" />
+    ) : (
+      <ChevronDown size={16} className="text-stone-400 flex-shrink-0" />
+    )}
   </button>
 );
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 const ItineraryEditorPanel = ({ trail, onSave, onAutoSave, onClose }) => {
   const [days, setDays] = useState(() => buildEditableDays(trail));
-  const [optionalExperiences, setOptionalExperiences] = useState(() => initOptionalExperiences(trail));
+  const [optionalExperiences, setOptionalExperiences] = useState(() =>
+    initOptionalExperiences(trail),
+  );
   const [flights, setFlights] = useState(() => initFlights(trail));
 
   const [saving, setSaving] = useState(false);
@@ -161,28 +179,39 @@ const ItineraryEditorPanel = ({ trail, onSave, onAutoSave, onClose }) => {
   }, [trail._id]);
 
   const persistedDraft = normalizePersistedDays(trail.itineraryDraft || []);
-  const persistedLive  = normalizePersistedDays(trail.itinerary || []);
+  const persistedLive = normalizePersistedDays(trail.itinerary || []);
   const hasServerDraft = areDaysDifferent(persistedDraft, persistedLive);
-  const cleanDays      = normalizePersistedDays(days);
+  const cleanDays = normalizePersistedDays(days);
 
   // Clean optional experiences — trim, keep up to 4, filter blanks before send
   const cleanOptionalExperiences = optionalExperiences.map((s) => s.trim());
   // Clean flights — trim all strings
   const cleanFlights = {
-    domesticIntro:      flights.domesticIntro.trim(),
-    domesticLines:      flights.domesticLines.map((s) => s.trim()),
+    domesticIntro: flights.domesticIntro.trim(),
+    domesticLines: flights.domesticLines.map((s) => s.trim()),
     internationalIntro: flights.internationalIntro.trim(),
-    arrivalAirport:     flights.arrivalAirport.trim(),
-    arrivalOptions:     flights.arrivalOptions.map((s) => s.trim()),
-    departureAirport:   flights.departureAirport.trim(),
-    departureOptions:   flights.departureOptions.map((s) => s.trim()),
+    arrivalAirport: flights.arrivalAirport.trim(),
+    arrivalOptions: flights.arrivalOptions.map((s) => s.trim()),
+    departureAirport: flights.departureAirport.trim(),
+    departureOptions: flights.departureOptions.map((s) => s.trim()),
   };
 
   const autoSaveFn = useCallback(async () => {
-    await onAutoSave(trail._id, cleanDays, cleanOptionalExperiences, cleanFlights);
+    await onAutoSave(
+      trail._id,
+      cleanDays,
+      cleanOptionalExperiences,
+      cleanFlights,
+    );
     setSavedType("draft");
     setError("");
-  }, [cleanDays, cleanOptionalExperiences, cleanFlights, onAutoSave, trail._id]);
+  }, [
+    cleanDays,
+    cleanOptionalExperiences,
+    cleanFlights,
+    onAutoSave,
+    trail._id,
+  ]);
 
   const { isSaving: isAutoSaving, lastSaved } = useAutoSave(
     { days, optionalExperiences, flights },
@@ -198,7 +227,11 @@ const ItineraryEditorPanel = ({ trail, onSave, onAutoSave, onClose }) => {
   };
   const removeDay = (dayId) => {
     setDays((prev) => prev.filter((day) => day.id !== dayId));
-    setCollapsed((prev) => { const next = { ...prev }; delete next[dayId]; return next; });
+    setCollapsed((prev) => {
+      const next = { ...prev };
+      delete next[dayId];
+      return next;
+    });
   };
   const moveDay = (index, direction) => {
     setDays((prev) => {
@@ -237,7 +270,9 @@ const ItineraryEditorPanel = ({ trail, onSave, onAutoSave, onClose }) => {
     setDays((prev) =>
       prev.map((day) => {
         if (day.id !== dayId) return day;
-        const nextPoints = day.points.filter((_, index) => index !== pointIndex);
+        const nextPoints = day.points.filter(
+          (_, index) => index !== pointIndex,
+        );
         return { ...day, points: nextPoints.length > 0 ? nextPoints : [""] };
       }),
     );
@@ -252,7 +287,10 @@ const ItineraryEditorPanel = ({ trail, onSave, onAutoSave, onClose }) => {
 
   // ── Flights handlers ─────────────────────────────────────────────────────
   const updateFlightField = (field, value) =>
-    setFlights((prev) => ({ ...prev, [field]: typeof value === "string" ? value.slice(0, 200) : value }));
+    setFlights((prev) => ({
+      ...prev,
+      [field]: typeof value === "string" ? value.slice(0, 200) : value,
+    }));
   const updateFlightArrayItem = (field, index, value) =>
     setFlights((prev) => {
       const arr = [...prev[field]];
@@ -265,7 +303,12 @@ const ItineraryEditorPanel = ({ trail, onSave, onAutoSave, onClose }) => {
     setSaving(true);
     setError("");
     try {
-      await onSave(trail._id, cleanDays, cleanOptionalExperiences, cleanFlights);
+      await onSave(
+        trail._id,
+        cleanDays,
+        cleanOptionalExperiences,
+        cleanFlights,
+      );
       setSavedType("saved");
       onClose();
     } catch (err) {
@@ -633,12 +676,12 @@ const ItineraryEditorPanel = ({ trail, onSave, onAutoSave, onClose }) => {
           </div>
         )}
 
-        {/* ════════ OPTIONAL EXPERIENCES ════════ */}
+        {/* ════════ OPTIONAL EXPERIENCES & JOURNEY ENHANCEMENTS ════════ */}
         <div className="overflow-hidden rounded-[24px] border border-stone-200 bg-white shadow-[0_14px_34px_rgba(30,25,20,0.06)]">
           <SectionHeader
             icon={Sparkles}
-            title="Suggested Optional Experiences"
-            subtitle="Up to 4 lines · 300 characters each"
+            title="Suggested Optional Experiences & Journey Enhancements"
+            subtitle="Up to 6 lines · 300 characters each"
             isOpen={showOptional}
             onToggle={() => setShowOptional((v) => !v)}
             accentClass="bg-amber-50 text-amber-700"
