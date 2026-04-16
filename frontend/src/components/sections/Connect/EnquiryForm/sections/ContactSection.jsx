@@ -2,8 +2,9 @@ import React from "react";
 import { FiUser, FiMail, FiPhone } from "react-icons/fi";
 import { InputField } from "../FormFields";
 import { validateField } from "../validation";
+import CountryCodeDropdown from "../../../../common/CountryCodeDropdown";
 
-const ContactSection = ({ formData, touched, handleChange, handleBlur }) => {
+const ContactSection = ({ formData, touched, handleChange, handleCountryChange, handleBlur }) => {
   return (
     <div>
       <h4 className="text-lg font-medium text-[#4A3B2A] mb-4 flex items-center gap-2">
@@ -36,9 +37,16 @@ const ContactSection = ({ formData, touched, handleChange, handleBlur }) => {
             icon={FiPhone}
             name="phone"
             label="Phone / WhatsApp"
-            placeholder="+91 98765 43210"
+            placeholder="98765 43210"
             value={formData.phone}
             onChange={handleChange}
+            addonBefore={
+              <CountryCodeDropdown
+                value={formData.countryCode}
+                iso={formData.countryIso}
+                onChange={handleCountryChange}
+              />
+            }
             onBlur={handleBlur}
             error={touched.phone && validateField("phone", formData.phone)}
           />

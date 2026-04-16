@@ -13,6 +13,7 @@ export const InputField = memo(
     onChange,
     onBlur,
     error,
+    addonBefore,
   }) => (
     <div className="space-y-2">
       {(label || Icon) && (
@@ -21,7 +22,8 @@ export const InputField = memo(
           {label} {required && <span className="text-red-400">*</span>}
         </label>
       )}
-      <div className="relative">
+      <div className={`relative ${addonBefore ? 'flex gap-2' : ''}`}>
+        {addonBefore && <div className="shrink-0">{addonBefore}</div>}
         <input
           type={type}
           name={name}
@@ -31,7 +33,7 @@ export const InputField = memo(
           placeholder={placeholder}
           className={`w-full px-4 py-3 bg-white border rounded-xl transition-all duration-200 outline-none
           ${error ? "border-red-300 focus:border-red-400 ring-1 ring-red-200" : "border-[#4A3B2A]/10 focus:border-[#4A3B2A] focus:ring-2 focus:ring-[#4A3B2A]/10"}
-          text-[#4A3B2A] placeholder:text-[#4A3B2A]/30`}
+          text-[#4A3B2A] placeholder:text-[#4A3B2A]/30 ${addonBefore ? "flex-1" : ""}`}
         />
       </div>
       {error && (

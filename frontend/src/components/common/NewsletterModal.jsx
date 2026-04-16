@@ -4,12 +4,15 @@ import { FaXmark, FaEnvelopeOpenText, FaWhatsapp } from "react-icons/fa6";
 import { useNewsletter } from "../../context/NewsletterContext";
 import { api } from "../../services/api";
 import BrownBtn from "./buttons/BrownBtn";
+import CountryCodeDropdown from "./CountryCodeDropdown";
 
 const NewsletterModal = () => {
   const { isModalOpen, closeNewsletterModal } = useNewsletter();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
+    countryCode: "+91",
+    countryIso: "IN",
     mobile: "",
   });
   const [status, setStatus] = useState("idle"); // idle, loading, success, error
@@ -24,6 +27,10 @@ const NewsletterModal = () => {
     } else {
       setFormData({ ...formData, [name]: value });
     }
+  };
+
+  const handleCountryChange = ({ code, iso }) => {
+    setFormData({ ...formData, countryCode: code, countryIso: iso });
   };
 
   const handleSubmit = async (e) => {
@@ -60,10 +67,12 @@ const NewsletterModal = () => {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-xl bg-[#F3EFE9] rounded-3xl overflow-hidden shadow-2xl border border-[#4A3B2A]/10"
+            className="relative w-full max-w-xl bg-[#F3EFE9] rounded-3xl shadow-2xl border border-[#4A3B2A]/10"
           >
             {/* Decoration */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#4A3B2A]/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#4A3B2A]/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            </div>
             
             {/* Close Button */}
             <button
@@ -74,7 +83,7 @@ const NewsletterModal = () => {
               <FaXmark size={24} />
             </button>
 
-            <div className="p-8 sm:p-12">
+            <div className="relative p-8 sm:p-12 z-10">
               {status === "success" ? (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
@@ -150,21 +159,28 @@ const NewsletterModal = () => {
                       <label htmlFor="mobile" className="block text-xs font-bold tracking-widest text-[#4A3B2A]/60 uppercase mb-2 ml-1 flex items-center gap-2">
                         Mobile Number <span className="text-[10px] lowercase font-normal italic opacity-70">(Optional / WhatsApp preferred)</span>
                       </label>
-                      <div className="relative">
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#25D366]">
-                          <FaWhatsapp size={18} />
-                        </div>
-                        <input
-                          id="mobile"
-                          name="mobile"
-                          type="tel"
-                          placeholder="+91 00000 00000"
-                          pattern="[0-9+\s()-]*"
-                          inputMode="tel"
-                          value={formData.mobile}
-                          onChange={handleChange}
-                          className="w-full bg-white border border-[#4A3B2A]/20 rounded-xl pl-11 pr-4 py-3 text-[#4A3B2A] placeholder-[#4A3B2A]/30 focus:outline-none focus:ring-2 focus:ring-[#4A3B2A]/20 transition-all"
+                      <div className="flex gap-2">
+                        <CountryCodeDropdown
+                          value={formData.countryCode}
+                          iso={formData.countryIso}
+                          onChange={handleCountryChange}
                         />
+                        <div className="relative flex-1">
+                          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#25D366]">
+                            <FaWhatsapp size={18} />
+                          </div>
+                          <input
+                            id="mobile"
+                            name="mobile"
+                            type="tel"
+                            placeholder="00000 00000"
+                            pattern="[0-9\\s()-]*"
+                            inputMode="tel"
+                            value={formData.mobile}
+                            onChange={handleChange}
+                            className="w-full bg-white border border-[#4A3B2A]/20 rounded-xl pl-11 pr-4 py-3 text-[#4A3B2A] placeholder-[#4A3B2A]/30 focus:outline-none focus:ring-2 focus:ring-[#4A3B2A]/20 transition-all font-medium"
+                          />
+                        </div>
                       </div>
                     </div>
 

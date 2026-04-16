@@ -1,8 +1,9 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiAlertCircle } from "react-icons/fi";
+import CountryCodeDropdown from "../../../common/CountryCodeDropdown";
 
-const GiftFields = ({ formData, touched, handleChange, handleBlur }) => {
+const GiftFields = ({ formData, touched, handleChange, handleCountryChange, handleBlur }) => {
   const inputClasses = (name) => `
     w-full px-4 py-3 rounded-xl border transition-all outline-none bg-[#F3EFE9]/10 placeholder:text-[#4A3B2A]/30
     ${touched[name] && !formData[name] && ![
@@ -69,15 +70,24 @@ const GiftFields = ({ formData, touched, handleChange, handleBlur }) => {
         </div>
         <div className="relative">
           <label className="block text-sm font-medium text-[#4A3B2A]/80 mb-2 ml-1">Your Mobile (Optional)</label>
-          <input
-            type="tel"
-            name="senderPhone"
-            value={formData.senderPhone}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            placeholder="+91..."
-            className={inputClasses("senderPhone")}
-          />
+          <div className="flex gap-2">
+            <div className="shrink-0">
+              <CountryCodeDropdown
+                value={formData.senderCountryCode}
+                iso={formData.senderCountryIso}
+                onChange={(val) => handleCountryChange('sender', val)}
+              />
+            </div>
+            <input
+              type="tel"
+              name="senderPhone"
+              value={formData.senderPhone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder="98765 43210"
+              className={`${inputClasses("senderPhone")} flex-1`}
+            />
+          </div>
         </div>
       </div>
 
@@ -115,15 +125,24 @@ const GiftFields = ({ formData, touched, handleChange, handleBlur }) => {
         </div>
         <div className="relative">
           <label className="block text-sm font-medium text-[#4A3B2A]/80 mb-2 ml-1">Recipient's Mobile (Optional)</label>
-          <input
-            type="tel"
-            name="recipientPhone"
-            value={formData.recipientPhone}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            placeholder="+91..."
-            className={inputClasses("recipientPhone")}
-          />
+          <div className="flex gap-2">
+            <div className="shrink-0">
+              <CountryCodeDropdown
+                value={formData.recipientCountryCode}
+                iso={formData.recipientCountryIso}
+                onChange={(val) => handleCountryChange('recipient', val)}
+              />
+            </div>
+            <input
+              type="tel"
+              name="recipientPhone"
+              value={formData.recipientPhone}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              placeholder="98765 43210"
+              className={`${inputClasses("recipientPhone")} flex-1`}
+            />
+          </div>
         </div>
       </div>
 

@@ -26,8 +26,8 @@ router.post("/", async (req, res) => {
     const giftDetails = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
         <h2 style="color: #4A3B2A;">New Gift A Journey Submission</h2>
-        <p><strong>Sender:</strong> ${gift.senderName} (${gift.senderEmail}, ${gift.senderPhone || "N/A"})</p>
-        <p><strong>Recipient:</strong> ${gift.recipientName} (${gift.recipientEmail}, ${gift.recipientPhone || "N/A"})</p>
+        <p><strong>Sender:</strong> ${gift.senderName} (${gift.senderEmail}, ${gift.senderPhone ? ((gift.senderCountryCode || '') + ' ' + gift.senderPhone) : "N/A"})</p>
+        <p><strong>Recipient:</strong> ${gift.recipientName} (${gift.recipientEmail}, ${gift.recipientPhone ? ((gift.recipientCountryCode || '') + ' ' + gift.recipientPhone) : "N/A"})</p>
         <p><strong>Gift Type:</strong> ${gift.giftType}</p>
         ${gift.giftType === "Journey" ? `<p><strong>Journey Details:</strong> ${gift.journeyDetails}</p>` : `<p><strong>Gift Value:</strong> INR ${gift.giftValue}</p>`}
         <p><strong>Occasion:</strong> ${gift.occasion || "N/A"}</p>

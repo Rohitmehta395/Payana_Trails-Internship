@@ -6,7 +6,7 @@ const crypto = require("crypto");
 // @route   POST /api/newsletter/subscribe
 // @access  Public
 exports.subscribe = async (req, res) => {
-  const { fullName, email, mobile } = req.body;
+  const { fullName, email, countryCode, mobile } = req.body;
 
   if (!fullName || !email) {
     return res.status(400).json({
@@ -29,6 +29,7 @@ exports.subscribe = async (req, res) => {
         // Re-subscribe
         subscriber.status = "subscribed";
         subscriber.fullName = fullName;
+        subscriber.countryCode = countryCode || subscriber.countryCode;
         subscriber.mobile = mobile || subscriber.mobile;
         // Regenerate token
         subscriber.unsubscribeToken = crypto.randomBytes(32).toString("hex");
@@ -39,6 +40,7 @@ exports.subscribe = async (req, res) => {
       subscriber = await Subscriber.create({
         fullName,
         email,
+        countryCode,
         mobile,
       });
     }

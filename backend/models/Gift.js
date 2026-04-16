@@ -10,6 +10,11 @@ const GiftSchema = new mongoose.Schema(
       type: String,
       required: [true, "Sender email is required"],
     },
+    senderCountryCode: {
+      type: String,
+      default: "+91",
+      trim: true,
+    },
     senderPhone: {
       type: String,
     },
@@ -20,6 +25,11 @@ const GiftSchema = new mongoose.Schema(
     recipientEmail: {
       type: String,
       required: [true, "Recipient email is required"],
+    },
+    recipientCountryCode: {
+      type: String,
+      default: "+91",
+      trim: true,
     },
     recipientPhone: {
       type: String,

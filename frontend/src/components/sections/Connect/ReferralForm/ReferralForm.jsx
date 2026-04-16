@@ -10,9 +10,13 @@ const ReferralForm = ({ initialData = {} }) => {
   const [formData, setFormData] = useState({
     referrerName: initialData?.name || "",
     referrerEmail: initialData?.email || "",
+    referrerCountryCode: "+91",
+    referrerCountryIso: "IN",
     referrerPhone: initialData?.phone || "",
     friendName: "",
     friendEmail: "",
+    friendCountryCode: "+91",
+    friendCountryIso: "IN",
     friendPhone: "",
     message: "",
   });
@@ -25,6 +29,14 @@ const ReferralForm = ({ initialData = {} }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCountryChange = (fieldPrefix, { code, iso }) => {
+    setFormData((prev) => ({
+      ...prev,
+      [`${fieldPrefix}CountryCode`]: code,
+      [`${fieldPrefix}CountryIso`]: iso,
+    }));
   };
 
   const handleBlur = (e) => {
@@ -76,7 +88,7 @@ const ReferralForm = ({ initialData = {} }) => {
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-2 order-2 lg:order-1"
           >
-            <div className="bg-white rounded-3xl shadow-xl border border-[#4A3B2A]/10 overflow-hidden min-h-[500px] flex flex-col justify-center">
+            <div className="bg-white rounded-3xl shadow-xl border border-[#4A3B2A]/10 min-h-[500px] flex flex-col justify-center relative z-10">
               <AnimatePresence mode="wait">
                 {submitted ? (
                   <ReferralSuccess key="success" onAction={resetForm} />
@@ -102,6 +114,7 @@ const ReferralForm = ({ initialData = {} }) => {
                         formData={formData}
                         touched={touched}
                         handleChange={handleChange}
+                        handleCountryChange={handleCountryChange}
                         handleBlur={handleBlur}
                       />
 

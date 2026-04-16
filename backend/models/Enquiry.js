@@ -14,6 +14,11 @@ const enquirySchema = new mongoose.Schema(
       lowercase: true,
       match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Please provide a valid email address"],
     },
+    countryCode: {
+      type: String,
+      default: "+91",
+      trim: true,
+    },
     phone: {
       type: String,
       required: [true, "Please provide your phone/whatsapp number"],

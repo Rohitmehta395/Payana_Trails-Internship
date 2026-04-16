@@ -20,6 +20,8 @@ const EnquiryForm = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    countryCode: "+91",
+    countryIso: "IN",
     phone: "",
     trailName: "",
     otherDestination: "",
@@ -63,6 +65,10 @@ const EnquiryForm = ({ onSuccess }) => {
   const handleSelectChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setTouched((prev) => ({ ...prev, [name]: true }));
+  };
+
+  const handleCountryChange = ({ code, iso }) => {
+    setFormData((prev) => ({ ...prev, countryCode: code, countryIso: iso }));
   };
 
   const handleBlur = (e) => {
@@ -158,8 +164,8 @@ const EnquiryForm = ({ onSuccess }) => {
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-2"
           >
-            <div className="bg-white rounded-3xl shadow-xl border border-[#4A3B2A]/10 overflow-hidden">
-              <div className="p-6 md:p-8 border-b border-[#4A3B2A]/10 bg-[#F3EFE9]/30">
+            <div className="bg-white rounded-3xl shadow-xl border border-[#4A3B2A]/10 relative z-10">
+              <div className="p-6 md:p-8 border-b border-[#4A3B2A]/10 bg-[#F3EFE9]/30 rounded-t-3xl">
                 <h3 className="text-xl font-semibold text-[#4A3B2A]">
                   Enquiry Form
                 </h3>
@@ -174,6 +180,7 @@ const EnquiryForm = ({ onSuccess }) => {
                   formData={formData}
                   touched={touched}
                   handleChange={handleChange}
+                  handleCountryChange={handleCountryChange}
                   handleBlur={handleBlur}
                 />
 

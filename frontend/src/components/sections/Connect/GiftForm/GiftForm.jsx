@@ -10,9 +10,13 @@ const GiftForm = ({ initialData = {} }) => {
   const [formData, setFormData] = useState({
     senderName: initialData?.name || "",
     senderEmail: initialData?.email || "",
+    senderCountryCode: "+91",
+    senderCountryIso: "IN",
     senderPhone: initialData?.phone || "",
     recipientName: "",
     recipientEmail: "",
+    recipientCountryCode: "+91",
+    recipientCountryIso: "IN",
     recipientPhone: "",
     giftType: "Journey",
     journeyDetails: "",
@@ -29,6 +33,14 @@ const GiftForm = ({ initialData = {} }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCountryChange = (fieldPrefix, { code, iso }) => {
+    setFormData((prev) => ({
+      ...prev,
+      [`${fieldPrefix}CountryCode`]: code,
+      [`${fieldPrefix}CountryIso`]: iso,
+    }));
   };
 
   const handleBlur = (e) => {
@@ -93,7 +105,7 @@ const GiftForm = ({ initialData = {} }) => {
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-2 order-2 lg:order-1"
           >
-            <div className="bg-white rounded-3xl shadow-xl border border-[#4A3B2A]/10 overflow-hidden min-h-[600px] flex flex-col justify-center">
+            <div className="bg-white rounded-3xl shadow-xl border border-[#4A3B2A]/10 min-h-[600px] flex flex-col justify-center relative z-10">
               <AnimatePresence mode="wait">
                 {submitted ? (
                   <GiftSuccess key="success" onAction={resetForm} />
@@ -119,6 +131,7 @@ const GiftForm = ({ initialData = {} }) => {
                         formData={formData}
                         touched={touched}
                         handleChange={handleChange}
+                        handleCountryChange={handleCountryChange}
                         handleBlur={handleBlur}
                       />
 

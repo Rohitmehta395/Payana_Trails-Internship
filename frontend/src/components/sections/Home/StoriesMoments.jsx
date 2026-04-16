@@ -41,8 +41,8 @@ const StoriesMoments = () => {
             {/* Text container */}
             <div className="relative mt-4 sm:mt-8 lg:mt-8 mr-6 sm:mr-8 max-w-md lg:max-w-lg text-right">
               <h2 className="text-white text-[16px] sm:text-[20px] lg:text-[22px] font-sans italic font-semibold leading-relaxed tracking-wide">
-                “Travel isn’t about how many places you see.<br /> It’s about the
-                moments that stay with you.”
+                “Travel isn’t about how many places you see.
+                <br /> It’s about the moments that stay with you.”
               </h2>
             </div>
           </div>
@@ -65,11 +65,10 @@ const StoriesMoments = () => {
             </div>
             <div>
               <h3 className="text-2xl font-bold font-serif text-[#4A3B2A] mb-2">
-                Stay Inspired
+                Subscribe to - The Payana Journal
               </h3>
               <p className="text-[#4A3B2A]/80 text-[16px] max-w-md leading-relaxed">
-                Get handpicked travel stories, exclusive journeys, and a touch
-                of magic delivered directly to your inbox.
+                New trails, journey updates, and curated travel experiences
               </p>
             </div>
           </div>
@@ -77,7 +76,7 @@ const StoriesMoments = () => {
           {/* Right: Action Button */}
           <div className="shrink-0 w-full sm:w-auto">
             <BrownBtn
-              text="Subscribe to our Newsletter &rarr;"
+              text="Subscribe to The Payana Journal &rarr;"
               className="w-full sm:w-auto px-8 py-4 shadow-md hover:shadow-xl shadow-[#4A3B2A]/20"
               onClick={openNewsletterModal}
             />

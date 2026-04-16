@@ -16,6 +16,11 @@ const subscriberSchema = new mongoose.Schema(
       trim: true,
       match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Please provide a valid email address"],
     },
+    countryCode: {
+      type: String,
+      default: "+91",
+      trim: true,
+    },
     mobile: {
       type: String,
       trim: true,

@@ -10,9 +10,11 @@ router.post("/", async (req, res) => {
   const {
     referrerName,
     referrerEmail,
+    referrerCountryCode,
     referrerPhone,
     friendName,
     friendEmail,
+    friendCountryCode,
     friendPhone,
     message
   } = req.body;
@@ -22,9 +24,11 @@ router.post("/", async (req, res) => {
     const referral = await Referral.create({
       referrerName,
       referrerEmail,
+      referrerCountryCode,
       referrerPhone,
       friendName,
       friendEmail,
+      friendCountryCode,
       friendPhone,
       message,
     });
@@ -66,7 +70,7 @@ router.post("/", async (req, res) => {
               </tr>
               <tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9; font-weight: bold;">Mobile #:</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9;">${referrerPhone || 'Not provided'}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9;">${referrerPhone ? `${referrerCountryCode || ''} ${referrerPhone}` : 'Not provided'}</td>
               </tr>
             </table>
 
@@ -82,7 +86,7 @@ router.post("/", async (req, res) => {
               </tr>
               <tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9; font-weight: bold;">Friend's Mobile #:</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9;">${friendPhone || 'Not provided'}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9;">${friendPhone ? `${friendCountryCode || ''} ${friendPhone}` : 'Not provided'}</td>
               </tr>
             </table>
 
