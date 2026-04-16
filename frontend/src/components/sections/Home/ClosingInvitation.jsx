@@ -4,12 +4,13 @@ import BrownBtn from "../../common/buttons/BrownBtn";
 
 // Importing React Icons
 import { FiMail, FiPhone } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ClosingInvitation = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   return (
-    <section className="bg-[#F3EFE9] w-full py-8 sm:py-12 lg:py-16">
+    <section id="closing-invitation" className="bg-[#F3EFE9] w-full py-8 sm:py-12 lg:py-16">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           {/* 1. Image Section - Restored your original styling */}
@@ -57,7 +58,7 @@ const ClosingInvitation = () => {
             {/* Action Button */}
             <BrownBtn
               text="Connect With Us &rarr;"
-              onClick={() => navigate("/connect")}
+              onClick={() => navigate("/connect", { state: { from: location.pathname, section: 'closing-invitation' } })}
               className="px-8 py-3 sm:px-10 sm:py-4 text-[16px] sm:text-[18px] font-medium shadow-md hover:shadow-lg w-fit mb-10 transition-all duration-300"
             />
 

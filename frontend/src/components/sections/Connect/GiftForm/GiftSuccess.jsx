@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FiCheckCircle, FiHeart } from "react-icons/fi";
+import { FiCheckCircle, FiHeart, FiArrowLeft } from "react-icons/fi";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const GiftSuccess = ({ onAction }) => {
+  const [countdown, setCountdown] = useState(5);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          const from = location.state?.from || -1;
+          const section = location.state?.section;
+          const target = (typeof from === 'string' && section) ? `${from}#${section}` : from;
+          navigate(target);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [navigate, location.state]);
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -29,12 +52,19 @@ const GiftSuccess = ({ onAction }) => {
         We will carefully curate your gift and share the details with you shortly via email.
       </p>
 
-      <button
-        onClick={onAction}
-        className="px-10 py-4 bg-[#4A3B2A] text-[#F3EFE9] rounded-xl font-bold text-lg hover:bg-[#3A2E21] transition-all transform hover:scale-105 shadow-xl shadow-[#4A3B2A]/20"
-      >
-        Gift Another Journey
-      </button>
+      <div className="flex flex-col items-center gap-6">
+        <button
+          onClick={onAction}
+          className="px-10 py-4 bg-[#4A3B2A] text-[#F3EFE9] rounded-xl font-bold text-lg hover:bg-[#3A2E21] transition-all transform hover:scale-105 shadow-xl shadow-[#4A3B2A]/20"
+        >
+          Gift Another Journey
+        </button>
+
+        <div className="flex items-center gap-2 text-sm text-[#4A3B2A]/50 bg-[#F3EFE9]/50 px-4 py-2 rounded-full">
+            <FiArrowLeft size={14} />
+            <span>Redirecting you back to your journey in <b>{countdown}s</b></span>
+        </div>
+      </div>
     </motion.div>
   );
 };

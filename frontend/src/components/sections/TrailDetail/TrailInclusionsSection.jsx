@@ -10,7 +10,7 @@ import {
   LuArrowRight,
   LuFileText,
 } from "react-icons/lu";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -292,6 +292,7 @@ const TrailInclusionsSection = ({
   isWrapped = false,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isHoveringEnquire, setIsHoveringEnquire] = React.useState(false);
   const [isHoveringItinerary, setIsHoveringItinerary] = React.useState(false);
 
@@ -300,7 +301,13 @@ const TrailInclusionsSection = ({
 
   const handleEnquireClick = () => {
     setTimeout(() => {
-      navigate("/connect#enquiry-section", { state: { trailName: trailState?.trailName } });
+      navigate("/connect#enquiry-section", { 
+        state: { 
+          from: location.pathname,
+          section: 'trail-essentials',
+          trailName: trailState?.trailName 
+        } 
+      });
     }, 400);
   };
 
@@ -312,7 +319,7 @@ const TrailInclusionsSection = ({
   };
 
   return (
-    <section className={isWrapped ? "w-full" : "mx-auto w-full max-w-7xl px-6 py-8 md:px-10"}>
+    <section id="trail-essentials" className={isWrapped ? "w-full" : "mx-auto w-full max-w-7xl px-6 py-8 md:px-10"}>
       <motion.div
         initial="hidden"
         whileInView="visible"

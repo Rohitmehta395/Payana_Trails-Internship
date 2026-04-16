@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowRight, FileText, Sparkles } from "lucide-react";
 
 const TrailActionButtons = ({ trailSlug, trailState, hasItinerary = false }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isHoveringEnquire, setIsHoveringEnquire] = useState(false);
 
   const handleEnquireClick = () => {
     // Slight delay before navigation for effect
     setTimeout(() => {
-      navigate("/connect#enquiry-section");
+      navigate("/connect#enquiry-section", { 
+        state: { 
+          from: location.pathname,
+          section: 'trail-essentials',
+          trailName: trailState?.trailName 
+        } 
+      });
     }, 400);
   };
 

@@ -158,14 +158,6 @@ const EnquiryForm = ({ onSuccess }) => {
     }
   };
 
-  if (submitted) {
-    return (
-      <FormSuccess
-        onReset={() => setSubmitted(false)}
-      />
-    );
-  }
-
   return (
     <section id="enquiry-section" className="py-16 px-4 bg-[#F3EFE9] scroll-mt-24">
       <div className="max-w-6xl mx-auto">
@@ -179,102 +171,108 @@ const EnquiryForm = ({ onSuccess }) => {
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-2"
           >
-            <div className="bg-white rounded-3xl shadow-xl border border-[#4A3B2A]/10 relative z-10">
-              <div className="p-6 md:p-8 border-b border-[#4A3B2A]/10 bg-[#F3EFE9]/30 rounded-t-3xl">
-                <h3 className="text-2xl font-bold text-[#4A3B2A]">
-                  Enquiry Form
-                </h3>
-                <p className="text-[#4A3B2A]/60 text-sm mt-1">
-                  Fields marked with * are required
-                </p>
-              </div>
+            <div className="bg-white rounded-3xl shadow-xl border border-[#4A3B2A]/10 relative z-10 overflow-hidden">
+              {submitted ? (
+                <FormSuccess onReset={() => setSubmitted(false)} />
+              ) : (
+                <>
+                  <div className="p-6 md:p-8 border-b border-[#4A3B2A]/10 bg-[#F3EFE9]/30 rounded-t-3xl">
+                    <h3 className="text-2xl font-bold text-[#4A3B2A]">
+                      Enquiry Form
+                    </h3>
+                    <p className="text-[#4A3B2A]/60 text-sm mt-1">
+                      Fields marked with * are required
+                    </p>
+                  </div>
 
-              <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">
-                {/* Contact Section */}
-                <ContactSection
-                  formData={formData}
-                  touched={touched}
-                  handleChange={handleChange}
-                  handleCountryChange={handleCountryChange}
-                  handleBlur={handleBlur}
-                />
+                  <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">
+                    {/* Contact Section */}
+                    <ContactSection
+                      formData={formData}
+                      touched={touched}
+                      handleChange={handleChange}
+                      handleCountryChange={handleCountryChange}
+                      handleBlur={handleBlur}
+                    />
 
-                {/* Travel Section */}
-                <TravelSection
-                  formData={formData}
-                  touched={touched}
-                  trails={trails}
-                  handleChange={handleChange}
-                  handleSelectChange={handleSelectChange}
-                  handleBlur={handleBlur}
-                />
+                    {/* Travel Section */}
+                    <TravelSection
+                      formData={formData}
+                      touched={touched}
+                      trails={trails}
+                      handleChange={handleChange}
+                      handleSelectChange={handleSelectChange}
+                      handleBlur={handleBlur}
+                    />
 
-                {/* Additional Section */}
-                <AdditionalSection
-                  formData={formData}
-                  touched={touched}
-                  handleChange={handleChange}
-                  handleSelectChange={handleSelectChange}
-                  handleBlur={handleBlur}
-                />
+                    {/* Additional Section */}
+                    <AdditionalSection
+                      formData={formData}
+                      touched={touched}
+                      handleChange={handleChange}
+                      handleSelectChange={handleSelectChange}
+                      handleBlur={handleBlur}
+                    />
 
-                {/* Connect Section */}
-                <ConnectSection
-                  formData={formData}
-                  handleSelectChange={handleSelectChange}
-                />
+                    {/* Connect Section */}
+                    <ConnectSection
+                      formData={formData}
+                      handleSelectChange={handleSelectChange}
+                    />
 
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-600"
-                  >
-                    <FiAlertCircle size={20} />{" "}
-                    <span className="text-sm">{error}</span>
-                  </motion.div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-4 bg-[#4A3B2A] text-[#F3EFE9] rounded-xl font-semibold text-lg hover:bg-[#3A2E21] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-[#4A3B2A]/20"
-                >
-                  {loading ? (
-                    <>
-                      <svg
-                        className="animate-spin h-5 w-5 text-[#F3EFE9]"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
+                    {error && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-600"
                       >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      Submit Enquiry <FiSend />
-                    </>
-                  )}
-                </button>
+                        <FiAlertCircle size={20} />{" "}
+                        <span className="text-sm">{error}</span>
+                      </motion.div>
+                    )}
 
-                <p className="text-xs text-[#4A3B2A]/50 text-center mt-4">
-                  By submitting, you agree to our privacy policy and terms.
-                </p>
-              </form>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-4 bg-[#4A3B2A] text-[#F3EFE9] rounded-xl font-semibold text-lg hover:bg-[#3A2E21] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-[#4A3B2A]/20"
+                    >
+                      {loading ? (
+                        <>
+                          <svg
+                            className="animate-spin h-5 w-5 text-[#F3EFE9]"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          Submit Enquiry <FiSend />
+                        </>
+                      )}
+                    </button>
+
+                    <p className="text-xs text-[#4A3B2A]/50 text-center mt-4">
+                      By submitting, you agree to our privacy policy and terms.
+                    </p>
+                  </form>
+                </>
+              )}
             </div>
           </motion.div>
         </div>

@@ -1,10 +1,15 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigationType } from "react-router-dom";
 
 const ScrollToTop = () => {
   const { pathname, hash } = useLocation();
+  const navType = useNavigationType();
 
   useEffect(() => {
+    // If it's a POP navigation (back/forward button), let the browser 
+    // handle its own scroll restoration.
+    if (navType === "POP") return;
+
     // If there's a hash, we want to scroll to the element after a short delay
     // to give the page time to render.
     if (hash) {
@@ -18,7 +23,7 @@ const ScrollToTop = () => {
     } else {
       window.scrollTo(0, 0);
     }
-  }, [pathname, hash]);
+  }, [pathname, hash, navType]);
 
   return null;
 };

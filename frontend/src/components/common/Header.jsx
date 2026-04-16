@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { api } from "../../services/api";
 import {
@@ -39,6 +39,7 @@ export default function Header() {
   const [isUiHidden, setIsUiHidden] = useState(false);
   const [destinations, setDestinations] = useState([]);
 
+  const location = useLocation();
   // State to track which mobile submenus are open
   const [mobileMenuState, setMobileMenuState] = useState({});
 
@@ -258,6 +259,7 @@ export default function Header() {
                       /* Standard Link (No Dropdown) */
                       <Link
                         to={item.path}
+                        state={{ from: location.pathname }}
                         onClick={handleNavClick}
                         className="hover:opacity-60 transition-opacity whitespace-nowrap py-4"
                       >
@@ -478,6 +480,7 @@ export default function Header() {
                     /* Standard Mobile Link */
                     <Link
                       to={item.path}
+                      state={{ from: location.pathname }}
                       className="text-[#4A3B2A] text-lg font-semibold px-4 py-2 block"
                       onClick={handleNavClick}
                     >
