@@ -259,7 +259,6 @@ export default function Header() {
                       /* Standard Link (No Dropdown) */
                       <Link
                         to={item.path}
-                        state={{ from: location.pathname }}
                         onClick={handleNavClick}
                         className="hover:opacity-60 transition-opacity whitespace-nowrap py-4"
                       >
@@ -480,7 +479,6 @@ export default function Header() {
                     /* Standard Mobile Link */
                     <Link
                       to={item.path}
-                      state={{ from: location.pathname }}
                       className="text-[#4A3B2A] text-lg font-semibold px-4 py-2 block"
                       onClick={handleNavClick}
                     >

@@ -180,7 +180,6 @@ const Footer = () => {
                     <li key={idx}>
                       <Link
                         to={link.path}
-                        state={{ from: window.location.pathname }}
                         className="text-[14px] opacity-70 hover:opacity-100 hover:text-white transition-all duration-300 inline-block hover:translate-x-1"
                         onClick={(e) => {
                           if (link.name === "Newsletter") {
@@ -263,7 +262,6 @@ const Footer = () => {
               <React.Fragment key={index}>
                 <Link
                   to={link.path}
-                  state={{ from: window.location.pathname }}
                   className="hover:text-white hover:opacity-100 transition-colors"
                   onClick={() => window.scrollTo(0, 0)}
                 >

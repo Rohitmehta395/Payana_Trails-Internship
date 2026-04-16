@@ -9,6 +9,8 @@ const FormSuccess = ({ onReset }) => {
   const location = useLocation();
 
   useEffect(() => {
+    if (!location.state?.from) return;
+
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
@@ -49,10 +51,12 @@ const FormSuccess = ({ onReset }) => {
           Send Another Enquiry
         </button>
 
-        <div className="flex items-center gap-2 text-sm text-[#4A3B2A]/50 bg-[#F3EFE9]/50 px-4 py-2 rounded-full">
-          <FiArrowLeft size={14} />
-          <span>Redirecting you back to your journey in <b>{countdown}s</b></span>
-        </div>
+        {location.state?.from && (
+          <div className="flex items-center gap-2 text-sm text-[#4A3B2A]/50 bg-[#F3EFE9]/50 px-4 py-2 rounded-full">
+            <FiArrowLeft size={14} />
+            <span>Redirecting you back to your journey in <b>{countdown}s</b></span>
+          </div>
+        )}
       </div>
     </motion.div>
   );

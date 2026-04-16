@@ -11,7 +11,7 @@ const FormSidebar = () => {
     >
       <div className="lg:sticky lg:top-8 space-y-8">
         <div>
-          <span className="text-[#4A3B2A] font-semibold text-sm uppercase tracking-wider">
+          <span className="text-[#4A3B2A] font-semibold text-md uppercase tracking-wider">
             Start Your Journey
           </span>
           <h2 className="text-4xl font-bold text-[#4A3B2A] mt-2 leading-tight">

@@ -132,6 +132,25 @@ const ReferralForm = ({ initialData = {} }) => {
                         </motion.div>
                       )}
 
+                      {/* Important Notes */}
+                      <div className="bg-[#4A3B2A]/5 p-6 rounded-2xl border border-[#4A3B2A]/10 space-y-3">
+                        <p className="text-xs font-bold text-[#4A3B2A] uppercase tracking-widest opacity-60">
+                          Note:
+                        </p>
+                        <ul className="space-y-2">
+                          {[
+                            "Referrals of immediate family members are not eligible for Payana Travel Credit.",
+                            "Details regarding Payana Travel Credit and redemption modes will be shared via email.",
+                            "Payana Travel Credit is valid only for redemption against a future booking made with Payana Trails and cannot be used for past journeys.",
+                          ].map((text, i) => (
+                            <li key={i} className="flex gap-2 text-[13px] md:text-sm text-[#4A3B2A]/80 leading-relaxed">
+                              <span className="mt-1.5 w-1 h-1 rounded-full bg-[#4A3B2A]/30 shrink-0" />
+                              <span>{text}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
                       <button
                         type="submit"
                         disabled={loading}
@@ -151,7 +170,7 @@ const ReferralForm = ({ initialData = {} }) => {
           </motion.div>
 
           {/* Sidebar on Right */}
-          <ReferralSidebar />
+        <ReferralSidebar />
         </div>
       </div>
     </section>

@@ -136,6 +136,15 @@ router.post("/", async (req, res) => {
             <p style="font-size: 16px; margin-bottom: 25px;">We truly value your trust in us and look forward to welcoming your friend on a journey soon.</p>
             
             <p style="margin-top: 30px; font-style: italic;">Warm regards,<br>The Payana Trails Team</p>
+            
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #F3EFE9; font-size: 12px; color: #7A634A;">
+              <p style="margin: 0 0 5px 0;"><strong>Note:</strong></p>
+              <ul style="margin: 0; padding-left: 20px;">
+                <li style="margin-bottom: 5px;">Referrals of immediate family members are not eligible for Payana Travel Credit.</li>
+                <li style="margin-bottom: 5px;">Details regarding Payana Travel Credit and redemption modes will be shared via email.</li>
+                <li style="margin-bottom: 5px;">Payana Travel Credit is valid only for redemption against a future booking made with Payana Trails and cannot be used for past journeys.</li>
+              </ul>
+            </div>
           </div>
           <div style="background-color: #F3EFE9; padding: 20px; text-align: center; font-size: 11px; color: #7A634A;">
             <p style="margin: 0;">&copy; ${new Date().getFullYear()} Payana Trails. All rights reserved.</p>
