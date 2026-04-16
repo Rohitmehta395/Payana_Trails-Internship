@@ -33,29 +33,41 @@ const EnquiryForm = ({ onSuccess }) => {
     message: "",
     connectMethod: "eMail",
   });
-  const [destinations, setDestinations] = useState([]);
+  const [trails, setTrails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
   const [touched, setTouched] = useState({});
 
   useEffect(() => {
-    const fetchDestinations = async () => {
+    const fetchTrails = async () => {
       try {
-        const data = await api.getDestinations();
-        setDestinations(data);
+        const data = await api.getTrails();
+        setTrails(data);
       } catch (err) {
-        console.error("Failed to fetch destinations:", err);
+        console.error("Failed to fetch trails:", err);
       }
     };
-    fetchDestinations();
+    fetchTrails();
   }, []);
 
   useEffect(() => {
     if (location.state?.trailName) {
+      // If we already have trails, find the match to get the full formatted name
+      if (trails.length > 0) {
+        const match = trails.find(t => t.trailName === location.state.trailName);
+        if (match) {
+          setFormData((prev) => ({ 
+            ...prev, 
+            trailName: `${match.trailName} (${match.trailDestination})` 
+          }));
+          return;
+        }
+      }
+      // Otherwise set the name as-is (TravelSection will handle display or it'll be updated once trails load)
       setFormData((prev) => ({ ...prev, trailName: location.state.trailName }));
     }
-  }, [location.state]);
+  }, [location.state, trails]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -191,7 +203,7 @@ const EnquiryForm = ({ onSuccess }) => {
                 <TravelSection
                   formData={formData}
                   touched={touched}
-                  destinations={destinations}
+                  trails={trails}
                   handleChange={handleChange}
                   handleSelectChange={handleSelectChange}
                   handleBlur={handleBlur}

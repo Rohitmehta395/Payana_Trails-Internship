@@ -8,7 +8,7 @@ import { months, years, guestOptions } from "../constants.jsx";
 const TravelSection = ({
   formData,
   touched,
-  destinations,
+  trails,
   handleChange,
   handleSelectChange,
   handleBlur,
@@ -25,9 +25,9 @@ const TravelSection = ({
           label="Trail / Destination"
           placeholder="Select a trail"
           options={[
-            ...destinations.map((d) => ({
-              label: d.name,
-              value: d.name,
+            ...trails.map((t) => ({
+              label: `${t.trailName} (${t.trailDestination})`,
+              value: `${t.trailName} (${t.trailDestination})`,
             })),
             { label: "Others (Please specify)", value: "Others" },
           ]}
