@@ -448,6 +448,94 @@ export const api = {
     }
   },
 
+  // --- FAQ ROUTES ---
+  getFAQs: async (isAdmin = false) => {
+    try {
+      const url = isAdmin
+        ? `${API_BASE_URL}/faqs?admin=true`
+        : `${API_BASE_URL}/faqs`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch FAQs");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getFAQs):", error);
+      throw error;
+    }
+  },
+
+  createFAQ: async (faqData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/faqs`, {
+        method: "POST",
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
+        body: JSON.stringify(faqData),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to create FAQ");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  updateFAQ: async (id, faqData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/faqs/${id}`, {
+        method: "PUT",
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
+        body: JSON.stringify(faqData),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update FAQ");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  deleteFAQ: async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/faqs/${id}`, {
+        method: "DELETE",
+        headers: withAdminAuth(),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to delete FAQ");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  toggleFAQStatus: async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/faqs/${id}/toggle`, {
+        method: "PATCH",
+        headers: withAdminAuth(),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to toggle FAQ");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  reorderFAQs: async (items) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/faqs/reorder`, {
+        method: "PUT",
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ items }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to reorder FAQs");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   // --- PAGE HERO IMAGE ROUTES ---
   /** Fetch all pages (admin: full map + page keys) */
   getAllPageHeroes: async () => {

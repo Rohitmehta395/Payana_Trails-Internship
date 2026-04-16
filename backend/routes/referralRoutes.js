@@ -153,11 +153,54 @@ router.post("/", async (req, res) => {
       `,
     };
 
+    // 5. Email to Friend (Referred)
+    const friendMailOptions = {
+      from: `"${process.env.FROM_NAME || "Payana Trails"}" <${process.env.SMTP_EMAIL}>`,
+      to: friendEmail,
+      subject: `${referrerName} has a special travel recommendation for you! 🏔️`,
+      html: `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #4A3B2A; line-height: 1.6; max-width: 600px; margin: 0 auto; border: 1px solid #EFE9E1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+          <div style="background-color: #4A3B2A; padding: 30px; text-align: center; color: #F3EFE9;">
+            <h1 style="margin: 0; font-size: 24px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase;">A World of Discovery Awaits</h1>
+          </div>
+          <div style="padding: 40px; background-color: #ffffff;">
+            <p style="font-size: 16px; margin-bottom: 25px;">Dear ${friendName},</p>
+            
+            <p style="font-size: 16px; margin-bottom: 20px;">We have some exciting news! Your friend, <strong>${referrerName}</strong>, thought you would love the unique, handcrafted travel experiences we create at Payana Trails.</p>
+            
+            ${message ? `
+            <div style="margin: 30px 0; padding: 20px; background-color: #FDFBF8; border-radius: 8px; border-left: 4px solid #4A3B2A; font-style: italic;">
+              <p style="margin: 0; font-weight: bold; margin-bottom: 10px; font-style: normal;">A Message from ${referrerName}:</p>
+              <p style="margin: 0; color: #555;">"${message}"</p>
+            </div>
+            ` : ''}
+
+            <p style="font-size: 16px; margin-bottom: 25px;">At Payana Trails, we believe that travel should be more than just a trip—it should be a soul-stirring journey. From hidden cultural gems to serene natural landscapes, we curate trails that stay with you forever.</p>
+            
+            <div style="text-align: center; margin: 40px 0;">
+              <a href="https://payanatrails.com" style="background-color: #4A3B2A; color: #F3EFE9; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; letter-spacing: 1px;">DISCOVER OUR TRAILS</a>
+            </div>
+
+            <div style="height: 1px; width: 80px; background-color: #4A3B2A; opacity: 0.2; margin: 30px auto;"></div>
+            
+            <p style="font-size: 16px; margin-bottom: 25px;">We look forward to perhaps welcoming you on a trail soon!</p>
+            
+            <p style="margin-top: 30px; font-style: italic;">Warm regards,<br>The Payana Trails Team</p>
+          </div>
+          <div style="background-color: #F3EFE9; padding: 20px; text-align: center; font-size: 11px; color: #7A634A;">
+            <p style="margin: 0;">&copy; ${new Date().getFullYear()} Payana Trails. All rights reserved.</p>
+            <p style="margin: 5px 0;">Crafting memories, one trail at a time.</p>
+          </div>
+        </div>
+      `,
+    };
+
     try {
-      // Send both emails
+      // Send all three emails
       await Promise.all([
         transporter.sendMail(adminMailOptions),
-        transporter.sendMail(guestMailOptions)
+        transporter.sendMail(guestMailOptions),
+        transporter.sendMail(friendMailOptions)
       ]);
     } catch (emailError) {
       console.error("Referral Email sending failed:", emailError);

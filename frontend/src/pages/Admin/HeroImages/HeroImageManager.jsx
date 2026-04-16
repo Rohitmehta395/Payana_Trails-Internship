@@ -97,6 +97,12 @@ const PAGE_META = {
     path: "/journeys/cultural",
     group: "journeys",
   },
+  "connect/faqs": {
+    label: "FAQs",
+    Icon: AlertCircle,
+    path: "/connect/faqs",
+    group: "main",
+  },
 };
 
 // ─── Utility ─────────────────────────────────────────────────────────────────

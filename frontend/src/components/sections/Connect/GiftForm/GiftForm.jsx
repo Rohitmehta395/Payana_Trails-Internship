@@ -22,15 +22,29 @@ const GiftForm = ({ initialData = {} }) => {
     recipientLocation: "",
     giftType: "Journey",
     journeyDetails: "",
+    otherDestination: "", // New field for manual entry
     giftValue: "",
     occasion: "",
     personalMessage: "",
   });
 
+  const [trails, setTrails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
   const [touched, setTouched] = useState({});
+
+  React.useEffect(() => {
+    const fetchTrails = async () => {
+      try {
+        const data = await api.getTrails();
+        setTrails(data);
+      } catch (err) {
+        console.error("Failed to fetch trails:", err);
+      }
+    };
+    fetchTrails();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,18 +76,31 @@ const GiftForm = ({ initialData = {} }) => {
       "senderLocation",
       "recipientName", 
       "recipientEmail",
-      formData.giftType === "Journey" ? "journeyDetails" : "giftValue"
     ];
 
     const missing = required.filter(field => !formData[field]);
-    if (missing.length > 0) {
-      setError("Please fill in all required fields.");
+    if (missing.length > 0 || (!formData.journeyDetails && !formData.giftValue)) {
+      setError(missing.length > 0 ? "Please fill in all required fields." : "Please provide either a Journey detail or Travel Credit.");
+      setLoading(false);
+      return;
+    }
+
+    // Special validation for "Other" journey
+    if (formData.journeyDetails === "Others" && !formData.otherDestination) {
+      setError("Please specify the journey details.");
       setLoading(false);
       return;
     }
 
     try {
-      await api.submitGift(formData);
+      // Determine gift type dynamically and format journey details
+      const submissionData = {
+        ...formData,
+        giftType: formData.journeyDetails ? "Journey" : "Credit",
+        // If "Others" was selected, use the manual entry for the final submission
+        journeyDetails: formData.journeyDetails === "Others" ? formData.otherDestination : formData.journeyDetails
+      };
+      await api.submitGift(submissionData);
       setSubmitted(true);
     } catch (err) {
       setError(err.message || "Failed to submit gift request. Please try again.");
@@ -91,6 +118,7 @@ const GiftForm = ({ initialData = {} }) => {
       recipientLocation: "",
       giftType: "Journey",
       journeyDetails: "",
+      otherDestination: "",
       giftValue: "",
       occasion: "",
       personalMessage: "",
@@ -134,6 +162,7 @@ const GiftForm = ({ initialData = {} }) => {
                       <GiftFields
                         formData={formData}
                         touched={touched}
+                        trails={trails}
                         handleChange={handleChange}
                         handleCountryChange={handleCountryChange}
                         handleBlur={handleBlur}

@@ -1,9 +1,9 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiAlertCircle } from "react-icons/fi";
+import { FiAlertCircle, FiMap, FiCreditCard } from "react-icons/fi";
 import CountryCodeDropdown from "../../../common/CountryCodeDropdown";
 
-const GiftFields = ({ formData, touched, handleChange, handleCountryChange, handleBlur }) => {
+const GiftFields = ({ formData, touched, trails = [], handleChange, handleCountryChange, handleBlur }) => {
   const inputClasses = (name) => `
     w-full px-4 py-3 rounded-xl border transition-all outline-none bg-[#F3EFE9]/10 placeholder:text-[#4A3B2A]/30
     ${touched[name] && !formData[name] && ![
@@ -15,8 +15,8 @@ const GiftFields = ({ formData, touched, handleChange, handleCountryChange, hand
 
   // Custom function for conditional required fields
   const isFieldRequired = (name) => {
-    if (name === 'journeyDetails') return formData.giftType === 'Journey';
-    if (name === 'giftValue') return formData.giftType === 'Credit';
+    if (name === 'journeyDetails') return !formData.giftValue;
+    if (name === 'giftValue') return !formData.journeyDetails;
     return !['senderPhone', 'recipientPhone', 'recipientLocation', 'occasion', 'personalMessage'].includes(name);
   };
 
@@ -177,72 +177,172 @@ const GiftFields = ({ formData, touched, handleChange, handleCountryChange, hand
       <hr className="border-[#4A3B2A]/10" />
 
       {/* Gift Configuration */}
-      <div className="space-y-6">
-        <div className="space-y-3">
-          <label className="text-sm font-medium text-[#4A3B2A]/80 ml-1">Gift Type *</label>
-          <div className="flex flex-wrap gap-4">
-            {['Journey', 'Credit'].map((type) => (
-              <label 
-                key={type}
-                className={`
-                  flex-1 min-w-[140px] flex items-center justify-center gap-2 px-6 py-3 rounded-xl border transition-all duration-200 cursor-pointer
-                  ${formData.giftType === type 
-                    ? "border-[#4A3B2A] bg-[#4A3B2A]/5 text-[#4A3B2A] font-bold shadow-sm" 
-                    : "border-[#4A3B2A]/10 bg-[#F3EFE9]/10 text-[#4A3B2A]/60 hover:border-[#4A3B2A]/30"}
-                `}
-              >
-                <input
-                  type="radio"
-                  name="giftType"
-                  value={type}
-                  checked={formData.giftType === type}
-                  onChange={handleChange}
-                  className="hidden"
-                />
-                {type === 'Journey' ? 'Specific Journey' : 'Travel Credit'}
-              </label>
-            ))}
-          </div>
+      <div className="space-y-10">
+        <div className="text-center space-y-2">
+          <h3 className="text-xl font-bold text-[#4A3B2A] tracking-tight">Select Your Gift Type</h3>
+          <p className="text-[#4A3B2A]/40 text-xs uppercase tracking-[0.2em] font-medium">Choose one path for your recipient</p>
         </div>
 
-        {formData.giftType === 'Journey' ? (
-          <div className="relative space-y-2">
-            <label className="block text-sm font-medium text-[#4A3B2A]/80 mb-2 ml-1">Mention the Journey *</label>
-            <textarea
-              name="journeyDetails"
-              value={formData.journeyDetails}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder="e.g. Wildlife Trail in Kenya..."
-              className={`
-                ${inputClasses("journeyDetails")} min-h-[100px] resize-none
-                ${touched.journeyDetails && !formData.journeyDetails ? "border-red-400" : ""}
-              `}
-              required
-            />
-            <ErrorMessage name="journeyDetails" />
-          </div>
-        ) : (
-          <div className="relative space-y-2">
-            <label className="block text-sm font-medium text-[#4A3B2A]/80 mb-2 ml-1">Gift Value (INR) *</label>
-            <input
-              type="text"
-              name="giftValue"
-              value={formData.giftValue}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder="e.g. 50,000"
-              className={`
-                ${inputClasses("giftValue")}
-                ${touched.giftValue && !formData.giftValue ? "border-red-400" : ""}
-              `}
-              required
-            />
-            <ErrorMessage name="giftValue" />
-          </div>
-        )}
+        <div className="grid md:grid-cols-[1fr,auto,1fr] gap-4 md:gap-0 items-stretch relative">
+          {/* Specific Journey Option */}
+          <motion.div 
+            layout
+            className={`
+              relative p-6 md:p-8 rounded-[2rem] border transition-all duration-700
+              ${formData.journeyDetails ? "bg-[#4A3B2A]/5 border-[#4A3B2A]/20 shadow-2xl shadow-[#4A3B2A]/10 z-10 scale-[1.02]" : "bg-white border-[#4A3B2A]/10"}
+              ${formData.giftValue ? "filter grayscale(1) blur(3px) opacity-30 pointer-events-none scale-[0.96]" : "hover:border-[#4A3B2A]/30"}
+            `}
+          >
+            <div className="flex flex-col h-full space-y-6">
+              <div className="flex items-center gap-4">
+                <div className={`p-4 rounded-2xl transition-all duration-500 ${formData.journeyDetails ? "bg-[#4A3B2A] text-[#F3EFE9] rotate-12" : "bg-[#F3EFE9] text-[#4A3B2A]"}`}>
+                  <FiMap size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#4A3B2A] text-lg">Specific Journey</h4>
+                  <p className="text-xs text-[#4A3B2A]/50">Gift a curated trail experience</p>
+                </div>
+              </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+              <div className="relative flex-1 space-y-4">
+                <div className="relative">
+                  <select
+                    name="journeyDetails"
+                    value={formData.journeyDetails}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`
+                      w-full px-4 py-4 rounded-[1.25rem] border transition-all outline-none bg-white/50 appearance-none cursor-pointer text-[#4A3B2A]
+                      ${touched.journeyDetails && !formData.journeyDetails && !formData.giftValue ? "border-red-300" : "border-[#4A3B2A]/5 focus:border-[#4A3B2A]/30"}
+                    `}
+                    required={!formData.giftValue}
+                  >
+                    <option value="" disabled>Select a Journey</option>
+                    {trails.map((t, idx) => (
+                      <option key={idx} value={`${t.trailName} (${t.trailDestination})`}>
+                        {t.trailName} ({t.trailDestination})
+                      </option>
+                    ))}
+                    <option value="Others">Others (Please specify)</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                    <svg className="w-4 h-4 text-[#4A3B2A]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+
+                <AnimatePresence>
+                  {formData.journeyDetails === "Others" && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="relative overflow-hidden"
+                    >
+                      <input
+                        type="text"
+                        name="otherDestination"
+                        value={formData.otherDestination}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        placeholder="Specify Destination (e.g., Andaman Islands)"
+                        className={`
+                          w-full px-4 py-3 rounded-xl border transition-all outline-none bg-white/40 placeholder:text-[#4A3B2A]/30 text-[#4A3B2A]
+                          ${touched.otherDestination && !formData.otherDestination ? "border-red-300" : "border-[#4A3B2A]/5 focus:border-[#4A3B2A]/30"}
+                        `}
+                        required
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                <AnimatePresence>
+                  {formData.giftValue && (
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="absolute inset-0 flex items-center justify-center rounded-[1.25rem] bg-white/10 backdrop-blur-[2px] z-10"
+                    >
+                      <div className="bg-[#4A3B2A] text-[#F3EFE9] px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-xl flex items-center gap-2">
+                        <FiAlertCircle size={14} className="text-orange-400" />
+                        Option Locked
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              <ErrorMessage name="journeyDetails" />
+            </div>
+          </motion.div>
+
+          {/* Divider */}
+          <div className="flex md:flex-col items-center justify-center p-4">
+            <div className="h-px md:h-full w-full md:w-px bg-gradient-to-r md:bg-gradient-to-b from-transparent via-[#4A3B2A]/10 to-transparent relative">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#F3EFE9] p-3 rounded-full border border-[#4A3B2A]/5 shadow-inner">
+                <span className="text-[10px] font-black text-[#4A3B2A]/20 uppercase tracking-[0.2em] italic">OR</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Travel Credit Option */}
+          <motion.div 
+            layout
+            className={`
+              relative p-6 md:p-8 rounded-[2rem] border transition-all duration-700
+              ${formData.giftValue ? "bg-[#4A3B2A]/5 border-[#4A3B2A]/20 shadow-2xl shadow-[#4A3B2A]/10 z-10 scale-[1.02]" : "bg-white border-[#4A3B2A]/10"}
+              ${formData.journeyDetails ? "filter grayscale(1) blur(3px) opacity-30 pointer-events-none scale-[0.96]" : "hover:border-[#4A3B2A]/30"}
+            `}
+          >
+            <div className="flex flex-col h-full space-y-6">
+              <div className="flex items-center gap-4">
+                <div className={`p-4 rounded-2xl transition-all duration-500 ${formData.giftValue ? "bg-[#4A3B2A] text-[#F3EFE9] -rotate-12" : "bg-[#F3EFE9] text-[#4A3B2A]"}`}>
+                  <FiCreditCard size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#4A3B2A] text-lg">Travel Credit</h4>
+                  <p className="text-xs text-[#4A3B2A]/50">Let them choose their own path</p>
+                </div>
+              </div>
+
+              <div className="relative flex-1">
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4A3B2A]/30 font-bold">₹</span>
+                  <input
+                    type="text"
+                    name="giftValue"
+                    value={formData.giftValue}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Enter amount (e.g. 50,000)"
+                    className={`
+                      w-full pl-8 pr-4 py-4 rounded-[1.25rem] border transition-all outline-none bg-white/50 placeholder:text-[#4A3B2A]/20 text-[#4A3B2A] font-medium
+                      ${touched.giftValue && !formData.giftValue && !formData.journeyDetails ? "border-red-300" : "border-[#4A3B2A]/5 focus:border-[#4A3B2A]/30"}
+                    `}
+                  />
+                </div>
+
+                <AnimatePresence>
+                  {formData.journeyDetails && (
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="absolute inset-0 flex items-center justify-center rounded-[1.25rem] bg-white/10 backdrop-blur-[2px]"
+                    >
+                      <div className="bg-[#4A3B2A] text-[#F3EFE9] px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-xl flex items-center gap-2">
+                        <FiAlertCircle size={14} className="text-orange-400" />
+                        Option Locked
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              <ErrorMessage name="giftValue" />
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="space-y-6">
             <div className="space-y-2">
                 <label className="block text-sm font-medium text-[#4A3B2A]/80 mb-2 ml-1">Occasion</label>
                 <input
@@ -251,7 +351,7 @@ const GiftFields = ({ formData, touched, handleChange, handleCountryChange, hand
                     value={formData.occasion}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    placeholder="e.g. Birthday..."
+                    placeholder="e.g. Birthday, Anniversary, or just because!"
                     className={inputClasses("occasion")}
                 />
             </div>

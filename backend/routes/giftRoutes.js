@@ -66,6 +66,49 @@ router.post("/", async (req, res) => {
       `,
     });
 
+    // 3. Email to Recipient
+    await transporter.sendMail({
+      from: `"Payana Trails" <${process.env.SMTP_EMAIL}>`,
+      to: gift.recipientEmail,
+      subject: `A Special Gift from ${gift.senderName}! 🎁`,
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 10px; overflow: hidden;">
+          <div style="background: #4A3B2A; padding: 30px; text-align: center;">
+            <h1 style="color: #F3EFE9; margin: 0; font-size: 24px;">A Beautiful Journey Awaits!</h1>
+          </div>
+          <div style="padding: 30px; background: #fff;">
+            <p>Dear <strong>${gift.recipientName}</strong>,</p>
+            <p>We are thrilled to share some wonderful news! <strong>${gift.senderName}</strong> has chosen a special gift for you through Payana Trails to celebrate <strong>${gift.occasion || 'this special occasion'}</strong>.</p>
+            
+            <div style="background: #F3EFE9; padding: 20px; border-radius: 10px; border-left: 5px solid #4A3B2A; margin: 25px 0;">
+              <p style="margin: 0 0 10px 0; font-weight: bold; color: #4A3B2A; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Gift Details</p>
+              <p style="margin: 5px 0;"><strong>Type:</strong> ${gift.giftType}</p>
+              <p style="margin: 5px 0;"><strong>Details:</strong> ${gift.giftType === "Journey" ? gift.journeyDetails : `Travel Credit worth INR ${gift.giftValue}`}</p>
+            </div>
+
+            ${gift.personalMessage ? `
+            <div style="margin: 25px 0; padding: 20px; background: #fafafa; border-radius: 10px; font-style: italic; color: #555; position: relative;">
+              <span style="font-size: 40px; color: #4A3B2A20; position: absolute; top: 10px; left: 10px; line-height: 1;">&ldquo;</span>
+              <p style="margin: 0; padding-left: 20px;">${gift.personalMessage}</p>
+              <span style="font-size: 40px; color: #4A3B2A20; position: absolute; bottom: -10px; right: 10px; line-height: 1;">&rdquo;</span>
+            </div>
+            ` : ''}
+
+            <p style="margin-top: 30px;"><strong>What’s Next?</strong></p>
+            <p>Our team is currently handcrafting your gift voucher and preparing all the details. We will share the official voucher with <strong>${gift.senderName}</strong> shortly, who will then present it to you.</p>
+            
+            <div style="text-align: center; margin-top: 40px;">
+              <a href="https://payanatrails.com" style="background: #4A3B2A; color: #F3EFE9; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Explore Our Journeys</a>
+            </div>
+          </div>
+          <div style="background: #F3EFE9; padding: 20px; text-align: center; font-size: 12px; color: #777; border-top: 1px solid #eee;">
+            <p style="margin: 0;">&copy; ${new Date().getFullYear()} Payana Trails. All rights reserved.</p>
+            <p style="margin: 5px 0;">Crafting memories, one trail at a time.</p>
+          </div>
+        </div>
+      `,
+    });
+
     res.status(201).json({ success: true, message: "Gift request submitted successfully." });
   } catch (error) {
     console.error("Gift submission error:", error);

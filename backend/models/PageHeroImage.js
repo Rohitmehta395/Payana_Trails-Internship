@@ -15,6 +15,7 @@ const PAGE_KEYS = [
   "journeys/wildlife",
   "journeys/heritage",
   "journeys/cultural",
+  "connect/faqs",
 ];
 
 const heroImageSchema = new mongoose.Schema(

@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import AddTrail from "./Trails/AddTrail";
 import DestinationManager from "./Destinations/DestinationManager";
 import HeroImageManager from "./HeroImages/HeroImageManager";
+import FAQManager from "./FAQs/FAQManager";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("trails");
-  // tabs: "trails" | "destinations" | "heroImages"
+  // tabs: "trails" | "destinations" | "heroImages" | "faqs"
 
   useEffect(() => {
     const token = sessionStorage.getItem("adminToken");
@@ -111,6 +112,30 @@ const AdminDashboard = () => {
               </svg>
               Hero Images
             </button>
+
+            <button
+              onClick={() => setActiveTab("faqs")}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-md transition-colors text-sm font-medium ${
+                activeTab === "faqs"
+                  ? "bg-[#4A3B2A] text-[#F3EFE9]"
+                  : "text-gray-500 hover:bg-[#F3EFE9] hover:text-[#4A3B2A]"
+              }`}
+            >
+              <svg 
+                className="w-5 h-5" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth="2" 
+                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              FAQs Management
+            </button>
           </nav>
         </div>
 
@@ -166,6 +191,7 @@ const AdminDashboard = () => {
               {activeTab === "trails" && "Trail Management"}
               {activeTab === "destinations" && "Destinations Management"}
               {activeTab === "heroImages" && "Hero Image Management"}
+              {activeTab === "faqs" && "FAQs Management"}
             </h1>
             <p className="text-gray-600 text-sm">
               Manage your website content and settings.
@@ -176,6 +202,7 @@ const AdminDashboard = () => {
           {activeTab === "trails" && <AddTrail />}
           {activeTab === "destinations" && <DestinationManager />}
           {activeTab === "heroImages" && <HeroImageManager />}
+          {activeTab === "faqs" && <FAQManager />}
         </div>
       </div>
     </div>
