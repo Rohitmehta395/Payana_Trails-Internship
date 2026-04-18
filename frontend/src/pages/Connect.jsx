@@ -1,12 +1,53 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import CommonHero from "../components/common/CommonHero";
 import usePageHeroImages from "../hooks/usePageHeroImages";
 import GiftForm from "../components/sections/Connect/GiftForm/GiftForm";
+import { api } from "../services/api";
+
+const faqIcons = [
+  // Icon 1: Planning / Clipboard
+  <path
+    key="icon1"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+  />,
+  // Icon 2: Booking / Credit Card
+  <path
+    key="icon2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+  />,
+  // Icon 3: On the Ground / Map Compass
+  <path
+    key="icon3"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth="1.5"
+    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+  />,
+];
 
 const Connect = () => {
   const { images: heroImgs } = usePageHeroImages("connect");
-  const [enquiryData, setEnquiryData] = React.useState(null);
+  const [enquiryData, setEnquiryData] = useState(null);
+  const [faqs, setFaqs] = useState([]);
+
+  useEffect(() => {
+    const fetchFAQs = async () => {
+      try {
+        const data = await api.getFAQs();
+        setFaqs(data.slice(0, 3));
+      } catch (err) {
+        console.error("Failed to fetch FAQs:", err);
+      }
+    };
+    fetchFAQs();
+  }, []);
 
   return (
     <div className="bg-[#F3EFE9] min-h-screen">
@@ -128,6 +169,8 @@ const Connect = () => {
           </div>
         </div>
       </section>
+
+      
       {/* Elegance FAQ Section */}
       <section className="py-4 md:py-8 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden">
         {/* Subtle background watermark */}
@@ -157,148 +200,55 @@ const Connect = () => {
 
           {/* FAQ Category Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
-            {/* Card 1: Planning */}
-            <Link
-              to="/connect/faqs#planning"
-              className="group relative bg-white/60 backdrop-blur-sm p-8 rounded-2xl border border-[#4A3B2A]/10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A373]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-full bg-[#4A3B2A]/5 flex items-center justify-center mb-6 group-hover:bg-[#D4A373]/20 transition-colors">
-                  <svg
-                    className="w-6 h-6 text-[#4A3B2A] group-hover:text-[#D4A373]"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-                    />
-                  </svg>
+            {faqs.map((faq, index) => (
+              <Link
+                key={faq._id}
+                to={`/connect/faqs#faq-${faq._id}`}
+                className="group relative bg-white/60 backdrop-blur-sm p-8 rounded-2xl border border-[#4A3B2A]/10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 block flex flex-col h-full"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-[#D4A373]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className="w-12 h-12 rounded-full bg-[#4A3B2A]/5 flex items-center justify-center mb-6 group-hover:bg-[#D4A373]/20 transition-colors shrink-0">
+                    <svg
+                      className="w-6 h-6 text-[#4A3B2A] group-hover:text-[#D4A373]"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      {faqIcons[index % faqIcons.length]}
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-serif text-[#4A3B2A] mb-3 line-clamp-2">
+                    {faq.question}
+                  </h3>
+                  <p className="text-[#4A3B2A]/60 text-sm leading-relaxed mb-4 flex-grow line-clamp-3">
+                    {faq.answer}
+                  </p>
+                  <span className="inline-flex items-center text-[#D4A373] text-sm font-medium tracking-wide group-hover:gap-2 transition-all mt-auto pt-2">
+                    Explore answer
+                    <svg
+                      className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </span>
                 </div>
-                <h3 className="text-2xl font-serif text-[#4A3B2A] mb-3">
-                  Trip Planning
-                </h3>
-                <p className="text-[#4A3B2A]/60 text-sm leading-relaxed mb-4">
-                  How to design your perfect itinerary, best times to visit, and
-                  group travel tips.
-                </p>
-                <span className="inline-flex items-center text-[#D4A373] text-sm font-medium tracking-wide group-hover:gap-2 transition-all">
-                  Explore answers
-                  <svg
-                    className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </span>
+              </Link>
+            ))}
+            
+            {faqs.length === 0 && (
+              <div className="col-span-full text-center py-12 text-[#4A3B2A]/60 italic font-medium text-lg">
+                Loading FAQs...
               </div>
-            </Link>
-
-            {/* Card 2: Booking & Payments */}
-            <Link
-              to="/connect/faqs#booking"
-              className="group relative bg-white/60 backdrop-blur-sm p-8 rounded-2xl border border-[#4A3B2A]/10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A373]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-full bg-[#4A3B2A]/5 flex items-center justify-center mb-6 group-hover:bg-[#D4A373]/20 transition-colors">
-                  <svg
-                    className="w-6 h-6 text-[#4A3B2A] group-hover:text-[#D4A373]"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-serif text-[#4A3B2A] mb-3">
-                  Booking & Payments
-                </h3>
-                <p className="text-[#4A3B2A]/60 text-sm leading-relaxed mb-4">
-                  Secure deposits, payment schedules, and cancellation policies.
-                </p>
-                <span className="inline-flex items-center text-[#D4A373] text-sm font-medium tracking-wide group-hover:gap-2 transition-all">
-                  Explore answers
-                  <svg
-                    className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </span>
-              </div>
-            </Link>
-
-            {/* Card 3: During Your Trip */}
-            <Link
-              to="/connect/faqs#during"
-              className="group relative bg-white/60 backdrop-blur-sm p-8 rounded-2xl border border-[#4A3B2A]/10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A373]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-full bg-[#4A3B2A]/5 flex items-center justify-center mb-6 group-hover:bg-[#D4A373]/20 transition-colors">
-                  <svg
-                    className="w-6 h-6 text-[#4A3B2A] group-hover:text-[#D4A373]"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-serif text-[#4A3B2A] mb-3">
-                  On the Ground
-                </h3>
-                <p className="text-[#4A3B2A]/60 text-sm leading-relaxed mb-4">
-                  Guides, transport, accommodations, and 24/7 support while
-                  traveling.
-                </p>
-                <span className="inline-flex items-center text-[#D4A373] text-sm font-medium tracking-wide group-hover:gap-2 transition-all">
-                  Explore answers
-                  <svg
-                    className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </span>
-              </div>
-            </Link>
+            )}
           </div>
 
           {/* Call to Action Button */}

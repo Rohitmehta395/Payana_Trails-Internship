@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import CommonHero from "../../common/CommonHero";
 import usePageHeroImages from "../../../hooks/usePageHeroImages";
 import { api } from "../../../services/api";
 
-const FAQAccordion = ({ question, answer, isOpen, onClick, index }) => {
+const FAQAccordion = ({ id, question, answer, isOpen, onClick, index }) => {
   const num = (index + 1).toString().padStart(2, "0");
 
   return (
     <div
+      id={id}
       className={`group/accordion overflow-hidden transition-all duration-200 ease-out border-b border-[#4A3B2A]/20 ${
         isOpen
           ? "bg-[#4A3B2A]/[0.04]"
@@ -65,6 +67,7 @@ const FAQAccordion = ({ question, answer, isOpen, onClick, index }) => {
 };
 
 const FAQs = () => {
+  const { hash } = useLocation();
   const { images: heroImgs } = usePageHeroImages("connect/faqs");
   const [faqs, setFaqs] = useState([]);
   const [openIndex, setOpenIndex] = useState(0); // Open the first one by default to show off the design
@@ -75,6 +78,22 @@ const FAQs = () => {
       try {
         const data = await api.getFAQs();
         setFaqs(data);
+        
+        if (hash && hash.startsWith("#faq-")) {
+          const faqId = hash.replace("#faq-", "");
+          const targetIndex = data.findIndex(f => f._id === faqId);
+          if (targetIndex !== -1) {
+            setOpenIndex(targetIndex);
+            setTimeout(() => {
+              const element = document.getElementById(`faq-${faqId}`);
+              if (element) {
+                // Scroll accounting for sticky header
+                const y = element.getBoundingClientRect().top + window.scrollY - 150;
+                window.scrollTo({ top: y, behavior: "smooth" });
+              }
+            }, 100);
+          }
+        }
       } catch (err) {
         console.error("Failed to fetch FAQs:", err);
       } finally {
@@ -82,7 +101,7 @@ const FAQs = () => {
       }
     };
     fetchFAQs();
-  }, []);
+  }, [hash]);
 
   const handleToggle = (index) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -140,6 +159,7 @@ const FAQs = () => {
               {faqs.map((faq, index) => (
                 <FAQAccordion
                   key={faq._id}
+                  id={`faq-${faq._id}`}
                   index={index}
                   question={faq.question}
                   answer={faq.answer}
