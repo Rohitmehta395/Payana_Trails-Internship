@@ -9,6 +9,7 @@ import Stories from "./pages/Stories";
 import Connect from "./pages/Connect";
 import EnquiryPage from "./components/sections/Connect/EnquiryForm/EnquiryPage";
 import FAQs from "./components/sections/Connect/FAQs";
+import ReferralPage from "./components/sections/Connect/ReferralForm/ReferralPage";
 import NotFound from "./pages/NotFound";
 
 import TrailDetails from "./pages/TrailDetails";
@@ -62,6 +63,7 @@ const App = () => {
                   <Route path="connect" element={<Connect />} />
                   <Route path="connect/enquiry" element={<EnquiryPage />} />
                   <Route path="connect/faqs" element={<FAQs />} />
+                  <Route path="connect/refer" element={<ReferralPage />} />
                   <Route path="unsubscribe" element={<Unsubscribe />} />
                   <Route path="trails/:slug" element={<TrailDetails />} />
                   <Route
