@@ -156,6 +156,35 @@ const Connect = () => {
               </p>
             </div>
 
+            {/* Left Content Half */}
+            <div className="w-full md:w-1/2 bg-[#4A3B2A] p-12 lg:p-24 relative overflow-hidden flex flex-col justify-center border-r-2 border-white/10">
+              {/* Decorative background grid and lighting */}
+              <div
+                className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_transparent_0%,_#4A3B2A_100%),linear-gradient(rgba(255,255,255,0.1)_1px,_transparent_1px),linear-gradient(90deg,_rgba(255,255,255,0.1)_1px,_transparent_1px)]"
+                style={{ backgroundSize: "100% 100%, 40px 40px, 40px 40px" }}
+              ></div>
+              <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-[#D4A373] opacity-20 blur-[100px] rounded-full group-hover:opacity-30 transition-opacity duration-700"></div>
+
+              <div className="relative z-10 w-full md:max-w-md mx-auto">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-8 h-[2px] bg-[#D4A373] transition-all duration-500 group-hover:w-20"></div>
+                  <span className="text-[#D4A373] uppercase tracking-[0.3em] font-bold text-xs md:text-sm">
+                    Community Network
+                  </span>
+                </div>
+
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#F3EFE9] leading-[1.05] mb-6 drop-shadow-md">
+                  Invite Those <br />
+                  <span className="italic font-light text-[#F3EFE9]/90">
+                    Who Matter.
+                  </span>
+                </h2>
+
+                <p className="text-[#F3EFE9]/70 text-lg font-medium leading-relaxed mb-12">
+                  Introduce your favorite people to Payana Trails and enjoy
+                  exclusive rewards towards your next magnificent escape.
+                </p>
+
             <Link
               to="/connect/faqs"
               className="relative inline-flex items-center justify-center px-10 py-4 bg-[#4A3B2A] text-[#F3EFE9] font-bold text-sm uppercase tracking-[0.2em] overflow-hidden transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-1 group/btn w-full md:w-auto text-center"
