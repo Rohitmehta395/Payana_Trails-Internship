@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import CommonHero from "../../components/common/CommonHero";
-import usePageHeroImages from "../../hooks/usePageHeroImages";
-import { api } from "../../services/api";
+import CommonHero from "../../common/CommonHero";
+import usePageHeroImages from "../../../hooks/usePageHeroImages";
+import { api } from "../../../services/api";
 
 const FAQAccordion = ({ question, answer, isOpen, onClick, index }) => {
   const num = (index + 1).toString().padStart(2, "0");
@@ -25,7 +25,9 @@ const FAQAccordion = ({ question, answer, isOpen, onClick, index }) => {
         >
           {num}
         </span>
-        <span className={`font-bold text-lg md:text-2xl flex-1 pr-6 tracking-wide transition-colors duration-200 ${isOpen ? "text-[#4A3B2A]" : "text-[#4A3B2A]/80"}`}>
+        <span
+          className={`font-bold text-lg md:text-2xl flex-1 pr-6 tracking-wide transition-colors duration-200 ${isOpen ? "text-[#4A3B2A]" : "text-[#4A3B2A]/80"}`}
+        >
           {question}
         </span>
         <div className="shrink-0 relative w-6 h-6 flex items-center justify-center">
@@ -45,7 +47,9 @@ const FAQAccordion = ({ question, answer, isOpen, onClick, index }) => {
 
       <div
         className={`grid transition-all duration-200 ease-out px-4 md:px-6 ${
-          isOpen ? "grid-rows-[1fr] opacity-100 pb-8" : "grid-rows-[0fr] opacity-0 pb-0"
+          isOpen
+            ? "grid-rows-[1fr] opacity-100 pb-8"
+            : "grid-rows-[0fr] opacity-0 pb-0"
         }`}
       >
         <div className="overflow-hidden">
@@ -104,11 +108,11 @@ const FAQs = () => {
           </div>
         ) : faqs.length === 0 ? (
           <div className="text-center py-32 text-[#4A3B2A]/60 italic font-medium text-lg">
-            No frequently asked questions are available right now. Please check back later.
+            No frequently asked questions are available right now. Please check
+            back later.
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 items-start">
-            
             {/* Left Column: Magazine-style massive sticky header */}
             <div className="lg:col-span-4 lg:sticky lg:top-36">
               <div className="relative">
@@ -117,11 +121,16 @@ const FAQs = () => {
                   ?
                 </span>
                 <h2 className="relative text-5xl md:text-7xl font-black text-[#4A3B2A] uppercase leading-[0.85] tracking-tighter">
-                  CURIOUS<br />MINDS<br />ASK.
+                  CURIOUS
+                  <br />
+                  MINDS
+                  <br />
+                  ASK.
                 </h2>
                 <div className="w-16 h-1.5 bg-[#4A3B2A] mt-8 mb-6"></div>
                 <p className="text-[#4A3B2A]/70 font-medium text-lg max-w-sm">
-                  We've curated the most common questions to ensure your next adventure with Payana Trails is absolutely seamless.
+                  We've curated the most common questions to ensure your next
+                  adventure with Payana Trails is absolutely seamless.
                 </p>
               </div>
             </div>
@@ -139,7 +148,6 @@ const FAQs = () => {
                 />
               ))}
             </div>
-            
           </div>
         )}
       </div>

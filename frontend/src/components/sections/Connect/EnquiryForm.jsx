@@ -176,13 +176,15 @@ const EnquiryForm = ({ onSuccess }) => {
                 <FormSuccess onReset={() => setSubmitted(false)} />
               ) : (
                 <>
-                  <div className="p-6 md:p-8 border-b border-[#4A3B2A]/10 bg-[#F3EFE9]/30 rounded-t-3xl">
-                    <h3 className="text-2xl font-bold text-[#4A3B2A]">
-                      Enquiry Form
-                    </h3>
-                    <p className="text-[#4A3B2A]/60 text-sm mt-1">
-                      Fields marked with * are required
-                    </p>
+                  <div className="p-6 md:p-8 border-b border-[#4A3B2A]/10 bg-[#F3EFE9]/30 rounded-t-3xl flex items-center justify-between">
+                    <div>
+                      <h3 className="text-2xl font-bold text-[#4A3B2A]">
+                        Enquiry Form
+                      </h3>
+                      <p className="text-[#4A3B2A]/60 text-sm mt-1">
+                        Fields marked with * are required
+                      </p>
+                    </div>
                   </div>
 
                   <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">

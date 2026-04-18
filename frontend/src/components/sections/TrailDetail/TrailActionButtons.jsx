@@ -11,7 +11,7 @@ const TrailActionButtons = ({ trailSlug, trailState, hasItinerary = false }) => 
   const handleEnquireClick = () => {
     // Slight delay before navigation for effect
     setTimeout(() => {
-      navigate("/connect#enquiry-section", { 
+      navigate("/connect/enquiry", { 
         state: { 
           from: location.pathname,
           section: 'trail-essentials',

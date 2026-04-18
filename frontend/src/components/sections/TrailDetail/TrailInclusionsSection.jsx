@@ -301,7 +301,7 @@ const TrailInclusionsSection = ({
 
   const handleEnquireClick = () => {
     setTimeout(() => {
-      navigate("/connect#enquiry-section", { 
+      navigate("/connect/enquiry", { 
         state: { 
           from: location.pathname,
           section: 'trail-essentials',

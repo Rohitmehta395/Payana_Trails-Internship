@@ -7,7 +7,8 @@ import Journeys from "./pages/Journeys";
 import PayanaWay from "./pages/PayanaWay";
 import Stories from "./pages/Stories";
 import Connect from "./pages/Connect";
-import FAQs from "./pages/Connect/FAQs";
+import EnquiryPage from "./components/sections/Connect/EnquiryForm/EnquiryPage";
+import FAQs from "./components/sections/Connect/FAQs";
 import NotFound from "./pages/NotFound";
 
 import TrailDetails from "./pages/TrailDetails";
@@ -59,6 +60,7 @@ const App = () => {
                   <Route path="payana-way" element={<PayanaWay />} />
                   <Route path="stories" element={<Stories />} />
                   <Route path="connect" element={<Connect />} />
+                  <Route path="connect/enquiry" element={<EnquiryPage />} />
                   <Route path="connect/faqs" element={<FAQs />} />
                   <Route path="unsubscribe" element={<Unsubscribe />} />
                   <Route path="trails/:slug" element={<TrailDetails />} />
