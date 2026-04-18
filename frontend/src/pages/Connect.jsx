@@ -57,7 +57,7 @@ const Connect = () => {
         images={heroImgs}
         breadcrumbs={[{ label: "HOME", path: "/" }, { label: "CONNECT" }]}
       />
-      {/* Editorial Grade Enquiry Intro Section */}
+      {/* Enquiry Section */}
       <section className="py-24 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden">
         {/* Subtle background text watermark */}
         <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -ml-24 text-[20rem] font-serif italic font-bold text-[#F3EFE9]/50 select-none pointer-events-none z-0 tracking-tighter mix-blend-multiply hidden lg:block">
@@ -170,8 +170,7 @@ const Connect = () => {
         </div>
       </section>
 
-      
-      {/* Elegance FAQ Section */}
+      {/* FAQ Section */}
       <section className="py-4 md:py-8 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden">
         {/* Subtle background watermark */}
         <div className="absolute top-0 right-0 text-[15rem] font-serif italic font-bold text-[#F3EFE9]/40 select-none pointer-events-none z-0 tracking-tighter mix-blend-multiply hidden lg:block">
@@ -243,7 +242,7 @@ const Connect = () => {
                 </div>
               </Link>
             ))}
-            
+
             {faqs.length === 0 && (
               <div className="col-span-full text-center py-12 text-[#4A3B2A]/60 italic font-medium text-lg">
                 Loading FAQs...
@@ -279,34 +278,96 @@ const Connect = () => {
         </div>
       </section>
 
-      {/* Highly Unique Split-Medallion Referral Link */}
-      <section className="py-24 px-4 md:px-8 bg-white relative z-10">
+      {/* Refer A Friend Section */}
+      <section className="py-24 md:py-32 px-4 md:px-8 bg-white relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="relative w-full flex flex-col md:flex-row rounded-[2rem] overflow-hidden shadow-[0_30px_60px_rgba(74,59,42,0.15)] group h-auto md:h-[600px]">
-            {/* Spinning Medallion (Center Overlap) */}
-            <div className="hidden md:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-[#D4A373] rounded-full z-20 border-[6px] border-white items-center justify-center shadow-2xl transition-transform duration-700 group-hover:scale-[1.15]">
-              {/* Rotating Text Ring */}
-              <svg
-                viewBox="0 0 100 100"
-                className="absolute inset-0 w-full h-full animate-[spin_15s_linear_infinite]"
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            {/* Left Image Block */}
+            <div className="relative">
+              <div className="relative aspect-[4/5] md:aspect-[5/6] rounded-[2rem] overflow-hidden shadow-[0_24px_50px_rgba(74,59,42,0.10)]">
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-[12s] ease-out hover:scale-105"
+                  style={{
+                    backgroundImage: `url(${
+                      heroImgs?.[1] ||
+                      heroImgs?.[0] ||
+                      "https://images.unsplash.com/photo-1542314831-c6a4d14cdce8?q=80&w=2000&auto=format&fit=crop"
+                    })`,
+                  }}
+                ></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#4A3B2A]/18 via-transparent to-transparent"></div>
+              </div>
+
+              {/* Floating small card */}
+              <div className="absolute -bottom-6 left-6 md:left-8 bg-white rounded-2xl border border-[#4A3B2A]/10 shadow-[0_18px_35px_rgba(74,59,42,0.08)] px-6 py-5">
+                <p className="text-[#D4A373] uppercase tracking-[0.25em] text-[10px] font-bold mb-2">
+                  Referral Program
+                </p>
+                <p className="text-[#4A3B2A] font-serif text-2xl leading-none mb-1">
+                  Share Payana
+                </p>
+                <p className="text-[#4A3B2A]/60 text-sm">
+                  Invite friends to travel beautifully
+                </p>
+              </div>
+            </div>
+
+            {/* Right Content Block */}
+            <div className="pt-8 lg:pt-0">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-10 h-[1.5px] bg-[#D4A373]"></div>
+                <span className="text-[#D4A373] uppercase tracking-[0.32em] font-bold text-xs">
+                  Refer A Friend
+                </span>
+              </div>
+
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#4A3B2A] leading-[1.05] tracking-tight mb-6">
+                Share the journey <br />
+                <span className="italic font-light text-[#4A3B2A]/85">
+                  with someone special.
+                </span>
+              </h2>
+
+              <p className="text-[#4A3B2A]/70 text-lg leading-relaxed max-w-xl mb-10">
+                Introduce friends and family to Payana Trails and let them
+                discover travel that feels personal, thoughtful, and deeply
+                memorable.
+              </p>
+
+              <div className="grid sm:grid-cols-2 gap-4 mb-10 max-w-2xl">
+                <div className="rounded-[1.5rem] border border-[#4A3B2A]/10 bg-[#F7F3ED] p-5">
+                  <p className="text-[#D4A373] uppercase tracking-[0.22em] text-[10px] font-bold mb-2">
+                    Thoughtful
+                  </p>
+                  <p className="text-[#4A3B2A] font-serif text-2xl leading-none mb-2">
+                    Invites
+                  </p>
+                  <p className="text-[#4A3B2A]/60 text-sm leading-relaxed">
+                    A refined way to introduce others to the Payana experience.
+                  </p>
+                </div>
+
+                <div className="rounded-[1.5rem] border border-[#4A3B2A]/10 bg-[#F7F3ED] p-5">
+                  <p className="text-[#D4A373] uppercase tracking-[0.22em] text-[10px] font-bold mb-2">
+                    Exclusive
+                  </p>
+                  <p className="text-[#4A3B2A] font-serif text-2xl leading-none mb-2">
+                    Benefits
+                  </p>
+                  <p className="text-[#4A3B2A]/60 text-sm leading-relaxed">
+                    Unlock rewards while sharing exceptional journeys with your
+                    circle.
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                to="/connect/refer"
+                className="group inline-flex items-center gap-4 px-8 py-4 rounded-full bg-[#4A3B2A] text-[#F3EFE9] uppercase tracking-[0.22em] font-bold text-xs md:text-sm border border-[#4A3B2A] transition-all duration-500 hover:bg-[#795939] hover:border-[#795939] shadow-[0_14px_28px_rgba(74,59,42,0.12)]"
               >
-                {/* Invisible circle path for text to follow */}
-                <path
-                  id="referralTextPath"
-                  d="M 50, 50 m -36, 0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0"
-                  fill="none"
-                />
-                <text className="text-[12px] font-bold tracking-[0.3em] uppercase fill-[#4A3B2A]">
-                  <textPath href="#referralTextPath" startOffset="0%">
-                    {" "}
-                    • REFER A FRIEND • SHARE THE JOURNEY
-                  </textPath>
-                </text>
-              </svg>
-              {/* Center Arrow / Icon */}
-              <div className="bg-white text-[#4A3B2A] w-14 h-14 rounded-full flex items-center justify-center transform -rotate-45 group-hover:rotate-0 transition-transform duration-500 shadow-md">
+                Explore Referral Program
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -314,96 +375,11 @@ const Connect = () => {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth="2.5"
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    strokeWidth="2"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
                   />
                 </svg>
-              </div>
-            </div>
-
-            {/* Left Content Half */}
-            <div className="w-full md:w-1/2 bg-[#4A3B2A] p-12 lg:p-24 relative overflow-hidden flex flex-col justify-center border-r-2 border-white/10">
-              {/* Decorative background grid and lighting */}
-              <div
-                className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_transparent_0%,_#4A3B2A_100%),linear-gradient(rgba(255,255,255,0.1)_1px,_transparent_1px),linear-gradient(90deg,_rgba(255,255,255,0.1)_1px,_transparent_1px)]"
-                style={{ backgroundSize: "100% 100%, 40px 40px, 40px 40px" }}
-              ></div>
-              <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-[#D4A373] opacity-20 blur-[100px] rounded-full group-hover:opacity-30 transition-opacity duration-700"></div>
-
-              <div className="relative z-10 w-full md:max-w-md mx-auto">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-8 h-[2px] bg-[#D4A373] transition-all duration-500 group-hover:w-20"></div>
-                  <span className="text-[#D4A373] uppercase tracking-[0.3em] font-bold text-xs md:text-sm">
-                    Community Network
-                  </span>
-                </div>
-
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#F3EFE9] leading-[1.05] mb-6 drop-shadow-md">
-                  Invite Those <br />
-                  <span className="italic font-light text-[#F3EFE9]/90">
-                    Who Matter.
-                  </span>
-                </h2>
-
-                <p className="text-[#F3EFE9]/70 text-lg font-medium leading-relaxed mb-12">
-                  Introduce your favorite people to Payana Trails and enjoy
-                  exclusive rewards towards your next magnificent escape.
-                </p>
-
-                <Link
-                  to="/connect/refer"
-                  className="inline-flex items-center gap-4 text-[#F3EFE9] font-bold tracking-[0.2em] uppercase text-sm border-b border-[#D4A373] pb-2 transition-all duration-300 hover:text-[#D4A373] group/link"
-                >
-                  View Referral Program
-                  <svg
-                    className="w-5 h-5 transform transition-transform duration-300 group-hover/link:translate-x-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2.5"
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-
-            {/* Right Image Half */}
-            <div className="w-full md:w-1/2 relative min-h-[400px] md:min-h-full overflow-hidden">
-              {/* The mobile medallion (only visible on mobile, overlapping slightly differently) */}
-              <div className="md:hidden absolute top-4 right-4 w-24 h-24 bg-[#D4A373] rounded-full z-20 border-[4px] border-white flex items-center justify-center shadow-xl">
-                <svg
-                  viewBox="0 0 100 100"
-                  className="absolute inset-0 w-full h-full animate-[spin_15s_linear_infinite]"
-                >
-                  <path
-                    id="referralTextPathMobile"
-                    d="M 50, 50 m -34, 0 a 34,34 0 1,1 68,0 a 34,34 0 1,1 -68,0"
-                    fill="none"
-                  />
-                  <text className="text-[13px] font-bold tracking-[0.2em] uppercase fill-[#4A3B2A]">
-                    <textPath href="#referralTextPathMobile" startOffset="0%">
-                      {" "}
-                      • REFER A FRIEND • SHARE{" "}
-                    </textPath>
-                  </text>
-                </svg>
-              </div>
-
-              <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-[15s] group-hover:scale-110 ease-out"
-                style={{
-                  backgroundImage: `url('https://images.unsplash.com/photo-1542314831-c6a4d14cdce8?q=80&w=2000&auto=format&fit=crop')`,
-                }}
-              ></div>
-              {/* Soft sepia tone overlay */}
-              <div className="absolute inset-0 bg-[#4A3B2A]/20 mix-blend-multiply"></div>
-              {/* Inner vignette shadow */}
-              <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(74,59,42,0.3)] pointer-events-none"></div>
+              </Link>
             </div>
           </div>
         </div>
