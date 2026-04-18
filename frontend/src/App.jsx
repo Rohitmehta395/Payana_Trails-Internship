@@ -8,7 +8,7 @@ import PayanaWay from "./pages/PayanaWay";
 import Stories from "./pages/Stories";
 import Connect from "./pages/Connect";
 import EnquiryPage from "./components/sections/Connect/EnquiryForm/EnquiryPage";
-import FAQs from "./components/sections/Connect/FAQs";
+import FAQs from "./components/sections/Connect/FAQs/FAQs";
 import ReferralPage from "./components/sections/Connect/ReferralForm/ReferralPage";
 import GiftPage from "./components/sections/Connect/GiftForm/GiftPage";
 import NotFound from "./pages/NotFound";

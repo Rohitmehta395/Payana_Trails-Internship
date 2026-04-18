@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import CommonHero from "../../common/CommonHero";
-import usePageHeroImages from "../../../hooks/usePageHeroImages";
-import { api } from "../../../services/api";
+import CommonHero from "../../../common/CommonHero";
+import { api } from "../../../../services/api";
+import usePageHeroImages from "../../../../hooks/usePageHeroImages";
 
 const FAQAccordion = ({ id, question, answer, isOpen, onClick, index }) => {
   const num = (index + 1).toString().padStart(2, "0");
