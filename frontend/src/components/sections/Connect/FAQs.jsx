@@ -70,8 +70,21 @@ const FAQs = () => {
   const { hash } = useLocation();
   const { images: heroImgs } = usePageHeroImages("connect/faqs");
   const [faqs, setFaqs] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [openIndex, setOpenIndex] = useState(0); // Open the first one by default to show off the design
   const [loading, setLoading] = useState(true);
+
+  // Filter FAQs based on search query
+  const filteredFaqs = faqs.filter(
+    (faq) =>
+      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  useEffect(() => {
+    // Reset open index when searching to avoid mismatched toggles
+    setOpenIndex(searchQuery ? null : 0);
+  }, [searchQuery]);
 
   useEffect(() => {
     const fetchFAQs = async () => {
@@ -154,19 +167,56 @@ const FAQs = () => {
               </div>
             </div>
 
-            {/* Right Column: Inverting Accordion */}
-            <div className="lg:col-span-8 flex flex-col border-t-2 border-[#4A3B2A]">
-              {faqs.map((faq, index) => (
-                <FAQAccordion
-                  key={faq._id}
-                  id={`faq-${faq._id}`}
-                  index={index}
-                  question={faq.question}
-                  answer={faq.answer}
-                  isOpen={openIndex === index}
-                  onClick={() => handleToggle(index)}
+            {/* Right Column: Search + Inverting Accordion */}
+            <div className="lg:col-span-8 flex flex-col">
+              {/* Search Bar */}
+              <div className="relative w-full group mb-8">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-[#D4A373]">
+                  <svg className="h-5 w-5 text-[#4A3B2A]/40 group-focus-within:text-[#D4A373] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search questions..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-4 bg-white/60 border border-[#4A3B2A]/10 focus:border-[#D4A373] focus:bg-white rounded-xl outline-none focus:ring-0 text-[#4A3B2A] placeholder:text-[#4A3B2A]/40 transition-all font-medium shadow-sm hover:shadow-md focus:shadow-lg"
                 />
-              ))}
+              </div>
+
+              <div className="flex flex-col border-t-2 border-[#4A3B2A]">
+                {filteredFaqs.length > 0 ? (
+                filteredFaqs.map((faq, index) => (
+                  <FAQAccordion
+                    key={faq._id}
+                    id={`faq-${faq._id}`}
+                    index={index}
+                    question={faq.question}
+                    answer={faq.answer}
+                    isOpen={openIndex === index}
+                    onClick={() => handleToggle(index)}
+                  />
+                ))
+              ) : (
+                <div className="py-16 text-center">
+                  <div className="w-16 h-16 mx-auto bg-[#4A3B2A]/5 rounded-full flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-[#4A3B2A]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-[#4A3B2A]/60 italic font-medium text-lg">
+                    No FAQs found matching "{searchQuery}"
+                  </p>
+                  <button 
+                    onClick={() => setSearchQuery("")}
+                    className="mt-4 text-[#D4A373] font-bold text-sm tracking-widest uppercase hover:text-[#4A3B2A] transition-colors"
+                  >
+                    Clear Search
+                  </button>
+                </div>
+              )}
+              </div>
             </div>
           </div>
         )}
