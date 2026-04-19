@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import referFriendImg from "../../../assets/connect/refer.webp";
 
-const ReferFriendSection = ({ heroImgs }) => {
+const ReferFriendSection = () => {
   return (
     <section
       id="referral-section"
@@ -15,11 +16,7 @@ const ReferFriendSection = ({ heroImgs }) => {
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-[12s] ease-out hover:scale-105"
                 style={{
-                  backgroundImage: `url(${
-                    heroImgs?.[1]?.desktop ||
-                    heroImgs?.[0]?.desktop ||
-                    "https://images.unsplash.com/photo-1542314831-c6a4d14cdce8?q=80&w=2000&auto=format&fit=crop"
-                  })`,
+                  backgroundImage: `url(${referFriendImg})`,
                 }}
               ></div>
               <div className="absolute inset-0 bg-gradient-to-t from-[#4A3B2A]/18 via-transparent to-transparent"></div>

@@ -31,10 +31,10 @@ const Connect = () => {
         images={heroImgs}
         breadcrumbs={[{ label: "HOME", path: "/" }, { label: "CONNECT" }]}
       />
-      <EnquirySection heroImgs={heroImgs} />
+      <EnquirySection />
       <FAQSection faqs={faqs} />
-      <ReferFriendSection heroImgs={heroImgs} />
-      <GiftJourneySection heroImgs={heroImgs} />
+      <ReferFriendSection />
+      <GiftJourneySection />
     </div>
   );
 };

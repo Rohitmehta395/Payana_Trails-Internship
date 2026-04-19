@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import giftImg from "../../../assets/connect/gift.webp";
 
-const GiftJourneySection = ({ heroImgs }) => {
+const GiftJourneySection = () => {
   return (
     <section
       id="gift-section"
@@ -92,7 +93,7 @@ const GiftJourneySection = ({ heroImgs }) => {
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-[12s] ease-out hover:scale-105"
                 style={{
-                  backgroundImage: `url(${heroImgs?.[0]?.desktop || "https://images.unsplash.com/photo-1512418490979-9ce792e5e453?q=80&w=2000&auto=format&fit=crop"})`,
+                  backgroundImage: `url(${giftImg})`,
                 }}
               ></div>
               <div className="absolute inset-0 bg-gradient-to-t from-[#4A3B2A]/25 via-transparent to-transparent"></div>

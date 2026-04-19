@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import enquiry1 from "../../../assets/connect/enquiry1.webp";
+import enquiry2 from "../../../assets/connect/enquiry2.webp";
 
-const EnquirySection = ({ heroImgs }) => {
+const EnquirySection = () => {
   return (
     <section
       id="enquiry-section"
@@ -24,9 +26,7 @@ const EnquirySection = ({ heroImgs }) => {
 
           <h2 className="text-5xl md:text-6xl lg:text-[5rem] font-bold text-[#4A3B2A] leading-[1.05] mb-8 tracking-tight font-serif drop-shadow-sm">
             Craft Your <br />
-            <span className="italic font-light text-[#4A3B2A]/90">
-              Legacy.
-            </span>
+            <span className="italic font-light text-[#4A3B2A]/90">Legacy.</span>
           </h2>
 
           <p className="text-[#4A3B2A]/70 text-lg md:text-xl font-medium max-w-lg mb-12 leading-relaxed">
@@ -66,11 +66,11 @@ const EnquirySection = ({ heroImgs }) => {
         {/* Right Imagery Side - Clean Elegance */}
         <div className="w-full lg:w-1/2 relative flex flex-col md:flex-row justify-end mt-12 lg:mt-0">
           {/* Back Image (Offset) */}
-          <div className="hidden md:block absolute top-0 right-16 lg:right-24 w-3/5 aspect-[3/4] rounded-tr-[5rem] rounded-bl-[5rem] overflow-hidden shadow-lg mt-8 opacity-90 transition-transform duration-700 hover:-translate-y-2">
+          <div className="hidden md:block absolute top-0 right-16 lg:right-92 w-3/5 aspect-3/4 rounded-tr-[5rem] rounded-bl-[5rem] overflow-hidden shadow-lg mt-8 opacity-90 transition-transform duration-700 hover:-translate-y-2">
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-[20s] hover:scale-110"
               style={{
-                backgroundImage: `url(${heroImgs?.[1]?.desktop || "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2000&auto=format&fit=crop"})`,
+                backgroundImage: `url(${enquiry1})`,
               }}
             ></div>
             <div className="absolute inset-0 bg-[#4A3B2A]/5 mix-blend-multiply"></div>
@@ -81,7 +81,7 @@ const EnquirySection = ({ heroImgs }) => {
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-[15s] hover:scale-110"
               style={{
-                backgroundImage: `url(${heroImgs?.[0]?.desktop || "https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=2000&auto=format&fit=crop"})`,
+                backgroundImage: `url(${enquiry2})`,
               }}
             ></div>
             {/* Very subtle inward shadow for depth */}
