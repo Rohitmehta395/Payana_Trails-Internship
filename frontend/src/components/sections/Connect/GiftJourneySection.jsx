@@ -1,8 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import giftImg from "../../../assets/connect/gift.webp";
 
 const GiftJourneySection = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   return (
     <section
       id="gift-section"
@@ -15,7 +17,7 @@ const GiftJourneySection = () => {
             <div className="flex items-center gap-4 mb-6">
               <div className="w-10 h-[1.5px] bg-[#D4A373]"></div>
               <span className="text-[#D4A373] uppercase tracking-[0.32em] font-bold text-md">
-                A Gift to Remember
+                Gift A Journey
               </span>
               <div className="w-10 h-[1.5px] bg-[#D4A373]"></div>
             </div>
@@ -60,8 +62,12 @@ const GiftJourneySection = () => {
             </div>
 
             <div className="relative inline-block group">
-              <Link
-                to="/connect/gift-a-journey"
+              <button
+                onClick={() =>
+                  navigate("/connect/gift-a-journey", {
+                    state: location.state ?? { from: location.pathname, section: "gift-section" },
+                  })
+                }
                 className="relative z-10 flex items-center justify-center px-10 py-5 bg-[#4A3B2A] text-white font-bold tracking-[0.2em] uppercase text-sm border border-[#4A3B2A] transition-all duration-500 overflow-hidden shadow-lg"
               >
                 <span className="absolute inset-0 bg-[#795939] transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]" />
@@ -81,7 +87,7 @@ const GiftJourneySection = () => {
                     />
                   </svg>
                 </span>
-              </Link>
+              </button>
               {/* Decorative off-center outline */}
               <div className="absolute inset-0 border border-[#D4A373]/40 translate-x-3 translate-y-3 z-0 transition-transform duration-500 group-hover:translate-x-4 group-hover:translate-y-4"></div>
             </div>
@@ -89,7 +95,7 @@ const GiftJourneySection = () => {
 
           {/* Right Image Block */}
           <div className="order-1 lg:order-2 relative flex justify-end">
-            <div className="relative w-full lg:w-[90%] aspect-[4/5] md:aspect-[5/6] rounded-[2rem] overflow-hidden shadow-[0_24px_50px_rgba(74,59,42,0.15)] md:border-[10px] border-[#F3EFE9]">
+            <div className="relative w-full lg:w-[90%] aspect-4/5 md:aspect-5/6 rounded-4xl overflow-hidden shadow-[0_24px_50px_rgba(74,59,42,0.15)] md:border-4 border-[#F3EFE9]">
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-[12s] ease-out hover:scale-105"
                 style={{

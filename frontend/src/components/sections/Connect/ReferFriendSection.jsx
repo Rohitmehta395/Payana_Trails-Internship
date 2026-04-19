@@ -1,8 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import referFriendImg from "../../../assets/connect/refer.webp";
 
 const ReferFriendSection = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   return (
     <section
       id="referral-section"
@@ -12,7 +14,7 @@ const ReferFriendSection = () => {
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left Image Block */}
           <div className="relative">
-            <div className="relative aspect-[4/5] md:aspect-[5/6] rounded-[2rem] overflow-hidden shadow-[0_24px_50px_rgba(74,59,42,0.10)]">
+            <div className="relative aspect-4/5 md:aspect-5/6 rounded-4xl overflow-hidden shadow-[0_24px_50px_rgba(74,59,42,0.10)] md:border-4 border-[#F3EFE9]">
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-[12s] ease-out hover:scale-105"
                 style={{
@@ -87,8 +89,12 @@ const ReferFriendSection = () => {
             </div>
 
             <div className="relative inline-block group">
-              <Link
-                to="/connect/refer"
+              <button
+                onClick={() =>
+                  navigate("/connect/refer", {
+                    state: location.state ?? { from: location.pathname, section: "referral-section" },
+                  })
+                }
                 className="relative z-10 flex items-center justify-center px-10 py-5 bg-[#4A3B2A] text-[#F3EFE9] font-bold tracking-[0.2em] uppercase text-sm border border-[#4A3B2A] transition-all duration-500 overflow-hidden"
               >
                 <span className="absolute inset-0 bg-[#795939] transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]" />
@@ -108,7 +114,7 @@ const ReferFriendSection = () => {
                     />
                   </svg>
                 </span>
-              </Link>
+              </button>
               {/* Decorative off-center outline */}
               <div className="absolute inset-0 border border-[#4A3B2A]/20 translate-x-3 translate-y-3 z-0 transition-transform duration-500 group-hover:translate-x-4 group-hover:translate-y-4"></div>
             </div>
