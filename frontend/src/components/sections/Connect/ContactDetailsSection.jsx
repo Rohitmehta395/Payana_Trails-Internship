@@ -6,6 +6,7 @@ const contactItems = [
     label: "Email Us",
     value: "info@payanatrails.com",
     href: "mailto:info@payanatrails.com",
+    actionLabel: "Send a Mail",
     icon: (
       <svg
         className="w-6 h-6"
@@ -27,6 +28,7 @@ const contactItems = [
     label: "Phone / WhatsApp",
     value: "+91 86604 60512",
     href: "https://wa.me/918660460512",
+    actionLabel: "Chat on WhatsApp",
     icon: (
       <svg
         className="w-6 h-6"
@@ -44,10 +46,11 @@ const contactItems = [
     ),
   },
   {
-    id: "location",
-    label: "Our Office",
-    value: "110, Sowmya Springs, Basavanagudi, Bangalore – 560 004",
-    href: "https://maps.google.com/?q=Sowmya+Springs+Basavanagudi+Bangalore",
+    id: "meet",
+    label: "Google Meet",
+    value: "Schedule a virtual meeting with us",
+    href: "https://calendar.app.google/UyT5meYWKpCyKy7S7",
+    actionLabel: "Book a Meeting",
     icon: (
       <svg
         className="w-6 h-6"
@@ -59,34 +62,7 @@ const contactItems = [
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="1.5"
-          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: "hours",
-    label: "Office Hours",
-    value: "Mon – Sat: 10:00 AM – 7:00 PM",
-    href: null,
-    icon: (
-      <svg
-        className="w-6 h-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+          d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"
         />
       </svg>
     ),
@@ -147,8 +123,8 @@ const ContactDetailsSection = () => {
           </div>
 
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#4A3B2A] leading-tight tracking-tight mb-5">
-            Speak{" "}
-            <span className="italic font-light text-[#4A3B2A]/80">With Us</span>
+            Let's{" "}
+            <span className="italic font-light text-[#4A3B2A]/80">Connect</span>
           </h2>
 
           <p className="text-[#4A3B2A]/60 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
@@ -158,7 +134,7 @@ const ContactDetailsSection = () => {
         </div>
 
         {/* Contact Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
           {contactItems.map((item, index) => {
             const cardStyle = {
               opacity: visible ? 1 : 0,
@@ -187,11 +163,7 @@ const ContactDetailsSection = () => {
                 {item.href && (
                   <div className="mt-5 pt-5 border-t border-[#4A3B2A]/10">
                     <span className="inline-flex items-center gap-2 text-[#4A3B2A]/40 text-xs uppercase tracking-widest group-hover:text-[#4A3B2A]/70 transition-colors duration-400">
-                      {item.id === "location"
-                        ? "View on Map"
-                        : item.id === "phone"
-                          ? "Chat on WhatsApp"
-                          : "Send a Mail"}
+                      {item.actionLabel}
                       <svg
                         className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform duration-400"
                         fill="none"

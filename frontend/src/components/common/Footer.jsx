@@ -114,10 +114,10 @@ const Footer = () => {
       title: "Connect",
       links: [
         { name: "Enquiry", path: "/connect#enquiry-section" },
-        { name: "Connect With Us", path: "/connect" },
         { name: "FAQs", path: "/connect#faq-section" },
         { name: "Refer Your Friends", path: "/connect#referral-section" },
         { name: "Gift a Journey", path: "/connect#gift-section" },
+        { name: "Connect With Us", path: "/connect#contact-details-section" },
       ],
     },
   ];
@@ -146,7 +146,8 @@ const Footer = () => {
             </div>
 
             <p className="text-[#F3EFE9]/80 text-sm text-center lg:text-left max-w-xs leading-snug">
-              Crafting meaningful journeys through thoughtful, immersive travel experiences.
+              Crafting meaningful journeys through thoughtful, immersive travel
+              experiences.
             </p>
 
             <div className="flex gap-3 mt-1 flex-wrap justify-center lg:justify-start">
@@ -214,9 +215,15 @@ const Footer = () => {
                 className="mt-1 text-[#F3EFE9]/70 shrink-0"
                 size={14}
               />
-              <address className="not-italic text-[14px] leading-snug">
-                110, Sowmya Springs, Basavanagudi, Bangalore - 560 004
-              </address>
+              <a
+                href="https://maps.google.com/?q=Sowmya+Springs+Basavanagudi+Bangalore"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <address className="not-italic text-[14px] leading-snug">
+                  110, Sowmya Springs, Basavanagudi, Bangalore - 560 004
+                </address>
+              </a>
             </div>
           </div>
 

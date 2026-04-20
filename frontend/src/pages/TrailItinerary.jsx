@@ -39,7 +39,7 @@ const TrailItinerary = () => {
 
   const handleEnquireClick = () => {
     setTimeout(() => {
-      navigate("/connect/enquiry", { 
+      navigate("/connect/enquiry#enquiry-section", { 
         state: { 
           from: location.pathname,
           section: 'itinerary-footer',

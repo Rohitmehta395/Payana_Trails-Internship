@@ -133,7 +133,7 @@ const FAQs = () => {
         ]}
       />
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-16 md:mt-32">
+      <div id="faq-section" className="max-w-7xl mx-auto px-6 sm:px-8 mt-16 md:mt-32">
         {loading ? (
           <div className="flex justify-center items-center py-32">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4A3B2A]"></div>

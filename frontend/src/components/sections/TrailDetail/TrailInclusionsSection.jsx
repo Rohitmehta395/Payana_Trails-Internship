@@ -301,12 +301,12 @@ const TrailInclusionsSection = ({
 
   const handleEnquireClick = () => {
     setTimeout(() => {
-      navigate("/connect/enquiry", { 
-        state: { 
+      navigate("/connect/enquiry#enquiry-section", {
+        state: {
           from: location.pathname,
-          section: 'trail-essentials',
-          trailName: trailState?.trailName 
-        } 
+          section: "trail-essentials",
+          trailName: trailState?.trailName,
+        },
       });
     }, 400);
   };

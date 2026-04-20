@@ -32,7 +32,7 @@ const FAQSection = ({ faqs }) => {
   return (
     <section
       id="faq-section"
-      className="py-4 md:py-12 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden"
+      className="py-10 md:py-14 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden"
     >
       {/* Subtle background watermark */}
       <div className="absolute top-0 right-0 text-[15rem] font-serif italic font-bold text-[#F3EFE9]/40 select-none pointer-events-none z-0 tracking-tighter mix-blend-multiply hidden lg:block">
@@ -41,7 +41,7 @@ const FAQSection = ({ faqs }) => {
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-12 md:mb-16">
+        <div className="text-center mb-8 md:mb-10">
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-8 h-[1px] bg-[#D4A373]"></div>
             <span className="text-[#D4A373] uppercase tracking-[0.3em] font-bold text-xs md:text-sm">
@@ -49,28 +49,28 @@ const FAQSection = ({ faqs }) => {
             </span>
             <div className="w-8 h-[1px] bg-[#D4A373]"></div>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#4A3B2A] leading-tight tracking-tight">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#4A3B2A] leading-tight tracking-tight">
             Frequently Asked{" "}
             <span className="italic font-light">Questions</span>
           </h2>
-          <p className="text-[#4A3B2A]/70 text-base md:text-lg max-w-2xl mx-auto mt-4">
+          <p className="text-[#4A3B2A]/70 text-sm md:text-base max-w-2xl mx-auto mt-3">
             Everything you need to know before embarking on your Payana journey.
           </p>
         </div>
 
         {/* FAQ Category Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
           {faqs.map((faq, index) => (
             <Link
               key={faq._id}
               to={`/connect/faqs#faq-${faq._id}`}
-              className="group relative bg-white/60 backdrop-blur-sm p-8 rounded-2xl border border-[#4A3B2A]/10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 block flex flex-col h-full"
+              className="group relative bg-white/60 backdrop-blur-sm p-5 rounded-2xl border border-[#4A3B2A]/10 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 block flex flex-col h-full"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-[#D4A373]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
               <div className="relative z-10 flex flex-col h-full">
-                <div className="w-12 h-12 rounded-full bg-[#4A3B2A]/5 flex items-center justify-center mb-6 group-hover:bg-[#D4A373]/20 transition-colors shrink-0">
+                <div className="w-10 h-10 rounded-full bg-[#4A3B2A]/5 flex items-center justify-center mb-4 group-hover:bg-[#D4A373]/20 transition-colors shrink-0">
                   <svg
-                    className="w-6 h-6 text-[#4A3B2A] group-hover:text-[#D4A373]"
+                    className="w-5 h-5 text-[#4A3B2A] group-hover:text-[#D4A373]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -78,7 +78,7 @@ const FAQSection = ({ faqs }) => {
                     {faqIcons[index % faqIcons.length]}
                   </svg>
                 </div>
-                <h3 className="text-2xl font-serif text-[#4A3B2A] mb-3 line-clamp-2">
+                <h3 className="text-xl font-serif text-[#4A3B2A] mb-2 line-clamp-2">
                   {faq.question}
                 </h3>
                 <p className="text-[#4A3B2A]/60 text-sm leading-relaxed mb-4 flex-grow line-clamp-3">
@@ -112,11 +112,11 @@ const FAQSection = ({ faqs }) => {
         </div>
 
         {/* Call to Action Button */}
-        <div className="flex justify-center mt-12">
+        <div className="flex justify-center mt-8">
           <div className="relative inline-block group">
             <Link
-              to="/connect/faqs"
-              className="relative z-10 flex items-center justify-center px-10 py-5 bg-[#4A3B2A] text-[#F3EFE9] font-bold tracking-[0.2em] uppercase text-sm border border-[#4A3B2A] transition-all duration-500 overflow-hidden"
+              to="/connect/faqs#faq-section"
+              className="relative z-10 flex items-center justify-center px-8 py-4 bg-[#4A3B2A] text-[#F3EFE9] font-bold tracking-[0.2em] uppercase text-sm border border-[#4A3B2A] transition-all duration-500 overflow-hidden"
             >
               <span className="absolute inset-0 bg-[#795939] transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]" />
               <span className="relative z-20 flex items-center gap-4 group-hover:text-[#F3EFE9] transition-colors duration-500">

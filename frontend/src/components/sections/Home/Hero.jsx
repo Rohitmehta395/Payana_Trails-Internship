@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import CreamBtn from "../../common/buttons/CreamBtn";
 
 export default function Hero({ images = [], loading = false }) {
@@ -23,23 +24,25 @@ export default function Hero({ images = [], loading = false }) {
     );
   };
 
-  if (loading)
-    return (
-      <section className="relative w-full h-[100dvh] bg-[#110C08] flex items-center justify-center">
-        {/* Simple elegant loader or just a void to prevent flash */}
-        <div className="w-8 h-8 border-2 border-[#F3EFE9]/20 border-t-[#F3EFE9] rounded-full animate-spin opacity-50" />
-      </section>
-    );
+  // Instead of a black loading screen, just render with whatever images we
+  // have (fallback images are always provided). DB images replace them
+  // seamlessly via the prefetch cache once the promise resolves.
+  if (images.length === 0) return null;
 
-  if (images.length === 0)
-    return (
-      <div className="w-full h-screen bg-gray-200 flex items-center justify-center">
-        No images found
-      </div>
-    );
+  // Current image for preload hint
+  const firstImg = images[0];
 
   return (
     <section className="relative w-full h-[100dvh] flex flex-col justify-end overflow-hidden bg-black pb-24 sm:pb-28 lg:pb-32">
+      {/* Preload the first hero image so the browser fetches it ASAP */}
+      <Helmet>
+        {firstImg?.desktop && (
+          <link rel="preload" as="image" href={firstImg.desktop} media="(min-width: 640px)" />
+        )}
+        {firstImg?.mobile && (
+          <link rel="preload" as="image" href={firstImg.mobile} media="(max-width: 639px)" />
+        )}
+      </Helmet>
       {/* Background Images Layer */}
       {images.map((img, index) => (
         <div

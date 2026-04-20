@@ -7,7 +7,11 @@ import PayanaWay from "../components/sections/Home/PayanaWay";
 import StoriesMoments from "../components/sections/Home/StoriesMoments";
 import ClosingInvitation from "../components/sections/Home/ClosingInvitation";
 import ShareExperience from "../components/sections/Home/ShareExperience";
-import usePageHeroImages from "../hooks/usePageHeroImages";
+import usePageHeroImages, { prefetchPageHeroImages } from "../hooks/usePageHeroImages";
+
+// Kick off the DB fetch immediately when this module is first imported.
+// By the time any component renders, the request is already in flight.
+prefetchPageHeroImages("home");
 
 //HardCoded Hero Images
 //Desktop
@@ -85,7 +89,7 @@ const Home = () => {
       </Helmet>
 
       <div>
-      <Hero images={heroImages} loading={heroLoading} />
+      <Hero images={heroImages} loading={false} />
       <ExploreOurTrails />
       {/* <SignatureTrails /> */}
       <ExploreDestination />

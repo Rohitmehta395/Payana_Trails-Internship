@@ -9,7 +9,10 @@ const ShareExperience = () => {
   const navigate = useNavigate();
   const location = useLocation();
   return (
-    <section id="share-section" className="relative w-full bg-[#F3EFE9] py-24 px-6 lg:px-12 overflow-hidden font-sans">
+    <section
+      id="share-section"
+      className="relative w-full bg-[#F3EFE9] py-24 px-6 lg:px-12 overflow-hidden font-sans"
+    >
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-0 w-80 h-80 bg-[#4A3B2A] opacity-5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/4 pointer-events-none"></div>
       <div className="absolute bottom-0 right-0 w-125 h-125 bg-[#4A3B2A] opacity-5 rounded-full blur-3xl translate-y-1/3 translate-x-1/3 pointer-events-none"></div>
@@ -62,9 +65,16 @@ const ShareExperience = () => {
             {/* Using your custom Button */}
             <div className="mt-auto">
               <BrownBtn
-                text="Get Referral Link"
+                text="Explore Referral Program"
                 className="w-full sm:w-auto shadow-md hover:shadow-lg"
-                onClick={() => navigate("/connect#referral-section", { state: { from: location.pathname, section: 'share-section' } })}
+                onClick={() =>
+                  navigate("/connect#referral-section", {
+                    state: {
+                      from: location.pathname,
+                      section: "share-section",
+                    },
+                  })
+                }
               />
             </div>
           </div>
@@ -100,7 +110,14 @@ const ShareExperience = () => {
               <BrownBtn
                 text="Explore Gift Cards"
                 className="w-full sm:w-auto shadow-md hover:shadow-lg"
-                onClick={() => navigate("/connect#gift-section", { state: { from: location.pathname, section: 'share-section' } })}
+                onClick={() =>
+                  navigate("/connect#gift-section", {
+                    state: {
+                      from: location.pathname,
+                      section: "share-section",
+                    },
+                  })
+                }
               />
             </div>
           </div>

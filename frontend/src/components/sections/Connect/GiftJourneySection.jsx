@@ -8,13 +8,13 @@ const GiftJourneySection = () => {
   return (
     <section
       id="gift-section"
-      className="py-4 md:py-16 px-4 md:px-8 bg-[#F3EFE9] relative z-10 border-t border-[#4A3B2A]/5"
+      className="py-12 md:py-16 px-4 md:px-8 bg-[#F3EFE9] relative z-10 border-t border-[#4A3B2A]/5"
     >
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Content Block */}
           <div className="order-2 lg:order-1 pt-8 lg:pt-0 pl-0 lg:pl-12">
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-4 mb-4">
               <div className="w-10 h-[1.5px] bg-[#D4A373]"></div>
               <span className="text-[#D4A373] uppercase tracking-[0.32em] font-bold text-md">
                 Gift A Journey
@@ -22,25 +22,25 @@ const GiftJourneySection = () => {
               <div className="w-10 h-[1.5px] bg-[#D4A373]"></div>
             </div>
 
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#4A3B2A] leading-[1.05] tracking-tight mb-6">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#4A3B2A] leading-[1.05] tracking-tight mb-4">
               Gift an extraordinary <br />
               <span className="italic font-light text-[#4A3B2A]/85">
                 experience.
               </span>
             </h2>
 
-            <p className="text-[#4A3B2A]/70 text-lg leading-relaxed max-w-xl mb-10">
-              Surprise your loved ones with the gift of a lifetime. Whether
-              it's a curated journey or travel credits, give them an adventure
-              they will cherish forever.
+            <p className="text-[#4A3B2A]/70 text-base leading-relaxed max-w-xl mb-6">
+              Surprise your loved ones with the gift of a lifetime. Whether it's
+              a curated journey or travel credits, give them an adventure they
+              will cherish forever.
             </p>
 
-            <div className="grid sm:grid-cols-2 gap-4 mb-10 max-w-2xl">
-              <div className="rounded-[1.5rem] border border-[#4A3B2A]/10 bg-white/80 p-5">
+            <div className="grid sm:grid-cols-2 gap-3 mb-6 max-w-2xl">
+              <div className="rounded-[1.5rem] border border-[#4A3B2A]/10 bg-white/80 p-4">
                 <p className="text-[#D4A373] uppercase tracking-[0.22em] text-[10px] font-bold mb-2">
                   Flexible
                 </p>
-                <p className="text-[#4A3B2A] font-serif text-2xl leading-none mb-2">
+                <p className="text-[#4A3B2A] font-serif text-xl leading-none mb-1">
                   Credits
                 </p>
                 <p className="text-[#4A3B2A]/60 text-sm leading-relaxed">
@@ -48,11 +48,11 @@ const GiftJourneySection = () => {
                 </p>
               </div>
 
-              <div className="rounded-[1.5rem] border border-[#4A3B2A]/10 bg-white/80 p-5">
+              <div className="rounded-[1.5rem] border border-[#4A3B2A]/10 bg-white/80 p-4">
                 <p className="text-[#D4A373] uppercase tracking-[0.22em] text-[10px] font-bold mb-2">
                   Curated
                 </p>
-                <p className="text-[#4A3B2A] font-serif text-2xl leading-none mb-2">
+                <p className="text-[#4A3B2A] font-serif text-xl leading-none mb-1">
                   Journeys
                 </p>
                 <p className="text-[#4A3B2A]/60 text-sm leading-relaxed">
@@ -64,11 +64,14 @@ const GiftJourneySection = () => {
             <div className="relative inline-block group">
               <button
                 onClick={() =>
-                  navigate("/connect/gift-a-journey", {
-                    state: location.state ?? { from: location.pathname, section: "gift-section" },
+                  navigate("/connect/gift-a-journey#gift-section", {
+                    state: location.state ?? {
+                      from: location.pathname,
+                      section: "gift-section",
+                    },
                   })
                 }
-                className="relative z-10 flex items-center justify-center px-10 py-5 bg-[#4A3B2A] text-white font-bold tracking-[0.2em] uppercase text-sm border border-[#4A3B2A] transition-all duration-500 overflow-hidden shadow-lg"
+                className="relative z-10 flex items-center justify-center px-8 py-4 bg-[#4A3B2A] text-white font-bold tracking-[0.2em] uppercase text-sm border border-[#4A3B2A] transition-all duration-500 overflow-hidden shadow-lg"
               >
                 <span className="absolute inset-0 bg-[#795939] transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]" />
                 <span className="relative z-20 flex items-center gap-4 group-hover:text-white transition-colors duration-500">
@@ -95,7 +98,7 @@ const GiftJourneySection = () => {
 
           {/* Right Image Block */}
           <div className="order-1 lg:order-2 relative flex justify-end">
-            <div className="relative w-full lg:w-[90%] aspect-4/5 md:aspect-5/6 rounded-4xl overflow-hidden shadow-[0_24px_50px_rgba(74,59,42,0.15)] md:border-4 border-[#F3EFE9]">
+            <div className="relative w-full lg:w-[90%] aspect-4/5 md:aspect-[4/3] rounded-4xl overflow-hidden shadow-[0_24px_50px_rgba(74,59,42,0.15)] md:border-4 border-[#F3EFE9]">
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-[12s] ease-out hover:scale-105"
                 style={{
