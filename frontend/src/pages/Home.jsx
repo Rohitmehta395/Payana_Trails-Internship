@@ -61,7 +61,9 @@ const FALLBACK_IMAGES = [
 
 const Home = () => {
   const SITE_URL = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
-  const OG_IMAGE = `${SITE_URL}/heroBg-desktop.webp`;
+  const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+  const OG_IMAGE = `${API_BASE_URL}/page-heroes/home/primary-image`;
 
   // Pull images from DB; fall back to static assets if DB has none
   const { images: heroImages, loading: heroLoading } = usePageHeroImages("home", FALLBACK_IMAGES);

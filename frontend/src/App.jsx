@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import ScrollToTop from "./components/common/ScrollToTop";
 import Layout from "./components/common/layout/Layout";
 import Home from "./pages/Home";
@@ -47,6 +47,7 @@ const App = () => {
               <Layout>
                 <Routes>
                   <Route index element={<Home />} />
+                  <Route path="journey" element={<Navigate to="/journeys" replace />} />
                   <Route path="journeys" element={<Journeys />} />
                   <Route path="journeys/wildlife" element={<Wildlife />} />
                   <Route path="journeys/heritage" element={<Heritage />} />

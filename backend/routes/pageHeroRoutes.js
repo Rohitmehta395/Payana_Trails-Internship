@@ -25,6 +25,18 @@ const cpUpload = upload.fields([
  */
 const decode = (raw) => raw.replace(/~/g, "/");
 
+const toAbsoluteUrl = (req, value) => {
+  if (!value) return "";
+  if (/^https?:\/\//i.test(value)) return value;
+  const origin = `${req.protocol}://${req.get("host")}`;
+  return `${origin}${value.startsWith("/") ? value : `/${value}`}`;
+};
+
+const getPrimaryActiveImage = (images = []) =>
+  [...images]
+    .filter((img) => img?.isActive && img?.url)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))[0];
+
 // ── Shared helpers ────────────────────────────────────────────────────────────
 
 /** Absolute disk folder for a page + variant. */
@@ -103,6 +115,26 @@ router.get("/", async (req, res) => {
 });
 
 // ── GET  /api/page-heroes/:pageKey ────────────────────────────────────────────
+router.get("/:pageKey/primary-image", async (req, res) => {
+  try {
+    const pageKey = decode(req.params.pageKey);
+    const doc = await PageHeroImage.findOne({ pageKey }).select("images").lean();
+    const primaryImage = getPrimaryActiveImage(doc?.images || []);
+    const fallbackUrl = toAbsoluteUrl(req, "/heroBg-desktop.webp");
+    const imageUrl = primaryImage?.url
+      ? toAbsoluteUrl(req, primaryImage.url)
+      : fallbackUrl;
+
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    return res.redirect(302, imageUrl);
+  } catch (err) {
+    return res.status(500).json({
+      message: "Failed to resolve primary hero image",
+      error: err.message,
+    });
+  }
+});
+
 router.get("/:pageKey", async (req, res) => {
   try {
     const pageKey = decode(req.params.pageKey);
