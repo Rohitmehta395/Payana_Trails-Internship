@@ -91,81 +91,65 @@ const ContactDetailsSection = () => {
     <section
       id="contact-details-section"
       ref={sectionRef}
-      className="py-12 md:py-12 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden"
+      className="py-10 md:py-12 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden"
     >
-      {/* Large decorative watermark */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18rem] font-serif italic font-bold select-none pointer-events-none z-0 tracking-tighter hidden lg:block"
-        style={{ color: "rgba(74,59,42,0.04)" }}
-      >
-        Hello
-      </div>
-
       {/* Subtle top divider line */}
       <div className="absolute top-0 left-8 right-8 h-[1px] bg-[#4A3B2A]/10" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div
-          className="text-center mb-16 md:mb-20"
+          className="text-center mb-8"
           style={{
             opacity: visible ? 1 : 0,
-            transform: visible ? "translateY(0)" : "translateY(28px)",
+            transform: visible ? "translateY(0)" : "translateY(20px)",
             transition: "opacity 0.7s ease, transform 0.7s ease",
           }}
         >
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-8 h-[1px] bg-[#4A3B2A]/30" />
-            <span className="text-[#4A3B2A]/50 uppercase tracking-[0.35em] font-bold text-xs md:text-sm">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="w-6 h-[1px] bg-[#4A3B2A]/30" />
+            <span className="text-[#4A3B2A]/50 uppercase tracking-[0.35em] font-bold text-[10px]">
               Get In Touch
             </span>
-            <div className="w-8 h-[1px] bg-[#4A3B2A]/30" />
+            <div className="w-6 h-[1px] bg-[#4A3B2A]/30" />
           </div>
-
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#4A3B2A] leading-tight tracking-tight mb-5">
+          <h2 className="text-3xl md:text-4xl font-serif text-[#4A3B2A] leading-tight tracking-tight">
             Let's{" "}
             <span className="italic font-light text-[#4A3B2A]/80">Connect</span>
           </h2>
-
-          <p className="text-[#4A3B2A]/60 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
-            Whether you have a question, a dream destination, or simply wish to
-            say hello — we are always here for you.
-          </p>
         </div>
 
         {/* Contact Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5">
           {contactItems.map((item, index) => {
             const cardStyle = {
               opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(36px)",
-              transition: `opacity 0.65s ease ${0.15 + index * 0.12}s, transform 0.65s ease ${0.15 + index * 0.12}s`,
+              transform: visible ? "translateY(0)" : "translateY(24px)",
+              transition: `opacity 0.6s ease ${0.1 + index * 0.1}s, transform 0.6s ease ${0.1 + index * 0.1}s`,
             };
 
             const Inner = (
-              <div className="flex flex-col h-full">
+              <div className="flex items-start gap-4">
                 {/* Icon */}
-                <div className="w-12 h-12 rounded-full bg-[#4A3B2A]/8 flex items-center justify-center mb-6 text-[#4A3B2A] group-hover:bg-[#4A3B2A]/15 transition-colors duration-400 shrink-0">
-                  {item.icon}
+                <div className="w-10 h-10 rounded-full bg-[#4A3B2A]/8 flex items-center justify-center text-[#4A3B2A] group-hover:bg-[#4A3B2A]/15 transition-colors duration-400 shrink-0 mt-0.5">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    {item.icon.props.children}
+                  </svg>
                 </div>
 
-                {/* Label */}
-                <p className="text-[#4A3B2A]/50 uppercase tracking-[0.28em] text-[10px] font-bold mb-2">
-                  {item.label}
-                </p>
-
-                {/* Value */}
-                <p className="text-[#4A3B2A] font-sans italic text-xl leading-snug mt-auto">
-                  {item.value}
-                </p>
-
-                {/* Bottom action link */}
-                {item.href && (
-                  <div className="mt-5 pt-5 border-t border-[#4A3B2A]/10">
-                    <span className="inline-flex items-center gap-2 text-[#4A3B2A]/40 text-xs uppercase tracking-widest group-hover:text-[#4A3B2A]/70 transition-colors duration-400">
+                {/* Content */}
+                <div className="flex flex-col min-w-0">
+                  <p className="text-[#4A3B2A]/50 uppercase tracking-[0.25em] text-[10px] font-bold mb-1">
+                    {item.label}
+                  </p>
+                  <p className="text-[#4A3B2A] font-sans italic text-base leading-snug mb-2 truncate">
+                    {item.value}
+                  </p>
+                  {item.href && (
+                    <span className="inline-flex items-center gap-1.5 text-[#4A3B2A]/40 text-[10px] uppercase tracking-widest group-hover:text-[#4A3B2A]/70 transition-colors duration-400">
                       {item.actionLabel}
                       <svg
-                        className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform duration-400"
+                        className="w-3 h-3 transform group-hover:translate-x-1 transition-transform duration-400"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -178,19 +162,19 @@ const ContactDetailsSection = () => {
                         />
                       </svg>
                     </span>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             );
 
             const cardBase =
-              "group relative bg-white/60 backdrop-blur-sm border border-[#4A3B2A]/10 rounded-2xl p-7 hover:shadow-xl hover:bg-white/80 hover:border-[#4A3B2A]/20 hover:-translate-y-1 transition-all duration-500 flex flex-col";
+              "group relative bg-white/60 backdrop-blur-sm border border-[#4A3B2A]/10 rounded-xl px-5 py-4 hover:shadow-xl hover:bg-white/80 hover:border-[#4A3B2A]/20 hover:-translate-y-1 transition-all duration-500";
 
             return item.href ? (
               <a
                 key={item.id}
                 href={item.href}
-                target={item.id !== "email" ? "_blank" : undefined}
+                target="_blank"
                 rel="noopener noreferrer"
                 className={cardBase}
                 style={cardStyle}

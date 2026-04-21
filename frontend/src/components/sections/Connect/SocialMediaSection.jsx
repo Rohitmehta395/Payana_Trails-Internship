@@ -174,7 +174,7 @@ const SocialMediaSection = () => {
             transition: "opacity 0.65s ease, transform 0.65s ease",
           }}
         >
-          <div className="flex items-center justify-center gap-4 mb-4">
+          {/* <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-8 h-[1px] bg-[#4A3B2A]/30" />
             <span
               className="text-[#4A3B2A]/50 uppercase tracking-[0.35em] text-xs md:text-sm font-bold"
@@ -183,16 +183,16 @@ const SocialMediaSection = () => {
               Follow Our Journey
             </span>
             <div className="w-8 h-[1px] bg-[#4A3B2A]/30" />
-          </div>
+          </div> */}
 
           <h2
-            className="text-4xl md:text-5xl lg:text-6xl text-[#4A3B2A] leading-tight tracking-tight mb-4"
+            className="text-3xl md:text-4xl lg:text-5xl text-[#4A3B2A] leading-tight tracking-tight mb-4"
             style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontWeight: 400,
             }}
           >
-            Stay{" "}
+            Follow Our{" "}
             <span
               style={{
                 fontStyle: "italic",
@@ -200,7 +200,7 @@ const SocialMediaSection = () => {
                 color: "rgba(74,59,42,0.7)",
               }}
             >
-              Connected
+              Journey
             </span>
           </h2>
 

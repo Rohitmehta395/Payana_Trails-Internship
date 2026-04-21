@@ -206,24 +206,23 @@ const Footer = () => {
         {/* === MIDDLE SECTION: CONTACT INFO === */}
         <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start gap-6 mt-8 pt-6 border-t border-[#F3EFE9]/10 text-[#F3EFE9]">
           {/* Address */}
-          <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-md gap-2">
+          <div className="flex flex-col items-center lg:items-start text-center lg:text-left max-w-xl gap-2">
             <h3 className="font-bold text-[18px] tracking-wide font-serif text-[#F3EFE9] drop-shadow-sm">
               Journeys, thoughtfully curated!
             </h3>
-            <div className="flex items-start gap-2 opacity-80">
-              <FaLocationDot
-                className="mt-1 text-[#F3EFE9]/70 shrink-0"
-                size={14}
-              />
+            <div className="flex items-center gap-3 opacity-80 group">
               <a
                 href="https://maps.google.com/?q=Sowmya+Springs+Basavanagudi+Bangalore"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="text-[10px] font-medium uppercase tracking-wider bg-[#F3EFE9]/10 hover:bg-[#F3EFE9]/20 text-[#F3EFE9] px-3 py-1.5 rounded-full border border-[#F3EFE9]/20 transition-all duration-300 flex items-center gap-1.5 shrink-0"
               >
-                <address className="not-italic text-[14px] leading-snug">
-                  110, Sowmya Springs, Basavanagudi, Bangalore - 560 004
-                </address>
+                <FaLocationDot size={12} className="text-[#F3EFE9]/70 group-hover:text-white transition-colors" />
+                View on Map
               </a>
+              <address className="not-italic text-[14px] leading-snug whitespace-nowrap">
+                110, Sowmya Springs, Basavanagudi, Bangalore - 560 004
+              </address>
             </div>
           </div>
 
