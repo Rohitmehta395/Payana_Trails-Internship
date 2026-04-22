@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
 import TrailListPanel from "./TrailListPanel";
 import TrailForm from "./TrailForm";
@@ -16,6 +17,15 @@ const createEmptyCompressionLoading = () => ({
   heroImage: false,
   trailImages: false,
 });
+
+const MAX_ITINERARY_PDF_BYTES = 1024 * 1024;
+
+const isPdfFile = (file) =>
+  Boolean(
+    file &&
+      (file.type === "application/pdf" ||
+        file.name?.toLowerCase().endsWith(".pdf")),
+  );
 
 const formatBytes = (bytes = 0) => {
   if (bytes >= 1024 * 1024) {
@@ -49,6 +59,8 @@ const NON_FORM_FIELDS = new Set([
   "routeMap",
   "heroImage",
   "trailImages",
+  "itineraryPdf",
+  "itineraryPdfName",
   "itinerary",
   "itineraryDraft",
   "optionalExperiences",
@@ -84,6 +96,9 @@ const AddTrail = () => {
     highlights: [{ title: "", description: "" }],
     whatsIncluded: "",
     whatsNotIncluded: "",
+    itineraryPdf: "",
+    itineraryPdfName: "",
+    autoCompressItineraryPdf: "false",
     pricing: "",
     status: "draft",
   };
@@ -92,12 +107,22 @@ const AddTrail = () => {
   const [imageFile, setImageFile] = useState(null);
   const [heroImageFile, setHeroImageFile] = useState(null);
   const [trailImageFiles, setTrailImageFiles] = useState([]);
+  const [itineraryPdfFile, setItineraryPdfFile] = useState(null);
+  const [itineraryPdfMarkedForRemoval, setItineraryPdfMarkedForRemoval] =
+    useState(false);
   const [existingTrailImages, setExistingTrailImages] = useState([]);
   const [imagesToDelete, setImagesToDelete] = useState([]);
   const [routeMapPreview, setRouteMapPreview] = useState("");
   const [heroImagePreview, setHeroImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
+  const [pdfCompressing, setPdfCompressing] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [itineraryPdfNotice, setItineraryPdfNotice] = useState({
+    type: "",
+    text: "",
+  });
+  const [pdfCompressionStats, setPdfCompressionStats] = useState(null);
+  const [hasAutosaved, setHasAutosaved] = useState(false);
   const [compressionPreviews, setCompressionPreviews] = useState(
     createEmptyCompressionPreviews,
   );
@@ -118,6 +143,21 @@ const AddTrail = () => {
       heroImage: 0,
       trailImages: 0,
     };
+  };
+
+  const clearFileInputs = () => {
+    if (document.getElementById("imageInput")) {
+      document.getElementById("imageInput").value = "";
+    }
+    if (document.getElementById("heroImageInput")) {
+      document.getElementById("heroImageInput").value = "";
+    }
+    if (document.getElementById("trailImagesInput")) {
+      document.getElementById("trailImagesInput").value = "";
+    }
+    if (document.getElementById("itineraryPdfInput")) {
+      document.getElementById("itineraryPdfInput").value = "";
+    }
   };
 
   const cancelPendingCompressionPreviews = () => {
@@ -154,9 +194,11 @@ const AddTrail = () => {
     }
 
     setRouteMapPreview(
-      isEditing && formData.routeMap ? `${IMAGE_BASE_URL}${formData.routeMap}` : "",
+      (isEditing || hasAutosaved) && formData.routeMap
+        ? `${IMAGE_BASE_URL}${formData.routeMap}`
+        : "",
     );
-  }, [formData.routeMap, imageFile, isEditing]);
+  }, [formData.routeMap, imageFile, isEditing, hasAutosaved]);
 
   useEffect(() => {
     if (heroImageFile) {
@@ -166,11 +208,16 @@ const AddTrail = () => {
     }
 
     setHeroImagePreview(
-      isEditing && formData.heroImage ? `${IMAGE_BASE_URL}${formData.heroImage}` : "",
+      (isEditing || hasAutosaved) && formData.heroImage
+        ? `${IMAGE_BASE_URL}${formData.heroImage}`
+        : "",
     );
-  }, [formData.heroImage, heroImageFile, isEditing]);
+  }, [formData.heroImage, heroImageFile, isEditing, hasAutosaved]);
 
   // --- FORM HANDLERS ---
+  const isItineraryPdfError = (text = "") =>
+    /itinerary pdf|auto-compress/i.test(String(text || ""));
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -231,6 +278,125 @@ const AddTrail = () => {
     await previewCompression("trailImages", files);
   };
 
+  const clearSelectedItineraryPdf = () => {
+    setItineraryPdfFile(null);
+    setPdfCompressionStats(null);
+    if (document.getElementById("itineraryPdfInput")) {
+      document.getElementById("itineraryPdfInput").value = "";
+    }
+
+    setItineraryPdfNotice(
+      formData.itineraryPdf && !itineraryPdfMarkedForRemoval
+        ? {
+            type: "info",
+            text: "Replacement PDF cleared. The current saved PDF will stay as is until you save a new one.",
+          }
+        : { type: "", text: "" },
+    );
+  };
+
+  const toggleAutoCompressItineraryPdf = () => {
+    const nextValue =
+      formData.autoCompressItineraryPdf === "true" ? "false" : "true";
+
+    if (
+      nextValue === "false" &&
+      itineraryPdfFile &&
+      itineraryPdfFile.size > MAX_ITINERARY_PDF_BYTES
+    ) {
+      clearSelectedItineraryPdf();
+      setItineraryPdfNotice({
+        type: "error",
+        text: "Auto-compress was turned off, so the selected PDF was cleared because it is still above 1 MB.",
+      });
+    } else if (nextValue === "true") {
+      setItineraryPdfNotice((prev) =>
+        itineraryPdfFile && itineraryPdfFile.size > MAX_ITINERARY_PDF_BYTES
+          ? {
+              type: "info",
+              text: "This PDF is above 1 MB. It will be auto-compressed on save. If it still stays above 1 MB, upload a lighter PDF.",
+            }
+          : prev,
+      );
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      autoCompressItineraryPdf: nextValue,
+    }));
+  };
+
+  const handleItineraryPdfChange = (e) => {
+    const file = e.target.files[0] || null;
+
+    if (!file) {
+      setItineraryPdfFile(null);
+      setItineraryPdfNotice({ type: "", text: "" });
+      return;
+    }
+
+    if (!isPdfFile(file)) {
+      setMessage({
+        type: "error",
+        text: "Please upload a valid PDF file for the itinerary.",
+      });
+      setItineraryPdfNotice({
+        type: "error",
+        text: "Only PDF files are allowed here. Please choose a valid `.pdf` file.",
+      });
+      e.target.value = "";
+      return;
+    }
+
+    const autoCompressEnabled = formData.autoCompressItineraryPdf === "true";
+    if (file.size > MAX_ITINERARY_PDF_BYTES && !autoCompressEnabled) {
+      setMessage({
+        type: "error",
+        text: "Itinerary PDF must be 1 MB or smaller unless auto-compress is turned on.",
+      });
+      setItineraryPdfNotice({
+        type: "error",
+        text: "This PDF is larger than 1 MB. Turn on auto-compress or upload a smaller PDF.",
+      });
+      e.target.value = "";
+      return;
+    }
+
+    setItineraryPdfMarkedForRemoval(false);
+    setItineraryPdfFile(file);
+    setItineraryPdfNotice(
+      file.size > MAX_ITINERARY_PDF_BYTES
+        ? {
+            type: "info",
+            text: "This PDF is above 1 MB. We will try to auto-compress it on save. If it still stays above 1 MB, upload a lighter PDF.",
+          }
+        : {
+            type: "success",
+            text: "PDF selected. It is already within the 1 MB limit and ready to upload.",
+          },
+    );
+  };
+
+  const toggleRemoveCurrentItineraryPdf = () => {
+    const nextValue = !itineraryPdfMarkedForRemoval;
+    setItineraryPdfMarkedForRemoval(nextValue);
+    setItineraryPdfFile(null);
+    if (document.getElementById("itineraryPdfInput")) {
+      document.getElementById("itineraryPdfInput").value = "";
+    }
+    setItineraryPdfNotice(
+      nextValue
+        ? {
+            type: "info",
+            text: "The current itinerary PDF will be removed when you save the trail.",
+          }
+        : {
+            type: "",
+            text: "",
+          },
+    );
+  };
+
   const removeExistingTrailImage = (imgUrl) => {
     setExistingTrailImages((prev) => prev.filter((img) => img !== imgUrl));
     setImagesToDelete((prev) => [...prev, imgUrl]);
@@ -267,21 +433,18 @@ const AddTrail = () => {
     setImageFile(null);
     setHeroImageFile(null);
     setTrailImageFiles([]);
+    setItineraryPdfFile(null);
+    setItineraryPdfMarkedForRemoval(false);
     setExistingTrailImages([]);
     setImagesToDelete([]);
     resetCompressionPreviewState();
     setIsEditing(false);
     setCurrentTrailId(null);
     setHasAutosaved(false);
-    if (document.getElementById("imageInput")) {
-      document.getElementById("imageInput").value = "";
-    }
-    if (document.getElementById("heroImageInput")) {
-      document.getElementById("heroImageInput").value = "";
-    }
-    if (document.getElementById("trailImagesInput")) {
-      document.getElementById("trailImagesInput").value = "";
-    }
+    setItineraryPdfNotice({ type: "", text: "" });
+    setPdfCompressionStats(null);
+    setPdfCompressing(false);
+    clearFileInputs();
   };
 
   const buildFormData = (statusToSave) => {
@@ -291,7 +454,7 @@ const AddTrail = () => {
 
     Object.keys(formData).forEach((key) => {
       if (NON_FORM_FIELDS.has(key)) return;
-      if (key === "trailName" || key === "status") return;
+      if (key === "trailName" || key === "status" || key === "autoCompressItineraryPdf") return;
       if (key === "highlights") {
         const arrayValue = formData.highlights
           .filter((h) => h.title.trim() || h.description.trim())
@@ -319,6 +482,14 @@ const AddTrail = () => {
     if (imageFile) submitData.append("routeMap", imageFile);
     if (heroImageFile) submitData.append("heroImage", heroImageFile);
     trailImageFiles.forEach((file) => submitData.append("trailImages", file));
+    submitData.append(
+      "autoCompressItineraryPdf",
+      formData.autoCompressItineraryPdf || "false",
+    );
+    if (itineraryPdfFile) submitData.append("itineraryPdf", itineraryPdfFile);
+    if (itineraryPdfMarkedForRemoval && !itineraryPdfFile) {
+      submitData.append("removeItineraryPdf", "true");
+    }
 
     if (isEditing || hasAutosaved) {
       submitData.append("existingTrailImages", JSON.stringify(existingTrailImages));
@@ -327,7 +498,6 @@ const AddTrail = () => {
     return submitData;
   };
 
-  const [hasAutosaved, setHasAutosaved] = useState(false);
   const activeSavePromise = useRef(null);
 
   const syncTrailInState = (updatedTrail) => {
@@ -341,6 +511,31 @@ const AddTrail = () => {
         trail._id === updatedTrail._id ? { ...trail, ...updatedTrail } : trail,
       );
     });
+  };
+
+  const syncSavedFilesToEditor = (savedTrail) => {
+    if (!savedTrail) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      routeMap: savedTrail.routeMap || "",
+      heroImage: savedTrail.heroImage || "",
+      trailImages: savedTrail.trailImages || [],
+      itineraryPdf: savedTrail.itineraryPdf || "",
+      itineraryPdfName: savedTrail.itineraryPdfName || "",
+      // Keep the user's preference for auto-compress instead of resetting to false
+      autoCompressItineraryPdf: prev.autoCompressItineraryPdf,
+      status: savedTrail.status || prev.status,
+    }));
+    setExistingTrailImages(savedTrail.trailImages || []);
+    setImagesToDelete([]);
+    setImageFile(null);
+    setHeroImageFile(null);
+    setTrailImageFiles([]);
+    setItineraryPdfFile(null);
+    setItineraryPdfMarkedForRemoval(false);
+    resetCompressionPreviewState();
+    clearFileInputs();
   };
 
 
@@ -371,9 +566,41 @@ const AddTrail = () => {
         return false;
       }
 
+      if (
+        itineraryPdfFile &&
+        itineraryPdfFile.size > MAX_ITINERARY_PDF_BYTES &&
+        formData.autoCompressItineraryPdf !== "true"
+      ) {
+        setMessage({
+          type: "error",
+          text: "Itinerary PDF must be 1 MB or smaller unless auto-compress is turned on.",
+        });
+        if (!isAutoSave) setLoading(false);
+        setItineraryPdfNotice({
+          type: "error",
+          text: "This PDF is still above 1 MB. Turn on auto-compress or replace it with a smaller PDF before saving.",
+        });
+        return false;
+      }
+
       try {
+        // Set the PDF compressing indicator if we know ILovePDF will run.
+        // Use flushSync to force React to render the spinner BEFORE the API call
+        // starts — otherwise React 18 batches it with the await and the UI never
+        // visibly updates until after the slow ILovePDF call completes.
+        const willCompress =
+          !isAutoSave &&
+          itineraryPdfFile &&
+          itineraryPdfFile.size > MAX_ITINERARY_PDF_BYTES &&
+          formData.autoCompressItineraryPdf === "true";
+        if (willCompress) {
+          flushSync(() => setPdfCompressing(true));
+        }
+
         // Build formData with the requested status
         const submitData = buildFormData(targetStatus);
+        const hadPdfUpload = Boolean(itineraryPdfFile);
+        const hadPdfRemoval = itineraryPdfMarkedForRemoval && !itineraryPdfFile;
         
         // We capture the ID at this exact moment in case it was updated by the previous awaited promise
         let responseId = currentTrailId;
@@ -381,6 +608,21 @@ const AddTrail = () => {
         if (isEditing || hasAutosaved) {
           const response = await api.updateTrail(responseId, submitData);
           syncTrailInState(response.trail);
+          syncSavedFilesToEditor(response.trail);
+          if (hadPdfUpload) {
+            const stats = response.itineraryPdfStats;
+            const isStillLarge = stats && stats.compressedSize > MAX_ITINERARY_PDF_BYTES;
+            if (stats) setPdfCompressionStats(stats);
+            setItineraryPdfNotice({
+              type: isStillLarge ? "warning" : "success",
+              text: `Itinerary PDF saved as "${response.trail.itineraryPdfName || "itinerary.pdf"}".${isStillLarge ? " Note: File is still over 1MB." : ""}`,
+            });
+          } else if (hadPdfRemoval) {
+            setItineraryPdfNotice({
+              type: "info",
+              text: "The itinerary PDF was removed successfully.",
+            });
+          }
           if (!isAutoSave) setMessage({ type: "success", text: "Trail updated successfully!" });
         } else {
           const res = await api.createTrail(submitData);
@@ -388,6 +630,16 @@ const AddTrail = () => {
           setCurrentTrailId(newId);
           setHasAutosaved(true);
           setTrails((prev) => [res.trail, ...prev]);
+          syncSavedFilesToEditor(res.trail);
+          if (hadPdfUpload) {
+            const stats = res.itineraryPdfStats;
+            const isStillLarge = stats && stats.compressedSize > MAX_ITINERARY_PDF_BYTES;
+            if (stats) setPdfCompressionStats(stats);
+            setItineraryPdfNotice({
+              type: isStillLarge ? "warning" : "success",
+              text: `Itinerary PDF saved as "${res.trail.itineraryPdfName || "itinerary.pdf"}".${isStillLarge ? " Note: File is still over 1MB." : ""}`,
+            });
+          }
           if (!isAutoSave) setMessage({ type: "success", text: "Trail created successfully!" });
         }
 
@@ -400,6 +652,14 @@ const AddTrail = () => {
         return true;
       } catch (error) {
         console.error(error);
+        if (isItineraryPdfError(error.message)) {
+          setItineraryPdfNotice({
+            type: "error",
+            text:
+              error.message ||
+              "The itinerary PDF could not be saved. Please upload a smaller PDF or turn on auto-compress.",
+          });
+        }
         if (!isAutoSave) {
           setMessage({ 
             type: "error", 
@@ -408,7 +668,10 @@ const AddTrail = () => {
         }
         return false;
       } finally {
-        if (!isAutoSave) setLoading(false);
+        if (!isAutoSave) {
+          setLoading(false);
+          setPdfCompressing(false);
+        }
       }
     })();
 
@@ -423,7 +686,14 @@ const AddTrail = () => {
   };
 
   const { isSaving, lastSaved } = useAutoSave(
-    { formData, imageFile, heroImageFile, trailImageFiles },
+    {
+      formData,
+      imageFile,
+      heroImageFile,
+      trailImageFiles,
+      itineraryPdfFile,
+      itineraryPdfMarkedForRemoval,
+    },
     async () => {
       // Autosave only if we have at least a trail name
       if (!formData.trailName) return;
@@ -440,7 +710,10 @@ const AddTrail = () => {
     setImageFile(null);
     setHeroImageFile(null);
     setTrailImageFiles([]);
+    setItineraryPdfFile(null);
+    setItineraryPdfMarkedForRemoval(false);
     resetCompressionPreviewState();
+    setItineraryPdfNotice({ type: "", text: "" });
 
     setFormData({
       ...trail,
@@ -463,6 +736,9 @@ const AddTrail = () => {
       whatsNotIncluded: trail.whatsNotIncluded
         ? trail.whatsNotIncluded.join("\n")
         : "",
+      itineraryPdf: trail.itineraryPdf || "",
+      itineraryPdfName: trail.itineraryPdfName || "",
+      autoCompressItineraryPdf: "false", // Reset to false is okay when opening a fresh edit session
     });
     setIsEditing(true);
     setCurrentTrailId(trail._id);
@@ -484,6 +760,26 @@ const AddTrail = () => {
       } catch (error) {
         alert(error.message || "Failed to delete trail");
       }
+    }
+  };
+
+  const handleDuplicate = async (trail) => {
+    try {
+      const response = await api.duplicateTrail(trail._id);
+      const duplicatedTrail = response.trail;
+
+      setTrails((prev) => [...prev, duplicatedTrail]);
+      handleEdit(duplicatedTrail);
+      setMessage({
+        type: "success",
+        text: `"${duplicatedTrail.trailName}" created as a draft copy without images.`,
+      });
+      setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: error.message || "Failed to duplicate trail.",
+      });
     }
   };
 
@@ -584,10 +880,17 @@ const AddTrail = () => {
           removeHighlight={removeHighlight}
           handleHeroImageChange={handleHeroImageChange}
           handleTrailImagesChange={handleTrailImagesChange}
+          handleItineraryPdfChange={handleItineraryPdfChange}
+          toggleAutoCompressItineraryPdf={toggleAutoCompressItineraryPdf}
+          clearSelectedItineraryPdf={clearSelectedItineraryPdf}
+          toggleRemoveCurrentItineraryPdf={toggleRemoveCurrentItineraryPdf}
+          itineraryPdfNotice={itineraryPdfNotice}
           existingTrailImages={existingTrailImages}
           removeExistingTrailImage={removeExistingTrailImage}
           trailImageFiles={trailImageFiles}
           removeQueuedTrailImage={removeQueuedTrailImage}
+          itineraryPdfFile={itineraryPdfFile}
+          itineraryPdfMarkedForRemoval={itineraryPdfMarkedForRemoval}
           routeMapPreview={routeMapPreview}
           heroImagePreview={heroImagePreview}
           routeMapFileName={imageFile?.name || ""}
@@ -595,6 +898,8 @@ const AddTrail = () => {
           compressionPreviews={compressionPreviews}
           compressionPreviewLoading={compressionPreviewLoading}
           formatCompressionStat={formatCompressionStat}
+          pdfCompressionStats={pdfCompressionStats}
+          pdfCompressing={pdfCompressing}
         />
       )}
 
@@ -602,6 +907,7 @@ const AddTrail = () => {
         trails={trails}
         loadingTrails={loadingTrails}
         handleEdit={handleEdit}
+        handleDuplicate={handleDuplicate}
         handleDelete={handleDelete}
         handleReorder={handleReorder}
         handleToggle={handleToggle}

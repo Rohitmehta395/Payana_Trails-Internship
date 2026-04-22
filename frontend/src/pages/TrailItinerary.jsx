@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate, useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LuArrowRight, LuSparkles } from "react-icons/lu";
+import { LuArrowRight, LuDownload, LuSparkles } from "react-icons/lu";
 import { api } from "../services/api";
 import {
   normalizePublicItinerary,
@@ -64,12 +64,8 @@ const TrailItinerary = () => {
   }, [slug]);
 
   useEffect(() => {
-    if (locationTrail) {
-      setTrail(locationTrail);
-      setLoading(false);
-      return;
-    }
-
+    // We always fetch fresh data to avoid stale itinerary links
+    // (e.g. if the PDF filename changed due to an update)
     let isMounted = true;
     setLoading(true);
 
@@ -290,6 +286,23 @@ const TrailItinerary = () => {
               </span>
             </motion.button>
           </motion.div>
+
+          {Boolean(transformed.itineraryPdfUrl) && (
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              href={transformed.itineraryPdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-full bg-[#4A3B2A] px-8 py-4 font-sans text-base font-semibold text-[#F8F2E9] shadow-[0_4px_20px_rgba(74,59,42,0.3)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(74,59,42,0.4)]"
+            >
+              <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-full" />
+              <span className="relative z-10 flex items-center gap-2">
+                Download Itinerary
+                <LuDownload className="h-5 w-5 transition-transform duration-300 group-hover:translate-y-0.5" />
+              </span>
+            </motion.a>
+          )}
 
           {/* FAQ Button */}
           <motion.button

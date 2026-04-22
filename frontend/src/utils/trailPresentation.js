@@ -7,6 +7,7 @@ export const transformTrailMedia = (trail) => {
     ...trail,
     heroImageUrl: trail.heroImage ? `${IMAGE_BASE_URL}${trail.heroImage}` : "",
     routeMapUrl: trail.routeMap ? `${IMAGE_BASE_URL}${trail.routeMap}` : "",
+    itineraryPdfUrl: trail.itineraryPdf ? `${IMAGE_BASE_URL}${trail.itineraryPdf}` : "",
     gallery: Array.isArray(trail.trailImages)
       ? trail.trailImages.map((image) => `${IMAGE_BASE_URL}${image}`)
       : [],

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Copy } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -24,6 +24,7 @@ const TrailListPanel = ({
   trails,
   loadingTrails,
   handleEdit,
+  handleDuplicate,
   handleDelete,
   handleReorder,
   handleToggle,
@@ -189,6 +190,15 @@ const TrailListPanel = ({
                             className="text-sm font-medium text-blue-600 transition-colors hover:text-blue-800"
                           >
                             Edit
+                          </button>
+                          <span className="text-gray-300">|</span>
+                          <button
+                            onClick={() => handleDuplicate(trail)}
+                            className="inline-flex items-center gap-1 text-sm font-medium text-stone-600 transition-colors hover:text-stone-900"
+                            title="Create a draft copy without images"
+                          >
+                            <Copy size={14} />
+                            Duplicate
                           </button>
                           <span className="text-gray-300">|</span>
                           <button

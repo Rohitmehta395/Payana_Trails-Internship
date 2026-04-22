@@ -35,9 +35,9 @@ const Connect = () => {
         breadcrumbs={[{ label: "HOME", path: "/" }, { label: "CONNECT" }]}
       />
       <EnquirySection />
-      <FAQSection faqs={faqs} />
       <ReferFriendSection />
       <GiftJourneySection />
+      <FAQSection faqs={faqs} />
       <ContactDetailsSection />
       <SocialMediaSection />
       <TawkChat />

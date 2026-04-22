@@ -311,7 +311,7 @@ export const api = {
       });
 
       if (response.status === 413) {
-        throw new Error("Files are too large. Please upload smaller images (limit: 1MB on your VPS).");
+        throw new Error("Files are too large. Please upload smaller files (limit: 1MB on your VPS).");
       }
 
       let data;
@@ -340,7 +340,7 @@ export const api = {
       });
 
       if (response.status === 413) {
-        throw new Error("Files are too large. Please upload smaller images (limit: 1MB on your VPS).");
+        throw new Error("Files are too large. Please upload smaller files (limit: 1MB on your VPS).");
       }
 
       let data;
@@ -369,6 +369,21 @@ export const api = {
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.message || "Failed to delete trail");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  duplicateTrail: async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/trails/${id}/duplicate`, {
+        method: "POST",
+        headers: withAdminAuth(),
+      });
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || "Failed to duplicate trail");
       return data;
     } catch (error) {
       throw error;

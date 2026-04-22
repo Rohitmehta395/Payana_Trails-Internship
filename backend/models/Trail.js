@@ -114,6 +114,14 @@ const trailSchema = new mongoose.Schema(
         "Exclusions cannot exceed 18 bullet points"
       ],
     },
+    itineraryPdf: {
+      type: String,
+      default: "",
+    },
+    itineraryPdfName: {
+      type: String,
+      default: "",
+    },
     itinerary: {
       type: [itineraryDaySchema],
       default: [],

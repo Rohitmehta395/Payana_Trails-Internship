@@ -18,6 +18,8 @@ const RESIZE_PRESETS = {
   pageHeroImagesMobile:  { width: 768,  height: 1024 }, // Page hero – mobile portrait
 };
 
+const isProcessableImageField = (fieldname) => Boolean(RESIZE_PRESETS[fieldname]);
+
 const buildSharpPipeline = (file, fieldname) => {
   let pipeline = sharp(file.buffer);
   const preset = RESIZE_PRESETS[fieldname];
@@ -56,6 +58,8 @@ const getImageStats = async (files = {}) => {
   const stats = [];
 
   for (const fieldname of Object.keys(files)) {
+    if (!isProcessableImageField(fieldname)) continue;
+
     for (const file of files[fieldname]) {
       const compressedBuffer = await getCompressedImageBuffer(file, fieldname);
       stats.push(buildImageStat(file, fieldname, compressedBuffer.length));
@@ -74,9 +78,11 @@ const getImageStats = async (files = {}) => {
  * @returns {string}           - Absolute filesystem path
  */
 const resolveUploadPath = (storedPath) => {
-  // Strip any leading slash so path.resolve treats it as relative to CWD
+  // Strip any leading slash so we can join safely
   const relative = storedPath.replace(/^\/+/, "");
-  return path.resolve(relative);
+  // Always resolve relative to the backend root regardless of process.cwd().
+  // __dirname here is the /middlewares folder, so ".." gets us to /backend.
+  return path.join(__dirname, "..", relative);
 };
 
 /**
@@ -110,6 +116,10 @@ const processImages = (folderResolver) => async (req, res, next) => {
     req.imageStats = [];
 
     for (const fieldname of Object.keys(req.files)) {
+      if (!isProcessableImageField(fieldname)) {
+        continue;
+      }
+
       const processedFiles = [];
 
       for (const file of req.files[fieldname]) {
