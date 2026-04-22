@@ -1,7 +1,18 @@
 import React, { useRef, useState } from "react";
 import { IMAGE_BASE_URL } from "../../../services/api";
+import { Loader2 } from "lucide-react";
 
-const ImageUploadField = ({ label, currentImage, onImageSelect }) => {
+const formatBytes = (bytes = 0) => {
+  if (bytes >= 1024 * 1024) {
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  }
+  if (bytes >= 1024) {
+    return `${(bytes / 1024).toFixed(0)} KB`;
+  }
+  return `${bytes} B`;
+};
+
+const ImageUploadField = ({ label, currentImage, onImageSelect, compressionStats, compressionLoading }) => {
   const fileRef = useRef(null);
   const [preview, setPreview] = useState(null);
 
@@ -12,6 +23,8 @@ const ImageUploadField = ({ label, currentImage, onImageSelect }) => {
       onImageSelect(file);
     }
   };
+
+  const stat = compressionStats && compressionStats.length > 0 ? compressionStats[0] : null;
 
   return (
     <div className="mb-4">
@@ -43,6 +56,18 @@ const ImageUploadField = ({ label, currentImage, onImageSelect }) => {
           />
           <p className="text-xs text-gray-500 mt-1">Recommended: 1920x1080 (16:9)</p>
         </div>
+      </div>
+      <div className="mt-2 text-sm text-[#4A3B2A]">
+        {compressionLoading ? (
+          <div className="inline-flex items-center gap-2 text-gray-600">
+            <Loader2 size={14} className="animate-spin" />
+            Checking compression...
+          </div>
+        ) : stat ? (
+          <div className="text-sm text-[#4A3B2A]">
+            Compression: {formatBytes(stat.originalSize)} → {formatBytes(stat.compressedSize)} ({stat.savedPercent}% saved)
+          </div>
+        ) : null}
       </div>
     </div>
   );

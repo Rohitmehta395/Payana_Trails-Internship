@@ -6,6 +6,7 @@ import NewsletterSectionForm from "./sections/NewsletterSectionForm";
 import ConnectSectionForm from "./sections/ConnectSectionForm";
 import ReferGiftSectionForm from "./sections/ReferGiftSectionForm";
 import { Loader2, Save } from "lucide-react";
+import { api } from "../../../services/api";
 
 // Default fallback content as per user request
 const defaultData = {
@@ -84,6 +85,8 @@ const HomePageForm = ({ initialData, onSave }) => {
   const [activeTab, setActiveTab] = useState("hero");
   const [data, setData] = useState(() => mergeData(initialData, defaultData));
   const [files, setFiles] = useState({});
+  const [compressionPreviews, setCompressionPreviews] = useState({});
+  const [compressionLoading, setCompressionLoading] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
@@ -100,8 +103,29 @@ const HomePageForm = ({ initialData, onSave }) => {
     setData((prev) => ({ ...prev, [section]: newData }));
   };
 
-  const handleFileSelect = (fieldName, file) => {
+  const handleFileSelect = async (fieldName, file) => {
     setFiles((prev) => ({ ...prev, [fieldName]: file }));
+    await previewCompression(fieldName, file);
+  };
+
+  const previewCompression = async (fieldName, file) => {
+    setCompressionPreviews((prev) => ({ ...prev, [fieldName]: [] }));
+    setCompressionLoading((prev) => ({ ...prev, [fieldName]: Boolean(file) }));
+
+    if (!file) {
+      setCompressionLoading((prev) => ({ ...prev, [fieldName]: false }));
+      return;
+    }
+
+    try {
+      const result = await api.previewHomePageImageCompression({ [fieldName]: file });
+      setCompressionPreviews((prev) => ({ ...prev, [fieldName]: result.imageStats || [] }));
+    } catch (err) {
+      console.error("Failed to preview home page image compression", err);
+      setCompressionPreviews((prev) => ({ ...prev, [fieldName]: [] }));
+    } finally {
+      setCompressionLoading((prev) => ({ ...prev, [fieldName]: false }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -180,7 +204,9 @@ const HomePageForm = ({ initialData, onSave }) => {
           <ThePayanaWayForm 
             data={data.thePayanaWay || {}} 
             onChange={(d) => handleSectionChange("thePayanaWay", d)} 
-            onFileSelect={handleFileSelect}
+            onFileSelect={(file) => handleFileSelect("thePayanaWayHeroImage", file)}
+            compressionStats={compressionPreviews.thePayanaWayHeroImage}
+            compressionLoading={compressionLoading.thePayanaWayHeroImage}
           >
             <SaveButton />
           </ThePayanaWayForm>
@@ -190,7 +216,9 @@ const HomePageForm = ({ initialData, onSave }) => {
           <StoriesVoicesForm 
             data={data.storiesAndVoices || {}} 
             onChange={(d) => handleSectionChange("storiesAndVoices", d)} 
-            onFileSelect={handleFileSelect}
+            onFileSelect={(file) => handleFileSelect("storiesHeroImage", file)}
+            compressionStats={compressionPreviews.storiesHeroImage}
+            compressionLoading={compressionLoading.storiesHeroImage}
           >
             <SaveButton />
           </StoriesVoicesForm>
@@ -209,7 +237,9 @@ const HomePageForm = ({ initialData, onSave }) => {
           <ConnectSectionForm 
             data={data.connectSection || {}} 
             onChange={(d) => handleSectionChange("connectSection", d)} 
-            onFileSelect={handleFileSelect}
+            onFileSelect={(file) => handleFileSelect("connectHeroImage", file)}
+            compressionStats={compressionPreviews.connectHeroImage}
+            compressionLoading={compressionLoading.connectHeroImage}
           >
             <SaveButton />
           </ConnectSectionForm>
@@ -219,7 +249,12 @@ const HomePageForm = ({ initialData, onSave }) => {
           <ReferGiftSectionForm 
             data={data.referAndGiftSection || {}} 
             onChange={(d) => handleSectionChange("referAndGiftSection", d)} 
-            onFileSelect={handleFileSelect}
+            onFileSelect={(file) => handleFileSelect("referFriendsHeroImage", file)}
+            compressionStats={compressionPreviews.referFriendsHeroImage}
+            compressionLoading={compressionLoading.referFriendsHeroImage}
+            onGiftImageSelect={(file) => handleFileSelect("giftJourneyHeroImage", file)}
+            giftCompressionStats={compressionPreviews.giftJourneyHeroImage}
+            giftCompressionLoading={compressionLoading.giftJourneyHeroImage}
           >
             <SaveButton />
           </ReferGiftSectionForm>

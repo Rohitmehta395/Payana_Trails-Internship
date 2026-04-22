@@ -1,7 +1,7 @@
 import React from "react";
 import ImageUploadField from "../ImageUploadField";
 
-const ThePayanaWayForm = ({ data, onChange, onFileSelect, children }) => {
+const ThePayanaWayForm = ({ data, onChange, onFileSelect, compressionStats, compressionLoading, children }) => {
   const handleChange = (e) => {
     onChange({ ...data, [e.target.name]: e.target.value });
   };
@@ -51,7 +51,9 @@ const ThePayanaWayForm = ({ data, onChange, onFileSelect, children }) => {
       <ImageUploadField 
         label="Hero Image" 
         currentImage={data.heroImage} 
-        onImageSelect={(file) => onFileSelect("thePayanaWayHeroImage", file)} 
+        onImageSelect={onFileSelect} 
+        compressionStats={compressionStats}
+        compressionLoading={compressionLoading}
       />
       {children}
     </div>

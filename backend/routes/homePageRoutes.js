@@ -4,7 +4,7 @@ const multer = require("multer");
 const path = require("path");
 const homePageController = require("../controllers/homePageController");
 const { requireAdmin } = require("../middlewares/adminAuth"); // ensure admin authentication
-const { processImages } = require("../middlewares/processImage");
+const { processImages, getImageStats } = require("../middlewares/processImage");
 
 // We use memory storage to buffer files for Sharp
 const upload = multer({
@@ -50,6 +50,22 @@ const handleUpload = (req, res, next) => {
     next();
   });
 };
+
+// Route: Preview home page image compression stats (admin only)
+router.post(
+  "/preview-image-stats",
+  requireAdmin,
+  handleUpload,
+  async (req, res) => {
+    try {
+      const imageStats = await getImageStats(req.files || {});
+      return res.status(200).json({ imageStats });
+    } catch (error) {
+      console.error("Error previewing home page image compression:", error);
+      return res.status(500).json({ message: "Failed to preview image compression" });
+    }
+  },
+);
 
 // Route: Update home page content (admin only)
 router.put(

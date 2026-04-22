@@ -1,7 +1,7 @@
 import React from "react";
 import ImageUploadField from "../ImageUploadField";
 
-const StoriesVoicesForm = ({ data, onChange, onFileSelect, children }) => {
+const StoriesVoicesForm = ({ data, onChange, onFileSelect, compressionStats, compressionLoading, children }) => {
   const handleChange = (e) => {
     onChange({ ...data, [e.target.name]: e.target.value });
   };
@@ -22,7 +22,9 @@ const StoriesVoicesForm = ({ data, onChange, onFileSelect, children }) => {
       <ImageUploadField 
         label="Hero Image" 
         currentImage={data.heroImage} 
-        onImageSelect={(file) => onFileSelect("storiesHeroImage", file)} 
+        onImageSelect={onFileSelect} 
+        compressionStats={compressionStats}
+        compressionLoading={compressionLoading}
       />
       {children}
     </div>

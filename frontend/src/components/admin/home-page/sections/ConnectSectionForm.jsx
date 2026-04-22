@@ -1,7 +1,7 @@
 import React from "react";
 import ImageUploadField from "../ImageUploadField";
 
-const ConnectSectionForm = ({ data, onChange, onFileSelect, children }) => {
+const ConnectSectionForm = ({ data, onChange, onFileSelect, compressionStats, compressionLoading, children }) => {
   const handleChange = (e) => {
     onChange({ ...data, [e.target.name]: e.target.value });
   };
@@ -34,7 +34,9 @@ const ConnectSectionForm = ({ data, onChange, onFileSelect, children }) => {
       <ImageUploadField 
         label="Hero Image" 
         currentImage={data.heroImage} 
-        onImageSelect={(file) => onFileSelect("connectHeroImage", file)} 
+        onImageSelect={onFileSelect} 
+        compressionStats={compressionStats}
+        compressionLoading={compressionLoading}
       />
       {children}
     </div>

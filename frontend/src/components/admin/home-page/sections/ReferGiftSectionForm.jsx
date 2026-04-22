@@ -1,7 +1,7 @@
 import React from "react";
 import ImageUploadField from "../ImageUploadField";
 
-const ReferGiftSectionForm = ({ data, onChange, onFileSelect, children }) => {
+const ReferGiftSectionForm = ({ data, onChange, onFileSelect, onGiftImageSelect, compressionStats, compressionLoading, giftCompressionStats, giftCompressionLoading, children }) => {
   const handleReferChange = (e) => {
     onChange({ ...data, referYourFriends: { ...data.referYourFriends, [e.target.name]: e.target.value } });
   };
@@ -49,7 +49,9 @@ const ReferGiftSectionForm = ({ data, onChange, onFileSelect, children }) => {
         <ImageUploadField 
           label="Hero Image" 
           currentImage={data.referYourFriends?.heroImage} 
-          onImageSelect={(file) => onFileSelect("referFriendsHeroImage", file)} 
+          onImageSelect={onFileSelect} 
+          compressionStats={compressionStats}
+          compressionLoading={compressionLoading}
         />
       </div>
 
@@ -69,7 +71,9 @@ const ReferGiftSectionForm = ({ data, onChange, onFileSelect, children }) => {
         <ImageUploadField 
           label="Hero Image" 
           currentImage={data.giftAJourney?.heroImage} 
-          onImageSelect={(file) => onFileSelect("giftJourneyHeroImage", file)} 
+          onImageSelect={onGiftImageSelect} 
+          compressionStats={giftCompressionStats}
+          compressionLoading={giftCompressionLoading}
         />
       </div>
 

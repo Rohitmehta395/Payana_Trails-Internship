@@ -302,6 +302,37 @@ export const api = {
     }
   },
 
+  previewHomePageImageCompression: async (filesByField) => {
+    const previewData = new FormData();
+
+    Object.entries(filesByField).forEach(([field, value]) => {
+      const files = Array.isArray(value) ? value : [value];
+      files.filter(Boolean).forEach((file) => previewData.append(field, file));
+    });
+
+    if (![...previewData.keys()].length) {
+      return { imageStats: [] };
+    }
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/home-page/preview-image-stats`,
+        {
+          method: "POST",
+          headers: withAdminAuth(),
+          body: previewData,
+        },
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to preview image compression");
+      }
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   createTrail: async (trailFormData) => {
     try {
       const response = await fetch(`${API_BASE_URL}/trails`, {
