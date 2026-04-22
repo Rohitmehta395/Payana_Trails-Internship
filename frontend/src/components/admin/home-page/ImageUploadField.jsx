@@ -57,14 +57,14 @@ const ImageUploadField = ({ label, currentImage, onImageSelect, compressionStats
           <p className="text-xs text-gray-500 mt-1">Recommended: 1920x1080 (16:9)</p>
         </div>
       </div>
-      <div className="mt-2 text-sm text-[#4A3B2A]">
+      <div className="mt-2">
         {compressionLoading ? (
           <div className="inline-flex items-center gap-2 text-gray-600">
             <Loader2 size={14} className="animate-spin" />
             Checking compression...
           </div>
         ) : stat ? (
-          <div className="text-sm text-[#4A3B2A]">
+          <div className="mt-2 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
             Compression: {formatBytes(stat.originalSize)} → {formatBytes(stat.compressedSize)} ({stat.savedPercent}% saved)
           </div>
         ) : null}
