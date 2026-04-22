@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CommonHero from "../../../common/CommonHero";
 import { api } from "../../../../services/api";
 import usePageHeroImages from "../../../../hooks/usePageHeroImages";
@@ -67,12 +67,18 @@ const FAQAccordion = ({ id, question, answer, isOpen, onClick, index }) => {
 };
 
 const FAQs = () => {
-  const { hash } = useLocation();
+  const { hash, state } = useLocation();
+  const navigate = useNavigate();
   const { images: heroImgs } = usePageHeroImages("connect/faqs");
   const [faqs, setFaqs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [openIndex, setOpenIndex] = useState(0); // Open the first one by default to show off the design
   const [loading, setLoading] = useState(true);
+
+  // Detect if user came from a Trail Itinerary page
+  const fromItinerary = state?.from && state.from.includes("/itinerary");
+  const itineraryPath = state?.from || "/journeys";
+  const itineraryTrailName = state?.trailName;
 
   // Filter FAQs based on search query
   const filteredFaqs = faqs.filter(
@@ -221,6 +227,33 @@ const FAQs = () => {
           </div>
         )}
       </div>
+
+      {/* Back to Itinerary button — only shown when navigated from a trail itinerary */}
+      {fromItinerary && (
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-16 flex justify-center">
+          <div className="relative inline-block group">
+            <button
+              onClick={() => navigate(itineraryPath)}
+              className="relative z-10 flex items-center justify-center gap-3 px-10 py-4 bg-[#4A3B2A] text-[#F3EFE9] font-bold tracking-[0.2em] uppercase text-sm border border-[#4A3B2A] transition-all duration-500 overflow-hidden"
+            >
+              <span className="absolute inset-0 bg-[#795939] transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]" />
+              <span className="relative z-20 flex items-center gap-3 group-hover:text-[#F3EFE9] transition-colors duration-500">
+                <svg
+                  className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform duration-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to{itineraryTrailName ? ` ${itineraryTrailName}` : ""} Itinerary
+              </span>
+            </button>
+            {/* Decorative off-center outline */}
+            <div className="absolute inset-0 border border-[#4A3B2A]/20 translate-x-3 translate-y-3 z-0 transition-transform duration-500 group-hover:translate-x-4 group-hover:translate-y-4" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

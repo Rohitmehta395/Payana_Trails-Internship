@@ -137,7 +137,7 @@ const SocialMediaSection = () => {
       ([entry]) => {
         if (entry.isIntersecting) {
           setVisible(true);
-          observer.disconnect();
+          observer.disconnect(); 
         }
       },
       { threshold: 0.12 },

@@ -108,14 +108,28 @@ const ContactDetailsSection = () => {
         >
           <div className="flex items-center justify-center gap-3 mb-3">
             <div className="w-6 h-[1px] bg-[#4A3B2A]/30" />
-            <span className="text-[#4A3B2A]/50 uppercase tracking-[0.35em] font-bold text-[10px]">
+            <span className="text-[#4A3B2A]/50 uppercase tracking-[0.35em] font-bold text-[12px]">
               Get In Touch
             </span>
             <div className="w-6 h-[1px] bg-[#4A3B2A]/30" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-serif text-[#4A3B2A] leading-tight tracking-tight">
+          <h2
+            className="text-3xl md:text-4xl lg:text-5xl text-[#4A3B2A] leading-tight tracking-tight mb-4"
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 400,
+            }}
+          >
             Let's{" "}
-            <span className="italic font-light text-[#4A3B2A]/80">Connect</span>
+            <span
+              style={{
+                fontStyle: "italic",
+                fontWeight: 300,
+                color: "rgba(74,59,42,0.7)",
+              }}
+            >
+              Connect
+            </span>
           </h2>
         </div>
 
@@ -132,7 +146,12 @@ const ContactDetailsSection = () => {
               <div className="flex items-start gap-4">
                 {/* Icon */}
                 <div className="w-10 h-10 rounded-full bg-[#4A3B2A]/8 flex items-center justify-center text-[#4A3B2A] group-hover:bg-[#4A3B2A]/15 transition-colors duration-400 shrink-0 mt-0.5">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
                     {item.icon.props.children}
                   </svg>
                 </div>

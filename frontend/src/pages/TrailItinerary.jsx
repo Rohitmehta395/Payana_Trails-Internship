@@ -49,6 +49,15 @@ const TrailItinerary = () => {
     }, 400);
   };
 
+  const handleFAQClick = () => {
+    navigate("/connect/faqs#faq-section", {
+      state: {
+        from: location.pathname,
+        trailName: transformed?.trailName,
+      },
+    });
+  };
+
   useEffect(() => {
     setOpenDay(null);
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -237,7 +246,7 @@ const TrailItinerary = () => {
             </div>
           </div>
         </section>
-        <div className="mb-12 flex flex-wrap items-center justify-center gap-6 px-6">
+        <div className="mb-20 flex flex-wrap items-center justify-center gap-6 px-6">
           <Link
             to={`/trails/${transformed.slug}/#trail-essentials`}
             className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-full border border-[#4A3B2A]/10 bg-[#4A3B2A] px-8 py-4 font-sans text-base font-semibold text-[#F8F2E9] shadow-[0_4px_20px_rgba(74,59,42,0.3)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(74,59,42,0.4)]"
@@ -281,6 +290,32 @@ const TrailItinerary = () => {
               </span>
             </motion.button>
           </motion.div>
+
+          {/* FAQ Button */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleFAQClick}
+            className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-full bg-[#4A3B2A] px-8 py-4 font-sans text-base font-semibold text-[#F8F2E9] shadow-[0_4px_20px_rgba(74,59,42,0.3)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(74,59,42,0.4)]"
+          >
+            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-full" />
+            <span className="relative z-10 flex items-center gap-2">
+              <svg
+                className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              FAQs
+            </span>
+          </motion.button>
         </div>
       </div>
     </>
