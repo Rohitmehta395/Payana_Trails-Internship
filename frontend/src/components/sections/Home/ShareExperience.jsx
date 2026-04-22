@@ -4,10 +4,29 @@ import { FaUserPlus, FaGift, FaHeart } from "react-icons/fa6";
 import BrownBtn from "../../common/buttons/BrownBtn";
 import referFriendPic from "../../../assets/Home/Refer/referFriendPic.webp";
 import giftAJourney from "../../../assets/Home/Refer/Gift.webp";
+import useHomePageData from "../../../hooks/useHomePageData";
+import { IMAGE_BASE_URL } from "../../../services/api";
 
 const ShareExperience = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { data: homeData } = useHomePageData();
+
+  const referGiftData = homeData?.referAndGiftSection || {
+    referYourFriends: {
+      title: "Refer Your Friends",
+      subtitle: "Know someone who loves meaningful travel? Invite them to discover a thoughtfully curated Payana Trails journey. Both of you will receive a special benefit on your next Payana Trails journey.",
+      heroImage: null
+    },
+    giftAJourney: {
+      title: "Gift a Journey",
+      subtitle: "Surprise your loved ones with an unforgettable experience. Gift a curated Payana Trails journey or a travel voucher to create memories that last a lifetime.",
+      heroImage: null
+    },
+    mainTitleBold: "Journeys are meaningful when",
+    mainTitleItalic: "Shared",
+    mainSubtitle: "Whether travelling with a companion or gifting an experience of a lifetime, we make sharing easy and rewarding.",
+  };
   return (
     <section
       id="share-section"
@@ -25,12 +44,11 @@ const ShareExperience = () => {
             <span>Share The Magic</span>
           </div>
           <h2 className="text-4xl lg:text-5xl font-bold font-serif text-[#4A3B2A] leading-tight mb-5 drop-shadow-sm">
-            Journeys are meaningful when{" "}
-            <span className="italic font-light">Shared</span>
+            {referGiftData.mainTitleBold}{" "}
+            <span className="italic font-light">{referGiftData.mainTitleItalic}</span>
           </h2>
           <p className="text-[#4A3B2A]/80 text-lg max-w-2xl mx-auto leading-relaxed">
-            Whether travelling with a companion or gifting an experience of a
-            lifetime, we make sharing easy and rewarding.
+            {referGiftData.mainSubtitle}
           </p>
         </div>
 
@@ -42,8 +60,8 @@ const ShareExperience = () => {
             <div className="relative h-64 sm:h-80 w-full rounded-[2rem] overflow-hidden mb-8 shadow-inner">
               <div className="absolute inset-0 bg-[#4A3B2A]/20 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none"></div>
               <img
-                src={referFriendPic}
-                alt="Friends traveling together"
+                src={referGiftData.referYourFriends?.heroImage ? `${IMAGE_BASE_URL}${referGiftData.referYourFriends.heroImage}` : referFriendPic}
+                alt={referGiftData.referYourFriends?.title || "Friends traveling together"}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
               {/* Floating Icon Badge */}
@@ -54,12 +72,10 @@ const ShareExperience = () => {
 
             {/* Content */}
             <h3 className="text-2xl lg:text-3xl font-bold font-serif text-[#4A3B2A] mb-3">
-              Refer Your Friends
+              {referGiftData.referYourFriends?.title}
             </h3>
-            <p className="text-[#4A3B2A]/80 mb-8 grow leading-relaxed text-[16px]">
-              Know someone who loves meaningful travel? Invite them to discover
-              a thoughtfully curated Payana Trails journey. Both of you will
-              receive a special benefit on your next Payana Trails journey.
+            <p className="text-[#4A3B2A]/80 mb-8 grow leading-relaxed text-[16px] whitespace-pre-line">
+              {referGiftData.referYourFriends?.subtitle}
             </p>
 
             {/* Using your custom Button */}
@@ -85,8 +101,8 @@ const ShareExperience = () => {
             <div className="relative h-64 sm:h-80 w-full rounded-[2rem] overflow-hidden mb-8 shadow-inner">
               <div className="absolute inset-0 bg-[#4A3B2A]/20 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none"></div>
               <img
-                src={giftAJourney}
-                alt="Gifting a journey"
+                src={referGiftData.giftAJourney?.heroImage ? `${IMAGE_BASE_URL}${referGiftData.giftAJourney.heroImage}` : giftAJourney}
+                alt={referGiftData.giftAJourney?.title || "Gifting a journey"}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
               {/* Floating Icon Badge */}
@@ -97,12 +113,10 @@ const ShareExperience = () => {
 
             {/* Content */}
             <h3 className="text-2xl lg:text-3xl font-bold font-serif text-[#4A3B2A] mb-3">
-              Gift a Journey
+              {referGiftData.giftAJourney?.title}
             </h3>
-            <p className="text-[#4A3B2A]/80 mb-8 grow leading-relaxed text-[16px]">
-              Surprise your loved ones with an unforgettable experience. Gift a
-              curated Payana Trails journey or a travel voucher to create
-              memories that last a lifetime.
+            <p className="text-[#4A3B2A]/80 mb-8 grow leading-relaxed text-[16px] whitespace-pre-line">
+              {referGiftData.giftAJourney?.subtitle}
             </p>
 
             {/* Using your custom Button */}

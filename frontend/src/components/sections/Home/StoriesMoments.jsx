@@ -4,9 +4,23 @@ import BrownBtn from "../../common/buttons/BrownBtn";
 import storyImg from "../../../assets/Home/Stories/stories-moments.webp";
 import { FaEnvelopeOpenText } from "react-icons/fa6";
 import { useNewsletter } from "../../../context/NewsletterContext";
+import useHomePageData from "../../../hooks/useHomePageData";
+import { IMAGE_BASE_URL } from "../../../services/api";
 
 const StoriesMoments = () => {
   const { openNewsletterModal } = useNewsletter();
+  const { data: homeData } = useHomePageData();
+
+  const storiesData = homeData?.storiesAndVoices || {
+    title: "Stories & Voices from the Trails",
+    quote: "Travel isn’t about how many places you see.\nIt’s about the moments that stay with you.",
+    heroImage: null
+  };
+
+  const newsletterData = homeData?.newsletterSection || {
+    title: "Subscribe to - The Payana Journal",
+    subtitle: "New trails, journey updates, and curated travel experiences"
+  };
 
   return (
     <section className="bg-[#F3EFE9] w-full py-16 sm:py-20 lg:py-16">
@@ -15,7 +29,7 @@ const StoriesMoments = () => {
         <div className="flex items-center justify-center gap-6">
           <div className="h-px w-12 md:w-24 bg-[#4A3B2A] opacity-30"></div>
           <h2 className="text-3xl md:text-4xl font-serif text-[#4A3B2A] tracking-wide text-center">
-            Stories & Voices from the Trails
+            {storiesData.title}
           </h2>
           <div className="h-[1px] w-12 md:w-24 bg-[#4A3B2A] opacity-30"></div>
         </div>
@@ -25,8 +39,8 @@ const StoriesMoments = () => {
         <div className="relative w-full h-100 sm:h-112.5 lg:h-125 rounded-4xl overflow-hidden shadow-xl group">
           {/* 1. Background Image */}
           <img
-            src={storyImg}
-            alt="Quiet travel moments"
+            src={storiesData.heroImage ? `${IMAGE_BASE_URL}${storiesData.heroImage}` : storyImg}
+            alt={storiesData.title}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
           />
 
@@ -40,9 +54,8 @@ const StoriesMoments = () => {
 
             {/* Text container */}
             <div className="relative mt-4 sm:mt-8 lg:mt-8 mr-6 sm:mr-8 max-w-md lg:max-w-lg text-right">
-              <h2 className="text-white text-[16px] sm:text-[20px] lg:text-[22px] font-sans italic font-semibold leading-relaxed tracking-wide">
-                “Travel isn’t about how many places you see.
-                <br /> It’s about the moments that stay with you.”
+              <h2 className="text-white text-[16px] sm:text-[20px] lg:text-[22px] font-sans italic font-semibold leading-relaxed tracking-wide whitespace-pre-line">
+                “{storiesData.quote}”
               </h2>
             </div>
           </div>
@@ -65,10 +78,10 @@ const StoriesMoments = () => {
             </div>
             <div>
               <h3 className="text-2xl font-bold font-serif text-[#4A3B2A] mb-2">
-                Subscribe to - The Payana Journal
+                {newsletterData.title}
               </h3>
               <p className="text-[#4A3B2A]/80 text-[16px] max-w-md leading-relaxed">
-                New trails, journey updates, and curated travel experiences
+                {newsletterData.subtitle}
               </p>
             </div>
           </div>

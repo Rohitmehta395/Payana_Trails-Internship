@@ -16,6 +16,11 @@ const RESIZE_PRESETS = {
   trailImages:           { width: 1920, height: 1080 },
   pageHeroImages:        { width: 1920, height: 1080 }, // Page hero – desktop landscape
   pageHeroImagesMobile:  { width: 768,  height: 1024 }, // Page hero – mobile portrait
+  thePayanaWayHeroImage: { width: 1920, height: 1080 },
+  storiesHeroImage:      { width: 1920, height: 1080 },
+  connectHeroImage:      { width: 1920, height: 1080 },
+  referFriendsHeroImage: { width: 1920, height: 1080 },
+  giftJourneyHeroImage:  { width: 1920, height: 1080 },
 };
 
 const isProcessableImageField = (fieldname) => Boolean(RESIZE_PRESETS[fieldname]);
@@ -97,19 +102,12 @@ const resolveUploadPath = (storedPath) => {
  *  6. Attaches req.imageStats[] with originalSize / compressedSize / savedPercent
  *     for each processed file so routes can forward this info in the response.
  *
- * @param {Function} folderResolver  (req) => string — absolute upload folder path
+ * @param {Function} folderResolver  (req, fieldname) => string — absolute upload folder path
  */
 const processImages = (folderResolver) => async (req, res, next) => {
   try {
     if (!req.files || Object.keys(req.files).length === 0) {
       return next();
-    }
-
-    const folder = folderResolver(req);
-
-    // Ensure the target directory exists
-    if (!fs.existsSync(folder)) {
-      fs.mkdirSync(folder, { recursive: true });
     }
 
     // Collect stats for all processed files
@@ -118,6 +116,13 @@ const processImages = (folderResolver) => async (req, res, next) => {
     for (const fieldname of Object.keys(req.files)) {
       if (!isProcessableImageField(fieldname)) {
         continue;
+      }
+
+      const folder = folderResolver(req, fieldname);
+
+      // Ensure the target directory exists
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, { recursive: true });
       }
 
       const processedFiles = [];

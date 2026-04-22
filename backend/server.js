@@ -30,6 +30,7 @@ const enquiryRoutes = require("./routes/enquiryRoutes");
 const referralRoutes = require("./routes/referralRoutes");
 const giftRoutes = require("./routes/giftRoutes");
 const faqRoutes = require("./routes/faqRoutes");
+const homePageRoutes = require("./routes/homePageRoutes");
 
 
 // Routes
@@ -42,6 +43,7 @@ app.use("/api/enquiries", enquiryRoutes);
 app.use("/api/referrals", referralRoutes);
 app.use("/api/gifts", giftRoutes);
 app.use("/api/faqs", faqRoutes);
+app.use("/api/home-page", homePageRoutes);
 
 
 // ── Serve React frontend (production) ────────────────────────────────────────

@@ -2,11 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import CreamBtn from "../../common/buttons/CreamBtn";
+import useHomePageData from "../../../hooks/useHomePageData";
 
 export default function Hero({ images = [], loading = false }) {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isUiHidden, setIsUiHidden] = useState(false);
+  const { data: homeData } = useHomePageData();
+
+  const heroData = homeData?.heroSection || {
+    headerTitle: "Curated Journeys for Travellers who value Stories over Sightseeing",
+    subtitle: "Small groups. Deeper experiences. Thoughtfully designed journeys."
+  };
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -73,11 +80,11 @@ export default function Hero({ images = [], loading = false }) {
       >
         <div className="max-w-md mx-auto sm:mx-0 sm:max-w-xl lg:max-w-2xl pointer-events-auto text-center sm:text-left">
           <h1 className="text-[#F3EFE9] text-2xl sm:text-3xl lg:text-[36px] italic font-bold leading-[1.1] mb-6 [text-shadow:0_4px_15px_#4A3B2A,0_0_30px_#4A3B2A]">
-            Curated Journeys for Travellers who value Stories over Sightseeing
+            {heroData.headerTitle}
           </h1>
 
           <p className="text-[#F3EFE9] text-sm sm:text-md lg:text-[16px] font-medium mb-8 sm:mb-10 [text-shadow:0_2px_10px_#4A3B2A]">
-            Small groups. Deeper experiences. Thoughtfully designed journeys.
+            {heroData.subtitle}
           </p>
 
           <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2 sm:gap-3 mb-8 sm:mb-10">

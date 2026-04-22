@@ -775,4 +775,32 @@ export const api = {
       throw error;
     }
   },
+
+  // --- HOME PAGE ROUTES ---
+  getHomePage: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/home-page`);
+      if (!response.ok) throw new Error("Failed to fetch home page data");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getHomePage):", error);
+      throw error;
+    }
+  },
+
+  updateHomePage: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/home-page`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update home page");
+      return data;
+    } catch (error) {
+      console.error("API Error (updateHomePage):", error);
+      throw error;
+    }
+  },
 };

@@ -2,13 +2,24 @@ import React from "react";
 import closingImg from "../../../assets/Home/ClosingInvitation/closing-invitation.webp";
 import BrownBtn from "../../common/buttons/BrownBtn";
 
-// Importing React Icons
 import { FiMail, FiPhone } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
+import useHomePageData from "../../../hooks/useHomePageData";
+import { IMAGE_BASE_URL } from "../../../services/api";
 
 const ClosingInvitation = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { data: homeData } = useHomePageData();
+
+  const connectData = homeData?.connectSection || {
+    quote: "Travel, when designed with care, becomes a memory.",
+    title: "Let's design a journey that’s truly yours.",
+    subtitle: "Each journey is thoughtfully crafted and tailored to suit you, even beyond the trails or destinations listed on our website.",
+    email: "info@payanatrails.com",
+    number: "+91 8660460512",
+    heroImage: null
+  };
   return (
     <section id="closing-invitation" className="bg-[#F3EFE9] w-full py-8 sm:py-12 lg:py-16">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,7 +37,7 @@ const ClosingInvitation = () => {
             >
               {/* 1b. The actual image */}
               <img
-                src={closingImg}
+                src={connectData.heroImage ? `${IMAGE_BASE_URL}${connectData.heroImage}` : closingImg}
                 alt="Traveler walking towards sunrise"
                 className="w-full h-auto object-cover 
                 sepia-[0.2] hover:sepia-0 /* Kept original effect */"
@@ -41,18 +52,17 @@ const ClosingInvitation = () => {
           <div className="w-full lg:w-1/2 flex flex-col items-center text-center">
             {/* Elegant Quote */}
             <p className="text-[#4A3B2A] text-[18px] sm:text-[20px] font-serif italic mb-4 opacity-90">
-              "Travel, when designed with care, becomes a memory."
+              "{connectData.quote}"
             </p>
 
             {/* Main Heading */}
             <h3 className="text-[#4A3B2A] text-[28px] sm:text-[36px] font-serif font-bold leading-tight mb-4">
-              Let's design a journey that’s truly yours.
+              {connectData.title}
             </h3>
 
             {/* Supporting Paragraph */}
             <p className="text-[#4A3B2A]/80 text-[16px] sm:text-[18px] font-sans font-normal leading-relaxed mb-8 max-w-lg">
-              Each journey is thoughtfully crafted and tailored to suit you,
-              even beyond the trails or destinations listed on our website.
+              {connectData.subtitle}
             </p>
 
             {/* Action Button */}
@@ -72,11 +82,11 @@ const ClosingInvitation = () => {
               <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6 w-full">
                 {/* Email */}
                 <a
-                  href="mailto:info@payanatrails.com"
+                  href={`mailto:${connectData.email}`}
                   className="flex items-center gap-2 text-[#4A3B2A] hover:text-[#7A634A] transition-colors duration-300 font-sans text-[14px] sm:text-[16px] font-medium whitespace-nowrap"
                 >
                   <FiMail className="w-[18px] h-[18px]" strokeWidth="2.5" />
-                  info@payanatrails.com
+                  {connectData.email}
                 </a>
 
                 {/* Vertical Divider - Hidden on mobile, visible on sm+ */}
@@ -86,11 +96,11 @@ const ClosingInvitation = () => {
 
                 {/* Phone/WhatsApp */}
                 <a
-                  href="tel:+918660460512"
+                  href={`tel:${connectData.number?.replace(/[^0-9+]/g, '')}`}
                   className="flex items-center gap-2 text-[#4A3B2A] hover:text-[#7A634A] transition-colors duration-300 font-sans text-[14px] sm:text-[16px] font-medium whitespace-nowrap"
                 >
                   <FiPhone className="w-[18px] h-[18px]" strokeWidth="2.5" />
-                  +91 8660460512
+                  {connectData.number}
                   <span className="font-normal text-[13px] opacity-70 ml-1 hidden sm:inline">
                     (Call/WhatsApp)
                   </span>

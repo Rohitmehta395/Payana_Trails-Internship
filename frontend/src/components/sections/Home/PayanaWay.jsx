@@ -1,9 +1,26 @@
 import React from "react";
 import wildlifeImg from "../../../assets/Home/PayanaWay/Payana-way.webp";
 import BrownBtn from "../../common/buttons/BrownBtn";
+import useHomePageData from "../../../hooks/useHomePageData";
+import { IMAGE_BASE_URL } from "../../../services/api";
 
 const PayanaWay = () => {
-  const features = [
+  const { data: homeData } = useHomePageData();
+
+  const wayData = homeData?.thePayanaWay || {
+    title: "The Payana Way",
+    subtitle: "A more thoughtful way to experience the world",
+    quote: "We believe travel should be unhurried, immersive and deeply meaningful. Our journeys are thoughtfully designed to let you slow down, travel at ease, and connect with each destination. Because true travel is not about seeing more, but experiencing more.",
+    highlights: [
+      "Personalised Journeys",
+      "Curated Experiences",
+      "Slow & Immersive Travel",
+      "Seamless & Transparent",
+    ],
+    heroImage: null
+  };
+
+  const features = wayData.highlights?.length === 4 ? wayData.highlights : [
     "Personalised Journeys",
     "Curated Experiences",
     "Slow & Immersive Travel",
@@ -18,12 +35,12 @@ const PayanaWay = () => {
           <div className="flex items-center justify-center gap-6">
             <div className="h-px w-12 md:w-24 bg-[#4A3B2A] opacity-30"></div>
             <h2 className="text-3xl md:text-4xl font-serif text-[#4A3B2A] tracking-wide text-center">
-              The Payana Way
+              {wayData.title}
             </h2>
             <div className="h-[1px] w-12 md:w-24 bg-[#4A3B2A] opacity-30"></div>
           </div>
           <p className="text-[#4A3B2A] text-2xl sm:text-3xl font-serif italic mt-6 opacity-90">
-            A more thoughtful way to experience the world
+            {wayData.subtitle}
           </p>
         </div>
 
@@ -38,8 +55,8 @@ const PayanaWay = () => {
             {/* Image Container - takes up full height of parent */}
             <div className="relative overflow-hidden rounded-tr-[3rem] rounded-bl-[3rem] rounded-tl-xl rounded-br-xl shadow-lg bg-[#4A3B2A]/5 h-full w-full flex-1">
               <img
-                src={wildlifeImg}
-                alt="The Payana Way"
+                src={wayData.heroImage ? `${IMAGE_BASE_URL}${wayData.heroImage}` : wildlifeImg}
+                alt={wayData.title}
                 className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/main:scale-105"
               />
               <div className="absolute inset-0 bg-[#F3EFE9]/10 transition-opacity duration-500 group-hover/main:opacity-0"></div>
@@ -53,14 +70,8 @@ const PayanaWay = () => {
               <span className="text-5xl absolute -top-6 -left-4 text-[#4A3B2A]/15 font-serif leading-none">
                 "
               </span>
-              <p className="text-[16px] sm:text-[18px] font-sans italic leading-relaxed opacity-90 relative z-10">
-                We believe travel should be unhurried, immersive and deeply
-                meaningful. <br /> Our journeys are thoughtfully designed to let
-                you slow down, travel at ease, and connect with each
-                destination.
-                <br />
-                Because true travel is not about seeing more, but experiencing
-                more.
+              <p className="text-[16px] sm:text-[18px] font-sans italic leading-relaxed opacity-90 relative z-10 whitespace-pre-line">
+                {wayData.quote}
               </p>
             </div>
 
