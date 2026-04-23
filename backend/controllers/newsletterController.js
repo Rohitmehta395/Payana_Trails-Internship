@@ -124,6 +124,9 @@ exports.subscribe = async (req, res) => {
     // Send Welcome/Joining Email
     await sendWelcomeEmail(subscriber);
 
+    // Send Notification to Admin
+    await sendAdminNotificationEmail(subscriber);
+
     res.status(201).json({
       success: true,
       message: "Thank you for subscribing.",
@@ -246,6 +249,66 @@ async function sendWelcomeEmail(subscriber) {
     console.log(`Welcome email sent to: ${subscriber.email}`);
   } catch (error) {
     console.error("Error sending welcome email:", error);
+    // We don't throw here to avoid failing the subscription if email fails
+  }
+}
+
+// Helper function to send notification to admin
+async function sendAdminNotificationEmail(subscriber) {
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || "smtp.gmail.com",
+    port: process.env.SMTP_PORT || 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.SMTP_EMAIL,
+      pass: process.env.SMTP_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: `"${process.env.FROM_NAME || "Payana Trails"}" <${process.env.SMTP_EMAIL}>`,
+    to: "info@payanatrails.com",
+    subject: `New Newsletter Subscription: ${subscriber.fullName}`,
+    html: `
+      <div style="font-family: 'Georgia', serif; color: #4A3B2A; line-height: 1.6; max-width: 600px; margin: 0 auto; border: 1px solid #EFE9E1; border-radius: 8px; overflow: hidden;">
+        <div style="background-color: #4A3B2A; padding: 30px; text-align: center; color: #F3EFE9;">
+          <h1 style="margin: 0; font-size: 24px; font-weight: bold; font-style: italic;">New Newsletter Subscriber</h1>
+        </div>
+        <div style="padding: 40px; background-color: #ffffff;">
+          <p style="font-size: 16px; margin-bottom: 25px;">A new user has just subscribed to the newsletter from the website.</p>
+          
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9; font-weight: bold; width: 40%;">Full Name:</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9;">${subscriber.fullName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9; font-weight: bold;">Email Address:</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9;"><a href="mailto:${subscriber.email}" style="color: #4A3B2A;">${subscriber.email}</a></td>
+            </tr>
+            ${subscriber.mobile ? `
+            <tr>
+              <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9; font-weight: bold;">Phone Number:</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9;">${subscriber.countryCode || ""} ${subscriber.mobile}</td>
+            </tr>` : ""}
+          </table>
+          
+          <div style="margin-top: 30px; padding: 20px; background-color: #FDFBF8; border-radius: 8px; border-left: 4px solid #4A3B2A; text-align: center;">
+            <p style="margin: 0; font-style: italic; color: #7A634A;">"Another wanderer joins the journey!"</p>
+          </div>
+        </div>
+        <div style="background-color: #F3EFE9; padding: 20px; text-align: center; font-size: 12px; color: #7A634A;">
+          <p>&copy; ${new Date().getFullYear()} Payana Trails Admin Notifications</p>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Admin notification email sent for: ${subscriber.email}`);
+  } catch (error) {
+    console.error("Error sending admin notification email:", error);
     // We don't throw here to avoid failing the subscription if email fails
   }
 }
