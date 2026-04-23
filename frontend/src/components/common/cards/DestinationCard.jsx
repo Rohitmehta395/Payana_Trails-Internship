@@ -1,16 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import CursorMessage from "../CursorMessage";
 
 const DestinationCard = ({ image, name, to = "", isSelected = false }) => {
+  const [isHovered, setIsHovered] = useState(false);
   const Wrapper = to ? Link : "div";
 
   return (
     <Wrapper
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       {...(to ? { to } : {})}
       className={`relative block w-full aspect-3/4 max-w-sm mx-auto rounded-2xl overflow-hidden shadow-lg group bg-[#4A3B2A] transition-all duration-300 ${
         to ? "cursor-pointer hover:-translate-y-1" : ""
       } ${isSelected ? "ring-4 ring-[#8B6A55] ring-offset-4 ring-offset-[#F3EFE9]" : ""}`}
     >
+      <CursorMessage message="Click to know more" isVisible={isHovered} />
       {/* Background Image with Zoom on Hover */}
       <img
         src={image}

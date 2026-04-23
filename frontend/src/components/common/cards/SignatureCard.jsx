@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import CreamBtn from "../buttons/CreamBtn";
+import CursorMessage from "../CursorMessage";
 
 const SignatureCard = ({ imgSrc, title, desc, btnText = "View Journey" }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div className="relative w-full max-w-[340px] h-[420px] sm:h-[450px] rounded-[32px] overflow-hidden shadow-lg group cursor-pointer mx-auto">
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative w-full max-w-[340px] h-[420px] sm:h-[450px] rounded-[32px] overflow-hidden shadow-lg group cursor-pointer mx-auto"
+    >
+      <CursorMessage message="Click to know more" isVisible={isHovered} />
       {/* 1. Background Image */}
       <img
         src={imgSrc}

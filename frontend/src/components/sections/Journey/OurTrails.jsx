@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Wildlife_Icon from "../../../assets/Journey/Trails_Icons/Wildlife.webp";
 import Heritage_Icon from "../../../assets/Journey/Trails_Icons/Heritage.webp";
 import Cultural_Icon from "../../../assets/Journey/Trails_Icons/Culture.webp";
+import CursorMessage from "../../common/CursorMessage";
 
 const trailsData = [
   {
@@ -51,6 +52,8 @@ const cardVariants = {
 };
 
 export default function OurTrails() {
+  const [hoveredId, setHoveredId] = useState(null);
+
   return (
     <section
       id="our-trails"
@@ -101,9 +104,15 @@ export default function OurTrails() {
           {trailsData.map((trail) => (
             <motion.div key={trail.id} variants={cardVariants}>
               <Link
+                onMouseEnter={() => setHoveredId(trail.id)}
+                onMouseLeave={() => setHoveredId(null)}
                 to={trail.path}
                 className="group relative flex aspect-square flex-col items-center overflow-hidden rounded-[32px] border border-[#4A3B2A]/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,rgba(246,239,230,0.92)_100%)] p-8 text-center shadow-[0_20px_50px_rgba(74,59,42,0.08)] transition-all duration-300 hover:-translate-y-2 hover:border-[#4A3B2A]/22 hover:shadow-[0_28px_60px_rgba(74,59,42,0.14)]"
               >
+                <CursorMessage
+                  message="Click to know more"
+                  isVisible={hoveredId === trail.id}
+                />
                 <div className="absolute inset-x-10 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(74,59,42,0.25),transparent)]"></div>
 
                 <div className="mb-auto flex w-full flex-col items-center">
