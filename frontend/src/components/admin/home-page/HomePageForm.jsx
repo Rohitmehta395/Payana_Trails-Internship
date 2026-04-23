@@ -5,6 +5,7 @@ import StoriesVoicesForm from "./sections/StoriesVoicesForm";
 import NewsletterSectionForm from "./sections/NewsletterSectionForm";
 import ConnectSectionForm from "./sections/ConnectSectionForm";
 import ReferGiftSectionForm from "./sections/ReferGiftSectionForm";
+import TestimonialsForm from "./sections/TestimonialsForm";
 import { Loader2, Save } from "lucide-react";
 import { api } from "../../../services/api";
 
@@ -53,6 +54,10 @@ const defaultData = {
       subtitle: "Surprise your loved ones with an unforgettable experience. Gift a curated Payana Trails journey or a travel voucher to create memories that last a lifetime.",
     },
   },
+  testimonials: {
+    title: "Testimonials",
+    subtitle: "What our travellers say about us",
+  },
 };
 
 // Helper for deep merging initial data with default data
@@ -77,7 +82,8 @@ const mergeData = (initial, defaults) => {
         ...defaults.referAndGiftSection.giftAJourney,
         ...initial.referAndGiftSection?.giftAJourney
       }
-    }
+    },
+    testimonials: { ...defaults.testimonials, ...initial.testimonials }
   };
 };
 
@@ -97,6 +103,7 @@ const HomePageForm = ({ initialData, onSave }) => {
     { id: "newsletter", label: "Newsletter" },
     { id: "connect", label: "Connect" },
     { id: "referGift", label: "Refer & Gift" },
+    { id: "testimonials", label: "Testimonials" },
   ];
 
   const handleSectionChange = (section, newData) => {
@@ -258,6 +265,21 @@ const HomePageForm = ({ initialData, onSave }) => {
           >
             <SaveButton />
           </ReferGiftSectionForm>
+        )}
+
+        {activeTab === "testimonials" && (
+          <TestimonialsForm 
+            data={data.testimonials || {}} 
+            onChange={(d) => handleSectionChange("testimonials", d)} 
+            onRefresh={async () => {
+              // This relies on the parent component triggering a full refetch
+              // But since we are directly mutating DB from TestimonialsForm for images,
+              // we can just call window.location.reload() or we can pass a refetch down.
+              // For now, let's keep it simple. The form itself maintains state.
+            }}
+          >
+            <SaveButton />
+          </TestimonialsForm>
         )}
       </form>
     </div>

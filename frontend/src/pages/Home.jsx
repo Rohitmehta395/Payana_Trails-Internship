@@ -7,6 +7,7 @@ import PayanaWay from "../components/sections/Home/PayanaWay";
 import StoriesMoments from "../components/sections/Home/StoriesMoments";
 import ClosingInvitation from "../components/sections/Home/ClosingInvitation";
 import ShareExperience from "../components/sections/Home/ShareExperience";
+import TestimonialsSection from "../components/sections/Home/TestimonialsSection";
 import usePageHeroImages, { prefetchPageHeroImages } from "../hooks/usePageHeroImages";
 
 // Kick off the DB fetch immediately when this module is first imported.
@@ -59,6 +60,7 @@ const FALLBACK_IMAGES = [
   { desktop: imgD12, mobile: imgM12 },
 ];
 
+
 const Home = () => {
   const SITE_URL = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
   const API_BASE_URL =
@@ -99,6 +101,7 @@ const Home = () => {
       <StoriesMoments />
       <ClosingInvitation />
       <ShareExperience />
+      <TestimonialsSection />
       </div>
     </>
   );

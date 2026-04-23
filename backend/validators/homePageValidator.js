@@ -84,6 +84,15 @@ const validateHomePage = (data) => {
     }
   }
 
+  if (data.testimonials) {
+    if (data.testimonials.title && typeof data.testimonials.title !== "string") {
+      errors.push("testimonials.title must be a string.");
+    }
+    if (data.testimonials.subtitle && typeof data.testimonials.subtitle !== "string") {
+      errors.push("testimonials.subtitle must be a string.");
+    }
+  }
+
   return {
     isValid: errors.length === 0,
     errors,

@@ -76,4 +76,38 @@ router.put(
   homePageController.updateHomePage
 );
 
+// Testimonial specific routes
+const uploadTestimonialsMulti = upload.array("testimonialImages", 20);
+
+router.post(
+  "/testimonials",
+  requireAdmin,
+  (req, res, next) => {
+    uploadTestimonialsMulti(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(413).json({ message: "File is too large. Max size 20MB." });
+        }
+        return res.status(400).json({ message: `Upload error: ${err.message}` });
+      } else if (err) {
+        return res.status(500).json({ message: `Server error during upload: ${err.message}` });
+      }
+      next();
+    });
+  },
+  homePageController.uploadTestimonials
+);
+
+router.put(
+  "/testimonials/reorder",
+  requireAdmin,
+  homePageController.reorderTestimonials
+);
+
+router.delete(
+  "/testimonials/:imageId",
+  requireAdmin,
+  homePageController.deleteTestimonial
+);
+
 module.exports = router;

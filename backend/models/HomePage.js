@@ -49,6 +49,18 @@ const homePageSchema = new mongoose.Schema(
         heroImage: { type: String, required: false },
       },
     },
+    testimonials: {
+      title: { type: String, default: "" },
+      subtitle: { type: String, default: "" },
+      images: [
+        {
+          url: { type: String, required: true },
+          alt: { type: String, default: "" },
+          isActive: { type: Boolean, default: true },
+          order: { type: Number, default: 0 },
+        }
+      ]
+    }
   },
   { timestamps: true }
 );

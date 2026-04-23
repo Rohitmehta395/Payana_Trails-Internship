@@ -834,4 +834,60 @@ export const api = {
       throw error;
     }
   },
+
+  // --- TESTIMONIALS ROUTES ---
+  uploadTestimonialImages: async (files, alt = "") => {
+    try {
+      const formData = new FormData();
+      const fileArr = Array.isArray(files) ? files : [files];
+      fileArr.forEach((f) => formData.append("testimonialImages", f));
+      formData.append("alt", alt);
+
+      const response = await fetch(`${API_BASE_URL}/home-page/testimonials`, {
+        method: "POST",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      
+      if (response.status === 413) {
+        throw new Error("Files are too large. Max size is 20MB.");
+      }
+      
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to upload testimonials");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  reorderTestimonials: async (orderedIds) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/home-page/testimonials/reorder`, {
+        method: "PUT",
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ orderedIds }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to reorder testimonials");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  deleteTestimonialImage: async (imageId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/home-page/testimonials/${imageId}`, {
+        method: "DELETE",
+        headers: withAdminAuth(),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to delete testimonial image");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
+
