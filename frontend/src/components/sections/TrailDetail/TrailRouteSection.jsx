@@ -181,7 +181,7 @@ const TrailRouteSection = ({ trail }) => {
           <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)] lg:items-stretch lg:gap-10">
             <motion.div variants={itemVariants} className="relative">
               <div className="relative rounded-[1.75rem] border border-[#4A3B2A]/8 bg-[linear-gradient(180deg,rgba(255,252,248,0.96)_0%,rgba(248,239,223,0.98)_100%)] p-5 shadow-[0_14px_38px_rgba(74,59,42,0.1)] md:p-6">
-                <div className="pointer-events-none absolute bottom-5 left-6 top-8 w-px bg-[linear-gradient(180deg,rgba(132,98,66,0)_0%,rgba(132,98,66,0.8)_12%,rgba(132,98,66,0.3)_100%)] md:left-8" />
+                <div className="relative rounded-[1.75rem] border border-[#4A3B2A]/8 bg-[linear-gradient(180deg,rgba(255,252,248,0.96)_0%,rgba(248,239,223,0.98)_100%)] p-5 shadow-[0_14px_38px_rgba(74,59,42,0.1)] md:p-6" />
 
                 <motion.div variants={containerVariants} className="space-y-4">
                   {routeSteps.length > 0 ? (
