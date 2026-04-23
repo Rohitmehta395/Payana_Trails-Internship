@@ -32,9 +32,7 @@ const ShareExperience = () => {
       id="share-section"
       className="relative w-full bg-[#F3EFE9] py-24 px-6 lg:px-12 overflow-hidden font-sans"
     >
-      {/* Decorative Background Elements */}
-      <div className="absolute top-0 left-0 w-80 h-80 bg-[#4A3B2A] opacity-5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/4 pointer-events-none"></div>
-      <div className="absolute bottom-0 right-0 w-125 h-125 bg-[#4A3B2A] opacity-5 rounded-full blur-3xl translate-y-1/3 translate-x-1/3 pointer-events-none"></div>
+
 
       <div className="max-w-[1200px] mx-auto relative z-10">
         {/* === HEADER === */}

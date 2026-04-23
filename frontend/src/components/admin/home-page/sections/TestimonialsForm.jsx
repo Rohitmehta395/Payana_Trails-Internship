@@ -23,7 +23,8 @@ import {
   AlertCircle,
   ImageIcon,
   Loader2,
-  Monitor
+  Monitor,
+  ArrowRight
 } from "lucide-react";
 
 const SortableImageCard = ({
@@ -103,6 +104,7 @@ const UploadZone = ({ onUploaded }) => {
   const [uploading, setUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [message, setMessage] = useState(null);
+  const [imageStats, setImageStats] = useState([]);
   const fileRef = useRef();
 
   const handleFiles = (selected) => {
@@ -110,18 +112,23 @@ const UploadZone = ({ onUploaded }) => {
     setFiles(arr);
     setPreviews(arr.map((f) => URL.createObjectURL(f)));
     setMessage(null);
+    setImageStats([]);
   };
 
   const handleUpload = async () => {
     if (!files.length) return;
     setUploading(true);
     setMessage(null);
+    setImageStats([]);
     try {
-      await api.uploadTestimonialImages(files, "Testimonial");
+      const response = await api.uploadTestimonialImages(files, "Testimonial");
       setMessage({
         type: "success",
         text: `${files.length} image(s) uploaded!`,
       });
+      if (response.imageStats) {
+        setImageStats(response.imageStats);
+      }
       setFiles([]);
       setPreviews([]);
       if (onUploaded) onUploaded();
@@ -242,18 +249,39 @@ const UploadZone = ({ onUploaded }) => {
 
       {message && (
         <div
-          className={`text-sm rounded-xl px-4 py-3 border flex items-center gap-2 ${
+          className={`text-sm rounded-xl px-4 py-3 border flex flex-col gap-2 ${
             message.type === "success"
               ? "bg-emerald-50 text-emerald-700 border-emerald-200"
               : "bg-red-50 text-red-700 border-red-200"
           }`}
         >
-          {message.type === "success" ? (
-            <Check size={14} />
-          ) : (
-            <AlertCircle size={14} />
+          <div className="flex items-center gap-2">
+            {message.type === "success" ? (
+              <Check size={14} />
+            ) : (
+              <AlertCircle size={14} />
+            )}
+            <span className="font-medium">{message.text}</span>
+          </div>
+          
+          {imageStats && imageStats.length > 0 && (
+            <div className="mt-2 space-y-2 border-t border-emerald-200/50 pt-2">
+              <p className="text-xs font-semibold text-emerald-800">Compression Results:</p>
+              {imageStats.map((stat, idx) => (
+                <div key={idx} className="flex justify-between items-center text-xs bg-white/50 px-2 py-1.5 rounded">
+                  <span className="truncate max-w-[150px]" title={stat.originalName}>{stat.originalName}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-emerald-600/70 line-through">{(stat.originalSize / 1024).toFixed(1)} KB</span>
+                    <ArrowRight size={10} className="text-emerald-400" />
+                    <span className="font-semibold text-emerald-700">{(stat.compressedSize / 1024).toFixed(1)} KB</span>
+                    <span className="bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                      -{stat.savedPercent}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
-          {message.text}
         </div>
       )}
     </div>
@@ -335,7 +363,7 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Section Title
@@ -352,11 +380,10 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Section Subtitle
           </label>
-          <input
-            type="text"
+          <textarea
             value={data?.subtitle || ""}
             onChange={(e) => onChange({ ...data, subtitle: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A] min-h-[100px] resize-y"
             placeholder="e.g. What our travellers say about us"
           />
         </div>

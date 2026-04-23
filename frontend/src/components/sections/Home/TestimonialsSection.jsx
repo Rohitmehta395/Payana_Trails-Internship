@@ -73,7 +73,7 @@ const TestimonialsSection = () => {
   if (images.length === 0) return null;
 
   return (
-    <section className="bg-[#F3EFE9] w-full py-14 sm:py-20 font-sans border-t border-[#4A3B2A]/10">
+    <section className="bg-[#F3EFE9] w-full py-14 sm:py-8 font-sans">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
@@ -85,7 +85,7 @@ const TestimonialsSection = () => {
             <div className="h-[1px] w-12 md:w-24 bg-[#4A3B2A] opacity-30"></div>
           </div>
           {subtitle && (
-            <p className="text-[#4A3B2A] text-xl sm:text-2xl font-serif italic mt-6 opacity-80">
+            <p className="text-[#4A3B2A] text-xl sm:text-2xl font-serif italic mt-6 opacity-80 whitespace-pre-line">
               {subtitle}
             </p>
           )}
