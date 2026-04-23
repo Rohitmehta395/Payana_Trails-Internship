@@ -1,10 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { api } from "../services/api";
 import CommonHero from "../components/common/CommonHero";
 import heroImg from "../assets/Home/PayanaWay/Payana-way.webp";
 import usePageHeroImages from "../hooks/usePageHeroImages";
+import AJourneyBegins from "./sections/PayanaWay/AJourneyBegins";
 
 const PayanaWay = () => {
   const { images: heroImgs } = usePageHeroImages("payana-way");
+  const [pageData, setPageData] = useState(null);
+
+  useEffect(() => {
+    const fetchPageData = async () => {
+      try {
+        const responseData = await api.getPayanaWayPage();
+        setPageData(responseData);
+      } catch (error) {
+        console.error("Error fetching Payana Way page data:", error);
+      }
+    };
+    fetchPageData();
+  }, []);
 
   return (
     <div className="bg-[#F3EFE9] min-h-screen">
@@ -18,6 +33,11 @@ const PayanaWay = () => {
           { label: "PAYANA WAY" },
         ]}
       />
+      
+      {pageData && pageData.aJourneyBegins && (
+        <AJourneyBegins data={pageData.aJourneyBegins} />
+      )}
+      
       {/* Rest of your Payana Way content goes here */}
     </div>
   );

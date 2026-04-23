@@ -6,6 +6,7 @@ import HeroImageManager from "./HeroImages/HeroImageManager";
 import FAQManager from "./FAQs/FAQManager";
 import FormExportsManager from "./FormExports/FormExportsManager";
 import HomePageManager from "./HomePageManager/HomePageManager";
+import PayanaWayManager from "./PayanaWayManager/PayanaWayManager";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -58,6 +59,13 @@ const AdminDashboard = () => {
       iconPath:
         "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
       render: () => <HomePageManager />,
+    },
+    {
+      id: "payanaWay",
+      label: "Payana Way",
+      heading: "Payana Way Content",
+      iconPath: "M13 10V3L4 14h7v7l9-11h-7z", // Using lightning icon or similar path
+      render: () => <PayanaWayManager />,
     },
   ];
   const activeSection = tabs.find((tab) => tab.id === activeTab) || tabs[0];

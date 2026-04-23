@@ -889,5 +889,34 @@ export const api = {
       throw error;
     }
   },
+
+  // --- PAYANA WAY ROUTES ---
+  getPayanaWayPage: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/payana-way`);
+      if (!response.ok) throw new Error("Failed to fetch Payana Way data");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getPayanaWayPage):", error);
+      throw error;
+    }
+  },
+
+  updateAJourneyBegins: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/payana-way/a-journey-begins`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update A Journey Begins");
+      return data;
+    } catch (error) {
+      console.error("API Error (updateAJourneyBegins):", error);
+      throw error;
+    }
+  },
 };
+
 
