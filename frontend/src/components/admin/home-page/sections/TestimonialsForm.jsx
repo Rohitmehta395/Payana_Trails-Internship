@@ -369,17 +369,31 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
       </div>
 
       <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Section Title
-          </label>
-          <input
-            type="text"
-            value={data?.title || ""}
-            onChange={(e) => onChange({ ...data, title: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
-            placeholder="e.g. Testimonials"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Title (Bold Part)
+            </label>
+            <input
+              type="text"
+              value={data?.titleBold || ""}
+              onChange={(e) => onChange({ ...data, titleBold: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+              placeholder="e.g. Share Your"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Title (Italic Part)
+            </label>
+            <input
+              type="text"
+              value={data?.titleItalic || ""}
+              onChange={(e) => onChange({ ...data, titleItalic: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+              placeholder="e.g. Experience"
+            />
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">

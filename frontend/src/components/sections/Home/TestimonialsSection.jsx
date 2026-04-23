@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { FaHeart } from "react-icons/fa6";
 import useHomePageData from "../../../hooks/useHomePageData";
 import { IMAGE_BASE_URL } from "../../../services/api";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -14,7 +15,8 @@ const TestimonialsSection = () => {
     .filter((img) => img.isActive !== false)
     .sort((a, b) => a.order - b.order);
 
-  const title = testimonialsData.title || "Testimonials";
+  const titleBold = testimonialsData.titleBold || "Share Your";
+  const titleItalic = testimonialsData.titleItalic || "Experience";
   const subtitle =
     testimonialsData.subtitle || "What our travellers say about us";
 
@@ -78,15 +80,15 @@ const TestimonialsSection = () => {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <div className="flex items-center justify-center gap-6">
-            <div className="h-[1px] w-12 md:w-24 bg-[#4A3B2A] opacity-30"></div>
-            <h2 className="text-3xl md:text-4xl font-serif text-[#4A3B2A] tracking-wide text-center">
-              {title}
-            </h2>
-            <div className="h-[1px] w-12 md:w-24 bg-[#4A3B2A] opacity-30"></div>
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#4A3B2A]/10 text-[#4A3B2A] text-sm font-semibold tracking-wider uppercase mb-5 shadow-sm">
+            <FaHeart size={14} className="animate-pulse" />
+            <span>Testimonials</span>
           </div>
+          <h2 className="text-4xl lg:text-5xl font-bold font-serif text-[#4A3B2A] leading-tight mb-5 drop-shadow-sm">
+            {titleBold} <span className="italic font-light">{titleItalic}</span>
+          </h2>
           {subtitle && (
-            <p className="text-[#4A3B2A] text-xl sm:text-2xl font-serif italic mt-6 opacity-80 whitespace-pre-line">
+            <p className="text-[#4A3B2A] text-md sm:text-xl font-serif italic mt-2 opacity-80 whitespace-pre-line">
               {subtitle}
             </p>
           )}

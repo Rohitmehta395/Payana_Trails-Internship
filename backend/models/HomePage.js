@@ -50,7 +50,8 @@ const homePageSchema = new mongoose.Schema(
       },
     },
     testimonials: {
-      title: { type: String, default: "" },
+      titleBold: { type: String, default: "" },
+      titleItalic: { type: String, default: "" },
       subtitle: { type: String, default: "" },
       images: [
         {

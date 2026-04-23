@@ -55,7 +55,8 @@ const defaultData = {
     },
   },
   testimonials: {
-    title: "Testimonials",
+    titleBold: "Share Your",
+    titleItalic: "Experience",
     subtitle: "What our travellers say about us",
   },
 };
