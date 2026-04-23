@@ -151,6 +151,9 @@ const HomePageForm = ({ initialData, onSave }) => {
       await onSave(formData);
       setMessage({ type: "success", text: "Home Page content updated successfully!" });
       setFiles({}); // Clear selected files after successful save
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
     } catch (err) {
       setMessage({ type: "error", text: err.message || "Failed to update home page content." });
     } finally {

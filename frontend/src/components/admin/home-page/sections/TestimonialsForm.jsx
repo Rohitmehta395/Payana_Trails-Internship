@@ -132,6 +132,11 @@ const UploadZone = ({ onUploaded }) => {
       setFiles([]);
       setPreviews([]);
       if (onUploaded) onUploaded();
+      
+      setTimeout(() => {
+        setMessage(null);
+        setImageStats([]);
+      }, 4000); // 4 seconds so they have time to read the compression stats
     } catch (err) {
       setMessage({ type: "error", text: err.message || "Upload failed." });
     } finally {

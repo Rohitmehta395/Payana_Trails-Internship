@@ -185,7 +185,7 @@ exports.deleteTestimonial = async (req, res) => {
       });
     }
 
-    imgEntry.deleteOne();
+    homePage.testimonials.images.pull(imageId);
     homePage.testimonials.images.forEach((img, i) => { img.order = i; });
     await homePage.save();
 

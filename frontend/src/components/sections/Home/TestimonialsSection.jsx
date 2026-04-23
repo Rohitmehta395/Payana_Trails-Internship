@@ -11,11 +11,12 @@ const TestimonialsSection = () => {
 
   const testimonialsData = homeData?.testimonials || {};
   const images = (testimonialsData.images || [])
-    .filter(img => img.isActive !== false)
+    .filter((img) => img.isActive !== false)
     .sort((a, b) => a.order - b.order);
 
   const title = testimonialsData.title || "Testimonials";
-  const subtitle = testimonialsData.subtitle || "What our travellers say about us";
+  const subtitle =
+    testimonialsData.subtitle || "What our travellers say about us";
 
   const handleImageClick = (index) => {
     setCurrentIndex(index);
@@ -32,13 +33,13 @@ const TestimonialsSection = () => {
 
   const scrollLeft = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+      carouselRef.current.scrollBy({ left: -300, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+      carouselRef.current.scrollBy({ left: 300, behavior: "smooth" });
     }
   };
 
@@ -49,9 +50,9 @@ const TestimonialsSection = () => {
       if (carouselRef.current) {
         const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
         if (scrollLeft + clientWidth >= scrollWidth - 10) {
-          carouselRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+          carouselRef.current.scrollTo({ left: 0, behavior: "smooth" });
         } else {
-          carouselRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+          carouselRef.current.scrollBy({ left: 300, behavior: "smooth" });
         }
       }
     }, 4000);
@@ -115,7 +116,7 @@ const TestimonialsSection = () => {
           <div
             ref={carouselRef}
             className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-8 pt-4 px-4"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {images.map((img, idx) => (
               <div
@@ -179,7 +180,9 @@ const TestimonialsSection = () => {
           >
             <img
               src={`${IMAGE_BASE_URL}${images[currentIndex].url}`}
-              alt={images[currentIndex].alt || `Testimonial ${currentIndex + 1}`}
+              alt={
+                images[currentIndex].alt || `Testimonial ${currentIndex + 1}`
+              }
               className="max-w-full max-h-full object-contain drop-shadow-2xl select-none"
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the image
             />
