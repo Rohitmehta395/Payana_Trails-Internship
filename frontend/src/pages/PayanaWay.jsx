@@ -3,7 +3,7 @@ import { api } from "../services/api";
 import CommonHero from "../components/common/CommonHero";
 import heroImg from "../assets/Home/PayanaWay/Payana-way.webp";
 import usePageHeroImages from "../hooks/usePageHeroImages";
-import AJourneyBegins from "./sections/PayanaWay/AJourneyBegins";
+import AJourneyBegins from "../components/sections/PayanaWay/AJourneyBegins";
 
 const PayanaWay = () => {
   const { images: heroImgs } = usePageHeroImages("payana-way");

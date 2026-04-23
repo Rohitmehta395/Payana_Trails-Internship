@@ -27,9 +27,12 @@ const AJourneyBegins = ({ data }) => {
   };
 
   return (
-    <section id="ajourneybegins" className="relative py-20 md:py-32 bg-[#F3EFE9] overflow-hidden">
+    <section
+      id="ajourneybegins"
+      className="relative py-20 md:py-24 bg-[#F3EFE9] overflow-hidden"
+    >
       {/* Subtle Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(circle_at_center,_#4A3B2A_1px,_transparent_1px)] bg-[size:24px_24px]"></div>
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(circle_at_center,#4A3B2A_1px,transparent_1px)] bg-size-[24px_24px]"></div>
 
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         {/* Header Section */}
@@ -94,7 +97,7 @@ const AJourneyBegins = ({ data }) => {
             {data.description && (
               <motion.p
                 variants={itemVariants}
-                className="relative z-10 text-xl md:text-xl lg:text-2xl font-light italic text-[#4A3B2A] leading-snug md:leading-relaxed mb-4"
+                className="relative z-10 text-xl md:text-xl lg:text-2xl font-light italic text-[#4A3B2A] leading-snug md:leading-relaxed mb-4 whitespace-pre-wrap"
               >
                 "{data.description}"
               </motion.p>
@@ -113,17 +116,11 @@ const AJourneyBegins = ({ data }) => {
           {data.paragraph && (
             <motion.p
               variants={itemVariants}
-              className="text-md md:text-lg lg:text-xl font-normal text-[#4A3B2A] leading-relaxed md:leading-loose opacity-100 mb-8 italic"
+              className="text-md md:text-lg lg:text-xl font-normal text-[#4A3B2A] leading-relaxed md:leading-loose opacity-100 mb-8 italic whitespace-pre-wrap bg-[#FAF5F1] p-8 rounded-2xl md:rounded-[3rem] border-4 border-[#c48a68]/30"
             >
               {data.paragraph}
             </motion.p>
           )}
-
-          {/* Elegant Divider */}
-          <motion.div
-            variants={itemVariants}
-            className="w-full h-[1px] bg-[#4A3B2A]/20 mb-12"
-          />
 
           {/* Signature & Details */}
           <motion.div
@@ -154,6 +151,11 @@ const AJourneyBegins = ({ data }) => {
             )}
           </motion.div>
         </motion.div>
+        {/* Elegant Divider */}
+        <motion.div
+          variants={itemVariants}
+          className="w-full h-px bg-[#4A3B2A]/20 mt-8"
+        />
       </div>
     </section>
   );
