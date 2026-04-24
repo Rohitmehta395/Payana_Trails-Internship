@@ -4,6 +4,7 @@ const sharp = require("sharp");
 const PayanaWayPage = require("../models/PayanaWayPage");
 
 const uploadsFolder = path.join(__dirname, "..", "uploads", "payanaWay", "aJourneyBegins");
+const diffUploadsFolder = path.join(__dirname, "..", "uploads", "payanaWay", "thePayanaDifference");
 
 // Helper to delete old image
 const deleteOldImage = (imagePath) => {
@@ -30,6 +31,10 @@ exports.getPayanaWayPage = async (req, res) => {
           name: "",
           occupation: "",
           signatureImage: "",
+        },
+        thePayanaDifference: {
+          mainImage: "",
+          entries: [],
         },
       });
     }
@@ -135,6 +140,101 @@ exports.updateAJourneyBegins = async (req, res) => {
     res.status(200).json({ page, imageStats });
   } catch (error) {
     console.error("Error updating A Journey Begins:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+/**
+ * @desc    Update "The Payana Difference" section
+ * @route   PUT /api/payana-way/the-payana-difference
+ * @access  Private/Admin
+ */
+exports.updateThePayanaDifference = async (req, res) => {
+  try {
+    let page = await PayanaWayPage.findOne();
+    if (!page) {
+      page = new PayanaWayPage({
+        aJourneyBegins: {
+          adminImage: "",
+          description: "",
+          paragraph: "",
+          name: "",
+          occupation: "",
+          signatureImage: "",
+        },
+        thePayanaDifference: {
+          mainImage: "",
+          entries: [],
+        },
+      });
+    }
+
+    const { entriesData } = req.body;
+    let entries = [];
+    if (entriesData) {
+      entries = JSON.parse(entriesData);
+    }
+
+    const files = req.files || {};
+    const imageStats = [];
+
+    if (!fs.existsSync(diffUploadsFolder)) {
+      fs.mkdirSync(diffUploadsFolder, { recursive: true });
+    }
+
+    let newMainImage = page.thePayanaDifference?.mainImage || "";
+
+    if (files.mainImage && files.mainImage[0]) {
+      const file = files.mainImage[0];
+      
+      // Delete old image
+      if (page.thePayanaDifference?.mainImage) {
+        const oldFileName = page.thePayanaDifference.mainImage.split("/").pop();
+        const fp = path.join(diffUploadsFolder, oldFileName);
+        fs.unlink(fp, (err) => {
+          if (err && err.code !== "ENOENT") console.error("Failed to delete old main image:", err.message);
+        });
+      }
+
+      const baseName = `main-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      const webpFilename = `${baseName}.webp`;
+      const destPath = path.join(diffUploadsFolder, webpFilename);
+
+      const compressedBuffer = await sharp(file.buffer)
+        .resize(1200, null, { withoutEnlargement: true })
+        .webp({ quality: 80 })
+        .toBuffer();
+
+      fs.writeFileSync(destPath, compressedBuffer);
+
+      const originalSize = file.size || file.buffer?.length || 0;
+      const compressedSize = compressedBuffer.length;
+      
+      imageStats.push({
+        field: "Main Image",
+        originalName: file.originalname,
+        originalSize,
+        compressedSize,
+        savedPercent: originalSize > 0 ? Math.round((1 - compressedSize / originalSize) * 100) : 0,
+      });
+
+      newMainImage = `/uploads/payanaWay/thePayanaDifference/${webpFilename}`;
+    }
+
+    page.thePayanaDifference = {
+      mainImage: newMainImage,
+      entries: entries,
+    };
+
+    await page.save();
+
+    res.status(200).json({
+      message: "The Payana Difference updated successfully",
+      page,
+      imageStats,
+    });
+  } catch (error) {
+    console.error("Error updating The Payana Difference:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

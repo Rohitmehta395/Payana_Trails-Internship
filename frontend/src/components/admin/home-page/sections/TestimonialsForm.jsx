@@ -24,12 +24,15 @@ import {
   ImageIcon,
   Loader2,
   Monitor,
-  ArrowRight
+  ArrowRight,
+  Edit2,
+  X
 } from "lucide-react";
 
 const SortableImageCard = ({
   image,
   onDelete,
+  onEdit,
 }) => {
   const {
     attributes,
@@ -77,21 +80,33 @@ const SortableImageCard = ({
         />
       </div>
 
-      <div className="px-3 py-2 flex-1">
-        <p className="text-xs text-gray-500 truncate">
+      <div className="px-3 py-2 flex-1 flex flex-col">
+        <p className="text-xs font-semibold text-gray-700 truncate mb-1">
           {image.alt || (
-            <span className="italic text-gray-300">No caption</span>
+            <span className="italic text-gray-300">No alt text</span>
+          )}
+        </p>
+        <p className="text-xs text-gray-500 line-clamp-2">
+          {image.shortDescription || (
+            <span className="italic text-gray-300">No short description</span>
           )}
         </p>
       </div>
 
-      <div className="px-3 pb-3 flex items-center justify-end gap-2">
+      <div className="px-3 pb-3 flex items-center justify-between gap-2">
+        <button
+          onClick={() => onEdit(image)}
+          className="flex-1 flex items-center justify-center p-1.5 text-blue-500 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+          title="Edit details"
+        >
+          <Edit2 size={14} className="mr-1" /> Edit
+        </button>
         <button
           onClick={() => onDelete(image._id)}
           className="flex-1 flex items-center justify-center p-1.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
           title="Delete image"
         >
-          <Trash2 size={14} /> Delete
+          <Trash2 size={14} className="mr-1" /> Delete
         </button>
       </div>
     </div>
@@ -297,6 +312,9 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [globalMessage, setGlobalMessage] = useState(null);
+  const [editingImage, setEditingImage] = useState(null);
+  const [editFormData, setEditFormData] = useState({ alt: "", shortDescription: "", fullContent: "" });
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -354,6 +372,35 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
       showMessage("success", "Image deleted.");
     } catch (err) {
       showMessage("error", err.message || "Failed to delete image");
+    }
+  };
+
+  const handleEditClick = (image) => {
+    setEditingImage(image);
+    setEditFormData({
+      alt: image.alt || "",
+      shortDescription: image.shortDescription || "",
+      fullContent: image.fullContent || ""
+    });
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingImage) return;
+    setIsSavingEdit(true);
+    try {
+      const payload = {
+        alt: editFormData.alt,
+        shortDescription: editFormData.shortDescription,
+        fullContent: editFormData.fullContent
+      };
+      await api.updateTestimonialImage(editingImage._id, payload);
+      setImages((prev) => prev.map((img) => img._id === editingImage._id ? { ...img, ...payload } : img));
+      showMessage("success", "Testimonial updated successfully.");
+      setEditingImage(null);
+    } catch (err) {
+      showMessage("error", err.message || "Failed to update testimonial");
+    } finally {
+      setIsSavingEdit(false);
     }
   };
 
@@ -484,6 +531,7 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
                       key={img._id}
                       image={img}
                       onDelete={handleDelete}
+                      onEdit={handleEditClick}
                     />
                   ))}
                 </div>
@@ -492,6 +540,95 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
           )}
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {editingImage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col">
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <h3 className="text-xl font-bold text-[#4A3B2A]">Edit Testimonial</h3>
+              <button 
+                onClick={() => setEditingImage(null)}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-5 flex-1">
+              <div className="flex justify-center mb-6">
+                <img 
+                  src={`${IMAGE_BASE_URL}${editingImage.url}`} 
+                  alt="Preview" 
+                  className="h-32 object-contain rounded-lg border border-gray-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Alt Text / Name
+                </label>
+                <input
+                  type="text"
+                  value={editFormData.alt}
+                  onChange={(e) => setEditFormData({...editFormData, alt: e.target.value})}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+                  placeholder="e.g. John Doe"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Short Description (2-line preview)
+                </label>
+                <textarea
+                  value={editFormData.shortDescription}
+                  onChange={(e) => setEditFormData({...editFormData, shortDescription: e.target.value})}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+                  rows="2"
+                  placeholder="A short preview of the testimonial..."
+                />
+                <p className="text-xs text-gray-400 mt-1">This will be shown on the home page card.</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Content
+                </label>
+                <textarea
+                  value={editFormData.fullContent}
+                  onChange={(e) => setEditFormData({...editFormData, fullContent: e.target.value})}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+                  rows="6"
+                  placeholder="The complete testimonial story..."
+                />
+                <p className="text-xs text-gray-400 mt-1">This will be shown on the Stories page.</p>
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+              <button
+                onClick={() => setEditingImage(null)}
+                className="px-5 py-2.5 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                disabled={isSavingEdit}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                className="px-5 py-2.5 text-sm font-medium text-white bg-[#4A3B2A] rounded-lg hover:bg-[#3a2d20] transition-colors flex items-center"
+                disabled={isSavingEdit}
+              >
+                {isSavingEdit ? (
+                  <><Loader2 size={16} className="animate-spin mr-2" /> Saving...</>
+                ) : (
+                  <><Check size={16} className="mr-2" /> Save Changes</>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

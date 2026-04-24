@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { FaHeart } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 import useHomePageData from "../../../hooks/useHomePageData";
 import { IMAGE_BASE_URL } from "../../../services/api";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 const TestimonialsSection = () => {
   const { data: homeData } = useHomePageData();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
   const carouselRef = useRef(null);
 
   const testimonialsData = homeData?.testimonials || {};
@@ -20,17 +20,8 @@ const TestimonialsSection = () => {
   const subtitle =
     testimonialsData.subtitle || "What our travellers say about us";
 
-  const handleImageClick = (index) => {
-    setCurrentIndex(index);
-    setModalOpen(true);
-  };
-
-  const nextImage = () => {
-    setCurrentIndex((prev) => (prev + 1) % images.length);
-  };
-
-  const prevImage = () => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  const handleImageClick = (img) => {
+    navigate('/stories', { state: { testimonial: img } });
   };
 
   const scrollLeft = () => {
@@ -47,7 +38,6 @@ const TestimonialsSection = () => {
 
   // Auto slide effect for the carousel (optional, but requested as "auto or manual sliding")
   useEffect(() => {
-    if (modalOpen) return;
     const interval = setInterval(() => {
       if (carouselRef.current) {
         const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
@@ -59,19 +49,7 @@ const TestimonialsSection = () => {
       }
     }, 4000);
     return () => clearInterval(interval);
-  }, [modalOpen]);
-
-  // Keyboard navigation for modal
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (!modalOpen) return;
-      if (e.key === "Escape") setModalOpen(false);
-      if (e.key === "ArrowRight") nextImage();
-      if (e.key === "ArrowLeft") prevImage();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [modalOpen, images.length]);
+  }, []);
 
   if (images.length === 0) return null;
 
@@ -123,79 +101,41 @@ const TestimonialsSection = () => {
             {images.map((img, idx) => (
               <div
                 key={img._id}
-                onClick={() => handleImageClick(idx)}
-                className="flex-none w-[280px] sm:w-[320px] md:w-[380px] aspect-[4/5] rounded-2xl overflow-hidden snap-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border-4 border-white/50"
+                onClick={() => handleImageClick(img)}
+                className="flex-none w-[240px] sm:w-[280px] md:w-[320px] h-[340px] sm:h-[380px] bg-white rounded-2xl overflow-hidden snap-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 flex flex-col group"
               >
-                <img
-                  src={`${IMAGE_BASE_URL}${img.url}`}
-                  alt={img.alt || `Testimonial ${idx + 1}`}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
+                {/* Image Section (Top 50%) */}
+                <div className="h-1/2 w-full overflow-hidden relative">
+                  <img
+                    src={`${IMAGE_BASE_URL}${img.url}`}
+                    alt={img.alt || `Testimonial ${idx + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+                
+                {/* Text Section (Bottom 50%) */}
+                <div className="h-1/2 p-5 sm:p-6 flex flex-col justify-between">
+                  <div>
+                    {img.alt && (
+                      <h4 className="font-serif font-bold text-lg text-[#4A3B2A] mb-2">{img.alt}</h4>
+                    )}
+                    <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                      {img.shortDescription || "Read about this beautiful journey experience..."}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center text-[#4A3B2A] font-semibold text-sm mt-3 pt-3 border-t border-gray-100 group-hover:text-[#6a5439] transition-colors">
+                    <span>Click to read more</span>
+                    <ArrowRight size={16} className="ml-2 transform group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-
-      {/* Full-Screen Modal View */}
-      {modalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm">
-          {/* Close Button */}
-          <button
-            onClick={() => setModalOpen(false)}
-            className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-50"
-          >
-            <X size={28} />
-          </button>
-
-          {/* Prev Button */}
-          {images.length > 1 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                prevImage();
-              }}
-              className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 p-3 sm:p-4 bg-black/50 hover:bg-black/80 text-white rounded-full transition-colors z-50"
-            >
-              <ChevronLeft size={32} />
-            </button>
-          )}
-
-          {/* Next Button */}
-          {images.length > 1 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                nextImage();
-              }}
-              className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 p-3 sm:p-4 bg-black/50 hover:bg-black/80 text-white rounded-full transition-colors z-50"
-            >
-              <ChevronRight size={32} />
-            </button>
-          )}
-
-          {/* Image Container */}
-          <div
-            className="relative w-full h-full flex items-center justify-center p-4 sm:p-12"
-            onClick={() => setModalOpen(false)}
-          >
-            <img
-              src={`${IMAGE_BASE_URL}${images[currentIndex].url}`}
-              alt={
-                images[currentIndex].alt || `Testimonial ${currentIndex + 1}`
-              }
-              className="max-w-full max-h-full object-contain drop-shadow-2xl select-none"
-              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the image
-            />
-
-            {/* Image Counter */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 text-white text-sm font-medium rounded-full tracking-widest backdrop-blur-md">
-              {currentIndex + 1} / {images.length}
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };

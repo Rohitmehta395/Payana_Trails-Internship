@@ -104,6 +104,12 @@ router.put(
   homePageController.reorderTestimonials
 );
 
+router.put(
+  "/testimonials/:imageId",
+  requireAdmin,
+  homePageController.updateTestimonial
+);
+
 router.delete(
   "/testimonials/:imageId",
   requireAdmin,

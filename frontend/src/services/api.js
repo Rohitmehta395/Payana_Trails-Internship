@@ -890,6 +890,21 @@ export const api = {
     }
   },
 
+  updateTestimonialImage: async (imageId, payload) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/home-page/testimonials/${imageId}`, {
+        method: "PUT",
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update testimonial image");
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   // --- PAYANA WAY ROUTES ---
   getPayanaWayPage: async () => {
     try {
@@ -914,6 +929,22 @@ export const api = {
       return data;
     } catch (error) {
       console.error("API Error (updateAJourneyBegins):", error);
+      throw error;
+    }
+  },
+
+  updateThePayanaDifference: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/payana-way/the-payana-difference`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update The Payana Difference");
+      return data;
+    } catch (error) {
+      console.error("API Error (updateThePayanaDifference):", error);
       throw error;
     }
   },

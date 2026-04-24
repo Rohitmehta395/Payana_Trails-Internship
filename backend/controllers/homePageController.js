@@ -195,3 +195,27 @@ exports.deleteTestimonial = async (req, res) => {
   }
 };
 
+exports.updateTestimonial = async (req, res) => {
+  try {
+    const { imageId } = req.params;
+    const { shortDescription, fullContent, alt } = req.body;
+
+    const homePage = await HomePage.findOne();
+    if (!homePage || !homePage.testimonials) {
+      return res.status(404).json({ message: "Home page testimonials not found" });
+    }
+
+    const imgEntry = homePage.testimonials.images.id(imageId);
+    if (!imgEntry) return res.status(404).json({ message: "Image not found" });
+
+    if (shortDescription !== undefined) imgEntry.shortDescription = shortDescription;
+    if (fullContent !== undefined) imgEntry.fullContent = fullContent;
+    if (alt !== undefined) imgEntry.alt = alt;
+
+    await homePage.save();
+
+    res.json({ message: "Testimonial updated successfully", page: homePage });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update testimonial", error: error.message });
+  }
+};
