@@ -48,7 +48,7 @@ const ThePayanaDifference = ({ data }) => {
               </p>
             </div>
 
-            <h2 className="text-3xl font-bold uppercase leading-[1.05] tracking-[0.08em] text-[#4A3B2A] md:whitespace-nowrap md:text-5xl lg:text-6xl">
+            <h2 className="text-3xl font-bold uppercase leading-[1.05] tracking-[0.08em] text-[#4A3B2A] md:whitespace-nowrap md:text-3xl lg:text-4xl">
               The Payana Difference
             </h2>
           </motion.div>

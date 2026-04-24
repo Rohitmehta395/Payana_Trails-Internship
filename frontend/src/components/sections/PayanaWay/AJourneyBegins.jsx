@@ -44,7 +44,7 @@ const AJourneyBegins = ({ data }) => {
           className="flex items-center gap-6 mb-16 md:mb-20"
         >
           <div className="h-[2px] w-12 md:w-24 bg-[#4A3B2A]"></div>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-[#4A3B2A] tracking-[0.2em] uppercase">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[#4A3B2A] tracking-[0.2em] uppercase">
             A Journey Begins
           </h2>
         </motion.div>
