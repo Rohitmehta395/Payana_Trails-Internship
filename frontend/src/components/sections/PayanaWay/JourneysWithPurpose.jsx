@@ -65,7 +65,7 @@ const JourneysWithPurpose = ({ data }) => {
   if (!data || !data.blocks?.length) return null;
 
   return (
-    <section className="relative overflow-hidden bg-[#F3EFE9] py-20 md:py-32">
+    <section id="journeys-with-purpose" className="relative overflow-hidden bg-[#F3EFE9] py-10 md:py-16">
       {/* Architectural Dot Grid Background */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.04]"
@@ -75,7 +75,7 @@ const JourneysWithPurpose = ({ data }) => {
         }}
       />
 
-      <div className="container relative mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="container relative mx-auto max-w-7xl px-4 lg:px-8">
         {/* Header Section (Enhanced Pill Design) */}
         <motion.div
           initial="hidden"
@@ -87,7 +87,7 @@ const JourneysWithPurpose = ({ data }) => {
           {/* Outer glow/shadow for depth */}
           <div className="absolute inset-0 bg-[#4A3B2A]/5 blur-2xl rounded-[3rem] transform translate-y-4" />
 
-          <div className="relative border border-[#4A3B2A]/15 bg-[#FAF5F1] rounded-[2rem] md:rounded-[3rem] p-8 md:p-14 lg:px-20 shadow-[0_10px_40px_rgba(74,59,42,0.05)] backdrop-blur-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="relative border border-[#4A3B2A]/15 bg-[#FAF5F1] rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 lg:px-12 shadow-[0_10px_40px_rgba(74,59,42,0.05)] backdrop-blur-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <div className="flex items-center gap-4 mb-4">
                 <h2 className="text-3xl font-bold uppercase tracking-[0.08em] text-[#4A3B2A] md:text-3xl lg:text-4xl">

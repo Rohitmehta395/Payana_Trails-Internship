@@ -97,8 +97,14 @@ const Footer = () => {
       title: "The Payana Way",
       links: [
         { name: "A Journey Begins", path: "/payana-way#ajourneybegins" },
-        { name: "The Payana Difference", path: "/philosophy" },
-        { name: "Responsible Travel", path: "/responsible-travel" },
+        {
+          name: "The Payana Difference",
+          path: "/payana-way#the-payana-difference",
+        },
+        {
+          name: "Journeys with Purpose",
+          path: "/payana-way#journeys-with-purpose",
+        },
         { name: "In the Media", path: "/media" },
       ],
     },

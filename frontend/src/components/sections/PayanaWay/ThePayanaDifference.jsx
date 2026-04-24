@@ -21,7 +21,7 @@ const ThePayanaDifference = ({ data }) => {
   if (!data || !data.entries?.length) return null;
 
   return (
-    <section className="relative overflow-hidden bg-[#F3EFE9] py-8 md:py-4">
+    <section id="the-payana-difference" className="relative overflow-hidden bg-[#F3EFE9] py-8 md:py-4">
       {/* Soft Background */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#FAF5F1] blur-3xl opacity-70" />
@@ -55,7 +55,7 @@ const ThePayanaDifference = ({ data }) => {
         </motion.div>
 
         {/* Main Section */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8 md:py-12">
           {/* Landscape Image */}
           {data.mainImage && (
             <motion.div
