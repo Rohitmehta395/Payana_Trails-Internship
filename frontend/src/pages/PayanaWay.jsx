@@ -31,18 +31,19 @@ const PayanaWay = () => {
         subtitle="A JOURNEY TO FIND ONESELF"
         images={heroImgs}
         bgImage={heroImg}
-        breadcrumbs={[
-          { label: "HOME", path: "/" },
-          { label: "PAYANA WAY" },
-        ]}
+        breadcrumbs={[{ label: "HOME", path: "/" }, { label: "PAYANA WAY" }]}
       />
-      
-      {pageData?.aJourneyBegins && <AJourneyBegins data={pageData.aJourneyBegins} />}
-      {pageData?.thePayanaDifference && <ThePayanaDifference data={pageData.thePayanaDifference} />}
-      {pageData?.journeysWithPurpose && <JourneysWithPurpose data={pageData.journeysWithPurpose} />}
+
+      {pageData?.aJourneyBegins && (
+        <AJourneyBegins data={pageData.aJourneyBegins} />
+      )}
+      {pageData?.thePayanaDifference && (
+        <ThePayanaDifference data={pageData.thePayanaDifference} />
+      )}
+      {pageData?.journeysWithPurpose && (
+        <JourneysWithPurpose data={pageData.journeysWithPurpose} />
+      )}
       {pageData?.inTheMedia && <InTheMedia data={pageData.inTheMedia} />}
-      
-      {/* Rest of your Payana Way content goes here */}
     </div>
   );
 };

@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const payanaWayPageSchema = new mongoose.Schema(
   {
     aJourneyBegins: {
+      mainTitle: { type: String, default: "A Journey Begins" },
+      subtitle: { type: String, default: "" },
       adminImage: { type: String, default: "" },
       description: { type: String, default: "" },
       paragraph: { type: String, default: "" },
@@ -11,6 +13,8 @@ const payanaWayPageSchema = new mongoose.Schema(
       signatureImage: { type: String, default: "" },
     },
     thePayanaDifference: {
+      mainTitle: { type: String, default: "The Payana Difference" },
+      subtitle: { type: String, default: "" },
       mainImage: { type: String, default: "" },
       entries: [
         {

@@ -26,6 +26,26 @@ const AJourneyBegins = ({ data }) => {
     },
   };
 
+  const ease = [0.16, 1, 0.3, 1];
+
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease },
+    },
+  };
+
+  const imageReveal = {
+    hidden: { opacity: 0, scale: 0.95 },
+    show: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 1.2, ease },
+    },
+  };
+
   return (
     <section
       id="ajourneybegins"
@@ -37,16 +57,38 @@ const AJourneyBegins = ({ data }) => {
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         {/* Header Section */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex items-center gap-6 mb-16 md:mb-20"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={fadeUp}
+          className="mb-20 md:mb-24 w-full relative z-10"
         >
-          <div className="h-[2px] w-12 md:w-24 bg-[#4A3B2A]"></div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[#4A3B2A] tracking-[0.2em] uppercase">
-            A Journey Begins
-          </h2>
+          {/* Outer glow/shadow for depth */}
+          <div className="absolute inset-0 bg-[#4A3B2A]/5 blur-2xl rounded-[3rem] transform translate-y-4" />
+
+          <div className="relative border border-[#4A3B2A]/15 bg-[#FAF5F1] rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 lg:px-12 shadow-[0_10px_40px_rgba(74,59,42,0.05)] backdrop-blur-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <div className="flex items-center gap-4 mb-4">
+                <h2 className="text-3xl md:text-3xl lg:text-4xl font-bold uppercase tracking-[0.08em] text-[#4A3B2A]">
+                  {data.mainTitle || "A Journey Begins"}
+                </h2>
+              </div>
+              <div className="text-sm font-bold uppercase tracking-[0.25em] text-[#4A3B2A]/60 flex items-center gap-3">
+                <div className="w-12 h-[2px] bg-[#4A3B2A]/40" />
+                <span>
+                  {data.subtitle ||
+                    "Journeys and reflections, captured through published articles."}
+                </span>
+              </div>
+            </div>
+
+            {/* Decorative concentric circles */}
+            <div className="hidden md:flex relative w-16 h-16 items-center justify-center opacity-20">
+              <div className="absolute inset-0 border border-[#4A3B2A] rounded-full animate-[spin_10s_linear_infinite]" />
+              <div className="absolute inset-2 border border-[#4A3B2A] border-dashed rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+              <div className="w-2 h-2 bg-[#4A3B2A] rounded-full" />
+            </div>
+          </div>
         </motion.div>
 
         {/* Top Section: Left Image & Right Description (Quote) */}

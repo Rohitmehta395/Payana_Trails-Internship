@@ -76,7 +76,7 @@ const JourneysWithPurpose = ({ data }) => {
       />
 
       <div className="container relative mx-auto max-w-7xl px-4 lg:px-8">
-        {/* Header Section (Enhanced Pill Design) */}
+        {/* Header Section */}
         <motion.div
           initial="hidden"
           whileInView="show"

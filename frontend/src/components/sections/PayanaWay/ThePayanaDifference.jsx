@@ -29,29 +29,37 @@ const ThePayanaDifference = ({ data }) => {
       </div>
 
       <div className="container relative z-10 mx-auto max-w-7xl px-6">
-        {/* Full Width Top Header */}
+        {/* Header Section (Enhanced Pill Design) */}
         <motion.div
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, amount: 0.2 }}
-          className="mb-8 md:mb-10"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={fadeUp}
+          className="mb-16 md:mb-20 w-full relative z-10"
         >
-          <motion.div
-            variants={fadeUp}
-            className="w-full rounded-[2rem] border border-[#4A3B2A]/10 bg-[#FAF5F1]/80 px-6 py-6 text-left shadow-sm backdrop-blur-sm md:px-8 md:py-8 lg:rounded-[2.5rem]"
-          >
-            <div className="mb-4 flex items-center justify-start gap-3">
-              <span className="h-px w-10 bg-[#4A3B2A]/35" />
+          {/* Outer glow/shadow for depth */}
+          <div className="absolute inset-0 bg-[#4A3B2A]/5 blur-2xl rounded-[3rem] transform translate-y-4" />
 
-              <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#4A3B2A]/65">
-                Our Philosophy
-              </p>
+          <div className="relative border border-[#4A3B2A]/15 bg-[#FAF5F1] rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 lg:px-12 shadow-[0_10px_40px_rgba(74,59,42,0.05)] backdrop-blur-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <div className="flex items-center gap-4 mb-4">
+                <h2 className="text-3xl md:text-3xl lg:text-4xl font-bold uppercase tracking-[0.08em] text-[#4A3B2A]">
+                  {data.mainTitle || "The Payana Difference"}
+                </h2>
+              </div>
+              <div className="text-sm font-bold uppercase tracking-[0.25em] text-[#4A3B2A]/60 flex items-center gap-3">
+                <div className="w-12 h-[2px] bg-[#4A3B2A]/40" />
+                <span>{data.subtitle || "Our Philosophy"}</span>
+              </div>
             </div>
 
-            <h2 className="text-3xl font-bold uppercase leading-[1.05] tracking-[0.08em] text-[#4A3B2A] md:whitespace-nowrap md:text-3xl lg:text-4xl">
-              The Payana Difference
-            </h2>
-          </motion.div>
+            {/* Decorative concentric circles */}
+            <div className="hidden md:flex relative w-16 h-16 items-center justify-center opacity-20">
+              <div className="absolute inset-0 border border-[#4A3B2A] rounded-full animate-[spin_10s_linear_infinite]" />
+              <div className="absolute inset-2 border border-[#4A3B2A] border-dashed rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+              <div className="w-2 h-2 bg-[#4A3B2A] rounded-full" />
+            </div>
+          </div>
         </motion.div>
 
         {/* Main Section */}

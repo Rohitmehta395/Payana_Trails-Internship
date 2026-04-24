@@ -4,6 +4,8 @@ import { Plus, Trash2, GripVertical, ChevronUp, ChevronDown, ChevronsUp, Chevron
 
 const ThePayanaDifferenceManager = () => {
   const [formData, setFormData] = useState({
+    mainTitle: "",
+    subtitle: "",
     mainImage: null,
   });
   const [entries, setEntries] = useState([]);
@@ -19,6 +21,11 @@ const ThePayanaDifferenceManager = () => {
       const responseData = await api.getPayanaWayPage();
       const { thePayanaDifference } = responseData;
       if (thePayanaDifference) {
+        setFormData({
+          mainTitle: thePayanaDifference.mainTitle || "",
+          subtitle: thePayanaDifference.subtitle || "",
+          mainImage: null,
+        });
         setEntries(thePayanaDifference.entries || []);
         setCurrentMainImage(thePayanaDifference.mainImage || "");
       }
@@ -36,8 +43,13 @@ const ThePayanaDifferenceManager = () => {
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
-      setFormData({ mainImage: e.target.files[0] });
+      setFormData((prev) => ({ ...prev, mainImage: e.target.files[0] }));
     }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleEntryChange = (index, field, value) => {
@@ -102,6 +114,8 @@ const ThePayanaDifferenceManager = () => {
     }
 
     const form = new FormData();
+    form.append("mainTitle", formData.mainTitle);
+    form.append("subtitle", formData.subtitle);
     form.append("entriesData", JSON.stringify(entries));
     if (formData.mainImage) form.append("mainImage", formData.mainImage);
 
@@ -122,7 +136,7 @@ const ThePayanaDifferenceManager = () => {
       }
       
       showAutoHidingMessage("success", successMsg, 5000);
-      setFormData({ mainImage: null });
+      setFormData((prev) => ({ ...prev, mainImage: null }));
       // Reset file input
       const fileInput = document.getElementById("tp_mainImage");
       if (fileInput) fileInput.value = "";
@@ -141,6 +155,39 @@ const ThePayanaDifferenceManager = () => {
   return (
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Main Header Information */}
+        <div className="bg-gray-50 p-6 rounded-md border border-gray-200">
+          <h3 className="text-lg font-bold text-[#4A3B2A] mb-4">Header Content</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Main Title
+              </label>
+              <input
+                type="text"
+                name="mainTitle"
+                value={formData.mainTitle}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Subtitle
+              </label>
+              <input
+                type="text"
+                name="subtitle"
+                value={formData.subtitle}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Main Image Upload */}
         <div className="bg-gray-50 p-6 rounded-md border border-gray-200">
           <h3 className="text-lg font-bold text-[#4A3B2A] mb-4">Main Image</h3>

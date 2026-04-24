@@ -4,6 +4,10 @@ import { api, IMAGE_BASE_URL } from "../../../services/api";
 
 const AJourneyBeginsManager = () => {
   const [formData, setFormData] = useState({
+    mainTitle: "",
+
+    subtitle: "",
+
     description: "",
 
     paragraph: "",
@@ -39,6 +43,10 @@ const AJourneyBeginsManager = () => {
 
       if (aJourneyBegins) {
         setFormData({
+          mainTitle: aJourneyBegins.mainTitle || "",
+
+          subtitle: aJourneyBegins.subtitle || "",
+
           description: aJourneyBegins.description || "",
 
           paragraph: aJourneyBegins.paragraph || "",
@@ -117,6 +125,10 @@ const AJourneyBeginsManager = () => {
     const form = new FormData();
 
     const dataToSend = {
+      mainTitle: formData.mainTitle,
+
+      subtitle: formData.subtitle,
+
       description: formData.description,
 
       paragraph: formData.paragraph,
@@ -193,6 +205,38 @@ const AJourneyBeginsManager = () => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Main Title
+            </label>
+
+            <input
+              type="text"
+              name="mainTitle"
+              value={formData.mainTitle}
+              onChange={handleInputChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Subtitle
+            </label>
+
+            <input
+              type="text"
+              name="subtitle"
+              value={formData.subtitle}
+              onChange={handleInputChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+            />
+          </div>
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Description (Italic on UI)

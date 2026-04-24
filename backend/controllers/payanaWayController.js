@@ -25,6 +25,8 @@ exports.getPayanaWayPage = async (req, res) => {
     if (!page) {
       page = await PayanaWayPage.create({
         aJourneyBegins: {
+          mainTitle: "A Journey Begins",
+          subtitle: "Journeys and reflections, captured through published articles.",
           adminImage: "",
           description: "",
           paragraph: "",
@@ -33,6 +35,8 @@ exports.getPayanaWayPage = async (req, res) => {
           signatureImage: "",
         },
         thePayanaDifference: {
+          mainTitle: "The Payana Difference",
+          subtitle: "Our Philosophy",
           mainImage: "",
           entries: [],
         },
@@ -69,6 +73,8 @@ exports.updateAJourneyBegins = async (req, res) => {
     }
 
     // Update text fields
+    page.aJourneyBegins.mainTitle = data.mainTitle || page.aJourneyBegins.mainTitle;
+    page.aJourneyBegins.subtitle = data.subtitle || page.aJourneyBegins.subtitle;
     page.aJourneyBegins.description = data.description || page.aJourneyBegins.description;
     page.aJourneyBegins.paragraph = data.paragraph || page.aJourneyBegins.paragraph;
     page.aJourneyBegins.name = data.name || page.aJourneyBegins.name;
@@ -165,6 +171,8 @@ exports.updateThePayanaDifference = async (req, res) => {
     if (!page) {
       page = new PayanaWayPage({
         aJourneyBegins: {
+          mainTitle: "A Journey Begins",
+          subtitle: "Journeys and reflections, captured through published articles.",
           adminImage: "",
           description: "",
           paragraph: "",
@@ -173,6 +181,8 @@ exports.updateThePayanaDifference = async (req, res) => {
           signatureImage: "",
         },
         thePayanaDifference: {
+          mainTitle: "The Payana Difference",
+          subtitle: "Our Philosophy",
           mainImage: "",
           entries: [],
         },
@@ -189,11 +199,14 @@ exports.updateThePayanaDifference = async (req, res) => {
       });
     }
 
-    const { entriesData } = req.body;
+    const { mainTitle, subtitle, entriesData } = req.body;
     let entries = [];
     if (entriesData) {
       entries = JSON.parse(entriesData);
     }
+
+    if (mainTitle) page.thePayanaDifference.mainTitle = mainTitle;
+    if (subtitle) page.thePayanaDifference.subtitle = subtitle;
 
     const files = req.files || {};
     const imageStats = [];
@@ -241,10 +254,8 @@ exports.updateThePayanaDifference = async (req, res) => {
       newMainImage = `/uploads/payanaWay/thePayanaDifference/${webpFilename}`;
     }
 
-    page.thePayanaDifference = {
-      mainImage: newMainImage,
-      entries: entries,
-    };
+    page.thePayanaDifference.mainImage = newMainImage;
+    page.thePayanaDifference.entries = entries;
 
     await page.save();
 
