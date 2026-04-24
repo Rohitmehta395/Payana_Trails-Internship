@@ -102,7 +102,7 @@ const TestimonialsSection = () => {
               <div
                 key={img._id}
                 onClick={() => handleImageClick(img)}
-                className="flex-none w-[240px] sm:w-[280px] md:w-[320px] h-[340px] sm:h-[380px] bg-white rounded-2xl overflow-hidden snap-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 flex flex-col group"
+                className="flex-none w-[240px] sm:w-[280px] md:w-[320px] h-[340px] sm:h-[380px] bg-[#F8F5F2] rounded-2xl overflow-hidden snap-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 flex flex-col group"
               >
                 {/* Image Section (Top 50%) */}
                 <div className="h-1/2 w-full overflow-hidden relative">
@@ -114,21 +114,27 @@ const TestimonialsSection = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
-                
+
                 {/* Text Section (Bottom 50%) */}
                 <div className="h-1/2 p-5 sm:p-6 flex flex-col justify-between">
                   <div>
                     {img.alt && (
-                      <h4 className="font-serif font-bold text-lg text-[#4A3B2A] mb-2">{img.alt}</h4>
+                      <h4 className="font-serif font-bold text-lg text-[#4A3B2A] mb-2">
+                        {img.alt}
+                      </h4>
                     )}
                     <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
-                      {img.shortDescription || "Read about this beautiful journey experience..."}
+                      {img.shortDescription ||
+                        "Read about this beautiful journey experience..."}
                     </p>
                   </div>
-                  
+
                   <div className="flex items-center text-[#4A3B2A] font-semibold text-sm mt-3 pt-3 border-t border-gray-100 group-hover:text-[#6a5439] transition-colors">
                     <span>Click to read more</span>
-                    <ArrowRight size={16} className="ml-2 transform group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight
+                      size={16}
+                      className="ml-2 transform group-hover:translate-x-1 transition-transform"
+                    />
                   </div>
                 </div>
               </div>

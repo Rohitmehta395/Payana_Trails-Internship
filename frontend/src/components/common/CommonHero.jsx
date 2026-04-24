@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft, FiChevronDown } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
 const CommonHero = ({ title, description, images = [], bgImage, breadcrumbs }) => {
@@ -58,7 +58,7 @@ const CommonHero = ({ title, description, images = [], bgImage, breadcrumbs }) =
       initial="hidden"
       animate="visible"
       variants={staggerContainer}
-      className="relative w-full h-[60vh] md:h-[80vh] flex flex-col justify-center items-center text-center overflow-hidden bg-[#110C08]"
+      className="relative w-full h-[60vh] md:h-[100vh] flex flex-col justify-center items-center text-center overflow-hidden bg-[#110C08]"
     >
       {/* Background Image Slider (Cross-fade) */}
       <div className="absolute inset-0 z-0">
@@ -153,6 +153,35 @@ const CommonHero = ({ title, description, images = [], bgImage, breadcrumbs }) =
           {renderBackButton()}
         </motion.div>
       </div>
+
+      {/* Scroll Down Indicator */}
+      <motion.div
+        variants={fadeUpItem}
+        className="hidden md:block absolute bottom-10 left-1/2 -translate-x-1/2 z-20"
+      >
+        <button
+          onClick={() => {
+            window.scrollTo({
+              top: window.innerHeight,
+              behavior: "smooth",
+            });
+          }}
+          className="group flex flex-col items-center gap-2"
+        >
+          <div className="flex items-center gap-3 bg-[#4A3B2A]/30 hover:bg-[#4A3B2A]/50 backdrop-blur-md border border-[#F3EFE9]/20 px-6 py-3 rounded-full transition-all duration-500 shadow-2xl cursor-pointer">
+            <span className="text-[#F3EFE9] text-[10px] md:text-xs tracking-[0.3em] uppercase font-medium opacity-80 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              Scroll to Explore
+            </span>
+            <motion.div
+              animate={{ y: [0, 4, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="text-[#F3EFE9] cursor-pointer"
+            >
+              <FiChevronDown className="w-4 h-4 md:w-5 md:h-5" />
+            </motion.div>
+          </div>
+        </button>
+      </motion.div>
     </motion.section>
   );
 };
