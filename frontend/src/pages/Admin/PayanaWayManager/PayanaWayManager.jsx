@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AJourneyBeginsManager from "./AJourneyBeginsManager";
 import ThePayanaDifferenceManager from "./ThePayanaDifferenceManager";
 import JourneysWithPurposeManager from "./JourneysWithPurposeManager";
+import InTheMediaManager from "./InTheMediaManager";
 
 const PayanaWayManager = () => {
   const [activeTab, setActiveTab] = useState("aJourneyBegins");
@@ -21,6 +22,11 @@ const PayanaWayManager = () => {
       id: "journeysWithPurpose",
       label: "Journeys with Purpose",
       render: () => <JourneysWithPurposeManager />,
+    },
+    {
+      id: "inTheMedia",
+      label: "In The Media",
+      render: () => <InTheMediaManager />,
     },
   ];
 

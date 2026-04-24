@@ -964,6 +964,21 @@ export const api = {
       throw error;
     }
   },
+  updateInTheMedia: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/payana-way/in-the-media`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update In The Media");
+      return data;
+    } catch (error) {
+      console.error("API Error (updateInTheMedia):", error);
+      throw error;
+    }
+  },
 };
 
 

@@ -6,6 +6,7 @@ const {
   updateAJourneyBegins,
   updateThePayanaDifference,
   updateJourneysWithPurpose,
+  updateInTheMedia,
 } = require("../controllers/payanaWayController");
 const { requireAdmin } = require("../middlewares/adminAuth");
 
@@ -41,6 +42,13 @@ router.put(
   requireAdmin,
   upload.any(), // since we use dynamic field names like blockImage_0
   updateJourneysWithPurpose
+);
+
+router.put(
+  "/in-the-media",
+  requireAdmin,
+  upload.any(), // dynamic field names like itemImage_0
+  updateInTheMedia
 );
 
 module.exports = router;

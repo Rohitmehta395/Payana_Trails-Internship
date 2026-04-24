@@ -41,6 +41,11 @@ exports.getPayanaWayPage = async (req, res) => {
           subtitle: "Journeys that enrich you, while leaving a positive difference behind.",
           blocks: [],
         },
+        inTheMedia: {
+          mainTitle: "In The Media",
+          subtitle: "Journeys and reflections, captured through published articles.",
+          items: [],
+        },
       });
     }
     res.status(200).json(page);
@@ -176,6 +181,11 @@ exports.updateThePayanaDifference = async (req, res) => {
           subtitle: "Journeys that enrich you, while leaving a positive difference behind.",
           blocks: [],
         },
+        inTheMedia: {
+          mainTitle: "In The Media",
+          subtitle: "Journeys and reflections, captured through published articles.",
+          items: [],
+        },
       });
     }
 
@@ -273,6 +283,11 @@ exports.updateJourneysWithPurpose = async (req, res) => {
           subtitle: "Journeys that enrich you, while leaving a positive difference behind.",
           blocks: [],
         },
+        inTheMedia: {
+          mainTitle: "In The Media",
+          subtitle: "Journeys and reflections, captured through published articles.",
+          items: [],
+        },
       });
     }
 
@@ -356,6 +371,103 @@ exports.updateJourneysWithPurpose = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating Journeys with Purpose:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+const mediaUploadsFolder = path.join(__dirname, "..", "uploads", "payanaWay", "inTheMedia");
+
+exports.updateInTheMedia = async (req, res) => {
+  try {
+    let page = await PayanaWayPage.findOne();
+    if (!page) {
+      page = new PayanaWayPage({
+        aJourneyBegins: { adminImage: "", description: "", paragraph: "", name: "", occupation: "", signatureImage: "" },
+        thePayanaDifference: { mainImage: "", entries: [] },
+        journeysWithPurpose: { mainTitle: "Journeys with Purpose", subtitle: "Journeys that enrich you, while leaving a positive difference behind.", blocks: [] },
+        inTheMedia: { mainTitle: "In The Media", subtitle: "Journeys and reflections, captured through published articles.", items: [] }
+      });
+    }
+
+    const { mainTitle, subtitle, itemsData } = req.body;
+    let items = [];
+    if (itemsData) {
+      items = JSON.parse(itemsData);
+    }
+
+    if (mainTitle) page.inTheMedia.mainTitle = mainTitle;
+    if (subtitle) page.inTheMedia.subtitle = subtitle;
+
+    const files = req.files || {};
+    const imageStats = [];
+
+    if (!fs.existsSync(mediaUploadsFolder)) {
+      fs.mkdirSync(mediaUploadsFolder, { recursive: true });
+    }
+
+    // Process items images
+    for (let i = 0; i < items.length; i++) {
+      const fieldName = `itemImage_${i}`;
+      let file = null;
+      if (Array.isArray(files)) {
+        file = files.find((f) => f.fieldname === fieldName);
+      } else if (files[fieldName] && files[fieldName][0]) {
+        file = files[fieldName][0];
+      }
+
+      if (file) {
+        const baseName = `media-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+        const webpFilename = `${baseName}.webp`;
+        const destPath = path.join(mediaUploadsFolder, webpFilename);
+
+        const compressedBuffer = await sharp(file.buffer)
+          .resize(1200, null, { withoutEnlargement: true })
+          .webp({ quality: 80 })
+          .toBuffer();
+
+        fs.writeFileSync(destPath, compressedBuffer);
+
+        const originalSize = file.size || file.buffer?.length || 0;
+        const compressedSize = compressedBuffer.length;
+        
+        imageStats.push({
+          field: `Item Image ${i}`,
+          originalName: file.originalname,
+          originalSize,
+          compressedSize,
+          savedPercent: originalSize > 0 ? Math.round((1 - compressedSize / originalSize) * 100) : 0,
+        });
+
+        items[i].image = `/uploads/payanaWay/inTheMedia/${webpFilename}`;
+      }
+    }
+
+    // Cleanup old images
+    if (page.inTheMedia && page.inTheMedia.items) {
+      const oldImages = page.inTheMedia.items.map(b => b.image).filter(Boolean);
+      const newImages = items.map(b => b.image).filter(Boolean);
+      oldImages.forEach(oldImg => {
+        if (!newImages.includes(oldImg)) {
+          const oldFileName = oldImg.split("/").pop();
+          const fp = path.join(mediaUploadsFolder, oldFileName);
+          fs.unlink(fp, (err) => {
+             if (err && err.code !== "ENOENT") console.error("Failed to delete old media image:", err.message);
+          });
+        }
+      });
+    }
+
+    page.inTheMedia.items = items;
+
+    await page.save();
+
+    res.status(200).json({
+      message: "In The Media updated successfully",
+      page,
+      imageStats,
+    });
+  } catch (error) {
+    console.error("Error updating In The Media:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

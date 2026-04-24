@@ -30,6 +30,19 @@ const payanaWayPageSchema = new mongoose.Schema(
         },
       ],
     },
+    inTheMedia: {
+      mainTitle: { type: String, default: "In The Media" },
+      subtitle: { type: String, default: "Journeys and reflections, captured through published articles." },
+      items: [
+        {
+          image: { type: String, default: "" },
+          publishedBy: { type: String, default: "" },
+          authorName: { type: String, default: "" },
+          date: { type: String, default: "" },
+          description: { type: String, default: "" },
+        },
+      ],
+    },
   },
   { timestamps: true },
 );
