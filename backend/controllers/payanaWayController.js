@@ -36,6 +36,11 @@ exports.getPayanaWayPage = async (req, res) => {
           mainImage: "",
           entries: [],
         },
+        journeysWithPurpose: {
+          mainTitle: "Journeys with Purpose",
+          subtitle: "Journeys that enrich you, while leaving a positive difference behind.",
+          blocks: [],
+        },
       });
     }
     res.status(200).json(page);
@@ -166,6 +171,11 @@ exports.updateThePayanaDifference = async (req, res) => {
           mainImage: "",
           entries: [],
         },
+        journeysWithPurpose: {
+          mainTitle: "Journeys with Purpose",
+          subtitle: "Journeys that enrich you, while leaving a positive difference behind.",
+          blocks: [],
+        },
       });
     }
 
@@ -238,3 +248,115 @@ exports.updateThePayanaDifference = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+const journeysUploadsFolder = path.join(__dirname, "..", "uploads", "payanaWay", "journeysWithPurpose");
+
+exports.updateJourneysWithPurpose = async (req, res) => {
+  try {
+    let page = await PayanaWayPage.findOne();
+    if (!page) {
+      page = new PayanaWayPage({
+        aJourneyBegins: {
+          adminImage: "",
+          description: "",
+          paragraph: "",
+          name: "",
+          occupation: "",
+          signatureImage: "",
+        },
+        thePayanaDifference: {
+          mainImage: "",
+          entries: [],
+        },
+        journeysWithPurpose: {
+          mainTitle: "Journeys with Purpose",
+          subtitle: "Journeys that enrich you, while leaving a positive difference behind.",
+          blocks: [],
+        },
+      });
+    }
+
+    const { mainTitle, subtitle, blocksData } = req.body;
+    let blocks = [];
+    if (blocksData) {
+      blocks = JSON.parse(blocksData);
+    }
+
+    if (mainTitle) page.journeysWithPurpose.mainTitle = mainTitle;
+    if (subtitle) page.journeysWithPurpose.subtitle = subtitle;
+
+    const files = req.files || {};
+    const imageStats = [];
+
+    if (!fs.existsSync(journeysUploadsFolder)) {
+      fs.mkdirSync(journeysUploadsFolder, { recursive: true });
+    }
+
+    // Process blocks images
+    // If a block has image uploaded via files, update it
+    for (let i = 0; i < blocks.length; i++) {
+      const fieldName = `blockImage_${i}`;
+      let file = null;
+      if (Array.isArray(files)) {
+        file = files.find((f) => f.fieldname === fieldName);
+      } else if (files[fieldName] && files[fieldName][0]) {
+        file = files[fieldName][0];
+      }
+
+      if (file) {
+        const baseName = `journey-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+        const webpFilename = `${baseName}.webp`;
+        const destPath = path.join(journeysUploadsFolder, webpFilename);
+
+        const compressedBuffer = await sharp(file.buffer)
+          .resize(1200, null, { withoutEnlargement: true })
+          .webp({ quality: 80 })
+          .toBuffer();
+
+        fs.writeFileSync(destPath, compressedBuffer);
+
+        const originalSize = file.size || file.buffer?.length || 0;
+        const compressedSize = compressedBuffer.length;
+        
+        imageStats.push({
+          field: `Block Image ${i}`,
+          originalName: file.originalname,
+          originalSize,
+          compressedSize,
+          savedPercent: originalSize > 0 ? Math.round((1 - compressedSize / originalSize) * 100) : 0,
+        });
+
+        blocks[i].image = `/uploads/payanaWay/journeysWithPurpose/${webpFilename}`;
+      }
+    }
+
+    // Cleanup old images that are no longer in any blocks
+    if (page.journeysWithPurpose && page.journeysWithPurpose.blocks) {
+      const oldImages = page.journeysWithPurpose.blocks.map(b => b.image).filter(Boolean);
+      const newImages = blocks.map(b => b.image).filter(Boolean);
+      oldImages.forEach(oldImg => {
+        if (!newImages.includes(oldImg)) {
+          const oldFileName = oldImg.split("/").pop();
+          const fp = path.join(journeysUploadsFolder, oldFileName);
+          fs.unlink(fp, (err) => {
+             if (err && err.code !== "ENOENT") console.error("Failed to delete old journey image:", err.message);
+          });
+        }
+      });
+    }
+
+    page.journeysWithPurpose.blocks = blocks;
+
+    await page.save();
+
+    res.status(200).json({
+      message: "Journeys with Purpose updated successfully",
+      page,
+      imageStats,
+    });
+  } catch (error) {
+    console.error("Error updating Journeys with Purpose:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+

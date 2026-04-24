@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import AJourneyBeginsManager from "./AJourneyBeginsManager";
 import ThePayanaDifferenceManager from "./ThePayanaDifferenceManager";
+import JourneysWithPurposeManager from "./JourneysWithPurposeManager";
 
 const PayanaWayManager = () => {
   const [activeTab, setActiveTab] = useState("aJourneyBegins");
@@ -15,6 +16,11 @@ const PayanaWayManager = () => {
       id: "thePayanaDifference",
       label: "The Payana Difference",
       render: () => <ThePayanaDifferenceManager />,
+    },
+    {
+      id: "journeysWithPurpose",
+      label: "Journeys with Purpose",
+      render: () => <JourneysWithPurposeManager />,
     },
   ];
 

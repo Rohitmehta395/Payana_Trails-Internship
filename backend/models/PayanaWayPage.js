@@ -20,6 +20,16 @@ const payanaWayPageSchema = new mongoose.Schema(
         },
       ],
     },
+    journeysWithPurpose: {
+      mainTitle: { type: String, default: "Journeys with Purpose" },
+      subtitle: { type: String, default: "Journeys that enrich you, while leaving a positive difference behind." },
+      blocks: [
+        {
+          image: { type: String, default: "" },
+          description: { type: String, default: "" },
+        },
+      ],
+    },
   },
   { timestamps: true },
 );

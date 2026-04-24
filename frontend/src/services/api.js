@@ -948,6 +948,22 @@ export const api = {
       throw error;
     }
   },
+
+  updateJourneysWithPurpose: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/payana-way/journeys-with-purpose`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update Journeys with Purpose");
+      return data;
+    } catch (error) {
+      console.error("API Error (updateJourneysWithPurpose):", error);
+      throw error;
+    }
+  },
 };
 
 

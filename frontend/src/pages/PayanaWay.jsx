@@ -5,6 +5,7 @@ import heroImg from "../assets/Home/PayanaWay/Payana-way.webp";
 import usePageHeroImages from "../hooks/usePageHeroImages";
 import AJourneyBegins from "../components/sections/PayanaWay/AJourneyBegins";
 import ThePayanaDifference from "../components/sections/PayanaWay/ThePayanaDifference";
+import JourneysWithPurpose from "../components/sections/PayanaWay/JourneysWithPurpose";
 
 const PayanaWay = () => {
   const { images: heroImgs } = usePageHeroImages("payana-way");
@@ -37,6 +38,7 @@ const PayanaWay = () => {
       
       {pageData?.aJourneyBegins && <AJourneyBegins data={pageData.aJourneyBegins} />}
       {pageData?.thePayanaDifference && <ThePayanaDifference data={pageData.thePayanaDifference} />}
+      {pageData?.journeysWithPurpose && <JourneysWithPurpose data={pageData.journeysWithPurpose} />}
       
       {/* Rest of your Payana Way content goes here */}
     </div>
