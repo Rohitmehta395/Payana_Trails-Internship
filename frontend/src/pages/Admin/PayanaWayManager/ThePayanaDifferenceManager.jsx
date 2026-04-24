@@ -207,41 +207,66 @@ const ThePayanaDifferenceManager = () => {
                     </button>
                   </div>
                   
-                  <div className={`flex items-start gap-4 pr-[200px] ${!expandedEntries.has(index) ? "h-10 overflow-hidden" : ""}`}>
-                    <div className="flex-1 space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Title {!expandedEntries.has(index) ? `(Collapsed) - ${entry.title || "Untitled"}` : ""}</label>
-                        <input
-                          type="text"
-                          value={entry.title}
-                          onChange={(e) => handleEntryChange(index, "title", e.target.value)}
-                          placeholder="e.g., Designed for Seniors, at the Right Pace"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
-                        />
+                  <div className={`flex flex-col gap-4 ${!expandedEntries.has(index) ? "" : "pr-[180px] pt-2"}`}>
+                    
+                    {/* Collapsed State Preview */}
+                    {!expandedEntries.has(index) && (
+                      <div className="flex items-center gap-4 pr-[180px] cursor-pointer" onClick={() => toggleCollapse(index)}>
+                        <div className="w-12 h-12 bg-[#F3EFE9] text-[#4A3B2A] rounded-lg border border-[#4A3B2A]/20 flex-shrink-0 flex items-center justify-center font-bold text-lg">
+                           {String(index + 1).padStart(2, "0")}
+                        </div>
+                        <div className="flex-1 overflow-hidden">
+                           <p className="text-sm font-medium text-gray-800 truncate">
+                             {entry.title || "Untitled Entry"}
+                           </p>
+                           <p className="text-xs text-gray-500 truncate">
+                             {entry.subtitle || "No subtitle"}
+                           </p>
+                        </div>
                       </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
-                        <input
-                          type="text"
-                          value={entry.subtitle}
-                          onChange={(e) => handleEntryChange(index, "subtitle", e.target.value)}
-                          placeholder="e.g., Because comfort is not a luxury — it is essential."
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
-                        />
-                      </div>
+                    )}
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                        <textarea
-                          value={entry.description}
-                          onChange={(e) => handleEntryChange(index, "description", e.target.value)}
-                          placeholder="Description details..."
-                          rows="4"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A] resize-y whitespace-pre-wrap"
-                        />
+                    {/* Expanded State */}
+                    {expandedEntries.has(index) && (
+                      <div className="flex-1 space-y-6">
+                        <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 space-y-5">
+                          
+                          <div>
+                            <label className="block text-sm font-semibold text-[#4A3B2A] mb-2">Title</label>
+                            <input
+                              type="text"
+                              value={entry.title}
+                              onChange={(e) => handleEntryChange(index, "title", e.target.value)}
+                              placeholder="e.g., Designed for Seniors, at the Right Pace"
+                              className="w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:ring-[#4A3B2A] focus:border-[#4A3B2A] bg-white shadow-sm"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-semibold text-[#4A3B2A] mb-2">Subtitle</label>
+                            <input
+                              type="text"
+                              value={entry.subtitle}
+                              onChange={(e) => handleEntryChange(index, "subtitle", e.target.value)}
+                              placeholder="e.g., Because comfort is not a luxury — it is essential."
+                              className="w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:ring-[#4A3B2A] focus:border-[#4A3B2A] bg-white shadow-sm"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-semibold text-[#4A3B2A] mb-2">Description</label>
+                            <textarea
+                              value={entry.description}
+                              onChange={(e) => handleEntryChange(index, "description", e.target.value)}
+                              placeholder="Write the content here..."
+                              rows="5"
+                              className="w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:ring-[#4A3B2A] focus:border-[#4A3B2A] resize-y whitespace-pre-wrap bg-white shadow-sm"
+                            />
+                          </div>
+                          
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               ))
