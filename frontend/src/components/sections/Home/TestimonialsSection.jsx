@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { FaHeart } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import useHomePageData from "../../../hooks/useHomePageData";
@@ -26,30 +26,23 @@ const TestimonialsSection = () => {
 
   const scrollLeft = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: -300, behavior: "smooth" });
+      const card = carouselRef.current.querySelector(":scope > div");
+      if (card) {
+        const gap = window.innerWidth >= 640 ? 24 : 16;
+        carouselRef.current.scrollBy({ left: -(card.offsetWidth + gap), behavior: "smooth" });
+      }
     }
   };
 
   const scrollRight = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: 300, behavior: "smooth" });
+      const card = carouselRef.current.querySelector(":scope > div");
+      if (card) {
+        const gap = window.innerWidth >= 640 ? 24 : 16;
+        carouselRef.current.scrollBy({ left: card.offsetWidth + gap, behavior: "smooth" });
+      }
     }
   };
-
-  // Auto slide effect for the carousel (optional, but requested as "auto or manual sliding")
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (carouselRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
-        if (scrollLeft + clientWidth >= scrollWidth - 10) {
-          carouselRef.current.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-          carouselRef.current.scrollBy({ left: 300, behavior: "smooth" });
-        }
-      }
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
 
   if (images.length === 0) return null;
 
@@ -75,7 +68,7 @@ const TestimonialsSection = () => {
         {/* Carousel Container */}
         <div className="relative group">
           {/* Navigation Buttons for Carousel */}
-          {images.length > 3 && (
+          {images.length > 1 && (
             <>
               <button
                 onClick={scrollLeft}
@@ -95,14 +88,14 @@ const TestimonialsSection = () => {
           {/* Carousel Track */}
           <div
             ref={carouselRef}
-            className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-8 pt-4 px-4"
+            className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-8 pt-4"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {images.map((img, idx) => (
               <div
                 key={img._id}
                 onClick={() => handleImageClick(img)}
-                className="flex-none w-[240px] sm:w-[280px] md:w-[320px] h-[340px] sm:h-[380px] bg-[#F8F5F2] rounded-2xl overflow-hidden snap-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 flex flex-col group"
+                className="flex-none w-full sm:w-[calc((100%-1.5rem)/2)] md:w-[calc((100%-2*1.5rem)/3)] lg:w-[calc((100%-3*1.5rem)/4)] h-[340px] sm:h-[380px] bg-[#F8F5F2] rounded-2xl overflow-hidden snap-start cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 flex flex-col group"
               >
                 {/* Image Section (Top 50%) */}
                 <div className="h-1/2 w-full overflow-hidden relative">
