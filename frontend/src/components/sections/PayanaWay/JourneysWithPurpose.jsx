@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { IMAGE_BASE_URL } from "../../../services/api";
 import RichTextRenderer from "../../common/RichTextRenderer";
+import LightboxImage from "../../common/LightboxImage";
 
 const ease = [0.16, 1, 0.3, 1];
 
@@ -144,14 +145,13 @@ const JourneysWithPurpose = ({ data }) => {
                         }`}
                       />
 
-                      <div className="relative overflow-hidden rounded-[1.5rem] bg-[#FAF5F1] shadow-[0_20px_50px_rgba(74,59,42,0.15)] aspect-video w-full z-10">
-                        <img
-                          src={`${IMAGE_BASE_URL}${block.image}`}
-                          alt={`Journey block ${index + 1}`}
-                          className="h-full w-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
-                        />
-                        <div className="pointer-events-none absolute inset-0 bg-[#4A3B2A]/10 mix-blend-multiply transition-opacity duration-500 group-hover:opacity-0" />
-                      </div>
+                      <LightboxImage
+                        src={`${IMAGE_BASE_URL}${block.image}`}
+                        alt={`Journey block ${index + 1}`}
+                        className="aspect-video"
+                        containerClassName="z-10"
+                        rounded="rounded-[1.5rem]"
+                      />
                     </motion.div>
                   )}
 

@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { IMAGE_BASE_URL } from "../../../services/api";
 import RichTextRenderer from "../../common/RichTextRenderer";
+import LightboxImage from "../../common/LightboxImage";
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -67,23 +68,13 @@ const ThePayanaDifference = ({ data }) => {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8 md:py-12">
           {/* Landscape Image */}
           {data.mainImage && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.9, ease }}
-              className="relative h-[300px] overflow-hidden rounded-[2rem] bg-[#FAF5F1] shadow-2xl md:h-[420px] lg:col-span-7 lg:h-[540px] lg:rounded-[3rem]"
-            >
-              <motion.img
-                src={`${IMAGE_BASE_URL}${data.mainImage}`}
-                alt="The Payana Difference"
-                className="h-full w-full object-cover"
-                whileHover={{ scale: 1.04 }}
-                transition={{ duration: 1.1, ease }}
-              />
-
-              <div className="pointer-events-none absolute inset-0 bg-[#4A3B2A]/10 mix-blend-multiply" />
-            </motion.div>
+            <LightboxImage
+              src={`${IMAGE_BASE_URL}${data.mainImage}`}
+              alt="The Payana Difference"
+              className="h-[300px] md:h-[420px] lg:h-[540px]"
+              containerClassName="lg:col-span-7"
+              rounded="rounded-[2rem] lg:rounded-[3rem]"
+            />
           )}
 
           {/* Scrollable Entries */}

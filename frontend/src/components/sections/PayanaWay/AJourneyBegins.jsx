@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { IMAGE_BASE_URL } from "../../../services/api";
 import RichTextRenderer from "../../common/RichTextRenderer";
+import LightboxImage from "../../common/LightboxImage";
 
 const AJourneyBegins = ({ data }) => {
   if (!data) return null;
@@ -50,7 +51,7 @@ const AJourneyBegins = ({ data }) => {
   return (
     <section
       id="ajourneybegins"
-      className="relative py-20 md:py-24 bg-[#F3EFE9] overflow-hidden"
+      className="relative py-20 md:py-12 bg-[#F3EFE9] overflow-hidden"
     >
       {/* Subtle Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(circle_at_center,#4A3B2A_1px,transparent_1px)] bg-size-[24px_24px]"></div>
@@ -107,19 +108,12 @@ const AJourneyBegins = ({ data }) => {
                 {/* Decorative Offset Border for Landscape */}
                 <div className="absolute top-4 left-4 right-0 bottom-0 border border-[#4A3B2A]/30 rounded-2xl md:rounded-[3rem] transition-transform duration-700 ease-out group-hover:translate-x-2 group-hover:translate-y-2 z-0"></div>
 
-                {/* Main Image Container */}
-                <div className="relative z-10 rounded-2xl md:rounded-[3rem] overflow-hidden shadow-xl aspect-video bg-[#4A3B2A]/10">
-                  <motion.img
-                    initial={{ scale: 1.1 }}
-                    whileInView={{ scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
-                    whileHover={{ scale: 1.03 }}
-                    src={`${IMAGE_BASE_URL}${data.adminImage}`}
-                    alt={data.name || "Admin"}
-                    className="w-full h-full object-cover transition-transform duration-700"
-                  />
-                </div>
+                <LightboxImage
+                  src={`${IMAGE_BASE_URL}${data.adminImage}`}
+                  alt={data.name || "Admin"}
+                  className="aspect-video"
+                  containerClassName="z-10"
+                />
               </div>
             )}
           </motion.div>

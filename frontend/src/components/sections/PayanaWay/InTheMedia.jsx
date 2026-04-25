@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { IMAGE_BASE_URL } from "../../../services/api";
 import BrownBtn from "../../common/buttons/BrownBtn";
 import RichTextRenderer from "../../common/RichTextRenderer";
+import LightboxImage from "../../common/LightboxImage";
 
 const ease = [0.16, 1, 0.3, 1];
 
@@ -114,14 +115,13 @@ const InTheMedia = ({ data }) => {
                           : "-translate-x-4 translate-y-4 group-hover:-translate-x-6 group-hover:translate-y-6"
                       }`}
                     />
-                    <div className="relative overflow-hidden rounded-2xl bg-white shadow-xl aspect-video w-full z-10">
-                      <img
-                        src={`${IMAGE_BASE_URL}${item.image}`}
-                        alt={item.publishedBy || "Media Article"}
-                        className="h-full w-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#4A3B2A]/20 to-transparent opacity-60 pointer-events-none" />
-                    </div>
+                    <LightboxImage
+                      src={`${IMAGE_BASE_URL}${item.image}`}
+                      alt={item.publishedBy || "Media Article"}
+                      className="aspect-video"
+                      containerClassName="z-10"
+                      rounded="rounded-2xl"
+                    />
                   </div>
 
                   {/* Text Section */}
