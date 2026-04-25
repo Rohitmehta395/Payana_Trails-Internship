@@ -105,7 +105,7 @@ const Footer = () => {
           name: "Journeys with Purpose",
           path: "/payana-way#journeys-with-purpose",
         },
-        { name: "In the Media", path: "/media" },
+        { name: "In the Media", path: "/payana-way#in-the-media" },
       ],
     },
     {
