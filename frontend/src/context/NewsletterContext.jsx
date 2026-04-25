@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const NewsletterContext = createContext();
 
@@ -12,9 +13,21 @@ export const useNewsletter = () => {
 
 export const NewsletterProvider = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const location = useLocation();
 
   const openNewsletterModal = () => setIsModalOpen(true);
-  const closeNewsletterModal = () => setIsModalOpen(false);
+  const closeNewsletterModal = () => {
+    setIsModalOpen(false);
+    if (window.location.hash === "#newsletter" || window.location.hash === "#subscribe") {
+      window.history.replaceState(null, null, window.location.pathname);
+    }
+  };
+
+  useEffect(() => {
+    if (location.hash === "#newsletter" || location.hash === "#subscribe") {
+      setIsModalOpen(true);
+    }
+  }, [location.hash]);
 
   return (
     <NewsletterContext.Provider

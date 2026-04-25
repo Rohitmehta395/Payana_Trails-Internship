@@ -113,7 +113,7 @@ const Footer = () => {
       links: [
         { name: "Travel Stories", path: "/stories" },
         { name: "Voices from the Trail", path: "/voices" },
-        { name: "Newsletter", path: "/newsletter" },
+        { name: "Newsletter", path: "/#subscribe" },
       ],
     },
     {
@@ -188,14 +188,9 @@ const Footer = () => {
                       <Link
                         to={link.path}
                         className="text-[14px] opacity-70 hover:opacity-100 hover:text-white transition-all duration-300 inline-block hover:translate-x-1"
-                        onClick={(e) => {
-                          if (link.name === "Newsletter") {
-                            e.preventDefault();
-                            openNewsletterModal();
-                          } else {
-                            if (!link.path.includes("#")) {
-                              window.scrollTo(0, 0);
-                            }
+                        onClick={() => {
+                          if (!link.path.includes("#")) {
+                            window.scrollTo(0, 0);
                           }
                         }}
                       >

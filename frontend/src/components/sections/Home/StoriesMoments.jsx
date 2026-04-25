@@ -2,14 +2,23 @@ import React from "react";
 import CreamBtn from "../../common/buttons/CreamBtn";
 import BrownBtn from "../../common/buttons/BrownBtn";
 import storyImg from "../../../assets/Home/Stories/stories-moments.webp";
-import { FaEnvelopeOpenText } from "react-icons/fa6";
+import { FaEnvelopeOpenText, FaShareNodes, FaCheck } from "react-icons/fa6";
 import { useNewsletter } from "../../../context/NewsletterContext";
+import { useState } from "react";
 import useHomePageData from "../../../hooks/useHomePageData";
 import { IMAGE_BASE_URL } from "../../../services/api";
 
 const StoriesMoments = () => {
   const { openNewsletterModal } = useNewsletter();
   const { data: homeData } = useHomePageData();
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleShare = () => {
+    const url = `${window.location.origin}${window.location.pathname}#subscribe`;
+    navigator.clipboard.writeText(url);
+    setShowTooltip(true);
+    setTimeout(() => setShowTooltip(false), 2000);
+  };
 
   const storiesData = homeData?.storiesAndVoices || {
     title: "Stories & Voices from the Trails",
@@ -70,16 +79,35 @@ const StoriesMoments = () => {
         </div>
 
         {/* === NEWSLETTER SUBSCRIPTION BAR === */}
-        <div className="mt-12 relative overflow-hidden bg-white/60 border border-[#4A3B2A]/10 rounded-4xl p-8 sm:px-12 sm:py-10 shadow-sm transition-all duration-300 hover:shadow-lg hover:bg-white/80 flex flex-col lg:flex-row items-center justify-between gap-8">
+        <div 
+          className="mt-12 relative overflow-hidden bg-white/60 border border-[#4A3B2A]/10 rounded-4xl p-8 sm:px-12 sm:py-10 shadow-sm transition-all duration-300 hover:shadow-lg hover:bg-white/80 flex flex-col lg:flex-row items-center justify-between gap-8"
+        >
           {/* Left: Text Info */}
           <div className="flex items-center gap-5 text-center sm:text-left flex-col sm:flex-row w-full lg:w-auto">
             <div className="w-14 h-14 shrink-0 bg-[#4A3B2A]/10 rounded-full flex items-center justify-center text-[#4A3B2A]">
               <FaEnvelopeOpenText size={24} />
             </div>
-            <div>
-              <h3 className="text-2xl font-bold font-serif text-[#4A3B2A] mb-2">
-                {newsletterData.title}
-              </h3>
+            <div className="flex-grow">
+              <div className="flex items-center gap-3 mb-2">
+                <h3 className="text-2xl font-bold font-serif text-[#4A3B2A]">
+                  {newsletterData.title}
+                </h3>
+                <div className="relative">
+                  <button 
+                    onClick={handleShare}
+                    className="p-2 rounded-full hover:bg-[#4A3B2A]/10 text-[#4A3B2A]/60 hover:text-[#4A3B2A] transition-all duration-300"
+                    title="Share Newsletter Link"
+                  >
+                    <FaShareNodes size={16} />
+                  </button>
+                  {showTooltip && (
+                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-1 bg-[#4A3B2A] text-white text-xs rounded-md whitespace-nowrap flex items-center gap-1.5 shadow-lg transition-all duration-300 opacity-100 scale-100">
+                      <FaCheck size={10} />
+                      Link Copied!
+                    </div>
+                  )}
+                </div>
+              </div>
               <p className="text-[#4A3B2A]/80 text-[16px] max-w-md leading-relaxed">
                 {newsletterData.subtitle}
               </p>

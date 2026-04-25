@@ -34,8 +34,8 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 
 const App = () => {
   return (
-    <NewsletterProvider>
-      <Router>
+    <Router>
+      <NewsletterProvider>
         <ScrollToTop />
         <Routes>
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -79,8 +79,8 @@ const App = () => {
             }
           />
         </Routes>
-      </Router>
-    </NewsletterProvider>
+      </NewsletterProvider>
+    </Router>
   );
 };
 

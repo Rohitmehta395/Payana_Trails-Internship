@@ -58,7 +58,7 @@ const CommonHero = ({ title, description, images = [], bgImage, breadcrumbs }) =
       initial="hidden"
       animate="visible"
       variants={staggerContainer}
-      className="relative w-full h-[60vh] md:h-[450px] flex flex-col justify-center items-center text-center overflow-hidden bg-[#110C08]"
+      className="relative w-full h-[60vh] md:h-[550px] flex flex-col justify-center items-center text-center overflow-hidden bg-[#110C08]"
     >
       {/* Background Image Slider (Cross-fade) */}
       <div className="absolute inset-0 z-0">
