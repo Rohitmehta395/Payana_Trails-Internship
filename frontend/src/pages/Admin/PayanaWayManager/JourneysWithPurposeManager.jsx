@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
 import { Plus, Trash2, GripVertical, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from "lucide-react";
+import RichTextEditor from "../../../components/admin/RichTextEditor";
 
 const JourneysWithPurposeManager = () => {
   const [formData, setFormData] = useState({
@@ -314,12 +315,11 @@ const JourneysWithPurposeManager = () => {
                         {/* Description */}
                         <div>
                           <label className="block text-sm font-semibold text-[#4A3B2A] mb-2">Description</label>
-                          <textarea
+                          <RichTextEditor
                             value={block.description}
-                            onChange={(e) => handleBlockChange(index, "description", e.target.value)}
-                            placeholder="Write the content here... (newlines will be preserved)"
-                            rows="7"
-                            className="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:ring-[#4A3B2A] focus:border-[#4A3B2A] resize-y whitespace-pre-wrap bg-gray-50 shadow-inner"
+                            onChange={(val) => handleBlockChange(index, "description", val)}
+                            rows={7}
+                            placeholder="Write the content here... (supports **bold**, *italic*, - bullets)"
                           />
                         </div>
                       </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { IMAGE_BASE_URL } from "../../../services/api";
+import RichTextRenderer from "../../common/RichTextRenderer";
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -127,9 +128,11 @@ const ThePayanaDifference = ({ data }) => {
                       )}
 
                       {entry.description && (
-                        <p className="mt-4 whitespace-pre-wrap text-sm font-light leading-relaxed text-[#4A3B2A]/85 md:text-base">
-                          {entry.description}
-                        </p>
+                        <RichTextRenderer
+                          text={entry.description}
+                          className="mt-4 text-sm font-light leading-relaxed text-[#4A3B2A]/85 md:text-base"
+                          paragraphClass="mb-2"
+                        />
                       )}
                     </div>
                   </motion.article>

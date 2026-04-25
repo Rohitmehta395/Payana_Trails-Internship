@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
 import { Plus, Trash2, GripVertical, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from "lucide-react";
+import RichTextEditor from "../../../components/admin/RichTextEditor";
 
 const ThePayanaDifferenceManager = () => {
   const [formData, setFormData] = useState({
@@ -302,12 +303,11 @@ const ThePayanaDifferenceManager = () => {
 
                           <div>
                             <label className="block text-sm font-semibold text-[#4A3B2A] mb-2">Description</label>
-                            <textarea
+                            <RichTextEditor
                               value={entry.description}
-                              onChange={(e) => handleEntryChange(index, "description", e.target.value)}
-                              placeholder="Write the content here..."
-                              rows="5"
-                              className="w-full px-4 py-3 text-sm border border-gray-200 rounded-lg focus:ring-[#4A3B2A] focus:border-[#4A3B2A] resize-y whitespace-pre-wrap bg-white shadow-sm"
+                              onChange={(val) => handleEntryChange(index, "description", val)}
+                              rows={5}
+                              placeholder="Write the content here... (supports **bold**, *italic*, - bullets)"
                             />
                           </div>
                           

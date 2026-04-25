@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { api, IMAGE_BASE_URL } from "../../../services/api";
+import RichTextEditor from "../../../components/admin/RichTextEditor";
 
 const AJourneyBeginsManager = () => {
   const [formData, setFormData] = useState({
@@ -239,31 +240,31 @@ const AJourneyBeginsManager = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Description (Italic on UI)
+            Description
           </label>
 
-          <textarea
-            name="description"
+          <RichTextEditor
             value={formData.description}
-            onChange={handleInputChange}
+            onChange={(val) =>
+              setFormData((prev) => ({ ...prev, description: val }))
+            }
             rows={4}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+            placeholder="Write the description here... (supports **bold**, *italic*, - bullets)"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Paragraph (Italic on UI)
+            Paragraph
           </label>
 
-          <textarea
-            name="paragraph"
+          <RichTextEditor
             value={formData.paragraph}
-            onChange={handleInputChange}
+            onChange={(val) =>
+              setFormData((prev) => ({ ...prev, paragraph: val }))
+            }
             rows={4}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+            placeholder="Write the paragraph here... (supports **bold**, *italic*, - bullets)"
           />
         </div>
 

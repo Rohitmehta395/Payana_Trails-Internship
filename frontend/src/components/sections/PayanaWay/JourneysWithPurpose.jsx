@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { IMAGE_BASE_URL } from "../../../services/api";
+import RichTextRenderer from "../../common/RichTextRenderer";
 
 const ease = [0.16, 1, 0.3, 1];
 
@@ -38,28 +39,6 @@ const SideProfileAirplane = () => (
   </svg>
 );
 
-// Helper function to format text in quotes to be semibold and italic
-const formatDescription = (text) => {
-  if (!text) return null;
-
-  // Split the text by double or single quotes (keeping the quotes in the parts array)
-  const parts = text.split(/((?:"[^"]+")|(?:'[^']+'))/g);
-
-  return parts.map((part, index) => {
-    // Check if the current part is wrapped in quotes
-    if (
-      (part.startsWith('"') && part.endsWith('"')) ||
-      (part.startsWith("'") && part.endsWith("'"))
-    ) {
-      return (
-        <span key={index} className="font-semibold italic text-[#4A3B2A]">
-          {part}
-        </span>
-      );
-    }
-    return part;
-  });
-};
 
 const JourneysWithPurpose = ({ data }) => {
   if (!data || !data.blocks?.length) return null;
@@ -176,11 +155,13 @@ const JourneysWithPurpose = ({ data }) => {
                     </motion.div>
                   )}
 
-                  {/* Text Section (Wraps around image, Drop Caps removed) */}
+                  {/* Text Section */}
                   <div className="relative z-0 pt-2 md:pt-4">
-                    <p className="whitespace-pre-wrap text-base md:text-lg lg:text-xl font-light text-justify text-[#4A3B2A]/90 leading-[1.85]">
-                      {formatDescription(block.description)}
-                    </p>
+                    <RichTextRenderer
+                      text={block.description}
+                      className="text-base md:text-lg lg:text-xl font-light text-justify text-[#4A3B2A]/90 leading-[1.85]"
+                      paragraphClass="mb-3"
+                    />
                   </div>
                 </div>
               </motion.div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IMAGE_BASE_URL } from "../../../services/api";
 import BrownBtn from "../../common/buttons/BrownBtn";
+import RichTextRenderer from "../../common/RichTextRenderer";
 
 const ease = [0.16, 1, 0.3, 1];
 
@@ -145,9 +146,11 @@ const InTheMedia = ({ data }) => {
 
                     <div className="w-12 h-0.5 bg-[#4A3B2A]/20" />
 
-                    <p className="text-base md:text-lg text-[#4A3B2A]/80 leading-relaxed italic">
-                      "{item.description}"
-                    </p>
+                    <RichTextRenderer
+                      text={item.description}
+                      className="text-base md:text-lg text-[#4A3B2A]/80 leading-relaxed"
+                      paragraphClass="mb-2"
+                    />
                   </div>
                 </motion.div>
               );
@@ -163,7 +166,7 @@ const InTheMedia = ({ data }) => {
             className="mt-24 flex justify-center"
           >
             <BrownBtn
-              text="View More Stories"
+              text="View More Articles"
               onClick={handleViewMore}
               className="px-10 py-3 text-xl shadow-lg hover:shadow-xl transform transition-all active:scale-95"
             />

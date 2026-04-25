@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { IMAGE_BASE_URL } from "../../../services/api";
+import RichTextRenderer from "../../common/RichTextRenderer";
 
 const AJourneyBegins = ({ data }) => {
   if (!data) return null;
@@ -137,12 +138,16 @@ const AJourneyBegins = ({ data }) => {
             </span>
 
             {data.description && (
-              <motion.p
+              <motion.div
                 variants={itemVariants}
-                className="relative z-10 text-xl md:text-xl lg:text-2xl font-light italic text-[#4A3B2A] leading-snug md:leading-relaxed mb-4 whitespace-pre-wrap"
+                className="relative z-10"
               >
-                "{data.description}"
-              </motion.p>
+                <RichTextRenderer
+                  text={data.description}
+                  className="text-xl md:text-xl lg:text-2xl font-light text-[#4A3B2A] leading-snug md:leading-relaxed mb-4"
+                  paragraphClass="mb-2"
+                />
+              </motion.div>
             )}
           </motion.div>
         </div>
@@ -156,12 +161,16 @@ const AJourneyBegins = ({ data }) => {
           className="w-full"
         >
           {data.paragraph && (
-            <motion.p
+            <motion.div
               variants={itemVariants}
-              className="text-md md:text-lg lg:text-xl font-normal text-[#4A3B2A] leading-relaxed md:leading-loose opacity-100 mb-8 italic whitespace-pre-wrap bg-[#FAF5F1] p-8 rounded-2xl md:rounded-[3rem] border-4 border-[#c48a68]/30"
+              className="text-md md:text-lg lg:text-xl font-normal text-[#4A3B2A] leading-relaxed md:leading-loose opacity-100 mb-8 bg-[#FAF5F1] p-8 rounded-2xl md:rounded-[3rem] border-4 border-[#c48a68]/30"
             >
-              {data.paragraph}
-            </motion.p>
+              <RichTextRenderer
+                text={data.paragraph}
+                className=""
+                paragraphClass="mb-2"
+              />
+            </motion.div>
           )}
 
           {/* Signature & Details */}
