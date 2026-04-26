@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import CommonHero from "../../components/common/CommonHero";
-import RichTextRenderer from "../../components/common/RichTextRenderer";
-import { api, IMAGE_BASE_URL } from "../../services/api";
+import CommonHero from "../../../components/common/CommonHero";
+import RichTextRenderer from "../../../components/common/RichTextRenderer";
+import { api, IMAGE_BASE_URL } from "../../../services/api";
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
@@ -112,7 +112,7 @@ const SingleBlog = () => {
                 </span>
               )}
               <span>{formatDate(blog.publishDate)}</span>
-              {blog.destination && (
+              {(blog.location || blog.destination) && (
                 <span className="flex items-center gap-2">
                   <svg
                     className="w-3 h-3 opacity-60"
@@ -133,7 +133,7 @@ const SingleBlog = () => {
                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
-                  {blog.destination}
+                  {[blog.location, blog.destination].filter(Boolean).join(", ")}
                 </span>
               )}
             </div>

@@ -21,7 +21,8 @@ const blogSchema = new mongoose.Schema(
       ],
       default: "Journey Insights",
     },
-    destination: { type: String, default: "" },
+    destination: { type: String, default: "" }, // Linked destination name
+    location: { type: String, default: "" }, // Specific spot/location
     featuredImage: { type: String, default: "" },
     isDraft: { type: Boolean, default: false },
     order: { type: Number, default: 0 },
@@ -30,7 +31,7 @@ const blogSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Text index for destination search
-blogSchema.index({ destination: "text", title: "text" });
+// Text index for destination/location search
+blogSchema.index({ destination: "text", location: "text", title: "text" });
 
 module.exports = mongoose.model("Blog", blogSchema);

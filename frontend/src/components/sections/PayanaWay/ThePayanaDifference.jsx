@@ -27,11 +27,11 @@ const stagger = {
 };
 
 // Splits entries into rows so no row ever has a lone orphan card.
-// Rules:
-//   n % 3 === 0  → rows of 3  (perfect)
-//   n % 3 === 2  → rows of 3, last row of 2  (fine, 2 wider cards)
-//   n % 3 === 1  → rows of 3, but reroute last 4 into [2, 2]  (avoids 3+1)
-//   n ≤ 3        → single row of 1–3
+// Rules for 4-column preference:
+//   n % 4 === 0  → rows of 4
+//   n % 4 === 3  → rows of 4, last row of 3
+//   n % 4 === 2  → rows of 4, last row of 2
+//   n % 4 === 1  → rows of 4, but reroute last 5 into [3, 2] (avoids 4+1)
 const chunkArray = (arr, size) =>
   Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
     arr.slice(i * size, i * size + size)
@@ -40,26 +40,25 @@ const chunkArray = (arr, size) =>
 const getVisualRows = (entries) => {
   const n = entries.length;
   if (n === 0) return [];
-  if (n <= 3) return [entries];                         // 1, 2, 3 → single row
+  if (n <= 4) return [entries];
 
-  const rem = n % 3;
-  if (rem === 0) return chunkArray(entries, 3);         // 6, 9, 12… → perfect
+  const rem = n % 4;
+  if (rem === 0) return chunkArray(entries, 4);
+
+  if (rem === 3) {
+    const front = chunkArray(entries.slice(0, n - 3), 4);
+    return [...front, entries.slice(n - 3)];
+  }
 
   if (rem === 2) {
-    // 5, 8, 11… → rows of 3 except last row of 2
-    const front = chunkArray(entries.slice(0, n - 2), 3);
+    const front = chunkArray(entries.slice(0, n - 2), 4);
     return [...front, entries.slice(n - 2)];
   }
 
-  // rem === 1: 4, 7, 10… → avoid lone orphan
-  if (n === 4) return [entries.slice(0, 2), entries.slice(2)]; // [2, 2]
-  // n=7,10,…: rows of 3 up front, last 4 become [2, 2]
-  const front = chunkArray(entries.slice(0, n - 4), 3);
-  return [
-    ...front,
-    entries.slice(n - 4, n - 2),
-    entries.slice(n - 2),
-  ];
+  // rem === 1: 5, 9, 13…
+  if (n === 5) return [entries.slice(0, 3), entries.slice(3)];
+  const front = chunkArray(entries.slice(0, n - 5), 4);
+  return [...front, entries.slice(n - 5, n - 2), entries.slice(n - 2)];
 };
 
 
@@ -112,7 +111,9 @@ const ThePayanaDifference = ({ data }) => {
               ? "grid-cols-1 max-w-sm mx-auto w-full"
               : row.length === 2
               ? "grid-cols-1 sm:grid-cols-2"
-              : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+              : row.length === 3
+              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+              : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
 
           return (
             <motion.div

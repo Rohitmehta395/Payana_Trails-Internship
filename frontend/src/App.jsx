@@ -28,7 +28,7 @@ import Destinations from "./components/sections/Journey/Destinations";
 import { NewsletterProvider } from "./context/NewsletterContext";
 import Unsubscribe from "./pages/Unsubscribe";
 import BlogsListing from "./pages/BlogsListing";
-import SingleBlog from "./pages/stories/SingleBlog";
+import SingleBlog from "./components/sections/Stories/SingleBlog";
 
 //Admin
 import AdminLogin from "./pages/Admin/AdminLogin";

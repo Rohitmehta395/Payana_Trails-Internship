@@ -175,8 +175,12 @@ exports.getBlogs = async (req, res) => {
 
     const filter = { isDraft: false };
     if (category) filter.category = category;
-    if (destination)
-      filter.destination = { $regex: destination, $options: "i" };
+    if (destination) {
+      filter.$or = [
+        { destination: { $regex: destination, $options: "i" } },
+        { location: { $regex: destination, $options: "i" } },
+      ];
+    }
     if (featured === "true") filter.featured = true;
 
     if (all === "true") {
@@ -255,6 +259,7 @@ exports.createBlog = async (req, res) => {
       publishDate,
       category,
       destination,
+      location,
       isDraft,
     } = req.body;
 
@@ -319,6 +324,7 @@ exports.createBlog = async (req, res) => {
       publishDate: publishDate ? new Date(publishDate) : new Date(),
       category: category || "Journey Insights",
       destination: destination || "",
+      location: location || "",
       featuredImage: featuredImagePath,
       isDraft: isDraft === "true" || isDraft === true,
       order: newOrder,
@@ -349,6 +355,7 @@ exports.updateBlog = async (req, res) => {
       publishDate,
       category,
       destination,
+      location,
       isDraft,
     } = req.body;
 
@@ -396,6 +403,7 @@ exports.updateBlog = async (req, res) => {
     if (publishDate) blog.publishDate = new Date(publishDate);
     if (category) blog.category = category;
     if (destination !== undefined) blog.destination = destination;
+    if (location !== undefined) blog.location = location;
     if (isDraft !== undefined) blog.isDraft = isDraft === "true" || isDraft === true;
 
     // Handle new featured image upload

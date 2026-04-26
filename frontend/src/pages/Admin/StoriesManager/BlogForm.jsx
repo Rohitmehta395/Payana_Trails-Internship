@@ -40,6 +40,7 @@ const BlogForm = ({ editBlog = null, onSaved, onCancel }) => {
     publishDate: new Date().toISOString().split("T")[0],
     category: "Journey Insights",
     destination: "",
+    location: "",
     isDraft: false,
     featuredImage: null,
   };
@@ -56,11 +57,15 @@ const BlogForm = ({ editBlog = null, onSaved, onCancel }) => {
           publishDate: toISODate(editBlog.publishDate),
           category: editBlog.category || "Journey Insights",
           destination: editBlog.destination || "",
+          location: editBlog.location || "",
           isDraft: editBlog.isDraft || false,
           featuredImage: null,
         }
       : defaultForm
   );
+
+  const [availableDestinations, setAvailableDestinations] = useState([]);
+  const [isOtherDestination, setIsOtherDestination] = useState(false);
 
   const [currentImage, setCurrentImage] = useState(
     isEdit ? editBlog.featuredImage || "" : ""
@@ -77,8 +82,33 @@ const BlogForm = ({ editBlog = null, onSaved, onCancel }) => {
     setTimeout(() => setMessage({ type: "", text: "" }), ms);
   };
 
+  // Fetch destinations
+  useEffect(() => {
+    api.getDestinations().then(data => {
+      const names = [...new Set(data.map(d => d.name))].sort();
+      setAvailableDestinations(names);
+      
+      // Check if current destination is "Other"
+      if (formData.destination && !names.includes(formData.destination)) {
+        setIsOtherDestination(true);
+      }
+    }).catch(err => console.error("Error fetching destinations:", err));
+  }, []);
+
   const handleInput = (e) => {
     const { name, value, type, checked } = e.target;
+    
+    if (name === "destinationSelect") {
+      if (value === "Other") {
+        setIsOtherDestination(true);
+        setFormData(prev => ({ ...prev, destination: "" }));
+      } else {
+        setIsOtherDestination(false);
+        setFormData(prev => ({ ...prev, destination: value }));
+      }
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -105,6 +135,7 @@ const BlogForm = ({ editBlog = null, onSaved, onCancel }) => {
         publishDate: formData.publishDate,
         category: formData.category,
         destination: formData.destination,
+        location: formData.location,
       });
       setAutosaveStatus("saved");
       setTimeout(() => setAutosaveStatus(""), 2500);
@@ -132,6 +163,7 @@ const BlogForm = ({ editBlog = null, onSaved, onCancel }) => {
     fd.append("publishDate", formData.publishDate);
     fd.append("category", formData.category);
     fd.append("destination", formData.destination);
+    fd.append("location", formData.location);
     fd.append("isDraft", asDraft ? "true" : "false");
     if (formData.featuredImage) fd.append("featuredImage", formData.featuredImage);
     return fd;
@@ -283,8 +315,8 @@ const BlogForm = ({ editBlog = null, onSaved, onCancel }) => {
           />
         </div>
 
-        {/* Row: Author + Destination */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Row: Author + Location + Destination */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Author
@@ -298,18 +330,52 @@ const BlogForm = ({ editBlog = null, onSaved, onCancel }) => {
               className={inputClass}
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Location
+            </label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleInput}
+              placeholder="e.g. Amber Fort, Jaipur"
+              className={inputClass}
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Destination
             </label>
-            <input
-              type="text"
-              name="destination"
-              value={formData.destination}
-              onChange={handleInput}
-              placeholder="e.g. Rajasthan, India"
-              className={inputClass}
-            />
+            <div className="space-y-2">
+              <select
+                name="destinationSelect"
+                value={isOtherDestination ? "Other" : formData.destination}
+                onChange={handleInput}
+                className={inputClass}
+              >
+                <option value="">Select a destination</option>
+                {availableDestinations.map((dest) => (
+                  <option key={dest} value={dest}>
+                    {dest}
+                  </option>
+                ))}
+                <option value="Other">Other (Type manually)</option>
+              </select>
+
+              {isOtherDestination && (
+                <input
+                  type="text"
+                  name="destination"
+                  value={formData.destination}
+                  onChange={handleInput}
+                  placeholder="Type destination name..."
+                  className={inputClass + " border-blue-200 bg-blue-50/30"}
+                />
+              )}
+            </div>
           </div>
         </div>
 

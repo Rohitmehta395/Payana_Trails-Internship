@@ -64,10 +64,10 @@ const BlogCard = ({ blog, index }) => {
       <div className="p-6 flex flex-col flex-1">
         <div className="flex items-center gap-3 text-[10px] tracking-widest uppercase text-[#4A3B2A]/50 font-medium mb-3">
           <span>{formatDate(blog.publishDate)}</span>
-          {blog.destination && (
+          {(blog.location || blog.destination) && (
             <>
               <span className="w-1 h-1 rounded-full bg-[#4A3B2A]/30" />
-              <span>{blog.destination}</span>
+              <span>{[blog.location, blog.destination].filter(Boolean).join(", ")}</span>
             </>
           )}
         </div>
@@ -123,7 +123,9 @@ const FeaturedBlogHero = ({ blog }) => {
         <div className="flex flex-wrap items-center gap-5 text-[11px] tracking-widest uppercase text-[#F3EFE9]/60 font-medium">
           {blog.author && <span>{blog.author}</span>}
           <span>{formatDate(blog.publishDate)}</span>
-          {blog.destination && <span>{blog.destination}</span>}
+          {(blog.location || blog.destination) && (
+            <span>{[blog.location, blog.destination].filter(Boolean).join(", ")}</span>
+          )}
           <div className="flex items-center gap-2 text-[#F3EFE9] ml-auto">
             <span>Read Story</span>
             <span className="w-8 h-px bg-[#F3EFE9] group-hover:w-16 transition-all duration-500" />
@@ -225,6 +227,11 @@ const BlogsListing = () => {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
 
+  // Destinations for search
+  const [availableDestinations, setAvailableDestinations] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const dropdownRef = useRef(null);
+
   // Filters
   const [selectedCategory, setSelectedCategory] = useState(
     location.state?.category || "All"
@@ -233,6 +240,28 @@ const BlogsListing = () => {
   const [destinationFilter, setDestinationFilter] = useState("");
 
   const LIMIT = 6;
+
+  // Close suggestions on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const fetchDestinations = useCallback(async () => {
+    try {
+      const data = await api.getDestinations();
+      // Only keep unique names of published/active destinations
+      const names = [...new Set(data.map((d) => d.name))].sort();
+      setAvailableDestinations(names);
+    } catch (err) {
+      console.error("Error fetching destinations:", err);
+    }
+  }, []);
 
   const fetchFeatured = useCallback(async () => {
     try {
@@ -268,6 +297,7 @@ const BlogsListing = () => {
 
   useEffect(() => {
     fetchFeatured();
+    fetchDestinations();
   }, []);
 
   useEffect(() => {
@@ -277,7 +307,18 @@ const BlogsListing = () => {
   const handleDestinationSearch = (e) => {
     e.preventDefault();
     setDestinationFilter(destinationInput.trim());
+    setShowSuggestions(false);
   };
+
+  const handleSuggestionClick = (dest) => {
+    setDestinationInput(dest);
+    setDestinationFilter(dest);
+    setShowSuggestions(false);
+  };
+
+  const filteredSuggestions = availableDestinations.filter((d) =>
+    d.toLowerCase().includes(destinationInput.toLowerCase())
+  );
 
   const handleCategorySelect = (cat) => {
     setSelectedCategory(cat);
@@ -327,27 +368,54 @@ const BlogsListing = () => {
         <section className="mb-14">
           <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-start md:items-center">
             {/* Destination Search */}
-            <form
-              onSubmit={handleDestinationSearch}
-              className="flex items-stretch gap-0 flex-1 max-w-md border border-[#4A3B2A]/20 hover:border-[#4A3B2A]/40 focus-within:border-[#4A3B2A] transition-colors"
-            >
-              <input
-                type="text"
-                value={destinationInput}
-                onChange={(e) => {
-                  setDestinationInput(e.target.value);
-                  if (!e.target.value.trim()) setDestinationFilter("");
-                }}
-                placeholder="Search by destination..."
-                className="flex-1 px-4 py-3 text-sm bg-transparent text-[#4A3B2A] placeholder-[#4A3B2A]/40 focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="px-5 py-3 bg-[#4A3B2A] text-[#F3EFE9] text-xs tracking-wider uppercase font-medium hover:bg-[#3A2E20] transition-colors"
+            <div className="relative flex-1 max-w-md" ref={dropdownRef}>
+              <form
+                onSubmit={handleDestinationSearch}
+                className="flex items-stretch gap-0 border border-[#4A3B2A]/20 hover:border-[#4A3B2A]/40 focus-within:border-[#4A3B2A] transition-colors bg-white/50"
               >
-                Search
-              </button>
-            </form>
+                <input
+                  type="text"
+                  value={destinationInput}
+                  onFocus={() => setShowSuggestions(true)}
+                  onChange={(e) => {
+                    setDestinationInput(e.target.value);
+                    setShowSuggestions(true);
+                    if (!e.target.value.trim()) setDestinationFilter("");
+                  }}
+                  placeholder="Search by destination..."
+                  className="flex-1 px-4 py-3 text-sm bg-transparent text-[#4A3B2A] placeholder-[#4A3B2A]/40 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="px-5 py-3 bg-[#4A3B2A] text-[#F3EFE9] text-xs tracking-wider uppercase font-medium hover:bg-[#3A2E20] transition-colors"
+                >
+                  Search
+                </button>
+              </form>
+
+              {/* Suggestions Dropdown */}
+              <AnimatePresence>
+                {showSuggestions && filteredSuggestions.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 5 }}
+                    className="absolute top-full left-0 right-0 mt-1 bg-[#FAF7F4] border border-[#4A3B2A]/10 shadow-xl z-50 max-h-60 overflow-y-auto"
+                  >
+                    {filteredSuggestions.map((dest, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => handleSuggestionClick(dest)}
+                        className="w-full text-left px-4 py-3 text-sm text-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] transition-colors border-b border-[#4A3B2A]/5 last:border-0 font-medium"
+                      >
+                        {dest}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* Active filters indicator */}
             {(destinationFilter || selectedCategory !== "All") && (
