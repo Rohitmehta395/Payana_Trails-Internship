@@ -44,6 +44,7 @@ const payanaWayPageSchema = new mongoose.Schema(
           authorName: { type: String, default: "" },
           date: { type: String, default: "" },
           description: { type: String, default: "" },
+          url: { type: String, default: "" },
         },
       ],
     },

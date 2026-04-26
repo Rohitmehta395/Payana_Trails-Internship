@@ -121,6 +121,27 @@ const InTheMedia = ({ data }) => {
                       className="text-base md:text-lg text-[#4A3B2A]/80 leading-relaxed"
                       paragraphClass="mb-2"
                     />
+
+                    {item.url && (
+                      <div className="pt-4">
+                        <a 
+                          href={item.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-[#4A3B2A] font-bold hover:underline group/link"
+                        >
+                          Read Full Article
+                          <svg 
+                            className="w-4 h-4 transition-transform group-hover/link:translate-x-1" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          </svg>
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               );

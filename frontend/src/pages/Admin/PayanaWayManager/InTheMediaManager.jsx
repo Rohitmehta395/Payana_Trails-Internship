@@ -61,7 +61,8 @@ const InTheMediaManager = () => {
       publishedBy: "", 
       authorName: "", 
       date: "", 
-      description: "" 
+      description: "",
+      url: "" 
     }]);
     setExpandedItems((prev) => new Set(prev).add(items.length));
   };
@@ -341,6 +342,16 @@ const InTheMediaManager = () => {
                               value={item.date}
                               onChange={(e) => handleItemChange(index, "date", e.target.value)}
                               placeholder="e.g., Oct 2023"
+                              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-semibold text-[#4A3B2A] mb-2">Article URL (Optional)</label>
+                            <input
+                              type="text"
+                              value={item.url || ""}
+                              onChange={(e) => handleItemChange(index, "url", e.target.value)}
+                              placeholder="e.g., https://example.com/article"
                               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
                             />
                           </div>

@@ -131,7 +131,7 @@ const ThePayanaDifference = ({ data }) => {
                     key={index}
                     variants={fadeUp}
                     custom={index * 0.05}
-                    className="group relative flex flex-col bg-[#FAF5F1] border border-[#4A3B2A]/12 rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(74,59,42,0.06)] hover:shadow-[0_8px_32px_rgba(74,59,42,0.12)] hover:border-[#4A3B2A]/25 transition-all duration-500"
+                    className="group relative flex flex-col h-full min-h-[380px] bg-[#FAF5F1] border border-[#4A3B2A]/12 rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(74,59,42,0.06)] hover:shadow-[0_8px_32px_rgba(74,59,42,0.12)] hover:border-[#4A3B2A]/25 transition-all duration-500"
                   >
                     {/* Accent bar on top — animates on hover */}
                     <div className="h-[3px] bg-[#4A3B2A]/10 group-hover:bg-[#4A3B2A]/40 transition-colors duration-500" />
@@ -161,7 +161,7 @@ const ThePayanaDifference = ({ data }) => {
                       {entry.description && (
                         <RichTextRenderer
                           text={entry.description}
-                          className="text-sm font-light leading-relaxed text-[#4A3B2A]/80 mt-auto"
+                          className="text-sm font-light leading-relaxed text-[#4A3B2A]/80 mt-2"
                           paragraphClass="mb-2"
                         />
                       )}
