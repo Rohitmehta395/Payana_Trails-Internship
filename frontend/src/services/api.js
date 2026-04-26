@@ -979,6 +979,175 @@ export const api = {
       throw error;
     }
   },
+
+  // --- STORIES ROUTES ---
+  getStoriesPage: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories`);
+      if (!response.ok) throw new Error("Failed to fetch stories page data");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getStoriesPage):", error);
+      throw error;
+    }
+  },
+
+  updateTravelStoriesSection: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/travel-stories`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update Travel Stories section");
+      return data;
+    } catch (error) {
+      console.error("API Error (updateTravelStoriesSection):", error);
+      throw error;
+    }
+  },
+
+  getBlogs: async (params = {}) => {
+    try {
+      const query = new URLSearchParams();
+      if (params.category) query.set("category", params.category);
+      if (params.destination) query.set("destination", params.destination);
+      if (params.featured) query.set("featured", "true");
+      if (params.page) query.set("page", params.page);
+      if (params.limit) query.set("limit", params.limit);
+      if (params.all) query.set("all", "true");
+      const url = `${API_BASE_URL}/stories/blogs${query.toString() ? "?" + query.toString() : ""}`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch blogs");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getBlogs):", error);
+      throw error;
+    }
+  },
+
+  getBlogsAdmin: async (params = {}) => {
+    try {
+      const query = new URLSearchParams();
+      if (params.category) query.set("category", params.category);
+      const url = `${API_BASE_URL}/stories/blogs/admin${query.toString() ? "?" + query.toString() : ""}`;
+      const response = await fetch(url, { headers: withAdminAuth() });
+      if (!response.ok) throw new Error("Failed to fetch admin blogs");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getBlogsAdmin):", error);
+      throw error;
+    }
+  },
+
+  getBlogBySlug: async (slug) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/blogs/slug/${slug}`);
+      if (!response.ok) throw new Error("Failed to fetch blog");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getBlogBySlug):", error);
+      throw error;
+    }
+  },
+
+  createBlog: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/blogs`, {
+        method: "POST",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to create blog");
+      return data;
+    } catch (error) {
+      console.error("API Error (createBlog):", error);
+      throw error;
+    }
+  },
+
+  updateBlog: async (id, formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/blogs/${id}`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update blog");
+      return data;
+    } catch (error) {
+      console.error("API Error (updateBlog):", error);
+      throw error;
+    }
+  },
+
+  deleteBlog: async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/blogs/${id}`, {
+        method: "DELETE",
+        headers: withAdminAuth(),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to delete blog");
+      return data;
+    } catch (error) {
+      console.error("API Error (deleteBlog):", error);
+      throw error;
+    }
+  },
+
+  reorderBlogs: async (items) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/blogs/reorder`, {
+        method: "PUT",
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ items }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to reorder blogs");
+      return data;
+    } catch (error) {
+      console.error("API Error (reorderBlogs):", error);
+      throw error;
+    }
+  },
+
+  autosaveBlog: async (id, draftData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/blogs/${id}/autosave`, {
+        method: "PATCH",
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ draftData }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to autosave blog");
+      return data;
+    } catch (error) {
+      console.error("API Error (autosaveBlog):", error);
+      throw error;
+    }
+  },
+
+  uploadBlogEditorImage: async (slug, file) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const response = await fetch(`${API_BASE_URL}/stories/blogs/editor-image/${slug}`, {
+        method: "POST",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to upload editor image");
+      return data;
+    } catch (error) {
+      console.error("API Error (uploadBlogEditorImage):", error);
+      throw error;
+    }
+  },
 };
 
 

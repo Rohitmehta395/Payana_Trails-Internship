@@ -191,7 +191,7 @@ const ThePayanaDifferenceManager = () => {
 
         {/* Main Image Upload */}
         <div className="bg-gray-50 p-6 rounded-md border border-gray-200">
-          <h3 className="text-lg font-bold text-[#4A3B2A] mb-4">Main Image</h3>
+          <h3 className="text-lg font-bold text-[#4A3B2A] mb-4">Main Image (1920x1080px)</h3>
           {currentMainImage && (
             <div className="mb-4">
               <p className="text-xs text-gray-500 mb-1">Current Image:</p>

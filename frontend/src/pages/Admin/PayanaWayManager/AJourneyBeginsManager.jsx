@@ -304,7 +304,7 @@ const AJourneyBeginsManager = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Admin Image
+              Admin Image (1920x1080px)
             </label>
 
             {currentImages.adminImage && (
@@ -330,7 +330,7 @@ const AJourneyBeginsManager = () => {
 
           <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Signature Image
+              Signature Image (500x300px)
             </label>
 
             {currentImages.signatureImage && (

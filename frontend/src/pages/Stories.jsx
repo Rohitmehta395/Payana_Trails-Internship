@@ -3,7 +3,8 @@ import { useLocation } from "react-router-dom";
 import CommonHero from "../components/common/CommonHero";
 import storiesImg from "../assets/Home/Stories/stories-moments.webp";
 import usePageHeroImages from "../hooks/usePageHeroImages";
-import { IMAGE_BASE_URL } from "../services/api";
+import { IMAGE_BASE_URL, api } from "../services/api";
+import TravelStories from "../components/sections/Stories/TravelStories";
 
 const Stories = () => {
   const { images: heroImgs } = usePageHeroImages("stories");
@@ -11,11 +12,19 @@ const Stories = () => {
   const testimonial = location.state?.testimonial;
   const contentRef = useRef(null);
 
+  const [storiesData, setStoriesData] = React.useState(null);
+
+  useEffect(() => {
+    api
+      .getStoriesPage()
+      .then((data) => setStoriesData(data))
+      .catch((err) => console.error("Failed to load stories page:", err));
+  }, []);
+
   useEffect(() => {
     if (testimonial && contentRef.current) {
-      // Small delay to ensure render is complete before scrolling
       setTimeout(() => {
-        contentRef.current.scrollIntoView({ behavior: 'smooth' });
+        contentRef.current.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
   }, [testimonial]);
@@ -32,15 +41,18 @@ const Stories = () => {
           { label: "STORIES" },
         ]}
       />
-      
+
       {/* Testimonial Focus Section */}
       {testimonial && (
-        <section ref={contentRef} className="py-16 md:py-24 px-6 lg:px-8 max-w-5xl mx-auto font-sans">
+        <section
+          ref={contentRef}
+          className="py-16 md:py-24 px-6 lg:px-8 max-w-5xl mx-auto font-sans"
+        >
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 flex flex-col md:flex-row">
             <div className="md:w-5/12 h-64 md:h-auto relative">
-              <img 
-                src={`${IMAGE_BASE_URL}${testimonial.url}`} 
-                alt={testimonial.alt || "Testimonial"} 
+              <img
+                src={`${IMAGE_BASE_URL}${testimonial.url}`}
+                alt={testimonial.alt || "Testimonial"}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -52,14 +64,17 @@ const Stories = () => {
               )}
               <div className="w-12 h-1 bg-[#4A3B2A]/20 mb-6 rounded-full" />
               <p className="text-gray-700 leading-loose text-lg whitespace-pre-wrap">
-                {testimonial.fullContent || testimonial.shortDescription || "No story content provided."}
+                {testimonial.fullContent ||
+                  testimonial.shortDescription ||
+                  "No story content provided."}
               </p>
             </div>
           </div>
         </section>
       )}
 
-      {/* Rest of your Stories content goes here */}
+      {/* Travel Stories Section */}
+      <TravelStories data={storiesData} />
     </div>
   );
 };

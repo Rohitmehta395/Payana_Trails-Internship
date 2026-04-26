@@ -294,7 +294,7 @@ const InTheMediaManager = () => {
                         
                         {/* Image Upload */}
                         <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                          <label className="block text-sm font-semibold text-[#4A3B2A] mb-3">Item Image (Landscape)</label>
+                          <label className="block text-sm font-semibold text-[#4A3B2A] mb-3">Item Image (1920x1080px)</label>
                           <div className="flex items-start gap-6">
                             {item.image && (
                               <div className="w-40 h-28 flex-shrink-0">

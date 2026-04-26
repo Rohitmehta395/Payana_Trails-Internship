@@ -27,6 +27,8 @@ import Destinations from "./components/sections/Journey/Destinations";
 
 import { NewsletterProvider } from "./context/NewsletterContext";
 import Unsubscribe from "./pages/Unsubscribe";
+import BlogsListing from "./pages/BlogsListing";
+import SingleBlog from "./pages/stories/SingleBlog";
 
 //Admin
 import AdminLogin from "./pages/Admin/AdminLogin";
@@ -62,6 +64,8 @@ const App = () => {
                   />
                   <Route path="payana-way" element={<PayanaWay />} />
                   <Route path="stories" element={<Stories />} />
+                  <Route path="stories/blogs" element={<BlogsListing />} />
+                  <Route path="stories/blogs/:slug" element={<SingleBlog />} />
                   <Route path="connect" element={<Connect />} />
                   <Route path="connect/enquiry" element={<EnquiryPage />} />
                   <Route path="connect/faqs" element={<FAQs />} />

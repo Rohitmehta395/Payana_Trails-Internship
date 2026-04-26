@@ -89,7 +89,15 @@ const STATIC_PAGE_META = {
     description:
       "Explore handpicked destinations that open the door to extraordinary journeys and deeper travel experiences.",
   },
+  "/stories/blogs": {
+    pageKey: "stories",
+    title: "Travel Stories | Payana Trails",
+    description:
+      "Reflections, insights, and moments from journeys across the world. Discover the spirit of travel through our stories.",
+  },
 };
+
+const Blog = require("../models/Blog");
 
 function isBot(userAgent = "") {
   const ua = userAgent.toLowerCase();
@@ -243,6 +251,34 @@ module.exports = async function ogMiddleware(req, res, next) {
       }
     } catch (err) {
       console.error("[OG Middleware] Error fetching trail:", err.message);
+    }
+  }
+
+  // ── Stories / Blog ────────────────────────────────────────────────────────
+  const blogMatch = normalizedPath.match(/^\/stories\/blogs\/([^/]+)$/);
+  if (blogMatch) {
+    const slug = blogMatch[1];
+    try {
+      const blog = await Blog.findOne({ slug, isDraft: false })
+        .select("title excerpt featuredImage")
+        .lean();
+
+      if (blog) {
+        const imageUrl = blog.featuredImage
+          ? toAbsoluteUrl(IMAGE_BASE, blog.featuredImage)
+          : `${IMAGE_BASE}/heroBg-desktop.webp`;
+
+        return res.send(
+          buildOGHtml({
+            title: `${blog.title} | Payana Trails`,
+            description: blog.excerpt || "A story from the heart of Payana Trails.",
+            imageUrl,
+            pageUrl,
+          })
+        );
+      }
+    } catch (err) {
+      console.error("[OG Middleware] Error fetching blog for OG:", err.message);
     }
   }
 

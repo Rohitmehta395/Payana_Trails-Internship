@@ -7,7 +7,7 @@ const EnquirySection = () => {
   return (
     <section
       id="enquiry-section"
-      className="py-14 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden"
+      className="py-2 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden"
     >
       {/* Subtle background text watermark */}
       <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -ml-24 text-[20rem] font-serif italic font-bold text-[#F3EFE9]/50 select-none pointer-events-none z-0 tracking-tighter mix-blend-multiply hidden lg:block">
