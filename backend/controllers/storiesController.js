@@ -454,6 +454,43 @@ exports.updateBlog = async (req, res) => {
     }
 
     await blog.save();
+
+    // Cleanup unused images from the blog's folder
+    const cleanupUnusedBlogImages = (blogSlug, content, featuredImage) => {
+      const blogFolder = path.join(__dirname, "..", "uploads", "stories", blogSlug);
+      if (!fs.existsSync(blogFolder)) return;
+
+      const contentImages = [];
+      const imageRegex = /!\[.*?\]\((.*?)\)/g;
+      let match;
+      while ((match = imageRegex.exec(content)) !== null) {
+        const url = match[1];
+        if (url.includes(`/uploads/stories/${blogSlug}/`)) {
+          contentImages.push(url.split("/").pop());
+        }
+      }
+
+      const featuredImageName = featuredImage ? featuredImage.split("/").pop() : null;
+
+      fs.readdir(blogFolder, (err, files) => {
+        if (err) return;
+        files.forEach((file) => {
+          // Skip if it's an image used in content or the featured image
+          if (contentImages.includes(file) || file === featuredImageName) return;
+          
+          const fp = path.join(blogFolder, file);
+          // Safety check: only delete files, not directories
+          if (fs.lstatSync(fp).isFile()) {
+            fs.unlink(fp, (err) => {
+              if (err && err.code !== "ENOENT") console.error("Failed to cleanup unused file:", file);
+            });
+          }
+        });
+      });
+    };
+
+    cleanupUnusedBlogImages(blog.slug, blog.content, blog.featuredImage);
+
     res.status(200).json({ blog, imageStats });
   } catch (error) {
     console.error("Error updating blog:", error);

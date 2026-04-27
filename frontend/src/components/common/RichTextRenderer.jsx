@@ -1,17 +1,12 @@
 import React from "react";
+import MDEditor from "@uiw/react-md-editor";
+import { IMAGE_BASE_URL } from "../../services/api";
+import "@uiw/react-markdown-preview/markdown.css";
 
 /**
  * RichTextRenderer
- * Parses and renders rich text stored with lightweight markup:
- *   **text**   → <strong>
- *   *text*     → <em>  (single asterisks, not part of **)
- *   - text     → <li> inside <ul> (line must start with "- ")
- *   plain text / blank lines → rendered as paragraphs / <br />
- *
- * Props:
- *   text          - the raw string from DB
- *   className     - extra classes on the wrapper element
- *   paragraphClass - classes applied to each <p> / text block
+ * Renders markdown content using @uiw/react-md-editor's Markdown component.
+ * Includes custom styling and image caption support.
  */
 const RichTextRenderer = ({
   text = "",
@@ -20,256 +15,138 @@ const RichTextRenderer = ({
 }) => {
   if (!text) return null;
 
-  /**
-   * Parse inline markup (**bold**, *italic*, ~~strike~~, ![img](url), [link](url)) within a plain string segment.
-   * Returns an array of React nodes.
-   */
-  const parseInline = (str, keyPrefix) => {
-    // Regex: match ![alt](url), [text](url), ***...***, **...**, *...*, ~~...~~
-    const regex =
-      /(!\[[^\]]*\]\([^)]+\)|\[[^\]]*\]\([^)]+\)|\*\*\*[\s\S]+?\*\*\*|\*\*[\s\S]+?\*\*|\*[\s\S]+?\*|~~[\s\S]+?~~)/g;
-    const parts = str.split(regex);
-
-    return parts.map((part, i) => {
-      // 1. Image: ![alt](url)
-      if (part.startsWith("![") && part.includes("](")) {
-        const alt = part.match(/!\[(.*?)\]/)?.[1] || "Blog Image";
-        const url = part.match(/\((.*?)\)/)?.[1] || "";
-        if (!url) return null;
-        const fullUrl = url.startsWith("http")
-          ? url
-          : `${import.meta.env.VITE_API_URL || "http://localhost:8000"}${url}`;
-
-        return (
-          <span key={`${keyPrefix}-img-${i}`} className="block my-8 group">
-            <img
-              src={fullUrl}
-              alt={alt}
-              className="w-full h-auto rounded-lg shadow-md border border-gray-100 transition-transform duration-500 group-hover:scale-[1.01]"
-              loading="lazy"
-            />
-            {alt && (
-              <span className="block text-center text-xs text-gray-500 mt-3 font-light tracking-wide italic">
-                {alt}
+  return (
+    <div className={`rich-text-renderer-container ${className}`} data-color-mode="light">
+      <MDEditor.Markdown 
+        source={text} 
+        style={{ 
+          backgroundColor: 'transparent',
+          color: 'inherit',
+          fontFamily: 'inherit'
+        }}
+        components={{
+          img: ({ node, ...props }) => {
+            const src = props.src?.startsWith("http") 
+              ? props.src 
+              : `${IMAGE_BASE_URL}${props.src?.startsWith("/") ? "" : "/"}${props.src}`;
+            
+            return (
+              <span className="block my-8 group">
+                <img 
+                  {...props} 
+                  src={src} 
+                  alt={props.alt}
+                  className="w-full h-auto rounded-lg shadow-md border border-gray-100 transition-transform duration-500 group-hover:scale-[1.01]"
+                  loading="lazy"
+                />
+                {props.alt && props.alt !== "Image Description" && (
+                  <span className="block text-center text-xs text-gray-500 mt-3 font-light tracking-wide italic">
+                    {props.alt}
+                  </span>
+                )}
               </span>
-            )}
-          </span>
-        );
-      }
-
-      // 2. Link: [text](url)
-      if (part.startsWith("[") && part.includes("](")) {
-        const text = part.match(/\[(.*?)\]/)?.[1] || "";
-        const url = part.match(/\((.*?)\)/)?.[1] || "";
-        return (
-          <a
-            key={`${keyPrefix}-link-${i}`}
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#4A3B2A] font-medium underline underline-offset-4 decoration-[#4A3B2A]/30 hover:decoration-[#4A3B2A] transition-all"
-          >
-            {text}
-          </a>
-        );
-      }
-      // 3. Bold+Italic: ***text***
-      if (part.startsWith("***") && part.endsWith("***")) {
-        const inner = part.slice(3, -3);
-        return (
-          <strong
-            key={`${keyPrefix}-bi-${i}`}
-            className="font-bold text-gray-900"
-          >
-            <em className="italic">
-              {parseInline(inner, `${keyPrefix}-bi-in-${i}`)}
-            </em>
-          </strong>
-        );
-      }
-      // 4. Bold: **text**
-      if (part.startsWith("**") && part.endsWith("**")) {
-        const inner = part.slice(2, -2);
-        return (
-          <strong
-            key={`${keyPrefix}-b-${i}`}
-            className="font-bold text-gray-900"
-          >
-            {parseInline(inner, `${keyPrefix}-b-in-${i}`)}
-          </strong>
-        );
-      }
-
-      // 5. Italic: *text*
-      if (part.startsWith("*") && part.endsWith("*")) {
-        const inner = part.slice(1, -1);
-        return (
-          <em key={`${keyPrefix}-i-${i}`} className="italic">
-            {parseInline(inner, `${keyPrefix}-i-in-${i}`)}
-          </em>
-        );
-      }
-
-      // 6. Strikethrough: ~~text~~
-      if (part.startsWith("~~") && part.endsWith("~~")) {
-        const inner = part.slice(2, -2);
-        return (
-          <del key={`${keyPrefix}-s-${i}`} className="line-through opacity-70">
-            {parseInline(inner, `${keyPrefix}-s-in-${i}`)}
-          </del>
-        );
-      }
-
-      return part;
-    });
-  };
-
-  const lines = text.split("\n");
-
-  // Group consecutive bullet lines together
-  const segments = [];
-  let bulletBuffer = [];
-
-  const flushBullets = () => {
-    if (bulletBuffer.length > 0) {
-      segments.push({ type: "bullets", items: [...bulletBuffer] });
-      bulletBuffer = [];
-    }
-  };
-
-  lines.forEach((line) => {
-    const trimmed = line.trim();
-    if (line.startsWith("- ")) {
-      bulletBuffer.push(line.slice(2));
-    } else {
-      flushBullets();
-      if (trimmed.startsWith("### ")) {
-        segments.push({ type: "h3", content: trimmed.slice(4) });
-      } else if (trimmed.startsWith("## ")) {
-        segments.push({ type: "h2", content: trimmed.slice(3) });
-      } else if (trimmed.startsWith("# ")) {
-        segments.push({ type: "h1", content: trimmed.slice(2) });
-      } else if (trimmed.startsWith("> ")) {
-        segments.push({ type: "quote", content: trimmed.slice(2) });
-      } else if (trimmed === "---") {
-        segments.push({ type: "hr" });
-      } else if (line.match(/^!\[[^\]]*\]\([^)]+\)$/)) {
-        segments.push({ type: "image-line", content: line });
-      } else {
-        segments.push({ type: "line", content: line });
-      }
-    }
-  });
-  flushBullets();
-
-  // Render segments
-  const nodes = [];
-  let paraBuffer = [];
-  let key = 0;
-
-  const flushPara = () => {
-    if (paraBuffer.length > 0) {
-      nodes.push(
-        <p key={key++} className={paragraphClass}>
-          {paraBuffer.map((seg, i) => (
-            <React.Fragment key={i}>
-              {i > 0 && <br />}
-              {parseInline(seg, `p${key}-${i}`)}
-            </React.Fragment>
-          ))}
-        </p>,
-      );
-      paraBuffer = [];
-    }
-  };
-
-  segments.forEach((seg) => {
-    switch (seg.type) {
-      case "h1":
-        flushPara();
-        nodes.push(
-          <h1
-            key={key++}
-            className="text-3xl md:text-4xl font-serif font-bold text-[#4A3B2A] mt-10 mb-6"
-          >
-            {parseInline(seg.content, `h1-${key}`)}
-          </h1>,
-        );
-        break;
-      case "h2":
-        flushPara();
-        nodes.push(
-          <h2
-            key={key++}
-            className="text-2xl md:text-3xl font-serif font-bold text-[#4A3B2A] mt-8 mb-4"
-          >
-            {parseInline(seg.content, `h2-${key}`)}
-          </h2>,
-        );
-        break;
-      case "h3":
-        flushPara();
-        nodes.push(
-          <h3
-            key={key++}
-            className="text-xl md:text-2xl font-serif font-semibold text-[#4A3B2A] mt-6 mb-3"
-          >
-            {parseInline(seg.content, `h3-${key}`)}
-          </h3>,
-        );
-        break;
-      case "quote":
-        flushPara();
-        nodes.push(
-          <blockquote
-            key={key++}
-            className="border-l-4 border-[#4A3B2A]/20 pl-6 my-8 italic text-lg text-gray-700 bg-gray-50/50 py-4 pr-4 rounded-r-lg leading-relaxed"
-          >
-            {parseInline(seg.content, `q-${key}`)}
-          </blockquote>,
-        );
-        break;
-      case "hr":
-        flushPara();
-        nodes.push(
-          <hr
-            key={key++}
-            className="my-12 border-0 h-px bg-gradient-to-r from-transparent via-[#4A3B2A]/20 to-transparent"
-          />,
-        );
-        break;
-      case "bullets":
-        flushPara();
-        nodes.push(
-          <ul
-            key={key++}
-            className="list-disc list-outside space-y-2 my-6 pl-4 text-gray-700"
-          >
-            {seg.items.map((item, i) => (
-              <li key={i}>{parseInline(item, `li${key}-${i}`)}</li>
-            ))}
-          </ul>,
-        );
-        break;
-      case "image-line":
-        flushPara();
-        nodes.push(
-          <div key={key++}>{parseInline(seg.content, `img-line-${key}`)}</div>,
-        );
-        break;
-      case "line":
-        if (seg.content === "") {
-          flushPara();
-        } else {
-          paraBuffer.push(seg.content);
+            );
+          },
+          a: ({ node, ...props }) => {
+            return (
+              <a 
+                {...props} 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                {props.children}
+              </a>
+            );
+          }
+        }}
+      />
+      <style>{`
+        .rich-text-renderer-container .wmde-markdown {
+          font-family: inherit;
+          color: #374151;
+          line-height: 1.75;
+          background-color: transparent !important;
         }
-        break;
-    }
-  });
-
-  flushPara();
-
-  return <div className={`rich-text-content ${className}`}>{nodes}</div>;
+        .rich-text-renderer-container .wmde-markdown h1 {
+          font-size: 1.875rem;
+          font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+          font-weight: 700;
+          color: #4A3B2A;
+          margin-top: 2.5rem;
+          margin-bottom: 1.5rem;
+          border-bottom: none;
+          padding-bottom: 0;
+        }
+        @media (min-width: 768px) {
+          .rich-text-renderer-container .wmde-markdown h1 { font-size: 2.25rem; }
+        }
+        .rich-text-renderer-container .wmde-markdown h2 {
+          font-size: 1.5rem;
+          font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+          font-weight: 700;
+          color: #4A3B2A;
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+          border-bottom: none;
+          padding-bottom: 0;
+        }
+        @media (min-width: 768px) {
+          .rich-text-renderer-container .wmde-markdown h2 { font-size: 1.875rem; }
+        }
+        .rich-text-renderer-container .wmde-markdown h3 {
+          font-size: 1.25rem;
+          font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+          font-weight: 600;
+          color: #4A3B2A;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+        }
+        @media (min-width: 768px) {
+          .rich-text-renderer-container .wmde-markdown h3 { font-size: 1.5rem; }
+        }
+        .rich-text-renderer-container .wmde-markdown blockquote {
+          border-left: 4px solid rgba(74, 59, 42, 0.2);
+          padding-left: 1.5rem;
+          margin: 2rem 0;
+          font-style: italic;
+          font-size: 1.125rem;
+          color: #374151;
+          background-color: rgba(249, 250, 251, 0.5);
+          padding: 1rem;
+          border-radius: 0 0.5rem 0.5rem 0;
+          line-height: 1.625;
+        }
+        .rich-text-renderer-container .wmde-markdown hr {
+          margin: 3rem 0;
+          border: 0;
+          height: 1px;
+          background: linear-gradient(to right, transparent, rgba(74, 59, 42, 0.2), transparent);
+        }
+        .rich-text-renderer-container .wmde-markdown ul {
+          list-style-type: disc;
+          list-style-position: outside;
+          padding-left: 1rem;
+          margin: 1.5rem 0;
+        }
+        .rich-text-renderer-container .wmde-markdown li { margin-bottom: 0.5rem; }
+        .rich-text-renderer-container .wmde-markdown p {
+          margin-bottom: 1.5rem;
+          line-height: 1.8;
+          font-size: 1rem;
+          color: #1f2937;
+        }
+        .rich-text-renderer-container .wmde-markdown a {
+          color: #4A3B2A;
+          font-weight: 500;
+          text-decoration: underline;
+          text-underline-offset: 4px;
+          text-decoration-color: rgba(74, 59, 42, 0.3);
+          transition: all 0.2s;
+        }
+        .rich-text-renderer-container .wmde-markdown a:hover { text-decoration-color: #4A3B2A; }
+      `}</style>
+    </div>
+  );
 };
 
 export default RichTextRenderer;

@@ -1,25 +1,13 @@
-import React, { useRef, useState } from "react";
-import {
-  Bold,
-  Italic,
-  List,
-  Eye,
-  EyeOff,
-  Image as ImageIcon,
-  Loader2,
-  Heading1,
-  Heading2,
-  Heading3,
-  Quote,
-  Link as LinkIcon,
-  Minus,
-  Strikethrough,
-} from "lucide-react";
-import RichTextRenderer from "../common/RichTextRenderer";
+import React, { useState, useRef } from "react";
+import MDEditor, { commands } from "@uiw/react-md-editor";
+import { ImageIcon, Loader2 } from "lucide-react";
+import { IMAGE_BASE_URL } from "../../services/api";
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
 
 /**
  * RichTextEditor
- * Admin textarea with comprehensive markdown-style formatting toolbar.
+ * Uses @uiw/react-md-editor for robust markdown editing.
  */
 const RichTextEditor = ({
   value = "",
@@ -29,201 +17,11 @@ const RichTextEditor = ({
   placeholder = "Write content here...",
   className = "",
 }) => {
-  const textareaRef = useRef(null);
-  const fileInputRef = useRef(null);
-  const [showPreview, setShowPreview] = useState(false);
+  const height = rows * 25 + 100;
   const [isUploading, setIsUploading] = useState(false);
-  const [showHeadings, setShowHeadings] = useState(false);
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
+  const fileInputRef = useRef(null);
 
-  const replaceSelection = (
-    newSelected,
-    selectionOffsetStart = 0,
-    selectionOffsetEnd = 0,
-  ) => {
-    const el = textareaRef.current;
-    if (!el) return;
-    const start = el.selectionStart;
-    const end = el.selectionEnd;
-    const newValue = value.slice(0, start) + newSelected + value.slice(end);
-    onChange(newValue);
-    requestAnimationFrame(() => {
-      el.focus();
-      el.setSelectionRange(
-        start + selectionOffsetStart,
-        start + newSelected.length - selectionOffsetEnd,
-      );
-    });
-  };
-
-  /** Helper to insert/wrap block text */
-  const insertText = (prefix, suffix = "", isBlock = false) => {
-    const el = textareaRef.current;
-    if (!el) return;
-    const start = el.selectionStart;
-    const end = el.selectionEnd;
-    const selected = value.slice(start, end);
-
-    let newValue;
-    let newStart, newEnd;
-
-    if (isBlock) {
-      // Find start of current line
-      const lineStart = value.lastIndexOf("\n", start - 1) + 1;
-      const lineEnd = value.indexOf("\n", end);
-      const actualLineEnd = lineEnd === -1 ? value.length : lineEnd;
-
-      const lineContent = value.slice(lineStart, actualLineEnd);
-
-      if (lineContent.startsWith(prefix)) {
-        // Toggle off
-        newValue =
-          value.slice(0, lineStart) +
-          lineContent.slice(prefix.length) +
-          value.slice(actualLineEnd);
-        newStart = Math.max(lineStart, start - prefix.length);
-        newEnd = Math.max(lineStart, end - prefix.length);
-      } else {
-        // Toggle on
-        newValue =
-          value.slice(0, lineStart) +
-          prefix +
-          lineContent +
-          value.slice(actualLineEnd);
-        newStart = start + prefix.length;
-        newEnd = end + prefix.length;
-      }
-    } else {
-      // Inline toggle
-      if (
-        selected.startsWith(prefix) &&
-        selected.endsWith(suffix) &&
-        selected.length >= prefix.length + suffix.length
-      ) {
-        // Unwrap
-        const inner = selected.slice(
-          prefix.length,
-          suffix.length ? -suffix.length : undefined,
-        );
-        newValue = value.slice(0, start) + inner + value.slice(end);
-        newStart = start;
-        newEnd = start + inner.length;
-      } else {
-        // Wrap
-        newValue =
-          value.slice(0, start) + prefix + selected + suffix + value.slice(end);
-        newStart = start + prefix.length;
-        newEnd = end + prefix.length;
-      }
-    }
-
-    onChange(newValue);
-    requestAnimationFrame(() => {
-      el.focus();
-      el.setSelectionRange(newStart, newEnd);
-    });
-  };
-
-  const toggleBold = () => {
-    const el = textareaRef.current;
-    if (!el) return;
-    const selected = value.slice(el.selectionStart, el.selectionEnd);
-
-    if (!selected) {
-      replaceSelection("****", 2, 2);
-      return;
-    }
-    if (/^\*\*\*[\s\S]+\*\*\*$/.test(selected)) {
-      const inner = selected.slice(3, -3);
-      replaceSelection(`*${inner}*`, 1, 1);
-      return;
-    }
-    if (/^\*\*[\s\S]+\*\*$/.test(selected)) {
-      replaceSelection(selected.slice(2, -2));
-      return;
-    }
-    if (/^\*[\s\S]+\*$/.test(selected) && !/^\*\*[\s\S]+\*\*$/.test(selected)) {
-      const inner = selected.slice(1, -1);
-      replaceSelection(`***${inner}***`, 3, 3);
-      return;
-    }
-    replaceSelection(`**${selected}**`, 2, 2);
-  };
-
-  const toggleItalic = () => {
-    const el = textareaRef.current;
-    if (!el) return;
-    const selected = value.slice(el.selectionStart, el.selectionEnd);
-
-    if (!selected) {
-      replaceSelection("**", 1, 1);
-      return;
-    }
-    if (/^\*\*\*[\s\S]+\*\*\*$/.test(selected)) {
-      const inner = selected.slice(3, -3);
-      replaceSelection(`**${inner}**`, 2, 2);
-      return;
-    }
-    if (/^\*[\s\S]+\*$/.test(selected) && !/^\*\*[\s\S]+\*\*$/.test(selected)) {
-      replaceSelection(selected.slice(1, -1));
-      return;
-    }
-    if (
-      /^\*\*[\s\S]+\*\*$/.test(selected) &&
-      !/^\*\*\*[\s\S]+\*\*\*$/.test(selected)
-    ) {
-      const inner = selected.slice(2, -2);
-      replaceSelection(`***${inner}***`, 3, 3);
-      return;
-    }
-    replaceSelection(`*${selected}*`, 1, 1);
-  };
-  const toggleStrike = () => insertText("~~", "~~");
-  const toggleH1 = () => insertText("# ", "", true);
-  const toggleH2 = () => insertText("## ", "", true);
-  const toggleH3 = () => insertText("### ", "", true);
-  const toggleQuote = () => insertText("> ", "", true);
-  const toggleBullet = () => insertText("- ", "", true);
-
-  const insertHR = () => {
-    const el = textareaRef.current;
-    if (!el) return;
-    const start = el.selectionStart;
-    const imageMarkdown = `\n---\n`;
-    const newValue = value.slice(0, start) + imageMarkdown + value.slice(start);
-    onChange(newValue);
-    setTimeout(
-      () =>
-        el.setSelectionRange(
-          start + imageMarkdown.length,
-          start + imageMarkdown.length,
-        ),
-      0,
-    );
-  };
-
-  const insertLink = () => {
-    const el = textareaRef.current;
-    if (!el) return;
-    const start = el.selectionStart;
-    const end = el.selectionEnd;
-    const selected = value.slice(start, end) || "link text";
-    const url = prompt("Enter URL:", "https://");
-    if (!url) return;
-
-    const linkMarkdown = `[${selected}](${url})`;
-    const newValue = value.slice(0, start) + linkMarkdown + value.slice(end);
-    onChange(newValue);
-    setTimeout(
-      () =>
-        el.setSelectionRange(
-          start + linkMarkdown.length,
-          start + linkMarkdown.length,
-        ),
-      0,
-    );
-  };
-
-  /** Handle Image Upload */
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file || !onImageUpload) return;
@@ -232,18 +30,17 @@ const RichTextEditor = ({
     try {
       const url = await onImageUpload(file);
       if (url) {
-        const el = textareaRef.current;
-        const start = el.selectionStart;
-        const end = el.selectionEnd;
         const imageMarkdown = `\n![Image Description](${url})\n`;
-        const newValue =
-          value.slice(0, start) + imageMarkdown + value.slice(end);
+        
+        // Insert at cursor position if we have selection data, otherwise append to end
+        // Use value.length if selection is 0 (likely initial state)
+        const insertPos = selection.start || value.length;
+        const newValue = 
+          value.substring(0, insertPos) + 
+          imageMarkdown + 
+          value.substring(selection.end || insertPos);
+        
         onChange(newValue);
-        requestAnimationFrame(() => {
-          el.focus();
-          const newPos = start + imageMarkdown.length;
-          el.setSelectionRange(newPos, newPos);
-        });
       }
     } catch (error) {
       console.error("Image upload failed:", error);
@@ -254,14 +51,24 @@ const RichTextEditor = ({
     }
   };
 
-  const toolbarBtn =
-    "p-1.5 rounded hover:bg-[#E5DFD3] text-[#4A3B2A] transition-colors flex items-center justify-center disabled:opacity-50 relative group/btn";
+  const imageUploadCommand = {
+    name: "image-upload",
+    keyCommand: "image-upload",
+    buttonProps: { "aria-label": "Upload Image", title: "Upload Image" },
+    icon: isUploading ? (
+      <Loader2 size={12} className="animate-spin" />
+    ) : (
+      <ImageIcon size={12} />
+    ),
+    execute: (state) => {
+      // Store current selection before opening file dialog
+      setSelection({ start: state.selection.start, end: state.selection.end });
+      fileInputRef.current?.click();
+    },
+  };
 
   return (
-    <div
-      className={`border border-gray-300 rounded-md overflow-hidden focus-within:ring-1 focus-within:ring-[#4A3B2A] focus-within:border-[#4A3B2A] ${className}`}
-    >
-      {/* Hidden File Input */}
+    <div className={`rich-text-editor-container ${className}`} data-color-mode="light">
       <input
         type="file"
         ref={fileInputRef}
@@ -269,197 +76,94 @@ const RichTextEditor = ({
         className="hidden"
         accept="image/*"
       />
-
-      {/* ── Toolbar ── */}
-      <div className="flex flex-wrap items-center gap-1 px-2 py-1.5 bg-[#F3EFE9] border-b border-gray-300">
-        {/* Group 1: Typography */}
-        <div className="flex items-center gap-0.5 bg-white/50 p-0.5 rounded border border-gray-200">
-          <button
-            type="button"
-            title="Bold"
-            onClick={toggleBold}
-            className={toolbarBtn}
-          >
-            <Bold size={14} strokeWidth={2.5} />
-          </button>
-          <button
-            type="button"
-            title="Italic"
-            onClick={toggleItalic}
-            className={toolbarBtn}
-          >
-            <Italic size={14} strokeWidth={2.5} />
-          </button>
-          <button
-            type="button"
-            title="Strikethrough"
-            onClick={toggleStrike}
-            className={toolbarBtn}
-          >
-            <Strikethrough size={14} strokeWidth={2} />
-          </button>
-        </div>
-
-        {/* Group 2: Headers */}
-        <div className="flex items-center gap-0.5 bg-white/50 p-0.5 rounded border border-gray-200 relative">
-          <button
-            type="button"
-            title="Headings"
-            onClick={() => setShowHeadings(!showHeadings)}
-            className={`${toolbarBtn} ${showHeadings ? "bg-[#E5DFD3]" : ""}`}
-          >
-            <Heading1 size={14} strokeWidth={2.5} />
-            {showHeadings && (
-              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 shadow-xl rounded-md z-50 flex flex-col p-1 min-w-[40px] animate-in fade-in slide-in-from-top-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    toggleH1();
-                    setShowHeadings(false);
-                  }}
-                  className="p-2 hover:bg-gray-100 rounded text-left flex items-center gap-2"
-                >
-                  <Heading1 size={14} />
-                  <span className="text-[10px] font-bold uppercase tracking-tighter">
-                    H1
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    toggleH2();
-                    setShowHeadings(false);
-                  }}
-                  className="p-2 hover:bg-gray-100 rounded text-left flex items-center gap-2"
-                >
-                  <Heading2 size={14} />
-                  <span className="text-[10px] font-bold uppercase tracking-tighter">
-                    H2
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    toggleH3();
-                    setShowHeadings(false);
-                  }}
-                  className="p-2 hover:bg-gray-100 rounded text-left flex items-center gap-2"
-                >
-                  <Heading3 size={14} />
-                  <span className="text-[10px] font-bold uppercase tracking-tighter">
-                    H3
-                  </span>
-                </button>
-              </div>
-            )}
-          </button>
-        </div>
-
-        {/* Group 3: Blocks */}
-        <div className="flex items-center gap-0.5 bg-white/50 p-0.5 rounded border border-gray-200">
-          <button
-            type="button"
-            title="Bullet List"
-            onClick={toggleBullet}
-            className={toolbarBtn}
-          >
-            <List size={14} strokeWidth={2.5} />
-          </button>
-          <button
-            type="button"
-            title="Blockquote"
-            onClick={toggleQuote}
-            className={toolbarBtn}
-          >
-            <Quote size={14} strokeWidth={2.5} />
-          </button>
-          <button
-            type="button"
-            title="Horizontal Rule"
-            onClick={insertHR}
-            className={toolbarBtn}
-          >
-            <Minus size={14} strokeWidth={2.5} />
-          </button>
-        </div>
-
-        {/* Group 4: Links & Media */}
-        <div className="flex items-center gap-0.5 bg-white/50 p-0.5 rounded border border-gray-200">
-          <button
-            type="button"
-            title="Insert Link"
-            onClick={insertLink}
-            className={toolbarBtn}
-          >
-            <LinkIcon size={14} strokeWidth={2.5} />
-          </button>
-          {onImageUpload && (
-            <button
-              type="button"
-              title="Upload Image"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className={toolbarBtn}
-            >
-              {isUploading ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : (
-                <ImageIcon size={14} strokeWidth={2.5} />
-              )}
-            </button>
-          )}
-        </div>
-
-        {/* Spacer */}
-        <div className="flex-1" />
-
-        {/* Preview toggle */}
-        <button
-          type="button"
-          title={showPreview ? "Hide preview" : "Show formatted preview"}
-          onClick={() => setShowPreview((p) => !p)}
-          className={`${toolbarBtn} text-xs gap-1 px-3 py-1 bg-white border border-gray-200 ${showPreview ? "bg-[#E5DFD3] border-[#4A3B2A]/30" : ""}`}
-        >
-          {showPreview ? <EyeOff size={13} /> : <Eye size={13} />}
-          <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider">
-            Preview
-          </span>
-        </button>
-      </div>
-
-      {/* ── Textarea ── */}
-      <textarea
-        ref={textareaRef}
+      <MDEditor
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        rows={rows}
+        onChange={onChange}
+        height={height}
         placeholder={placeholder}
-        onFocus={() => setShowHeadings(false)}
-        className="w-full px-4 py-3 text-sm text-gray-800 bg-white focus:outline-none resize-y leading-relaxed font-mono"
+        extraCommands={[
+          commands.codeLive,
+          commands.codeEdit,
+          commands.codePreview,
+          commands.fullscreen,
+        ]}
+        previewOptions={{
+          components: {
+            img: ({ node, ...props }) => {
+              const src = props.src?.startsWith("http") 
+                ? props.src 
+                : `${IMAGE_BASE_URL}${props.src?.startsWith("/") ? "" : "/"}${props.src}`;
+              
+              return (
+                <span className="block my-4">
+                  <img 
+                    {...props} 
+                    src={src} 
+                    alt={props.alt} 
+                    style={{ maxWidth: '100%', borderRadius: '0.5rem', display: 'block', margin: '0 auto' }} 
+                  />
+                  {props.alt && props.alt !== "Image Description" && (
+                    <span className="block text-center text-[11px] text-gray-500 mt-2 font-light italic">
+                      {props.alt}
+                    </span>
+                  )}
+                </span>
+              );
+            },
+            a: ({ node, ...props }) => {
+              return (
+                <a 
+                  {...props} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  {props.children}
+                </a>
+              );
+            }
+          }
+        }}
+        commands={[
+          commands.bold,
+          commands.italic,
+          commands.strikethrough,
+          commands.hr,
+          commands.title,
+          commands.divider,
+          commands.link,
+          commands.quote,
+          commands.code,
+          onImageUpload ? imageUploadCommand : commands.image,
+          commands.divider,
+          commands.unorderedListCommand,
+          commands.orderedListCommand,
+          commands.checkedListCommand,
+        ]}
       />
-
-      {/* ── Live Preview Panel ── */}
-      {showPreview && (
-        <div className="border-t border-gray-200 bg-gray-50 px-5 py-6">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-6 flex items-center gap-2">
-            <span className="w-4 h-px bg-gray-300" />
-            Live Preview
-          </p>
-          <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm max-w-3xl mx-auto">
-            {value.trim() ? (
-              <RichTextRenderer
-                text={value}
-                className="text-base text-gray-800 leading-loose"
-                paragraphClass="mb-6"
-              />
-            ) : (
-              <p className="text-sm text-gray-400 italic text-center py-10">
-                Start writing to see the preview...
-              </p>
-            )}
-          </div>
-        </div>
-      )}
+      <style>{`
+        .rich-text-editor-container .w-md-editor {
+          border: 1px solid #d1d5db;
+          border-radius: 0.375rem;
+          box-shadow: none;
+        }
+        .rich-text-editor-container .w-md-editor-toolbar {
+          background-color: #f3efe9;
+          border-bottom: 1px solid #d1d5db;
+          border-radius: 0.375rem 0.375rem 0 0;
+        }
+        .rich-text-editor-container .w-md-editor-content {
+          background-color: white;
+        }
+        .rich-text-editor-container .w-md-editor-toolbar button {
+          color: #4a3b2a;
+        }
+        .rich-text-editor-container .w-md-editor-toolbar button:hover {
+          background-color: #e5dfd3;
+        }
+        .rich-text-editor-container .w-md-editor-preview {
+          background-color: #f9fafb;
+        }
+      `}</style>
     </div>
   );
 };
