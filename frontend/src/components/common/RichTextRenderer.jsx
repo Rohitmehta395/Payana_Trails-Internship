@@ -13,7 +13,11 @@ import React from "react";
  *   className     - extra classes on the wrapper element
  *   paragraphClass - classes applied to each <p> / text block
  */
-const RichTextRenderer = ({ text = "", className = "", paragraphClass = "" }) => {
+const RichTextRenderer = ({
+  text = "",
+  className = "",
+  paragraphClass = "",
+}) => {
   if (!text) return null;
 
   /**
@@ -21,8 +25,9 @@ const RichTextRenderer = ({ text = "", className = "", paragraphClass = "" }) =>
    * Returns an array of React nodes.
    */
   const parseInline = (str, keyPrefix) => {
-    // Regex: match ![alt](url), [text](url), **...**, *...*, ~~...~~
-    const regex = /(!\[[^\]]*\]\([^)]+\)|\[[^\]]*\]\([^)]+\)|\*\*[^*]+\*\*|\*[^*]+\*|~~[^~]+~~)/g;
+    // Regex: match ![alt](url), [text](url), ***...***, **...**, *...*, ~~...~~
+    const regex =
+      /(!\[[^\]]*\]\([^)]+\)|\[[^\]]*\]\([^)]+\)|\*\*\*[\s\S]+?\*\*\*|\*\*[\s\S]+?\*\*|\*[\s\S]+?\*|~~[\s\S]+?~~)/g;
     const parts = str.split(regex);
 
     return parts.map((part, i) => {
@@ -31,12 +36,23 @@ const RichTextRenderer = ({ text = "", className = "", paragraphClass = "" }) =>
         const alt = part.match(/!\[(.*?)\]/)?.[1] || "Blog Image";
         const url = part.match(/\((.*?)\)/)?.[1] || "";
         if (!url) return null;
-        const fullUrl = url.startsWith("http") ? url : `${import.meta.env.VITE_API_URL || "http://localhost:8000"}${url}`;
+        const fullUrl = url.startsWith("http")
+          ? url
+          : `${import.meta.env.VITE_API_URL || "http://localhost:8000"}${url}`;
 
         return (
           <span key={`${keyPrefix}-img-${i}`} className="block my-8 group">
-            <img src={fullUrl} alt={alt} className="w-full h-auto rounded-lg shadow-md border border-gray-100 transition-transform duration-500 group-hover:scale-[1.01]" loading="lazy" />
-            {alt && <span className="block text-center text-xs text-gray-500 mt-3 font-light tracking-wide italic">{alt}</span>}
+            <img
+              src={fullUrl}
+              alt={alt}
+              className="w-full h-auto rounded-lg shadow-md border border-gray-100 transition-transform duration-500 group-hover:scale-[1.01]"
+              loading="lazy"
+            />
+            {alt && (
+              <span className="block text-center text-xs text-gray-500 mt-3 font-light tracking-wide italic">
+                {alt}
+              </span>
+            )}
           </span>
         );
       }
@@ -46,25 +62,62 @@ const RichTextRenderer = ({ text = "", className = "", paragraphClass = "" }) =>
         const text = part.match(/\[(.*?)\]/)?.[1] || "";
         const url = part.match(/\((.*?)\)/)?.[1] || "";
         return (
-          <a key={`${keyPrefix}-link-${i}`} href={url} target="_blank" rel="noopener noreferrer" className="text-[#4A3B2A] font-medium underline underline-offset-4 decoration-[#4A3B2A]/30 hover:decoration-[#4A3B2A] transition-all">
+          <a
+            key={`${keyPrefix}-link-${i}`}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#4A3B2A] font-medium underline underline-offset-4 decoration-[#4A3B2A]/30 hover:decoration-[#4A3B2A] transition-all"
+          >
             {text}
           </a>
         );
       }
-
-      // 3. Bold: **text**
+      // 3. Bold+Italic: ***text***
+      if (part.startsWith("***") && part.endsWith("***")) {
+        const inner = part.slice(3, -3);
+        return (
+          <strong
+            key={`${keyPrefix}-bi-${i}`}
+            className="font-bold text-gray-900"
+          >
+            <em className="italic">
+              {parseInline(inner, `${keyPrefix}-bi-in-${i}`)}
+            </em>
+          </strong>
+        );
+      }
+      // 4. Bold: **text**
       if (part.startsWith("**") && part.endsWith("**")) {
-        return <strong key={`${keyPrefix}-b-${i}`} className="font-bold text-gray-900">{part.slice(2, -2)}</strong>;
+        const inner = part.slice(2, -2);
+        return (
+          <strong
+            key={`${keyPrefix}-b-${i}`}
+            className="font-bold text-gray-900"
+          >
+            {parseInline(inner, `${keyPrefix}-b-in-${i}`)}
+          </strong>
+        );
       }
 
-      // 4. Italic: *text*
+      // 5. Italic: *text*
       if (part.startsWith("*") && part.endsWith("*")) {
-        return <em key={`${keyPrefix}-i-${i}`} className="italic">{part.slice(1, -1)}</em>;
+        const inner = part.slice(1, -1);
+        return (
+          <em key={`${keyPrefix}-i-${i}`} className="italic">
+            {parseInline(inner, `${keyPrefix}-i-in-${i}`)}
+          </em>
+        );
       }
 
-      // 5. Strikethrough: ~~text~~
+      // 6. Strikethrough: ~~text~~
       if (part.startsWith("~~") && part.endsWith("~~")) {
-        return <del key={`${keyPrefix}-s-${i}`} className="line-through opacity-70">{part.slice(2, -2)}</del>;
+        const inner = part.slice(2, -2);
+        return (
+          <del key={`${keyPrefix}-s-${i}`} className="line-through opacity-70">
+            {parseInline(inner, `${keyPrefix}-s-in-${i}`)}
+          </del>
+        );
       }
 
       return part;
@@ -124,7 +177,7 @@ const RichTextRenderer = ({ text = "", className = "", paragraphClass = "" }) =>
               {parseInline(seg, `p${key}-${i}`)}
             </React.Fragment>
           ))}
-        </p>
+        </p>,
       );
       paraBuffer = [];
     }
@@ -134,39 +187,75 @@ const RichTextRenderer = ({ text = "", className = "", paragraphClass = "" }) =>
     switch (seg.type) {
       case "h1":
         flushPara();
-        nodes.push(<h1 key={key++} className="text-3xl md:text-4xl font-serif font-bold text-[#4A3B2A] mt-10 mb-6">{parseInline(seg.content, `h1-${key}`)}</h1>);
+        nodes.push(
+          <h1
+            key={key++}
+            className="text-3xl md:text-4xl font-serif font-bold text-[#4A3B2A] mt-10 mb-6"
+          >
+            {parseInline(seg.content, `h1-${key}`)}
+          </h1>,
+        );
         break;
       case "h2":
         flushPara();
-        nodes.push(<h2 key={key++} className="text-2xl md:text-3xl font-serif font-bold text-[#4A3B2A] mt-8 mb-4">{parseInline(seg.content, `h2-${key}`)}</h2>);
+        nodes.push(
+          <h2
+            key={key++}
+            className="text-2xl md:text-3xl font-serif font-bold text-[#4A3B2A] mt-8 mb-4"
+          >
+            {parseInline(seg.content, `h2-${key}`)}
+          </h2>,
+        );
         break;
       case "h3":
         flushPara();
-        nodes.push(<h3 key={key++} className="text-xl md:text-2xl font-serif font-semibold text-[#4A3B2A] mt-6 mb-3">{parseInline(seg.content, `h3-${key}`)}</h3>);
+        nodes.push(
+          <h3
+            key={key++}
+            className="text-xl md:text-2xl font-serif font-semibold text-[#4A3B2A] mt-6 mb-3"
+          >
+            {parseInline(seg.content, `h3-${key}`)}
+          </h3>,
+        );
         break;
       case "quote":
         flushPara();
         nodes.push(
-          <blockquote key={key++} className="border-l-4 border-[#4A3B2A]/20 pl-6 my-8 italic text-lg text-gray-700 bg-gray-50/50 py-4 pr-4 rounded-r-lg leading-relaxed">
+          <blockquote
+            key={key++}
+            className="border-l-4 border-[#4A3B2A]/20 pl-6 my-8 italic text-lg text-gray-700 bg-gray-50/50 py-4 pr-4 rounded-r-lg leading-relaxed"
+          >
             {parseInline(seg.content, `q-${key}`)}
-          </blockquote>
+          </blockquote>,
         );
         break;
       case "hr":
         flushPara();
-        nodes.push(<hr key={key++} className="my-12 border-0 h-px bg-gradient-to-r from-transparent via-[#4A3B2A]/20 to-transparent" />);
+        nodes.push(
+          <hr
+            key={key++}
+            className="my-12 border-0 h-px bg-gradient-to-r from-transparent via-[#4A3B2A]/20 to-transparent"
+          />,
+        );
         break;
       case "bullets":
         flushPara();
         nodes.push(
-          <ul key={key++} className="list-disc list-outside space-y-2 my-6 pl-4 text-gray-700">
-            {seg.items.map((item, i) => (<li key={i}>{parseInline(item, `li${key}-${i}`)}</li>))}
-          </ul>
+          <ul
+            key={key++}
+            className="list-disc list-outside space-y-2 my-6 pl-4 text-gray-700"
+          >
+            {seg.items.map((item, i) => (
+              <li key={i}>{parseInline(item, `li${key}-${i}`)}</li>
+            ))}
+          </ul>,
         );
         break;
       case "image-line":
         flushPara();
-        nodes.push(<div key={key++}>{parseInline(seg.content, `img-line-${key}`)}</div>);
+        nodes.push(
+          <div key={key++}>{parseInline(seg.content, `img-line-${key}`)}</div>,
+        );
         break;
       case "line":
         if (seg.content === "") {
