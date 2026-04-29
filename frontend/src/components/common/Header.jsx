@@ -115,7 +115,7 @@ export default function Header() {
       ],
     },
     { name: "Payana Way", path: "/payana-way" },
-    // { name: "Stories", path: "/stories" },
+    { name: "Stories", path: "/stories" },
     { name: "Connect", path: "/connect" },
   ];
 
