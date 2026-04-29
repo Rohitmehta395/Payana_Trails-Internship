@@ -229,7 +229,7 @@ const TravelStories = ({ data }) => {
             className="group inline-flex items-center gap-4 bg-[#4A3B2A] px-7 py-3 text-xs font-medium uppercase tracking-[0.2em] text-[#F3EFE9] transition-all duration-300 hover:bg-[#3A2E20]"
           >
             <span>Explore Stories</span>
-            <span className="block h-px w-7 bg-[#F3EFE9]/70 transition-all duration-500 group-hover:w-12" />
+            <span className="block h-px w-7 bg-[#F3EFE9]/70 transition-all duration-500 group-hover:w-10" />
           </button>
         </Motion.div>
       </Motion.div>
