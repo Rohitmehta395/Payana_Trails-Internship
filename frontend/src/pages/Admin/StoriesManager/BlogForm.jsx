@@ -333,7 +333,7 @@ const BlogForm = ({ editBlog = null, onSaved, onCancel }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Location
+              Location <span className="text-gray-400 font-normal">(Optional)</span>
             </label>
             <input
               type="text"

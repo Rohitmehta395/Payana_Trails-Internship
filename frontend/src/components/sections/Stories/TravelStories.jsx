@@ -14,11 +14,15 @@ const CATEGORIES = [
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
-  return new Date(dateStr).toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+  try {
+    return new Date(dateStr).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
 };
 
 const StoryCard = ({ blog, category, index }) => {
@@ -29,50 +33,48 @@ const StoryCard = ({ blog, category, index }) => {
   return (
     <Motion.article
       variants={{
-        hidden: { opacity: 0, y: 24 },
+        hidden: { opacity: 0, y: 32 },
         visible: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.6, delay: index * 0.06 },
+          transition: { duration: 0.55, delay: index * 0.07, ease: [0.25, 0.1, 0.25, 1] },
         },
       }}
       onClick={() => navigate(`/stories/blogs/${blog.slug}`)}
-      className="group cursor-pointer bg-[#FAF7F4] border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:bg-white transition-all duration-300"
+      className="group cursor-pointer flex flex-col bg-[#FAF7F4] hover:bg-white transition-colors duration-300 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-lg"
     >
-      <div className="relative overflow-hidden aspect-[4/3] bg-[#4A3B2A]/10">
+      <div className="relative overflow-hidden" style={{ paddingTop: "62%" }}>
         {blog.featuredImage ? (
           <img
             src={`${IMAGE_BASE_URL}${blog.featuredImage}`}
             alt={blog.title}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-[#4A3B2A]/35">
-              No Image
-            </span>
+          <div className="absolute inset-0 bg-[#4A3B2A]/10 flex items-center justify-center">
+            <span className="text-[#4A3B2A]/30 text-xs tracking-widest uppercase">No Image</span>
           </div>
         )}
-        <span className="absolute left-4 top-4 bg-[#4A3B2A] px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-[#F3EFE9]">
+        <span className="absolute top-4 left-4 px-3 py-1 text-[10px] tracking-[0.2em] uppercase font-medium bg-[#4A3B2A] text-[#F3EFE9]">
           {category}
         </span>
       </div>
 
-      <div className="flex min-h-[190px] flex-col p-6">
-        <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.22em] text-[#4A3B2A]/45">
-          {formatDate(blog.publishDate)}
-        </p>
-        <h3 className="mb-3 line-clamp-2 font-serif text-xl font-semibold leading-snug text-[#4A3B2A] transition-colors group-hover:text-[#3A2E20]">
+      <div className="p-6 flex flex-col flex-1">
+        <div className="flex items-center gap-3 text-[10px] tracking-widest uppercase text-[#4A3B2A]/50 font-medium mb-3">
+          <span>{formatDate(blog.publishDate)}</span>
+        </div>
+        <h3 className="text-lg font-serif font-semibold text-[#4A3B2A] leading-snug mb-3 group-hover:text-[#3A2E20] transition-colors line-clamp-2">
           {blog.title}
         </h3>
         {blog.excerpt && (
-          <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-[#4A3B2A]/60">
+          <p className="text-sm text-[#4A3B2A]/60 leading-relaxed line-clamp-3 flex-1">
             {blog.excerpt}
           </p>
         )}
-        <div className="mt-5 flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.22em] text-[#4A3B2A]">
+        <div className="mt-4 flex items-center gap-2 text-[11px] tracking-widest uppercase text-[#4A3B2A] font-medium">
           <span>Read More</span>
-          <span className="block h-px w-6 bg-[#4A3B2A] transition-all duration-500 group-hover:w-12" />
+          <span className="w-6 h-px bg-[#4A3B2A] group-hover:w-12 transition-all duration-400" />
         </div>
       </div>
     </Motion.article>
