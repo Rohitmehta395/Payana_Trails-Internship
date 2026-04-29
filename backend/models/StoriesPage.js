@@ -8,8 +8,14 @@ const storiesPageSchema = new mongoose.Schema(
         type: String,
         default: "Reflections, insights, and moments from journeys across the world",
       },
+      image: { type: String, default: "" },
       image1: { type: String, default: "" },
       image2: { type: String, default: "" },
+      selectedBlogs: {
+        type: Map,
+        of: { type: mongoose.Schema.Types.ObjectId, ref: "Blog" },
+        default: {},
+      },
     },
   },
   { timestamps: true }

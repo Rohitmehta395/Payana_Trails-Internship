@@ -30,10 +30,7 @@ router.get("/", getStoriesPage);
 router.put(
   "/travel-stories",
   requireAdmin,
-  upload.fields([
-    { name: "image1", maxCount: 1 },
-    { name: "image2", maxCount: 1 },
-  ]),
+  upload.fields([{ name: "image", maxCount: 1 }]),
   updateTravelStoriesSection
 );
 

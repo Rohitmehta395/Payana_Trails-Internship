@@ -4,6 +4,15 @@ const sharp = require("sharp");
 const StoriesPage = require("../models/StoriesPage");
 const Blog = require("../models/Blog");
 
+const STORY_CATEGORIES = [
+  "Heritage Trails",
+  "Wildlife Encounters",
+  "Cultural Windows",
+  "Journey Insights",
+  "Photo Essays",
+  "Travel Anecdotes",
+];
+
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 const storiesUploadsFolder = path.join(__dirname, "..", "uploads", "stories");
@@ -45,6 +54,61 @@ const compressImage = async (buffer, { width = 1200, quality = 80 } = {}) => {
     .toBuffer();
 };
 
+const parseSelectedBlogs = (value) => {
+  if (!value) return {};
+  if (typeof value === "object") return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return {};
+  }
+};
+
+const getSelectedBlogsObject = (selectedBlogs) => {
+  if (!selectedBlogs) return {};
+  if (selectedBlogs instanceof Map) return Object.fromEntries(selectedBlogs);
+  return selectedBlogs;
+};
+
+const serializeStoriesPage = async (page) => {
+  const pageObject = page.toObject();
+  const selectedBlogs = getSelectedBlogsObject(pageObject.travelStories?.selectedBlogs);
+  const categoryBlogs = {};
+
+  await Promise.all(
+    STORY_CATEGORIES.map(async (category) => {
+      const selectedId = selectedBlogs?.[category];
+      let blog = null;
+
+      if (selectedId) {
+        blog = await Blog.findOne({
+          _id: selectedId,
+          category,
+          isDraft: false,
+        }).select("-draftData");
+      }
+
+      if (!blog) {
+        blog = await Blog.findOne({ category, isDraft: false })
+          .sort({ order: 1, publishDate: -1 })
+          .select("-draftData");
+      }
+
+      if (blog) {
+        categoryBlogs[category] = blog;
+      }
+    })
+  );
+
+  pageObject.travelStories = {
+    ...pageObject.travelStories,
+    selectedBlogs,
+    categoryBlogs,
+  };
+
+  return pageObject;
+};
+
 // ─── Stories Page Section ────────────────────────────────────────────────────
 
 exports.getStoriesPage = async (req, res) => {
@@ -56,12 +120,14 @@ exports.getStoriesPage = async (req, res) => {
           mainTitle: "Travel Stories",
           subtitle:
             "Reflections, insights, and moments from journeys across the world",
+          image: "",
           image1: "",
           image2: "",
+          selectedBlogs: {},
         },
       });
     }
-    res.status(200).json(page);
+    res.status(200).json(await serializeStoriesPage(page));
   } catch (error) {
     console.error("Error fetching Stories page:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -75,66 +141,49 @@ exports.updateTravelStoriesSection = async (req, res) => {
       page = new StoriesPage({});
     }
 
-    const { mainTitle, subtitle } = req.body;
+    const { mainTitle, subtitle, selectedBlogs } = req.body;
     const files = req.files || {};
     const imageStats = [];
 
     ensureDir(storiesUploadsFolder);
 
-    if (mainTitle) page.travelStories.mainTitle = mainTitle;
-    if (subtitle) page.travelStories.subtitle = subtitle;
+    if (mainTitle !== undefined) page.travelStories.mainTitle = mainTitle;
+    if (subtitle !== undefined) page.travelStories.subtitle = subtitle;
 
-    // Process image1
-    if (files.image1 && files.image1[0]) {
-      const file = files.image1[0];
-      if (page.travelStories.image1) {
-        deleteFile(page.travelStories.image1);
-      }
-      const baseName = `ts-img1-${Date.now()}-${Math.random()
-        .toString(36)
-        .slice(2, 7)}`;
-      const webpFilename = `${baseName}.webp`;
-      const destPath = path.join(storiesUploadsFolder, webpFilename);
-      const compressedBuffer = await compressImage(file.buffer, {
-        width: 900,
-        quality: 82,
+    if (selectedBlogs !== undefined) {
+      const selected = parseSelectedBlogs(selectedBlogs);
+      const sanitizedSelections = {};
+      STORY_CATEGORIES.forEach((category) => {
+        if (selected[category]) sanitizedSelections[category] = selected[category];
       });
-      fs.writeFileSync(destPath, compressedBuffer);
-      const originalSize = file.size || file.buffer?.length || 0;
-      const compressedSize = compressedBuffer.length;
-      imageStats.push({
-        field: "Image 1",
-        originalName: file.originalname,
-        originalSize,
-        compressedSize,
-        savedPercent:
-          originalSize > 0
-            ? Math.round((1 - compressedSize / originalSize) * 100)
-            : 0,
-      });
-      page.travelStories.image1 = `/uploads/stories/${webpFilename}`;
+      page.travelStories.selectedBlogs = sanitizedSelections;
     }
 
-    // Process image2
-    if (files.image2 && files.image2[0]) {
-      const file = files.image2[0];
-      if (page.travelStories.image2) {
-        deleteFile(page.travelStories.image2);
-      }
-      const baseName = `ts-img2-${Date.now()}-${Math.random()
+    const landscapeFile = files.image?.[0];
+    if (landscapeFile) {
+      const previousImages = [
+        page.travelStories.image,
+        page.travelStories.image1,
+        page.travelStories.image2,
+      ].filter(Boolean);
+
+      [...new Set(previousImages)].forEach(deleteFile);
+
+      const file = landscapeFile;
+      const baseName = `ts-landscape-${Date.now()}-${Math.random()
         .toString(36)
         .slice(2, 7)}`;
       const webpFilename = `${baseName}.webp`;
       const destPath = path.join(storiesUploadsFolder, webpFilename);
       const compressedBuffer = await compressImage(file.buffer, {
-        width: 900,
+        width: 1600,
         quality: 82,
       });
       fs.writeFileSync(destPath, compressedBuffer);
       const originalSize = file.size || file.buffer?.length || 0;
       const compressedSize = compressedBuffer.length;
       imageStats.push({
-        field: "Image 2",
+        field: "Landscape Image",
         originalName: file.originalname,
         originalSize,
         compressedSize,
@@ -143,13 +192,20 @@ exports.updateTravelStoriesSection = async (req, res) => {
             ? Math.round((1 - compressedSize / originalSize) * 100)
             : 0,
       });
-      page.travelStories.image2 = `/uploads/stories/${webpFilename}`;
+      const imagePath = `/uploads/stories/${webpFilename}`;
+      page.travelStories.image = imagePath;
+      page.travelStories.image1 = imagePath;
+      page.travelStories.image2 = "";
     }
 
     await page.save();
     res
       .status(200)
-      .json({ message: "Travel Stories section updated", page, imageStats });
+      .json({
+        message: "Travel Stories section updated",
+        page: await serializeStoriesPage(page),
+        imageStats,
+      });
   } catch (error) {
     console.error("Error updating Travel Stories section:", error);
     res.status(500).json({ message: "Server error", error: error.message });
