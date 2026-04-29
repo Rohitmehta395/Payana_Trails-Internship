@@ -8,6 +8,8 @@ const LightboxImage = ({
   alt, 
   className = "", 
   containerClassName = "",
+  imageClassName = "w-full h-full object-cover",
+  showHoverOverlay = true,
   rounded = "rounded-2xl md:rounded-[3rem]"
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -86,13 +88,15 @@ const LightboxImage = ({
           <img
             src={src}
             alt={alt}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+            className={`${imageClassName} transition-transform duration-700 group-hover:scale-[1.02]`}
           />
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 bg-[#4A3B2A]/10 backdrop-blur-[2px]">
-            <div className="bg-[#4A3B2A]/60 backdrop-blur-md p-5 rounded-full border border-white/20 shadow-2xl transform scale-90 group-hover:scale-100 transition-all duration-500">
-              <Maximize2 className="text-white w-10 h-10" strokeWidth={1.5} />
+          {showHoverOverlay && (
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 bg-[#4A3B2A]/10 backdrop-blur-[2px]">
+              <div className="bg-[#4A3B2A]/60 backdrop-blur-md p-5 rounded-full border border-white/20 shadow-2xl transform scale-90 group-hover:scale-100 transition-all duration-500">
+                <Maximize2 className="text-white w-10 h-10" strokeWidth={1.5} />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
