@@ -15,49 +15,77 @@ const RichTextRenderer = ({
 }) => {
   if (!text) return null;
 
+  const parseImageAlignment = (altText = "") => {
+    const match = altText.match(/\|\s*(left|right)\s*$/i);
+    const alignment = match?.[1]?.toLowerCase() || null;
+    const cleanAlt = altText.replace(/\s*\|\s*(left|right)\s*$/i, "").trim();
+    return { alignment, cleanAlt };
+  };
+
+
   return (
-    <div className={`rich-text-renderer-container ${className}`} data-color-mode="light">
-      <MDEditor.Markdown 
-        source={text} 
-        style={{ 
-          backgroundColor: 'transparent',
-          color: 'inherit',
-          fontFamily: 'inherit'
+    <div
+      className={`rich-text-renderer-container ${className}`}
+      data-color-mode="light"
+    >
+      <MDEditor.Markdown
+        source={text}
+        style={{
+          backgroundColor: "transparent",
+          color: "inherit",
+          fontFamily: "inherit",
         }}
         components={{
           img: ({ node, ...props }) => {
-            const src = props.src?.startsWith("http") 
-              ? props.src 
+            const src = props.src?.startsWith("http")
+              ? props.src
               : `${IMAGE_BASE_URL}${props.src?.startsWith("/") ? "" : "/"}${props.src}`;
+            const { alignment, cleanAlt } = parseImageAlignment(
+              props.alt || "",
+            );
             
+            const isAligned = alignment === "left" || alignment === "right";
+            const wrapperClass = isAligned
+              ? `blog-inline-image blog-inline-image--${alignment}`
+              : "blog-image-full my-8 group block";
+
             return (
-              <span className="block my-8 group">
-                <img 
-                  {...props} 
-                  src={src} 
-                  alt={props.alt}
-                  className="w-full h-auto rounded-lg shadow-md border border-gray-100 transition-transform duration-500 group-hover:scale-[1.01]"
+              <span className={wrapperClass}>
+                <img
+                  {...props}
+                  src={src}
+                  alt={cleanAlt || props.alt}
+                  className="w-full h-auto rounded-lg shadow-md border border-gray-100 transition-transform duration-500"
                   loading="lazy"
                 />
-                {props.alt && props.alt !== "Image Description" && (
+                {cleanAlt && cleanAlt !== "Image Description" && (
                   <span className="block text-center text-xs text-gray-500 mt-3 font-light tracking-wide italic">
-                    {props.alt}
+                    {cleanAlt}
                   </span>
                 )}
               </span>
             );
           },
+          p: ({ node, children }) => {
+            // If the paragraph only contains an image, unwrap it to allow proper floating
+            const childrenArray = React.Children.toArray(children);
+            const isOnlyImage = childrenArray.length === 1 && 
+              React.isValidElement(childrenArray[0]) && 
+              (childrenArray[0].props?.className?.includes("blog-inline-image") || 
+               childrenArray[0].props?.className?.includes("blog-image-full"));
+
+            if (isOnlyImage) {
+              return <>{children}</>;
+            }
+            return <p className={paragraphClass}>{children}</p>;
+          },
           a: ({ node, ...props }) => {
             return (
-              <a 
-                {...props} 
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
+              <a {...props} target="_blank" rel="noopener noreferrer">
                 {props.children}
               </a>
             );
-          }
+          },
         }}
       />
       <style>{`
@@ -144,6 +172,38 @@ const RichTextRenderer = ({
           transition: all 0.2s;
         }
         .rich-text-renderer-container .wmde-markdown a:hover { text-decoration-color: #4A3B2A; }
+        .rich-text-renderer-container .wmde-markdown .blog-image-full {
+          width: 100%;
+          display: block;
+          clear: both;
+          margin: 2rem 0;
+        }
+        .rich-text-renderer-container .wmde-markdown .blog-inline-image {
+          width: 100%;
+          margin: 1.5rem 0;
+          display: block;
+        }
+        @media (min-width: 768px) {
+          .rich-text-renderer-container .wmde-markdown .blog-inline-image {
+            width: 45%;
+            display: inline-block;
+          }
+          .rich-text-renderer-container .wmde-markdown .blog-inline-image--left {
+            float: left;
+            margin: 0.5rem 1.75rem 1.25rem 0;
+            clear: left;
+          }
+          .rich-text-renderer-container .wmde-markdown .blog-inline-image--right {
+            float: right;
+            margin: 0.5rem 0 1.25rem 1.75rem;
+            clear: right;
+          }
+        }
+        .rich-text-renderer-container .wmde-markdown::after {
+          content: "";
+          display: table;
+          clear: both;
+        }
       `}</style>
     </div>
   );

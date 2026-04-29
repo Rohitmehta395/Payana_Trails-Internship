@@ -234,7 +234,7 @@ const TravelStories = ({ data }) => {
         </Motion.div>
       </Motion.div>
     </section>
-  );
+  );  
 };
 
 export default TravelStories;
