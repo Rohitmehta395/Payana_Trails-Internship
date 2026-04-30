@@ -1154,6 +1154,116 @@ export const api = {
       throw error;
     }
   },
-};
 
+  getExternalStories: async (params = {}) => {
+    try {
+      const query = new URLSearchParams();
+      if (params.category) query.set("category", params.category);
+      if (params.destination) query.set("destination", params.destination);
+      if (params.page) query.set("page", params.page);
+      if (params.limit) query.set("limit", params.limit);
+      if (params.all) query.set("all", "true");
+      const url = `${API_BASE_URL}/external-stories${query.toString() ? "?" + query.toString() : ""}`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch external stories");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getExternalStories):", error);
+      throw error;
+    }
+  },
+
+  getExternalStoriesAdmin: async (params = {}) => {
+    try {
+      const query = new URLSearchParams();
+      if (params.category) query.set("category", params.category);
+      const url = `${API_BASE_URL}/external-stories/admin${query.toString() ? "?" + query.toString() : ""}`;
+      const response = await fetch(url, { headers: withAdminAuth() });
+      if (!response.ok) throw new Error("Failed to fetch admin external stories");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getExternalStoriesAdmin):", error);
+      throw error;
+    }
+  },
+
+  createExternalStory: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/external-stories`, {
+        method: "POST",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to create external story");
+      return data;
+    } catch (error) {
+      console.error("API Error (createExternalStory):", error);
+      throw error;
+    }
+  },
+
+  updateExternalStory: async (id, formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/external-stories/${id}`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update external story");
+      return data;
+    } catch (error) {
+      console.error("API Error (updateExternalStory):", error);
+      throw error;
+    }
+  },
+
+  deleteExternalStory: async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/external-stories/${id}`, {
+        method: "DELETE",
+        headers: withAdminAuth(),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to delete external story");
+      return data;
+    } catch (error) {
+      console.error("API Error (deleteExternalStory):", error);
+      throw error;
+    }
+  },
+
+  reorderExternalStories: async (items) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/external-stories/reorder`, {
+        method: "PUT",
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ items }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to reorder external stories");
+      return data;
+    } catch (error) {
+      console.error("API Error (reorderExternalStories):", error);
+      throw error;
+    }
+  },
+
+  autosaveExternalStory: async (id, draftData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/external-stories/${id}/autosave`, {
+        method: "PATCH",
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ draftData }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to autosave external story");
+      return data;
+    } catch (error) {
+      console.error("API Error (autosaveExternalStory):", error);
+      throw error;
+    }
+  },
+};
 

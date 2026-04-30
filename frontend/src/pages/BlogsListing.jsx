@@ -540,8 +540,114 @@ const BlogsListing = () => {
             </div>
           )}
         </section>
+
+        {/* ── Stories from our Guests ───────────────────── */}
+        <GuestStoriesSection />
+
       </div>
     </div>
+  );
+};
+
+// ─── Guest Stories Section ──────────────────────────────────────────────────
+const GuestStoriesSection = () => {
+  const [externalStories, setExternalStories] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    api
+      .getExternalStories({ limit: 3 })
+      .then((data) => setExternalStories(data.stories || []))
+      .catch((err) => console.error("Failed to load external stories:", err));
+  }, []);
+
+  if (externalStories.length === 0) return null;
+
+  return (
+    <section className="mt-24 pt-16 border-t border-[#4A3B2A]/10">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="h-px w-10 bg-[#4A3B2A]/40" />
+        <span className="text-[10px] tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
+          Stories from our Guests
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {externalStories.map((story, i) => (
+          <ExternalStoryCard key={story._id} blog={story} index={i} />
+        ))}
+      </div>
+
+      <div className="mt-14 flex justify-center">
+        <button
+          onClick={() => navigate("/stories/external")}
+          className="group inline-flex items-center gap-4 bg-[#4A3B2A] px-10 py-4 text-xs tracking-[0.25em] uppercase font-medium text-[#F3EFE9] hover:bg-[#3A2E20] transition-all duration-300"
+        >
+          <span>Explore More Guest Stories</span>
+          <span className="w-5 h-px bg-current group-hover:w-10 transition-all duration-500" />
+        </button>
+      </div>
+    </section>
+  );
+};
+
+// ─── External Story Card ─────────────────────────────────────────────────────
+const ExternalStoryCard = ({ blog, index }) => {
+  return (
+    <motion.a
+      href={blog.externalUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.55, delay: index * 0.07, ease: [0.25, 0.1, 0.25, 1] }}
+      className="group cursor-pointer flex flex-col bg-[#FAF7F4] hover:bg-white transition-colors duration-300 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-lg"
+    >
+      <div className="relative overflow-hidden" style={{ paddingTop: "62%" }}>
+        {blog.featuredImage ? (
+          <img
+            src={`${IMAGE_BASE_URL}${blog.featuredImage}`}
+            alt={blog.title}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-[#4A3B2A]/10 flex items-center justify-center">
+            <span className="text-[#4A3B2A]/30 text-xs tracking-widest uppercase">No Image</span>
+          </div>
+        )}
+        <span className="absolute top-4 left-4 px-3 py-1 text-[10px] tracking-[0.2em] uppercase font-medium bg-[#4A3B2A] text-[#F3EFE9]">
+          {blog.category}
+        </span>
+      </div>
+
+      <div className="p-6 flex flex-col flex-1">
+        <div className="flex items-center justify-between gap-3 text-[11px] tracking-widest uppercase text-[#4A3B2A]/60 font-bold mb-3">
+          {(blog.location || blog.destination) ? (
+            <span className="text-right ml-auto">
+              {[blog.location, blog.destination].filter(Boolean).join(", ")}
+            </span>
+          ) : (
+            <span className="h-4"></span>
+          )}
+        </div>
+        <h3 className="text-lg font-serif font-semibold text-[#4A3B2A] leading-snug mb-3 group-hover:text-[#3A2E20] transition-colors line-clamp-2">
+          {blog.title}
+        </h3>
+        {blog.author && (
+          <p className="text-xs tracking-widest uppercase text-[#4A3B2A]/80 font-medium mb-3">
+            By {blog.author}
+          </p>
+        )}
+        <p className="text-sm text-[#4A3B2A]/60 leading-relaxed line-clamp-3 flex-1">
+          {blog.excerpt}
+        </p>
+        <div className="mt-4 flex items-center gap-2 text-[11px] tracking-widest uppercase text-[#4A3B2A] font-medium">
+          <span>Read on External Site ↗</span>
+          <span className="w-6 h-px bg-[#4A3B2A] group-hover:w-12 transition-all duration-400" />
+        </div>
+      </div>
+    </motion.a>
   );
 };
 

@@ -33,6 +33,7 @@ const faqRoutes = require("./routes/faqRoutes");
 const homePageRoutes = require("./routes/homePageRoutes");
 const payanaWayRoutes = require("./routes/payanaWayRoutes");
 const storiesRoutes = require("./routes/storiesRoutes");
+const externalStoriesRoutes = require("./routes/externalStoriesRoutes");
 
 // Routes
 app.use("/api/admin", adminRoutes);
@@ -47,6 +48,7 @@ app.use("/api/faqs", faqRoutes);
 app.use("/api/home-page", homePageRoutes);
 app.use("/api/payana-way", payanaWayRoutes);
 app.use("/api/stories", storiesRoutes);
+app.use("/api/external-stories", externalStoriesRoutes);
 
 // ── Serve React frontend (production) ────────────────────────────────────────
 // In production the React app is built into ../frontend/dist. Express serves it

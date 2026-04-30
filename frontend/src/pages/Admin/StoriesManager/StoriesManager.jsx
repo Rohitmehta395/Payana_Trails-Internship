@@ -2,17 +2,24 @@ import React, { useState } from "react";
 import TravelStoriesManager from "./TravelStoriesManager";
 import BlogList from "./BlogList";
 import BlogForm from "./BlogForm";
+import ExternalStoryList from "./ExternalStoryList";
+import ExternalStoryForm from "./ExternalStoryForm";
 
 // view: "section" | "blogList" | "blogForm"
 const StoriesManager = () => {
   const [activeTab, setActiveTab] = useState("travelStories");
   const [blogView, setBlogView] = useState("list"); // "list" | "form"
   const [editBlog, setEditBlog] = useState(null);
+  
+  const [externalView, setExternalView] = useState("list");
+  const [editExternalStory, setEditExternalStory] = useState(null);
+
   const [refreshKey, setRefreshKey] = useState(0);
 
   const tabs = [
     { id: "travelStories", label: "Travel Stories Section" },
     { id: "blogManagement", label: "Blog Management" },
+    { id: "externalStories", label: "External Stories" },
   ];
 
   const handleEditBlog = (blog) => {
@@ -36,11 +43,32 @@ const StoriesManager = () => {
     setEditBlog(null);
   };
 
+  const handleEditExternal = (story) => {
+    setEditExternalStory(story);
+    setExternalView("form");
+  };
+
+  const handleCreateExternal = () => {
+    setEditExternalStory(null);
+    setExternalView("form");
+  };
+
+  const handleSavedExternal = () => {
+    setRefreshKey((k) => k + 1);
+    setExternalView("list");
+    setEditExternalStory(null);
+  };
+
+  const handleCancelExternal = () => {
+    setExternalView("list");
+    setEditExternalStory(null);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       {/* Tab Navigation */}
       <div className="border-b border-gray-200">
-        <nav className="flex space-x-8 px-6" aria-label="Stories Tabs">
+        <nav className="flex space-x-8 px-6 overflow-x-auto" aria-label="Stories Tabs">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -49,6 +77,10 @@ const StoriesManager = () => {
                 if (tab.id === "blogManagement") {
                   setBlogView("list");
                   setEditBlog(null);
+                }
+                if (tab.id === "externalStories") {
+                  setExternalView("list");
+                  setEditExternalStory(null);
                 }
               }}
               className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
@@ -81,6 +113,25 @@ const StoriesManager = () => {
                 editBlog={editBlog}
                 onSaved={handleSaved}
                 onCancel={handleCancel}
+              />
+            )}
+          </>
+        )}
+
+        {activeTab === "externalStories" && (
+          <>
+            {externalView === "list" && (
+              <ExternalStoryList
+                onEdit={handleEditExternal}
+                onCreateNew={handleCreateExternal}
+                refreshKey={refreshKey}
+              />
+            )}
+            {externalView === "form" && (
+              <ExternalStoryForm
+                editStory={editExternalStory}
+                onSaved={handleSavedExternal}
+                onCancel={handleCancelExternal}
               />
             )}
           </>
