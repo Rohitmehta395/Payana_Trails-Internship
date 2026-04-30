@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { api, IMAGE_BASE_URL } from "../services/api";
 import CommonHero from "../components/common/CommonHero";
@@ -97,7 +97,38 @@ const ExternalStories = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
+  const [availableDestinations, setAvailableDestinations] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const [destinationInput, setDestinationInput] = useState("");
+  const [destinationFilter, setDestinationFilter] = useState("");
+
   const LIMIT = 9;
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const fetchDestinations = useCallback(async () => {
+    try {
+      const data = await api.getDestinations();
+      const names = [...new Set(data.map((d) => d.name))].sort();
+      setAvailableDestinations(names);
+    } catch (err) {
+      console.error("Error fetching destinations:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDestinations();
+  }, [fetchDestinations]);
 
   const fetchBlogs = useCallback(
     async (page = 1, append = false) => {
@@ -106,6 +137,7 @@ const ExternalStories = () => {
       try {
         const params = { page, limit: LIMIT };
         if (selectedCategory !== "All") params.category = selectedCategory;
+        if (destinationFilter) params.destination = destinationFilter;
         const data = await api.getExternalStories(params);
         const fetched = data.stories || [];
         setTotal(data.total || 0);
@@ -123,11 +155,27 @@ const ExternalStories = () => {
 
   useEffect(() => {
     fetchBlogs(1);
-  }, [selectedCategory, fetchBlogs]);
+  }, [selectedCategory, destinationFilter, fetchBlogs]);
 
   const handleCategorySelect = (cat) => {
     setSelectedCategory(cat);
   };
+
+  const handleDestinationSearch = (e) => {
+    e.preventDefault();
+    setDestinationFilter(destinationInput.trim());
+    setShowSuggestions(false);
+  };
+
+  const handleSuggestionClick = (dest) => {
+    setDestinationInput(dest);
+    setDestinationFilter(dest);
+    setShowSuggestions(false);
+  };
+
+  const filteredSuggestions = availableDestinations.filter((d) =>
+    d.toLowerCase().includes(destinationInput.toLowerCase())
+  );
 
   const hasMore = blogs.length < total;
 
@@ -146,6 +194,76 @@ const ExternalStories = () => {
       />
 
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
+        
+        {/* Search & Filter Section */}
+        <section className="mb-14">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-start md:items-center">
+            {/* Destination Search */}
+            <div className="relative flex-1 max-w-md" ref={dropdownRef}>
+              <form
+                onSubmit={handleDestinationSearch}
+                className="flex items-stretch gap-0 border border-[#4A3B2A]/20 hover:border-[#4A3B2A]/40 focus-within:border-[#4A3B2A] transition-colors bg-white/50"
+              >
+                <input
+                  type="text"
+                  value={destinationInput}
+                  onFocus={() => setShowSuggestions(true)}
+                  onChange={(e) => {
+                    setDestinationInput(e.target.value);
+                    setShowSuggestions(true);
+                    if (!e.target.value.trim()) setDestinationFilter("");
+                  }}
+                  placeholder="Search by destination..."
+                  className="flex-1 px-4 py-3 text-sm bg-transparent text-[#4A3B2A] placeholder-[#4A3B2A]/40 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="px-5 py-3 bg-[#4A3B2A] text-[#F3EFE9] text-xs tracking-wider uppercase font-medium hover:bg-[#3A2E20] transition-colors"
+                >
+                  Search
+                </button>
+              </form>
+
+              {/* Suggestions Dropdown */}
+              <AnimatePresence>
+                {showSuggestions && filteredSuggestions.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 5 }}
+                    className="absolute top-full left-0 right-0 mt-1 bg-[#FAF7F4] border border-[#4A3B2A]/10 shadow-xl z-50 max-h-60 overflow-y-auto"
+                  >
+                    {filteredSuggestions.map((dest, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => handleSuggestionClick(dest)}
+                        className="w-full text-left px-4 py-3 text-sm text-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] transition-colors border-b border-[#4A3B2A]/5 last:border-0 font-medium"
+                      >
+                        {dest}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Active filters indicator */}
+            {(destinationFilter || selectedCategory !== "All") && (
+              <button
+                onClick={() => {
+                  setDestinationFilter("");
+                  setDestinationInput("");
+                  setSelectedCategory("All");
+                }}
+                className="text-xs tracking-wider uppercase text-[#4A3B2A]/60 hover:text-[#4A3B2A] border border-[#4A3B2A]/20 px-4 py-3 transition-colors"
+              >
+                Clear Filters ×
+              </button>
+            )}
+          </div>
+        </section>
+
         {/* Category Chips */}
         <section className="mb-14">
           <div className="flex flex-wrap gap-2">
@@ -170,8 +288,9 @@ const ExternalStories = () => {
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
               <div className="h-px w-10 bg-[#4A3B2A]/40" />
-              <span className="text-[10px] tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
+              <span className="text-xs tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
                 {selectedCategory !== "All" ? selectedCategory : "All Guest Stories"}
+                {destinationFilter && ` · ${destinationFilter}`}
               </span>
             </div>
             {total > 0 && (
@@ -196,7 +315,7 @@ const ExternalStories = () => {
           ) : (
             <AnimatePresence mode="wait">
               <motion.div
-                key={selectedCategory}
+                key={`${selectedCategory}-${destinationFilter}`}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
                 {blogs.map((blog, i) => (

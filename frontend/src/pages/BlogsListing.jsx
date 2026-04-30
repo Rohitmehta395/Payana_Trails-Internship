@@ -108,7 +108,7 @@ const FeaturedBlogHero = ({ blog }) => {
       <div className="absolute inset-0 bg-gradient-to-t from-[#1a0f05]/80 via-[#1a0f05]/30 to-transparent" />
 
       <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-14 lg:p-16">
-        <span className="inline-block px-3 py-1 text-[10px] tracking-[0.3em] uppercase font-semibold bg-[#F3EFE9]/15 backdrop-blur-sm text-[#F3EFE9] border border-[#F3EFE9]/20 mb-4 w-fit">
+        <span className="inline-block px-3 py-1 text-xs tracking-[0.3em] uppercase font-semibold bg-[#F3EFE9]/15 backdrop-blur-sm text-[#F3EFE9] border border-[#F3EFE9]/20 mb-4 w-fit">
           {blog.category}
         </span>
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold text-[#F3EFE9] leading-tight mb-4 max-w-3xl group-hover:text-white transition-colors">
@@ -158,7 +158,7 @@ const FeaturedCarousel = ({ blogs }) => {
   return (
     <div className="relative">
       <div className="flex items-center justify-between mb-5">
-        <p className="text-[10px] tracking-[0.3em] uppercase text-[#4A3B2A]/50 font-medium">
+        <p className="text-xs tracking-[0.3em] uppercase text-[#4A3B2A]/50 font-medium">
           More Featured Stories
         </p>
         <div className="flex items-center gap-2">
@@ -370,7 +370,7 @@ const BlogsListing = () => {
           <section className="mb-20">
             <div className="flex items-center gap-4 mb-8">
               <div className="h-px w-12 bg-[#4A3B2A]/40" />
-              <span className="text-[10px] tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
+              <span className="text-xs tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
                 Featured
               </span>
             </div>
@@ -480,7 +480,7 @@ const BlogsListing = () => {
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
               <div className="h-px w-10 bg-[#4A3B2A]/40" />
-              <span className="text-[10px] tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
+              <span className="text-xs tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
                 {selectedCategory !== "All" ? selectedCategory : "All Stories"}
                 {destinationFilter && ` · ${destinationFilter}`}
               </span>
@@ -553,35 +553,65 @@ const BlogsListing = () => {
 const GuestStoriesSection = () => {
   const [externalStories, setExternalStories] = useState([]);
   const navigate = useNavigate();
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     api
-      .getExternalStories({ limit: 3 })
+      .getExternalStories({ limit: 9 })
       .then((data) => setExternalStories(data.stories || []))
       .catch((err) => console.error("Failed to load external stories:", err));
   }, []);
+
+  const scrollTo = (dir) => {
+    if (!scrollRef.current) return;
+    const card = scrollRef.current.firstChild;
+    const cardW = card ? card.offsetWidth + 32 : 320;
+    scrollRef.current.scrollBy({ left: dir * cardW * 2, behavior: "smooth" });
+  };
 
   if (externalStories.length === 0) return null;
 
   return (
     <section className="mt-24 pt-16 border-t border-[#4A3B2A]/10">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="h-px w-10 bg-[#4A3B2A]/40" />
-        <span className="text-[10px] tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
-          Stories from our Guests
-        </span>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <div className="h-px w-10 bg-[#4A3B2A]/40" />
+          <span className="text-xs tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
+            Stories from our Guests
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => scrollTo(-1)}
+            className="w-9 h-9 border border-[#4A3B2A]/20 hover:border-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] text-[#4A3B2A] transition-all duration-300 flex items-center justify-center text-sm"
+          >
+            ←
+          </button>
+          <button
+            onClick={() => scrollTo(1)}
+            className="w-9 h-9 border border-[#4A3B2A]/20 hover:border-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] text-[#4A3B2A] transition-all duration-300 flex items-center justify-center text-sm"
+          >
+            →
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div
+        ref={scrollRef}
+        className="flex gap-8 overflow-x-auto pb-4 scroll-smooth"
+        style={{ scrollbarWidth: "none" }}
+      >
         {externalStories.map((story, i) => (
-          <ExternalStoryCard key={story._id} blog={story} index={i} />
+          <div key={story._id} className="flex-shrink-0 w-[280px] md:w-[320px] lg:w-[380px]">
+            <ExternalStoryCard blog={story} index={i} />
+          </div>
         ))}
       </div>
 
       <div className="mt-14 flex justify-center">
         <button
           onClick={() => navigate("/stories/external")}
-          className="group inline-flex items-center gap-4 bg-[#4A3B2A] px-10 py-4 text-xs tracking-[0.25em] uppercase font-medium text-[#F3EFE9] hover:bg-[#3A2E20] transition-all duration-300"
+          className="group inline-flex items-center gap-4 border border-[#4A3B2A]/30 hover:border-[#4A3B2A] px-10 py-4 text-xs tracking-[0.25em] uppercase font-medium text-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] transition-all duration-300"
         >
           <span>Explore More Guest Stories</span>
           <span className="w-5 h-px bg-current group-hover:w-10 transition-all duration-500" />
