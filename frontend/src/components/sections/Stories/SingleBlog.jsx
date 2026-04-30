@@ -66,11 +66,7 @@ const SingleBlog = () => {
       {/* Hero */}
       <CommonHero
         title={blog.title}
-        images={
-          heroImage
-            ? [{ desktop: heroImage, mobile: heroImage }]
-            : []
-        }
+        images={heroImage ? [{ desktop: heroImage, mobile: heroImage }] : []}
         breadcrumbs={[
           { label: "HOME", path: "/" },
           { label: "STORIES", path: "/stories" },
@@ -91,7 +87,7 @@ const SingleBlog = () => {
             {/* Category label */}
             <div className="flex items-center gap-4 mb-6">
               <div className="h-px w-10 bg-[#4A3B2A]/40" />
-              <span className="text-[10px] tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
+              <span className="text-[14px] tracking-[0.3em] uppercase text-[#4A3B2A]/60  font-bold">
                 {blog.category}
               </span>
             </div>
@@ -104,18 +100,18 @@ const SingleBlog = () => {
             <div className="w-14 h-0.5 bg-[#4A3B2A]/30 mb-6" />
 
             {/* Meta details */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs tracking-widest uppercase text-[#4A3B2A]/55 font-medium">
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm tracking-widest uppercase text-[#4A3B2A]/65 font-bold">
               {blog.author && (
-                <span className="flex items-center gap-2">
-                  <span className="w-3 h-px bg-[#4A3B2A]/30" />
+                <span className="flex items-center gap-3">
+                  <span className="w-5 h-px bg-[#4A3B2A]/40" />
                   {blog.author}
                 </span>
               )}
               <span>{formatDate(blog.publishDate)}</span>
               {(blog.location || blog.destination) && (
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-2.5">
                   <svg
-                    className="w-3 h-3 opacity-60"
+                    className="w-4 h-4 opacity-70"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
