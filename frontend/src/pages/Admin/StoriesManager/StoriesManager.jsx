@@ -19,10 +19,10 @@ const StoriesManager = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const tabs = [
     { id: "travelStories", label: "Travel Stories Section" },
-    { id: "voices", label: "Voices from the Trail" },
-    { id: "newsletter", label: "Newsletter Section" },
     { id: "blogManagement", label: "Blog Management" },
     { id: "externalStories", label: "External Stories" },
+    { id: "voices", label: "Voices from the Trail" },
+    { id: "newsletter", label: "Newsletter Section" },
   ];
 
   const handleEditBlog = (blog) => {
