@@ -93,10 +93,18 @@ const TravelStories = ({ data }) => {
     "Reflections, insights, and moments from journeys across the world";
   const image = travelStories.image || travelStories.image1 || null;
   const categoryBlogs = travelStories.categoryBlogs || {};
-  const selectedStories = CATEGORIES.map((category) => ({
-    category,
-    blog: categoryBlogs[category],
-  }));
+  const featuredBlogs = travelStories.featuredBlogs || [];
+  const showFeatured = travelStories.showFeatured || false;
+
+  const displayStories = showFeatured
+    ? featuredBlogs.map((blog) => ({
+        category: blog.category,
+        blog,
+      }))
+    : CATEGORIES.map((category) => ({
+        category,
+        blog: categoryBlogs[category],
+      }));
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -199,9 +207,9 @@ const TravelStories = ({ data }) => {
             variants={containerVariants}
             className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3"
           >
-            {selectedStories.map(({ category, blog }, index) => (
+            {displayStories.map(({ category, blog }, index) => (
               <StoryCard
-                key={category}
+                key={blog?._id || category}
                 blog={blog}
                 category={category}
                 index={index}

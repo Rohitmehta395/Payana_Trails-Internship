@@ -16,6 +16,7 @@ const TravelStoriesManager = () => {
     subtitle: "",
     image: null,
     selectedBlogs: {},
+    showFeatured: false,
   });
   const [currentImage, setCurrentImage] = useState("");
   const [blogs, setBlogs] = useState([]);
@@ -58,6 +59,7 @@ const TravelStoriesManager = () => {
           mainTitle: ts.mainTitle || "",
           subtitle: ts.subtitle || "",
           selectedBlogs: ts.selectedBlogs || {},
+          showFeatured: ts.showFeatured || false,
         }));
         setCurrentImage(ts.image || ts.image1 || "");
         setBlogs(blogData.blogs || []);
@@ -101,6 +103,7 @@ const TravelStoriesManager = () => {
     const form = new FormData();
     form.append("mainTitle", formData.mainTitle);
     form.append("subtitle", formData.subtitle);
+    form.append("showFeatured", formData.showFeatured);
     form.append("selectedBlogs", JSON.stringify(formData.selectedBlogs));
     if (formData.image) form.append("image", formData.image);
 
@@ -221,7 +224,27 @@ const TravelStoriesManager = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="mb-6 flex items-center gap-2 rounded-md border border-[#4A3B2A]/20 bg-[#F3EFE9]/30 p-3">
+            <input
+              type="checkbox"
+              id="showFeatured"
+              name="showFeatured"
+              checked={formData.showFeatured}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, showFeatured: e.target.checked }))
+              }
+              className="h-4 w-4 rounded border-gray-300 text-[#4A3B2A] focus:ring-[#4A3B2A]"
+            />
+            <label htmlFor="showFeatured" className="text-sm font-semibold text-[#4A3B2A]">
+              Show top 6 featured blogs instead of category selection
+            </label>
+          </div>
+
+          <div
+            className={`grid grid-cols-1 gap-4 md:grid-cols-2 transition-opacity duration-300 ${
+              formData.showFeatured ? "opacity-40 pointer-events-none" : "opacity-100"
+            }`}
+          >
             {CATEGORIES.map((category) => {
               const categoryBlogs = blogsByCategory[category] || [];
               return (

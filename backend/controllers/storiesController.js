@@ -106,6 +106,14 @@ const serializeStoriesPage = async (page) => {
     categoryBlogs,
   };
 
+  if (page.travelStories.showFeatured) {
+    const featuredBlogs = await Blog.find({ featured: true, isDraft: false })
+      .sort({ order: 1, publishDate: -1 })
+      .limit(6)
+      .select("-draftData");
+    pageObject.travelStories.featuredBlogs = featuredBlogs;
+  }
+
   return pageObject;
 };
 
@@ -124,6 +132,7 @@ exports.getStoriesPage = async (req, res) => {
           image1: "",
           image2: "",
           selectedBlogs: {},
+          showFeatured: false,
         },
       });
     }
@@ -141,7 +150,7 @@ exports.updateTravelStoriesSection = async (req, res) => {
       page = new StoriesPage({});
     }
 
-    const { mainTitle, subtitle, selectedBlogs } = req.body;
+    const { mainTitle, subtitle, selectedBlogs, showFeatured } = req.body;
     const files = req.files || {};
     const imageStats = [];
 
@@ -149,6 +158,9 @@ exports.updateTravelStoriesSection = async (req, res) => {
 
     if (mainTitle !== undefined) page.travelStories.mainTitle = mainTitle;
     if (subtitle !== undefined) page.travelStories.subtitle = subtitle;
+    if (showFeatured !== undefined) {
+      page.travelStories.showFeatured = showFeatured === "true" || showFeatured === true;
+    }
 
     if (selectedBlogs !== undefined) {
       const selected = parseSelectedBlogs(selectedBlogs);

@@ -16,6 +16,7 @@ const storiesPageSchema = new mongoose.Schema(
         of: { type: mongoose.Schema.Types.ObjectId, ref: "Blog" },
         default: {},
       },
+      showFeatured: { type: Boolean, default: false },
     },
   },
   { timestamps: true }
