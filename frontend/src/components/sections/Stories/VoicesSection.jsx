@@ -29,6 +29,7 @@ const VoicesSection = ({ data }) => {
 
   return (
     <section
+      id="voices-from-the-trail"
       ref={sectionRef}
       className="relative overflow-hidden bg-[#F3EFE9] py-16 md:py-24"
     >

@@ -28,6 +28,7 @@ const StoriesNewsletter = ({ data }) => {
 
   return (
     <section
+      id="newsletter"
       ref={sectionRef}
       className="relative overflow-hidden bg-[#F3EFE9] py-8 md:py-12"
     >
