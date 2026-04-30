@@ -474,7 +474,9 @@ export const api = {
       const url = isAdmin
         ? `${API_BASE_URL}/destinations?admin=true`
         : `${API_BASE_URL}/destinations`;
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: isAdmin ? withAdminAuth() : undefined,
+      });
       if (!response.ok) throw new Error("Failed to fetch destinations");
       return await response.json();
     } catch (error) {
@@ -487,6 +489,7 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/destinations`, {
         method: "POST",
+        headers: withAdminAuth(),
         body: formData,
       });
       const data = await response.json();
@@ -502,6 +505,7 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/destinations/${id}`, {
         method: "PUT",
+        headers: withAdminAuth(),
         body: formData,
       });
       const data = await response.json();
@@ -517,6 +521,7 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/destinations/${id}`, {
         method: "DELETE",
+        headers: withAdminAuth(),
       });
       const data = await response.json();
       if (!response.ok)
@@ -533,6 +538,7 @@ export const api = {
         `${API_BASE_URL}/destinations/${id}/toggle`,
         {
           method: "PATCH",
+          headers: withAdminAuth(),
         },
       );
       const data = await response.json();
@@ -548,7 +554,7 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/destinations/reorder`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
         body: JSON.stringify({ items }),
       });
       const data = await response.json();

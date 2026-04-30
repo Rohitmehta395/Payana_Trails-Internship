@@ -84,7 +84,7 @@ const BlogForm = ({ editBlog = null, onSaved, onCancel }) => {
 
   // Fetch destinations
   useEffect(() => {
-    api.getDestinations().then(data => {
+    api.getDestinations(true).then(data => {
       const names = [...new Set(data.map(d => d.name))].sort();
       setAvailableDestinations(names);
       

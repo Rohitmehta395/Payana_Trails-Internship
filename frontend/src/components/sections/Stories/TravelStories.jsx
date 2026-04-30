@@ -61,8 +61,13 @@ const StoryCard = ({ blog, category, index }) => {
       </div>
 
       <div className="p-6 flex flex-col flex-1">
-        <div className="flex items-center gap-3 text-[10px] tracking-widest uppercase text-[#4A3B2A]/50 font-medium mb-3">
+        <div className="flex items-center justify-between gap-3 text-[11px] tracking-widest uppercase text-[#4A3B2A]/60 font-bold mb-3">
           <span>{formatDate(blog.publishDate)}</span>
+          {(blog.location || blog.destination) && (
+            <span className="text-right">
+              {[blog.location, blog.destination].filter(Boolean).join(", ")}
+            </span>
+          )}
         </div>
         <h3 className="text-lg font-serif font-semibold text-[#4A3B2A] leading-snug mb-3 group-hover:text-[#3A2E20] transition-colors line-clamp-2">
           {blog.title}

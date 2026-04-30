@@ -62,13 +62,12 @@ const BlogCard = ({ blog, index }) => {
 
       {/* Content */}
       <div className="p-6 flex flex-col flex-1">
-        <div className="flex items-center gap-3 text-[10px] tracking-widest uppercase text-[#4A3B2A]/50 font-medium mb-3">
+        <div className="flex items-center justify-between gap-3 text-[11px] tracking-widest uppercase text-[#4A3B2A]/60 font-bold mb-3">
           <span>{formatDate(blog.publishDate)}</span>
           {(blog.location || blog.destination) && (
-            <>
-              <span className="w-1 h-1 rounded-full bg-[#4A3B2A]/30" />
-              <span>{[blog.location, blog.destination].filter(Boolean).join(", ")}</span>
-            </>
+            <span className="text-right">
+              {[blog.location, blog.destination].filter(Boolean).join(", ")}
+            </span>
           )}
         </div>
         <h3 className="text-lg font-serif font-semibold text-[#4A3B2A] leading-snug mb-3 group-hover:text-[#3A2E20] transition-colors line-clamp-2">
@@ -120,15 +119,20 @@ const FeaturedBlogHero = ({ blog }) => {
             {blog.excerpt}
           </p>
         )}
-        <div className="flex flex-wrap items-center gap-5 text-[11px] tracking-widest uppercase text-[#F3EFE9]/60 font-medium">
-          {blog.author && <span>{blog.author}</span>}
-          <span>{formatDate(blog.publishDate)}</span>
-          {(blog.location || blog.destination) && (
-            <span>{[blog.location, blog.destination].filter(Boolean).join(", ")}</span>
-          )}
-          <div className="flex items-center gap-2 text-[#F3EFE9] ml-auto">
-            <span>Read Story</span>
-            <span className="w-8 h-px bg-[#F3EFE9] group-hover:w-16 transition-all duration-500" />
+        <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4 text-[12px] tracking-widest uppercase text-[#F3EFE9]/80 font-bold">
+          <div className="flex items-center gap-6">
+            {blog.author && <span>{blog.author}</span>}
+            <span>{formatDate(blog.publishDate)}</span>
+          </div>
+          
+          <div className="flex items-center gap-6 ml-auto">
+            {(blog.location || blog.destination) && (
+              <span className="text-[#F3EFE9]">{[blog.location, blog.destination].filter(Boolean).join(", ")}</span>
+            )}
+            <div className="flex items-center gap-2 text-[#F3EFE9]">
+              <span>Read Story</span>
+              <span className="w-8 h-px bg-[#F3EFE9] group-hover:w-16 transition-all duration-500" />
+            </div>
           </div>
         </div>
       </div>
@@ -199,9 +203,14 @@ const FeaturedCarousel = ({ blogs }) => {
               </span>
             </div>
             <div className="p-5">
-              <p className="text-[9px] tracking-widest uppercase text-[#4A3B2A]/40 font-medium mb-2">
-                {formatDate(blog.publishDate)}
-              </p>
+              <div className="flex items-center justify-between gap-2 text-[10px] tracking-widest uppercase text-[#4A3B2A]/60 font-bold mb-2">
+                <span>{formatDate(blog.publishDate)}</span>
+                {(blog.location || blog.destination) && (
+                  <span className="text-right truncate max-w-[150px]">
+                    {[blog.location, blog.destination].filter(Boolean).join(", ")}
+                  </span>
+                )}
+              </div>
               <h4 className="text-sm font-serif font-semibold text-[#4A3B2A] leading-snug line-clamp-2 group-hover:text-[#3A2E20] transition-colors">
                 {blog.title}
               </h4>

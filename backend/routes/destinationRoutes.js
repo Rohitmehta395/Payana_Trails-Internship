@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const Destination = require("../models/Destination");
 const { processImages, resolveUploadPath } = require("../middlewares/processImage");
+const { requireAdmin, requireAdminIfRequested } = require("../middlewares/adminAuth");
 
 const sanitizeDestinationName = (name = "Unnamed_Destination") =>
   name.replace(/[^a-z0-9]/gi, "_");
@@ -23,7 +24,7 @@ const destFolderResolver = (req) => {
 
 // GET all destinations
 // Admin panel gets everything; public pages only get active destinations
-router.get("/", async (req, res) => {
+router.get("/", requireAdminIfRequested, async (req, res) => {
   try {
     const isAdmin = req.query.admin === "true";
     const filter = isAdmin ? {} : { isActive: true, status: 'published' };
@@ -35,7 +36,7 @@ router.get("/", async (req, res) => {
 });
 
 // PATCH toggle a destination's active status
-router.patch("/:id/toggle", async (req, res) => {
+router.patch("/:id/toggle", requireAdmin, async (req, res) => {
   try {
     const dest = await Destination.findById(req.params.id);
     if (!dest) return res.status(404).json({ message: "Destination not found" });
@@ -48,7 +49,7 @@ router.patch("/:id/toggle", async (req, res) => {
 });
 
 // PUT (Reorder) destinations
-router.put("/reorder", async (req, res) => {
+router.put("/reorder", requireAdmin, async (req, res) => {
   try {
     const { items } = req.body;
     if (!items || !Array.isArray(items)) {
@@ -70,7 +71,7 @@ router.put("/reorder", async (req, res) => {
 });
 
 // POST a new destination
-router.post("/", (req, res) => {
+router.post("/", requireAdmin, (req, res) => {
   cpUpload(req, res, function (err) {
     if (err) {
       return res.status(400).json({
@@ -125,7 +126,7 @@ router.post("/", (req, res) => {
 });
 
 // PUT (Update) a destination
-router.put("/:id", cpUpload, processImages(destFolderResolver), async (req, res) => {
+router.put("/:id", requireAdmin, cpUpload, processImages(destFolderResolver), async (req, res) => {
   try {
     const destId = req.params.id;
     let updateData = { ...req.body };
@@ -160,7 +161,7 @@ router.put("/:id", cpUpload, processImages(destFolderResolver), async (req, res)
 });
 
 // DELETE a destination
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", requireAdmin, async (req, res) => {
   try {
     const destId = req.params.id;
     const destToDelete = await Destination.findById(destId);
