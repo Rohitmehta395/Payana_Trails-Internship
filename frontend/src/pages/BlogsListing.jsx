@@ -231,6 +231,7 @@ const BlogsListing = () => {
   const [availableDestinations, setAvailableDestinations] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const dropdownRef = useRef(null);
+  const filterSectionRef = useRef(null);
 
   // Filters
   const [selectedCategory, setSelectedCategory] = useState(
@@ -304,6 +305,15 @@ const BlogsListing = () => {
     fetchBlogs(1);
   }, [selectedCategory, destinationFilter]);
 
+  // Scroll to filter section if navigated from Stories page with a category
+  useEffect(() => {
+    if (location.state?.category && filterSectionRef.current) {
+      setTimeout(() => {
+        filterSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 500); // Small delay to ensure content is rendering
+    }
+  }, [location.state?.category]);
+
   const handleDestinationSearch = (e) => {
     e.preventDefault();
     setDestinationFilter(destinationInput.trim());
@@ -365,7 +375,11 @@ const BlogsListing = () => {
         )}
 
         {/* ── Search & Filter Section ─────────────────────── */}
-        <section className="mb-14">
+        <section
+          ref={filterSectionRef}
+          className="mb-14"
+          style={{ scrollMarginTop: "100px" }}
+        >
           <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-start md:items-center">
             {/* Destination Search */}
             <div className="relative flex-1 max-w-md" ref={dropdownRef}>
