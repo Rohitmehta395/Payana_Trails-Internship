@@ -6,6 +6,8 @@ const { requireAdmin } = require("../middlewares/adminAuth");
 const {
   getStoriesPage,
   updateTravelStoriesSection,
+  updateVoicesSection,
+  updateNewsletterSection,
   getBlogs,
   getBlogsAdmin,
   getBlogBySlug,
@@ -31,8 +33,22 @@ router.put(
   "/travel-stories",
   requireAdmin,
   upload.fields([{ name: "image", maxCount: 1 }]),
-  updateTravelStoriesSection
+  updateTravelStoriesSection,
 );
+
+router.put(
+  "/voices-section",
+  requireAdmin,
+  upload.fields([{ name: "image", maxCount: 1 }]),
+  updateVoicesSection,
+);
+
+router.put(
+  "/newsletter-section",
+  requireAdmin,
+  updateNewsletterSection,
+);
+
 
 // ─── Blog Routes ─────────────────────────────────────────────────────────────
 
@@ -42,22 +58,13 @@ router.get("/blogs/slug/:slug", getBlogBySlug);
 
 // Admin
 router.get("/blogs/admin", requireAdmin, getBlogsAdmin);
-router.post(
-  "/blogs",
-  requireAdmin,
-  upload.single("featuredImage"),
-  createBlog
-);
-router.put(
-  "/blogs/reorder",
-  requireAdmin,
-  reorderBlogs
-);
+router.post("/blogs", requireAdmin, upload.single("featuredImage"), createBlog);
+router.put("/blogs/reorder", requireAdmin, reorderBlogs);
 router.put(
   "/blogs/:id",
   requireAdmin,
   upload.single("featuredImage"),
-  updateBlog
+  updateBlog,
 );
 router.delete("/blogs/:id", requireAdmin, deleteBlog);
 router.patch("/blogs/:id/autosave", requireAdmin, autosaveBlog);
@@ -67,7 +74,7 @@ router.post(
   "/blogs/editor-image/:slug",
   requireAdmin,
   upload.single("image"),
-  uploadBlogEditorImage
+  uploadBlogEditorImage,
 );
 
 module.exports = router;

@@ -63,9 +63,12 @@ export const api = {
   getTrailById: async (identifier, isAdmin = false) => {
     try {
       const suffix = isAdmin ? "?admin=true" : "";
-      const response = await fetch(`${API_BASE_URL}/trails/${identifier}${suffix}`, {
-        headers: isAdmin ? withAdminAuth() : undefined,
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/trails/${identifier}${suffix}`,
+        {
+          headers: isAdmin ? withAdminAuth() : undefined,
+        },
+      );
       if (!response.ok) throw new Error("Failed to fetch trail details");
       return await response.json();
     } catch (error) {
@@ -342,14 +345,18 @@ export const api = {
       });
 
       if (response.status === 413) {
-        throw new Error("Files are too large. Please upload smaller files (limit: 1MB on your VPS).");
+        throw new Error(
+          "Files are too large. Please upload smaller files (limit: 1MB on your VPS).",
+        );
       }
 
       let data;
       try {
         data = await response.json();
       } catch (err) {
-        throw new Error(`Server error (${response.status}). If uploading images, they might be too large.`);
+        throw new Error(
+          `Server error (${response.status}). If uploading images, they might be too large.`,
+        );
       }
 
       if (!response.ok) {
@@ -371,14 +378,18 @@ export const api = {
       });
 
       if (response.status === 413) {
-        throw new Error("Files are too large. Please upload smaller files (limit: 1MB on your VPS).");
+        throw new Error(
+          "Files are too large. Please upload smaller files (limit: 1MB on your VPS).",
+        );
       }
 
       let data;
       try {
         data = await response.json();
       } catch (err) {
-        throw new Error(`Server error (${response.status}). If uploading images, they might be too large.`);
+        throw new Error(
+          `Server error (${response.status}). If uploading images, they might be too large.`,
+        );
       }
 
       if (!response.ok) {
@@ -452,7 +463,13 @@ export const api = {
     }
   },
 
-  updateTrailItinerary: async (id, itinerary, mode = "save", optionalExperiences, flights) => {
+  updateTrailItinerary: async (
+    id,
+    itinerary,
+    mode = "save",
+    optionalExperiences,
+    flights,
+  ) => {
     try {
       const response = await fetch(`${API_BASE_URL}/trails/${id}/itinerary`, {
         method: "PATCH",
@@ -647,7 +664,8 @@ export const api = {
         body: JSON.stringify({ items }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to reorder FAQs");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to reorder FAQs");
       return data;
     } catch (error) {
       throw error;
@@ -660,7 +678,8 @@ export const api = {
     try {
       const response = await fetch(`${API_BASE_URL}/page-heroes`);
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to fetch page heroes");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to fetch page heroes");
       return data;
     } catch (error) {
       throw error;
@@ -671,9 +690,12 @@ export const api = {
   getPageHeroImages: async (pageKey) => {
     try {
       const pk = pageKey.replace(/\//g, "~");
-      const response = await fetch(`${API_BASE_URL}/page-heroes/${pk}?t=${Date.now()}`);
+      const response = await fetch(
+        `${API_BASE_URL}/page-heroes/${pk}?t=${Date.now()}`,
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to fetch page hero images");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to fetch page hero images");
       return data;
     } catch (error) {
       throw error;
@@ -685,15 +707,18 @@ export const api = {
     const pk = pageKey.replace(/\//g, "~");
     const formData = new FormData();
     const fileArr = Array.isArray(files) ? files : [files];
-    fileArr.filter(Boolean).forEach((f) => formData.append("pageHeroImages", f));
+    fileArr
+      .filter(Boolean)
+      .forEach((f) => formData.append("pageHeroImages", f));
     if (![...formData.keys()].length) return { imageStats: [] };
     try {
       const response = await fetch(
         `${API_BASE_URL}/page-heroes/${pk}/preview-compression`,
-        { method: "POST", body: formData }
+        { method: "POST", body: formData },
       );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to preview compression");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to preview compression");
       return data;
     } catch (error) {
       throw error;
@@ -701,23 +726,35 @@ export const api = {
   },
 
   /** Upload new hero images (appended). desktopFiles and mobileFiles paired by index. */
-  uploadPageHeroImages: async (pageKey, desktopFiles, mobileFiles = [], alt = "") => {
+  uploadPageHeroImages: async (
+    pageKey,
+    desktopFiles,
+    mobileFiles = [],
+    alt = "",
+  ) => {
     const pk = pageKey.replace(/\//g, "~");
     const formData = new FormData();
     const dArr = Array.isArray(desktopFiles) ? desktopFiles : [desktopFiles];
-    const mArr = Array.isArray(mobileFiles)  ? mobileFiles  : (mobileFiles ? [mobileFiles] : []);
+    const mArr = Array.isArray(mobileFiles)
+      ? mobileFiles
+      : mobileFiles
+        ? [mobileFiles]
+        : [];
     dArr.forEach((f) => formData.append("pageHeroImages", f));
-    mArr.filter(Boolean).forEach((f) => formData.append("pageHeroImagesMobile", f));
+    mArr
+      .filter(Boolean)
+      .forEach((f) => formData.append("pageHeroImagesMobile", f));
     formData.append("alt", alt);
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/page-heroes/${pk}/images`,
-        { method: "POST", body: formData }
-      );
+      const response = await fetch(`${API_BASE_URL}/page-heroes/${pk}/images`, {
+        method: "POST",
+        body: formData,
+      });
       if (response.status === 413)
         throw new Error("Files are too large. Please reduce image size.");
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to upload hero images");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to upload hero images");
       return data;
     } catch (error) {
       throw error;
@@ -734,10 +771,11 @@ export const api = {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ orderedIds }),
-        }
+        },
       );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to reorder hero images");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to reorder hero images");
       return data;
     } catch (error) {
       throw error;
@@ -750,18 +788,21 @@ export const api = {
   updatePageHeroImage: async (pageKey, imageId, payload) => {
     const pk = pageKey.replace(/\//g, "~");
     const formData = new FormData();
-    if (payload.alt      !== undefined) formData.append("alt",           payload.alt);
-    if (payload.isActive !== undefined) formData.append("isActive",      payload.isActive);
-    if (payload.removeMobile)           formData.append("removeMobile",  "true");
-    if (payload.file)                   formData.append("pageHeroImages",       payload.file);
-    if (payload.mobileFile)             formData.append("pageHeroImagesMobile", payload.mobileFile);
+    if (payload.alt !== undefined) formData.append("alt", payload.alt);
+    if (payload.isActive !== undefined)
+      formData.append("isActive", payload.isActive);
+    if (payload.removeMobile) formData.append("removeMobile", "true");
+    if (payload.file) formData.append("pageHeroImages", payload.file);
+    if (payload.mobileFile)
+      formData.append("pageHeroImagesMobile", payload.mobileFile);
     try {
       const response = await fetch(
         `${API_BASE_URL}/page-heroes/${pk}/images/${imageId}`,
-        { method: "PATCH", body: formData }
+        { method: "PATCH", body: formData },
       );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update hero image");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to update hero image");
       return data;
     } catch (error) {
       throw error;
@@ -774,10 +815,11 @@ export const api = {
     try {
       const response = await fetch(
         `${API_BASE_URL}/page-heroes/${pk}/images/${imageId}`,
-        { method: "DELETE" }
+        { method: "DELETE" },
       );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to delete hero image");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to delete hero image");
       return data;
     } catch (error) {
       throw error;
@@ -803,9 +845,12 @@ export const api = {
 
   unsubscribeNewsletter: async (token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/newsletter/unsubscribe/${token}`);
+      const response = await fetch(
+        `${API_BASE_URL}/newsletter/unsubscribe/${token}`,
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to unsubscribe");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to unsubscribe");
       return data;
     } catch (error) {
       console.error("API Error (unsubscribeNewsletter):", error);
@@ -833,7 +878,8 @@ export const api = {
         body: formData,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update home page");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to update home page");
       return data;
     } catch (error) {
       console.error("API Error (updateHomePage):", error);
@@ -854,13 +900,14 @@ export const api = {
         headers: withAdminAuth(),
         body: formData,
       });
-      
+
       if (response.status === 413) {
         throw new Error("Files are too large. Max size is 20MB.");
       }
-      
+
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to upload testimonials");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to upload testimonials");
       return data;
     } catch (error) {
       throw error;
@@ -869,13 +916,17 @@ export const api = {
 
   reorderTestimonials: async (orderedIds) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/home-page/testimonials/reorder`, {
-        method: "PUT",
-        headers: withAdminAuth({ "Content-Type": "application/json" }),
-        body: JSON.stringify({ orderedIds }),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/home-page/testimonials/reorder`,
+        {
+          method: "PUT",
+          headers: withAdminAuth({ "Content-Type": "application/json" }),
+          body: JSON.stringify({ orderedIds }),
+        },
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to reorder testimonials");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to reorder testimonials");
       return data;
     } catch (error) {
       throw error;
@@ -884,12 +935,16 @@ export const api = {
 
   deleteTestimonialImage: async (imageId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/home-page/testimonials/${imageId}`, {
-        method: "DELETE",
-        headers: withAdminAuth(),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/home-page/testimonials/${imageId}`,
+        {
+          method: "DELETE",
+          headers: withAdminAuth(),
+        },
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to delete testimonial image");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to delete testimonial image");
       return data;
     } catch (error) {
       throw error;
@@ -898,13 +953,17 @@ export const api = {
 
   updateTestimonialImage: async (imageId, payload) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/home-page/testimonials/${imageId}`, {
-        method: "PUT",
-        headers: withAdminAuth({ "Content-Type": "application/json" }),
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/home-page/testimonials/${imageId}`,
+        {
+          method: "PUT",
+          headers: withAdminAuth({ "Content-Type": "application/json" }),
+          body: JSON.stringify(payload),
+        },
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update testimonial image");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to update testimonial image");
       return data;
     } catch (error) {
       throw error;
@@ -925,13 +984,17 @@ export const api = {
 
   updateAJourneyBegins: async (formData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/payana-way/a-journey-begins`, {
-        method: "PUT",
-        headers: withAdminAuth(),
-        body: formData,
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/payana-way/a-journey-begins`,
+        {
+          method: "PUT",
+          headers: withAdminAuth(),
+          body: formData,
+        },
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update A Journey Begins");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to update A Journey Begins");
       return data;
     } catch (error) {
       console.error("API Error (updateAJourneyBegins):", error);
@@ -941,13 +1004,19 @@ export const api = {
 
   updateThePayanaDifference: async (formData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/payana-way/the-payana-difference`, {
-        method: "PUT",
-        headers: withAdminAuth(),
-        body: formData,
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/payana-way/the-payana-difference`,
+        {
+          method: "PUT",
+          headers: withAdminAuth(),
+          body: formData,
+        },
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update The Payana Difference");
+      if (!response.ok)
+        throw new Error(
+          data.message || "Failed to update The Payana Difference",
+        );
       return data;
     } catch (error) {
       console.error("API Error (updateThePayanaDifference):", error);
@@ -957,13 +1026,19 @@ export const api = {
 
   updateJourneysWithPurpose: async (formData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/payana-way/journeys-with-purpose`, {
-        method: "PUT",
-        headers: withAdminAuth(),
-        body: formData,
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/payana-way/journeys-with-purpose`,
+        {
+          method: "PUT",
+          headers: withAdminAuth(),
+          body: formData,
+        },
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update Journeys with Purpose");
+      if (!response.ok)
+        throw new Error(
+          data.message || "Failed to update Journeys with Purpose",
+        );
       return data;
     } catch (error) {
       console.error("API Error (updateJourneysWithPurpose):", error);
@@ -978,7 +1053,8 @@ export const api = {
         body: formData,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update In The Media");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to update In The Media");
       return data;
     } catch (error) {
       console.error("API Error (updateInTheMedia):", error);
@@ -1006,10 +1082,54 @@ export const api = {
         body: formData,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update Travel Stories section");
+      if (!response.ok)
+        throw new Error(
+          data.message || "Failed to update Travel Stories section",
+        );
       return data;
     } catch (error) {
       console.error("API Error (updateTravelStoriesSection):", error);
+      throw error;
+    }
+  },
+
+  updateVoicesSection: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/voices-section`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(
+          data.message || "Failed to update Voices section",
+        );
+      return data;
+    } catch (error) {
+      console.error("API Error (updateVoicesSection):", error);
+      throw error;
+    }
+  },
+
+  updateNewsletterSection: async (dataBody) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/newsletter-section`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...withAdminAuth(),
+        },
+        body: JSON.stringify(dataBody),
+      });
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(
+          data.message || "Failed to update Newsletter section",
+        );
+      return data;
+    } catch (error) {
+      console.error("API Error (updateNewsletterSection):", error);
       throw error;
     }
   },
@@ -1049,7 +1169,9 @@ export const api = {
 
   getBlogBySlug: async (slug) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/stories/blogs/slug/${slug}`);
+      const response = await fetch(
+        `${API_BASE_URL}/stories/blogs/slug/${slug}`,
+      );
       if (!response.ok) throw new Error("Failed to fetch blog");
       return await response.json();
     } catch (error) {
@@ -1066,7 +1188,8 @@ export const api = {
         body: formData,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to create blog");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to create blog");
       return data;
     } catch (error) {
       console.error("API Error (createBlog):", error);
@@ -1082,7 +1205,8 @@ export const api = {
         body: formData,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update blog");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to update blog");
       return data;
     } catch (error) {
       console.error("API Error (updateBlog):", error);
@@ -1097,7 +1221,8 @@ export const api = {
         headers: withAdminAuth(),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to delete blog");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to delete blog");
       return data;
     } catch (error) {
       console.error("API Error (deleteBlog):", error);
@@ -1113,7 +1238,8 @@ export const api = {
         body: JSON.stringify({ items }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to reorder blogs");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to reorder blogs");
       return data;
     } catch (error) {
       console.error("API Error (reorderBlogs):", error);
@@ -1123,13 +1249,17 @@ export const api = {
 
   autosaveBlog: async (id, draftData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/stories/blogs/${id}/autosave`, {
-        method: "PATCH",
-        headers: withAdminAuth({ "Content-Type": "application/json" }),
-        body: JSON.stringify({ draftData }),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/stories/blogs/${id}/autosave`,
+        {
+          method: "PATCH",
+          headers: withAdminAuth({ "Content-Type": "application/json" }),
+          body: JSON.stringify({ draftData }),
+        },
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to autosave blog");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to autosave blog");
       return data;
     } catch (error) {
       console.error("API Error (autosaveBlog):", error);
@@ -1141,13 +1271,17 @@ export const api = {
     try {
       const formData = new FormData();
       formData.append("image", file);
-      const response = await fetch(`${API_BASE_URL}/stories/blogs/editor-image/${slug}`, {
-        method: "POST",
-        headers: withAdminAuth(),
-        body: formData,
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/stories/blogs/editor-image/${slug}`,
+        {
+          method: "POST",
+          headers: withAdminAuth(),
+          body: formData,
+        },
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to upload editor image");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to upload editor image");
       return data;
     } catch (error) {
       console.error("API Error (uploadBlogEditorImage):", error);
@@ -1179,7 +1313,8 @@ export const api = {
       if (params.category) query.set("category", params.category);
       const url = `${API_BASE_URL}/external-stories/admin${query.toString() ? "?" + query.toString() : ""}`;
       const response = await fetch(url, { headers: withAdminAuth() });
-      if (!response.ok) throw new Error("Failed to fetch admin external stories");
+      if (!response.ok)
+        throw new Error("Failed to fetch admin external stories");
       return await response.json();
     } catch (error) {
       console.error("API Error (getExternalStoriesAdmin):", error);
@@ -1195,7 +1330,8 @@ export const api = {
         body: formData,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to create external story");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to create external story");
       return data;
     } catch (error) {
       console.error("API Error (createExternalStory):", error);
@@ -1211,7 +1347,8 @@ export const api = {
         body: formData,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update external story");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to update external story");
       return data;
     } catch (error) {
       console.error("API Error (updateExternalStory):", error);
@@ -1226,7 +1363,8 @@ export const api = {
         headers: withAdminAuth(),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to delete external story");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to delete external story");
       return data;
     } catch (error) {
       console.error("API Error (deleteExternalStory):", error);
@@ -1242,7 +1380,8 @@ export const api = {
         body: JSON.stringify({ items }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to reorder external stories");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to reorder external stories");
       return data;
     } catch (error) {
       console.error("API Error (reorderExternalStories):", error);
@@ -1252,13 +1391,17 @@ export const api = {
 
   autosaveExternalStory: async (id, draftData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/external-stories/${id}/autosave`, {
-        method: "PATCH",
-        headers: withAdminAuth({ "Content-Type": "application/json" }),
-        body: JSON.stringify({ draftData }),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/external-stories/${id}/autosave`,
+        {
+          method: "PATCH",
+          headers: withAdminAuth({ "Content-Type": "application/json" }),
+          body: JSON.stringify({ draftData }),
+        },
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to autosave external story");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to autosave external story");
       return data;
     } catch (error) {
       console.error("API Error (autosaveExternalStory):", error);
@@ -1266,4 +1409,3 @@ export const api = {
     }
   },
 };
-

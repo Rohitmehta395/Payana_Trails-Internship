@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import TravelStoriesManager from "./TravelStoriesManager";
+import VoicesManager from "./VoicesManager";
 import BlogList from "./BlogList";
 import BlogForm from "./BlogForm";
+import NewsletterManager from "./NewsletterManager";
 import ExternalStoryList from "./ExternalStoryList";
 import ExternalStoryForm from "./ExternalStoryForm";
 
@@ -10,14 +12,15 @@ const StoriesManager = () => {
   const [activeTab, setActiveTab] = useState("travelStories");
   const [blogView, setBlogView] = useState("list"); // "list" | "form"
   const [editBlog, setEditBlog] = useState(null);
-  
+
   const [externalView, setExternalView] = useState("list");
   const [editExternalStory, setEditExternalStory] = useState(null);
 
   const [refreshKey, setRefreshKey] = useState(0);
-
   const tabs = [
     { id: "travelStories", label: "Travel Stories Section" },
+    { id: "voices", label: "Voices from the Trail" },
+    { id: "newsletter", label: "Newsletter Section" },
     { id: "blogManagement", label: "Blog Management" },
     { id: "externalStories", label: "External Stories" },
   ];
@@ -68,7 +71,10 @@ const StoriesManager = () => {
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       {/* Tab Navigation */}
       <div className="border-b border-gray-200">
-        <nav className="flex space-x-8 px-6 overflow-x-auto" aria-label="Stories Tabs">
+        <nav
+          className="flex space-x-8 px-6 overflow-x-auto"
+          aria-label="Stories Tabs"
+        >
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -98,6 +104,8 @@ const StoriesManager = () => {
       {/* Content */}
       <div className="p-6">
         {activeTab === "travelStories" && <TravelStoriesManager />}
+        {activeTab === "voices" && <VoicesManager />}
+        {activeTab === "newsletter" && <NewsletterManager />}
 
         {activeTab === "blogManagement" && (
           <>

@@ -21,7 +21,7 @@ const TestimonialsSection = () => {
     testimonialsData.subtitle || "What our travellers say about us";
 
   const handleImageClick = (img) => {
-    navigate('/stories', { state: { testimonial: img } });
+    navigate("/stories/testimonials", { state: { testimonial: img } });
   };
 
   const scrollLeft = () => {
@@ -29,7 +29,10 @@ const TestimonialsSection = () => {
       const card = carouselRef.current.querySelector(":scope > div");
       if (card) {
         const gap = window.innerWidth >= 640 ? 24 : 16;
-        carouselRef.current.scrollBy({ left: -(card.offsetWidth + gap), behavior: "smooth" });
+        carouselRef.current.scrollBy({
+          left: -(card.offsetWidth + gap),
+          behavior: "smooth",
+        });
       }
     }
   };
@@ -39,7 +42,10 @@ const TestimonialsSection = () => {
       const card = carouselRef.current.querySelector(":scope > div");
       if (card) {
         const gap = window.innerWidth >= 640 ? 24 : 16;
-        carouselRef.current.scrollBy({ left: card.offsetWidth + gap, behavior: "smooth" });
+        carouselRef.current.scrollBy({
+          left: card.offsetWidth + gap,
+          behavior: "smooth",
+        });
       }
     }
   };

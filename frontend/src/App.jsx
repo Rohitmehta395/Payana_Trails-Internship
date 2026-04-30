@@ -1,11 +1,17 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import ScrollToTop from "./components/common/ScrollToTop";
 import Layout from "./components/common/layout/Layout";
 import Home from "./pages/Home";
 import Journeys from "./pages/Journeys";
 import PayanaWay from "./pages/PayanaWay";
 import Stories from "./pages/Stories";
+import Testimonials from "./pages/Testimonials";
 import Connect from "./pages/Connect";
 import EnquiryPage from "./components/sections/Connect/EnquiryForm/EnquiryPage";
 import FAQs from "./components/sections/Connect/FAQs/FAQs";
@@ -50,7 +56,10 @@ const App = () => {
               <Layout>
                 <Routes>
                   <Route index element={<Home />} />
-                  <Route path="journey" element={<Navigate to="/journeys" replace />} />
+                  <Route
+                    path="journey"
+                    element={<Navigate to="/journeys" replace />}
+                  />
                   <Route path="journeys" element={<Journeys />} />
                   <Route path="journeys/wildlife" element={<Wildlife />} />
                   <Route path="journeys/heritage" element={<Heritage />} />
@@ -65,8 +74,12 @@ const App = () => {
                   />
                   <Route path="payana-way" element={<PayanaWay />} />
                   <Route path="stories" element={<Stories />} />
+                  <Route path="stories/testimonials" element={<Testimonials />} />
                   <Route path="stories/blogs" element={<BlogsListing />} />
-                  <Route path="stories/external" element={<ExternalStories />} />
+                  <Route
+                    path="stories/external"
+                    element={<ExternalStories />}
+                  />
                   <Route path="stories/blogs/:slug" element={<SingleBlog />} />
                   <Route path="connect" element={<Connect />} />
                   <Route path="connect/enquiry" element={<EnquiryPage />} />

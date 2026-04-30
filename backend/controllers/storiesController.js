@@ -72,7 +72,9 @@ const getSelectedBlogsObject = (selectedBlogs) => {
 
 const serializeStoriesPage = async (page) => {
   const pageObject = page.toObject();
-  const selectedBlogs = getSelectedBlogsObject(pageObject.travelStories?.selectedBlogs);
+  const selectedBlogs = getSelectedBlogsObject(
+    pageObject.travelStories?.selectedBlogs,
+  );
   const categoryBlogs = {};
 
   await Promise.all(
@@ -97,7 +99,7 @@ const serializeStoriesPage = async (page) => {
       if (blog) {
         categoryBlogs[category] = blog;
       }
-    })
+    }),
   );
 
   pageObject.travelStories = {
@@ -159,14 +161,16 @@ exports.updateTravelStoriesSection = async (req, res) => {
     if (mainTitle !== undefined) page.travelStories.mainTitle = mainTitle;
     if (subtitle !== undefined) page.travelStories.subtitle = subtitle;
     if (showFeatured !== undefined) {
-      page.travelStories.showFeatured = showFeatured === "true" || showFeatured === true;
+      page.travelStories.showFeatured =
+        showFeatured === "true" || showFeatured === true;
     }
 
     if (selectedBlogs !== undefined) {
       const selected = parseSelectedBlogs(selectedBlogs);
       const sanitizedSelections = {};
       STORY_CATEGORIES.forEach((category) => {
-        if (selected[category]) sanitizedSelections[category] = selected[category];
+        if (selected[category])
+          sanitizedSelections[category] = selected[category];
       });
       page.travelStories.selectedBlogs = sanitizedSelections;
     }
@@ -211,15 +215,104 @@ exports.updateTravelStoriesSection = async (req, res) => {
     }
 
     await page.save();
-    res
-      .status(200)
-      .json({
-        message: "Travel Stories section updated",
-        page: await serializeStoriesPage(page),
-        imageStats,
-      });
+    res.status(200).json({
+      message: "Travel Stories section updated",
+      page: await serializeStoriesPage(page),
+      imageStats,
+    });
   } catch (error) {
     console.error("Error updating Travel Stories section:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.updateVoicesSection = async (req, res) => {
+  try {
+    let page = await StoriesPage.findOne();
+    if (!page) {
+      page = new StoriesPage({});
+    }
+
+    const { title, subtitle } = req.body;
+    const files = req.files || {};
+    const imageStats = [];
+
+    const voicesUploadsFolder = path.join(__dirname, "..", "uploads", "stories", "voices");
+    ensureDir(voicesUploadsFolder);
+
+    if (title !== undefined) page.voicesSection.title = title;
+    if (subtitle !== undefined) page.voicesSection.subtitle = subtitle;
+
+    const imageFile = files.image?.[0];
+    if (imageFile) {
+      if (page.voicesSection.image) {
+        // The deleteFile helper doesn't delete from voices folder directly unless we patch it, 
+        // but it has: const folder = filePath.includes("/blogs/") ? null : storiesUploadsFolder;
+        // Wait, if imagePath is /uploads/stories/voices/..., deleteFile might not work as expected
+        // let's do manual deletion or update deleteFile. 
+        // Let's delete it manually here:
+        const oldFn = page.voicesSection.image.split("/").pop();
+        const oldFp = path.join(voicesUploadsFolder, oldFn);
+        fs.unlink(oldFp, (err) => {
+          if (err && err.code !== "ENOENT") console.error("Failed to delete old voices image:", err.message);
+        });
+      }
+
+      const file = imageFile;
+      const baseName = `voices-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      const webpFilename = `${baseName}.webp`;
+      const destPath = path.join(voicesUploadsFolder, webpFilename);
+      
+      const compressedBuffer = await compressImage(file.buffer, {
+        width: 1200,
+        quality: 82,
+      });
+      fs.writeFileSync(destPath, compressedBuffer);
+      
+      const originalSize = file.size || file.buffer?.length || 0;
+      const compressedSize = compressedBuffer.length;
+      imageStats.push({
+        field: "Voices Image",
+        originalName: file.originalname,
+        originalSize,
+        compressedSize,
+        savedPercent: originalSize > 0 ? Math.round((1 - compressedSize / originalSize) * 100) : 0,
+      });
+      
+      page.voicesSection.image = `/uploads/stories/voices/${webpFilename}`;
+    }
+
+    await page.save();
+    res.status(200).json({
+      message: "Voices section updated",
+      page: await serializeStoriesPage(page),
+      imageStats,
+    });
+  } catch (error) {
+    console.error("Error updating Voices section:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.updateNewsletterSection = async (req, res) => {
+  try {
+    let page = await StoriesPage.findOne();
+    if (!page) {
+      page = new StoriesPage({});
+    }
+
+    const { title, subtitle } = req.body;
+
+    if (title !== undefined) page.newsletterSection.title = title;
+    if (subtitle !== undefined) page.newsletterSection.subtitle = subtitle;
+
+    await page.save();
+    res.status(200).json({
+      message: "Newsletter section updated",
+      page: await serializeStoriesPage(page),
+    });
+  } catch (error) {
+    console.error("Error updating Newsletter section:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -268,7 +361,9 @@ exports.getBlogs = async (req, res) => {
       Blog.countDocuments(filter),
     ]);
 
-    res.status(200).json({ blogs, total, page: parseInt(page), limit: parseInt(limit) });
+    res
+      .status(200)
+      .json({ blogs, total, page: parseInt(page), limit: parseInt(limit) });
   } catch (error) {
     console.error("Error fetching blogs:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -301,9 +396,10 @@ exports.getBlogsAdmin = async (req, res) => {
  */
 exports.getBlogBySlug = async (req, res) => {
   try {
-    const blog = await Blog.findOne({ slug: req.params.slug, isDraft: false }).select(
-      "-draftData"
-    );
+    const blog = await Blog.findOne({
+      slug: req.params.slug,
+      isDraft: false,
+    }).select("-draftData");
     if (!blog) return res.status(404).json({ message: "Blog not found" });
     res.status(200).json(blog);
   } catch (error) {
@@ -340,13 +436,7 @@ exports.createBlog = async (req, res) => {
       slug = `${slug}-${Date.now()}`;
     }
 
-    const blogFolder = path.join(
-      __dirname,
-      "..",
-      "uploads",
-      "stories",
-      slug
-    );
+    const blogFolder = path.join(__dirname, "..", "uploads", "stories", slug);
     ensureDir(blogFolder);
 
     let featuredImagePath = "";
@@ -379,7 +469,9 @@ exports.createBlog = async (req, res) => {
       featuredImagePath = `/uploads/stories/${slug}/${webpFilename}`;
     }
 
-    const highestOrder = await Blog.findOne().sort({ order: -1 }).select("order");
+    const highestOrder = await Blog.findOne()
+      .sort({ order: -1 })
+      .select("order");
     const newOrder = highestOrder ? highestOrder.order + 1 : 0;
 
     const blog = await Blog.create({
@@ -432,7 +524,10 @@ exports.updateBlog = async (req, res) => {
 
     if (title && title !== blog.title) {
       let candidate = slugify(title);
-      const existing = await Blog.findOne({ slug: candidate, _id: { $ne: blog._id } });
+      const existing = await Blog.findOne({
+        slug: candidate,
+        _id: { $ne: blog._id },
+      });
       if (existing) candidate = `${candidate}-${Date.now()}`;
       newSlug = candidate;
     }
@@ -441,22 +536,34 @@ exports.updateBlog = async (req, res) => {
 
     // If slug changes, rename the folder
     if (newSlug !== oldSlug) {
-      const oldFolder = path.join(__dirname, "..", "uploads", "stories", oldSlug);
-      const newFolder = path.join(__dirname, "..", "uploads", "stories", newSlug);
+      const oldFolder = path.join(
+        __dirname,
+        "..",
+        "uploads",
+        "stories",
+        oldSlug,
+      );
+      const newFolder = path.join(
+        __dirname,
+        "..",
+        "uploads",
+        "stories",
+        newSlug,
+      );
       if (fs.existsSync(oldFolder)) {
         fs.renameSync(oldFolder, newFolder);
         // Update featuredImage path
         if (blog.featuredImage) {
           blog.featuredImage = blog.featuredImage.replace(
             `/uploads/stories/${oldSlug}/`,
-            `/uploads/stories/${newSlug}/`
+            `/uploads/stories/${newSlug}/`,
           );
         }
         // Update inline images in content
         if (blog.content) {
           blog.content = blog.content.replace(
             new RegExp(`/uploads/stories/${oldSlug}/`, "g"),
-            `/uploads/stories/${newSlug}/`
+            `/uploads/stories/${newSlug}/`,
           );
         }
       }
@@ -467,12 +574,14 @@ exports.updateBlog = async (req, res) => {
     if (excerpt !== undefined) blog.excerpt = excerpt;
     if (content !== undefined) blog.content = content;
     if (author !== undefined) blog.author = author;
-    if (featured !== undefined) blog.featured = featured === "true" || featured === true;
+    if (featured !== undefined)
+      blog.featured = featured === "true" || featured === true;
     if (publishDate) blog.publishDate = new Date(publishDate);
     if (category) blog.category = category;
     if (destination !== undefined) blog.destination = destination;
     if (location !== undefined) blog.location = location;
-    if (isDraft !== undefined) blog.isDraft = isDraft === "true" || isDraft === true;
+    if (isDraft !== undefined)
+      blog.isDraft = isDraft === "true" || isDraft === true;
 
     // Handle new featured image upload
     if (req.file) {
@@ -481,7 +590,7 @@ exports.updateBlog = async (req, res) => {
         "..",
         "uploads",
         "stories",
-        blog.slug
+        blog.slug,
       );
       ensureDir(blogFolder);
 
@@ -525,7 +634,13 @@ exports.updateBlog = async (req, res) => {
 
     // Cleanup unused images from the blog's folder
     const cleanupUnusedBlogImages = (blogSlug, content, featuredImage) => {
-      const blogFolder = path.join(__dirname, "..", "uploads", "stories", blogSlug);
+      const blogFolder = path.join(
+        __dirname,
+        "..",
+        "uploads",
+        "stories",
+        blogSlug,
+      );
       if (!fs.existsSync(blogFolder)) return;
 
       const contentImages = [];
@@ -538,19 +653,23 @@ exports.updateBlog = async (req, res) => {
         }
       }
 
-      const featuredImageName = featuredImage ? featuredImage.split("/").pop() : null;
+      const featuredImageName = featuredImage
+        ? featuredImage.split("/").pop()
+        : null;
 
       fs.readdir(blogFolder, (err, files) => {
         if (err) return;
         files.forEach((file) => {
           // Skip if it's an image used in content or the featured image
-          if (contentImages.includes(file) || file === featuredImageName) return;
-          
+          if (contentImages.includes(file) || file === featuredImageName)
+            return;
+
           const fp = path.join(blogFolder, file);
           // Safety check: only delete files, not directories
           if (fs.lstatSync(fp).isFile()) {
             fs.unlink(fp, (err) => {
-              if (err && err.code !== "ENOENT") console.error("Failed to cleanup unused file:", file);
+              if (err && err.code !== "ENOENT")
+                console.error("Failed to cleanup unused file:", file);
             });
           }
         });
@@ -581,12 +700,14 @@ exports.deleteBlog = async (req, res) => {
       "..",
       "uploads",
       "stories",
-      blog.slug
+      blog.slug,
     );
     deleteDir(blogFolder);
 
     await Blog.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Blog and its images deleted successfully" });
+    res
+      .status(200)
+      .json({ message: "Blog and its images deleted successfully" });
   } catch (error) {
     console.error("Error deleting blog:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -624,7 +745,7 @@ exports.autosaveBlog = async (req, res) => {
     const blog = await Blog.findByIdAndUpdate(
       req.params.id,
       { draftData, isDraft: true },
-      { new: true, upsert: false }
+      { new: true, upsert: false },
     ).select("-content");
     if (!blog) return res.status(404).json({ message: "Blog not found" });
     res.status(200).json({ blog });
