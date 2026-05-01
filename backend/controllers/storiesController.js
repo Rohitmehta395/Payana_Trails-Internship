@@ -3,6 +3,7 @@ const fs = require("fs");
 const sharp = require("sharp");
 const StoriesPage = require("../models/StoriesPage");
 const Blog = require("../models/Blog");
+const ExternalStory = require("../models/ExternalStory");
 
 const STORY_CATEGORIES = [
   "Heritage Trails",
@@ -117,6 +118,16 @@ const serializeStoriesPage = async (page) => {
     pageObject.travelStories.featuredBlogs = featuredBlogs;
   }
 
+  // Fetch top 3 external stories for the guest stories section
+  const guestStories = await ExternalStory.find({ isDraft: false })
+    .sort({ order: 1, createdAt: -1 })
+    .limit(3)
+    .select("-draftData");
+  pageObject.guestStoriesSection = {
+    ...pageObject.guestStoriesSection,
+    stories: guestStories,
+  };
+
   return pageObject;
 };
 
@@ -143,6 +154,82 @@ exports.getStoriesPage = async (req, res) => {
     res.status(200).json(await serializeStoriesPage(page));
   } catch (error) {
     console.error("Error fetching Stories page:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.updateGuestStoriesSection = async (req, res) => {
+  try {
+    let page = await StoriesPage.findOne();
+    if (!page) {
+      page = new StoriesPage({});
+    }
+
+    const { title, subtitle } = req.body;
+    const files = req.files || {};
+    const imageStats = [];
+
+    const guestStoriesUploadsFolder = path.join(
+      __dirname,
+      "..",
+      "uploads",
+      "stories",
+      "externalBlogs",
+      "main",
+    );
+    ensureDir(guestStoriesUploadsFolder);
+
+    if (title !== undefined) page.guestStoriesSection.title = title;
+    if (subtitle !== undefined) page.guestStoriesSection.subtitle = subtitle;
+
+    const imageFile = files.image?.[0];
+    if (imageFile) {
+      if (page.guestStoriesSection.image) {
+        const oldFn = page.guestStoriesSection.image.split("/").pop();
+        const oldFp = path.join(guestStoriesUploadsFolder, oldFn);
+        fs.unlink(oldFp, (err) => {
+          if (err && err.code !== "ENOENT")
+            console.error("Failed to delete old guest stories image:", err.message);
+        });
+      }
+
+      const file = imageFile;
+      const baseName = `guest-main-${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 7)}`;
+      const webpFilename = `${baseName}.webp`;
+      const destPath = path.join(guestStoriesUploadsFolder, webpFilename);
+
+      const compressedBuffer = await compressImage(file.buffer, {
+        width: 1200,
+        quality: 82,
+      });
+      fs.writeFileSync(destPath, compressedBuffer);
+
+      const originalSize = file.size || file.buffer?.length || 0;
+      const compressedSize = compressedBuffer.length;
+      imageStats.push({
+        field: "Guest Stories Image",
+        originalName: file.originalname,
+        originalSize,
+        compressedSize,
+        savedPercent:
+          originalSize > 0
+            ? Math.round((1 - compressedSize / originalSize) * 100)
+            : 0,
+      });
+
+      page.guestStoriesSection.image = `/uploads/stories/externalBlogs/main/${webpFilename}`;
+    }
+
+    await page.save();
+    res.status(200).json({
+      message: "Guest Stories section updated",
+      page: await serializeStoriesPage(page),
+      imageStats,
+    });
+  } catch (error) {
+    console.error("Error updating Guest Stories section:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

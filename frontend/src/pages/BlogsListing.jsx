@@ -521,7 +521,10 @@ const BlogsListing = () => {
 const GuestStoriesSection = () => {
   const [externalStories, setExternalStories] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
   const scrollRef = useRef(null);
+  const sectionRef = useRef(null);
+  const hasScrolledRef = useRef(false);
 
   useEffect(() => {
     api
@@ -529,6 +532,23 @@ const GuestStoriesSection = () => {
       .then((data) => setExternalStories(data.stories || []))
       .catch((err) => console.error("Failed to load external stories:", err));
   }, []);
+
+  useEffect(() => {
+    if (
+      location.state?.scrollToGuestStories &&
+      externalStories.length > 0 &&
+      !hasScrolledRef.current &&
+      sectionRef.current
+    ) {
+      hasScrolledRef.current = true;
+      setTimeout(() => {
+        sectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 600);
+    }
+  }, [location.state?.scrollToGuestStories, externalStories]);
 
   const scrollTo = (dir) => {
     if (!scrollRef.current) return;
@@ -542,6 +562,7 @@ const GuestStoriesSection = () => {
   return (
     <section
       id="stories-from-our-guests"
+      ref={sectionRef}
       className="mt-24 pt-16 border-t border-[#4A3B2A]/10"
     >
       <div className="flex items-center justify-between mb-8">

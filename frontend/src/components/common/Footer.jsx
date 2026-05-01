@@ -112,6 +112,7 @@ const Footer = () => {
       title: "Stories",
       links: [
         { name: "Travel Stories", path: "/stories#travel-stories" },
+        { name: "Stories from our Guests", path: "/stories#guest-stories" },
         { name: "Voices from the Trail", path: "/stories#voices-from-the-trail" },
         { name: "Newsletter", path: "/stories#newsletter" },
       ],

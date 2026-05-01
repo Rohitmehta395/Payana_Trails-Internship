@@ -5,6 +5,7 @@ import usePageHeroImages from "../hooks/usePageHeroImages";
 import { api } from "../services/api";
 import TravelStories from "../components/sections/Stories/TravelStories";
 import VoicesSection from "../components/sections/Stories/VoicesSection";
+import GuestStoriesSection from "../components/sections/Stories/GuestStoriesSection";
 import StoriesNewsletter from "../components/sections/Stories/StoriesNewsletter";
 
 const Stories = () => {
@@ -30,6 +31,9 @@ const Stories = () => {
 
       {/* Travel Stories Section */}
       <TravelStories data={storiesData} />
+
+      {/* Stories from Our Guests Section */}
+      <GuestStoriesSection data={storiesData?.guestStoriesSection} />
 
       {/* Voices from the Trail Section */}
       <VoicesSection data={storiesData?.voicesSection} />

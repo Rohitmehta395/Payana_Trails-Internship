@@ -6,6 +6,7 @@ import BlogForm from "./BlogForm";
 import NewsletterManager from "./NewsletterManager";
 import ExternalStoryList from "./ExternalStoryList";
 import ExternalStoryForm from "./ExternalStoryForm";
+import GuestStoriesManager from "./GuestStoriesManager";
 
 // view: "section" | "blogList" | "blogForm"
 const StoriesManager = () => {
@@ -19,8 +20,8 @@ const StoriesManager = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const tabs = [
     { id: "travelStories", label: "Travel Stories Section" },
-    { id: "blogManagement", label: "Blog Management" },
     { id: "externalStories", label: "External Stories" },
+    { id: "blogManagement", label: "Blog Management" },
     { id: "voices", label: "Voices from the Trail" },
     { id: "newsletter", label: "Newsletter Section" },
   ];
@@ -129,11 +130,14 @@ const StoriesManager = () => {
         {activeTab === "externalStories" && (
           <>
             {externalView === "list" && (
-              <ExternalStoryList
-                onEdit={handleEditExternal}
-                onCreateNew={handleCreateExternal}
-                refreshKey={refreshKey}
-              />
+              <>
+                <GuestStoriesManager />
+                <ExternalStoryList
+                  onEdit={handleEditExternal}
+                  onCreateNew={handleCreateExternal}
+                  refreshKey={refreshKey}
+                />
+              </>
             )}
             {externalView === "form" && (
               <ExternalStoryForm

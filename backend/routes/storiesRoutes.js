@@ -8,6 +8,7 @@ const {
   updateTravelStoriesSection,
   updateVoicesSection,
   updateNewsletterSection,
+  updateGuestStoriesSection,
   getBlogs,
   getBlogsAdmin,
   getBlogBySlug,
@@ -48,6 +49,13 @@ router.put(
   requireAdmin,
   upload.fields([{ name: "image", maxCount: 1 }]),
   updateNewsletterSection,
+);
+
+router.put(
+  "/guest-stories-section",
+  requireAdmin,
+  upload.fields([{ name: "image", maxCount: 1 }]),
+  updateGuestStoriesSection,
 );
 
 

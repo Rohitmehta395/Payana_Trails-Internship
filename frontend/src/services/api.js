@@ -1196,6 +1196,25 @@ export const api = {
     }
   },
 
+  updateGuestStoriesSection: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/guest-stories-section`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(
+          data.message || "Failed to update Guest Stories section",
+        );
+      return data;
+    } catch (error) {
+      console.error("API Error (updateGuestStoriesSection):", error);
+      throw error;
+    }
+  },
+
   getBlogs: async (params = {}) => {
     try {
       const query = new URLSearchParams();

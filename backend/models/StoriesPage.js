@@ -30,6 +30,11 @@ const storiesPageSchema = new mongoose.Schema(
       subtitle: { type: String, default: "Subscribe to receive our latest stories, journey updates, and exclusive reflections directly in your inbox." },
       image: { type: String, default: "" },
     },
+    guestStoriesSection: {
+      title: { type: String, default: "Stories from Our Guests" },
+      subtitle: { type: String, default: "Hear from those who have journeyed with us and shared their experiences." },
+      image: { type: String, default: "" },
+    },
   },
   { timestamps: true },
 );
