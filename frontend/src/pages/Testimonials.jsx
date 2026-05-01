@@ -177,7 +177,7 @@ const Testimonials = () => {
         ]}
       />
 
-      <section ref={sectionRef} className="py-16 md:py-24 px-6 lg:px-8 max-w-7xl mx-auto font-sans">
+      <section id="testimonials-section" ref={sectionRef} className="py-16 md:py-24 px-6 lg:px-8 max-w-7xl mx-auto font-sans">
         <Motion.div
           variants={containerVariants}
           initial="hidden"
