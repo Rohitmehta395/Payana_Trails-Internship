@@ -171,16 +171,16 @@ const TravelStoriesManager = () => {
               className={inputClass}
             />
           </div>
-          <div>
+          <div className="md:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
               Subtitle
             </label>
-            <input
-              type="text"
+            <textarea
               name="subtitle"
               value={formData.subtitle}
               onChange={handleInput}
               required
+              rows={3}
               className={inputClass}
             />
           </div>

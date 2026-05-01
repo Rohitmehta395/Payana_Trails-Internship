@@ -46,6 +46,7 @@ router.put(
 router.put(
   "/newsletter-section",
   requireAdmin,
+  upload.fields([{ name: "image", maxCount: 1 }]),
   updateNewsletterSection,
 );
 

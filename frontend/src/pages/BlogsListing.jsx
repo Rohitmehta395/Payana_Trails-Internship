@@ -37,7 +37,11 @@ const BlogCard = ({ blog, index }) => {
       initial={{ opacity: 0, y: 32 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      transition={{ duration: 0.55, delay: index * 0.07, ease: [0.25, 0.1, 0.25, 1] }}
+      transition={{
+        duration: 0.55,
+        delay: index * 0.07,
+        ease: [0.25, 0.1, 0.25, 1],
+      }}
       onClick={() => navigate(`/stories/blogs/${blog.slug}`)}
       className="group cursor-pointer flex flex-col bg-[#FAF7F4] hover:bg-white transition-colors duration-300 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-lg"
     >
@@ -51,7 +55,9 @@ const BlogCard = ({ blog, index }) => {
           />
         ) : (
           <div className="absolute inset-0 bg-[#4A3B2A]/10 flex items-center justify-center">
-            <span className="text-[#4A3B2A]/30 text-xs tracking-widest uppercase">No Image</span>
+            <span className="text-[#4A3B2A]/30 text-xs tracking-widest uppercase">
+              No Image
+            </span>
           </div>
         )}
         {/* Category badge */}
@@ -124,10 +130,12 @@ const FeaturedBlogHero = ({ blog }) => {
             {blog.author && <span>{blog.author}</span>}
             <span>{formatDate(blog.publishDate)}</span>
           </div>
-          
+
           <div className="flex items-center gap-6 ml-auto">
             {(blog.location || blog.destination) && (
-              <span className="text-[#F3EFE9]">{[blog.location, blog.destination].filter(Boolean).join(", ")}</span>
+              <span className="text-[#F3EFE9]">
+                {[blog.location, blog.destination].filter(Boolean).join(", ")}
+              </span>
             )}
             <div className="flex items-center gap-2 text-[#F3EFE9]">
               <span>Read Story</span>
@@ -188,7 +196,10 @@ const FeaturedCarousel = ({ blogs }) => {
             onClick={() => navigate(`/stories/blogs/${blog.slug}`)}
             className="group cursor-pointer flex-shrink-0 w-72 md:w-80 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-md transition-all duration-300 bg-[#FAF7F4]"
           >
-            <div className="relative overflow-hidden" style={{ paddingTop: "65%" }}>
+            <div
+              className="relative overflow-hidden"
+              style={{ paddingTop: "65%" }}
+            >
               {blog.featuredImage ? (
                 <img
                   src={`${IMAGE_BASE_URL}${blog.featuredImage}`}
@@ -207,7 +218,9 @@ const FeaturedCarousel = ({ blogs }) => {
                 <span>{formatDate(blog.publishDate)}</span>
                 {(blog.location || blog.destination) && (
                   <span className="text-right truncate max-w-[150px]">
-                    {[blog.location, blog.destination].filter(Boolean).join(", ")}
+                    {[blog.location, blog.destination]
+                      .filter(Boolean)
+                      .join(", ")}
                   </span>
                 )}
               </div>
@@ -244,7 +257,7 @@ const BlogsListing = () => {
 
   // Filters
   const [selectedCategory, setSelectedCategory] = useState(
-    location.state?.category || "All"
+    location.state?.category || "All",
   );
   const [destinationInput, setDestinationInput] = useState("");
   const [destinationFilter, setDestinationFilter] = useState("");
@@ -302,7 +315,7 @@ const BlogsListing = () => {
         setLoadingMore(false);
       }
     },
-    [selectedCategory, destinationFilter]
+    [selectedCategory, destinationFilter],
   );
 
   useEffect(() => {
@@ -318,7 +331,10 @@ const BlogsListing = () => {
   useEffect(() => {
     if (location.state?.category && filterSectionRef.current) {
       setTimeout(() => {
-        filterSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        filterSectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }, 500); // Small delay to ensure content is rendering
     }
   }, [location.state?.category]);
@@ -336,7 +352,7 @@ const BlogsListing = () => {
   };
 
   const filteredSuggestions = availableDestinations.filter((d) =>
-    d.toLowerCase().includes(destinationInput.toLowerCase())
+    d.toLowerCase().includes(destinationInput.toLowerCase()),
   );
 
   const handleCategorySelect = (cat) => {
@@ -364,7 +380,6 @@ const BlogsListing = () => {
       />
 
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
-
         {/* ── Featured Section ────────────────────────────── */}
         {allFeatured.length > 0 && (
           <section className="mb-20">
@@ -495,7 +510,10 @@ const BlogsListing = () => {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="animate-pulse bg-[#4A3B2A]/6 aspect-[4/5]" />
+                <div
+                  key={i}
+                  className="animate-pulse bg-[#4A3B2A]/6 aspect-[4/5]"
+                />
               ))}
             </div>
           ) : blogs.length === 0 ? (
@@ -543,7 +561,6 @@ const BlogsListing = () => {
 
         {/* ── Stories from our Guests ───────────────────── */}
         <GuestStoriesSection />
-
       </div>
     </div>
   );
@@ -572,7 +589,10 @@ const GuestStoriesSection = () => {
   if (externalStories.length === 0) return null;
 
   return (
-    <section className="mt-24 pt-16 border-t border-[#4A3B2A]/10">
+    <section
+      id="stories-from-our-guests"
+      className="mt-24 pt-16 border-t border-[#4A3B2A]/10"
+    >
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <div className="h-px w-10 bg-[#4A3B2A]/40" />
@@ -602,7 +622,10 @@ const GuestStoriesSection = () => {
         style={{ scrollbarWidth: "none" }}
       >
         {externalStories.map((story, i) => (
-          <div key={story._id} className="flex-shrink-0 w-[280px] md:w-[320px] lg:w-[380px]">
+          <div
+            key={story._id}
+            className="flex-shrink-0 w-[280px] md:w-[320px] lg:w-[380px]"
+          >
             <ExternalStoryCard blog={story} index={i} />
           </div>
         ))}
@@ -631,7 +654,11 @@ const ExternalStoryCard = ({ blog, index }) => {
       initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.55, delay: index * 0.07, ease: [0.25, 0.1, 0.25, 1] }}
+      transition={{
+        duration: 0.55,
+        delay: index * 0.07,
+        ease: [0.25, 0.1, 0.25, 1],
+      }}
       className="group cursor-pointer flex flex-col bg-[#FAF7F4] hover:bg-white transition-colors duration-300 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-lg"
     >
       <div className="relative overflow-hidden" style={{ paddingTop: "62%" }}>
@@ -643,7 +670,9 @@ const ExternalStoryCard = ({ blog, index }) => {
           />
         ) : (
           <div className="absolute inset-0 bg-[#4A3B2A]/10 flex items-center justify-center">
-            <span className="text-[#4A3B2A]/30 text-xs tracking-widest uppercase">No Image</span>
+            <span className="text-[#4A3B2A]/30 text-xs tracking-widest uppercase">
+              No Image
+            </span>
           </div>
         )}
         <span className="absolute top-4 left-4 px-3 py-1 text-[10px] tracking-[0.2em] uppercase font-medium bg-[#4A3B2A] text-[#F3EFE9]">
@@ -653,7 +682,7 @@ const ExternalStoryCard = ({ blog, index }) => {
 
       <div className="p-6 flex flex-col flex-1">
         <div className="flex items-center justify-between gap-3 text-[11px] tracking-widest uppercase text-[#4A3B2A]/60 font-bold mb-3">
-          {(blog.location || blog.destination) ? (
+          {blog.location || blog.destination ? (
             <span className="text-right ml-auto">
               {[blog.location, blog.destination].filter(Boolean).join(", ")}
             </span>

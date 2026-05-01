@@ -302,14 +302,66 @@ exports.updateNewsletterSection = async (req, res) => {
     }
 
     const { title, subtitle } = req.body;
+    const files = req.files || {};
+    const imageStats = [];
+
+    const journalUploadsFolder = path.join(
+      __dirname,
+      "..",
+      "uploads",
+      "stories",
+      "journal",
+    );
+    ensureDir(journalUploadsFolder);
 
     if (title !== undefined) page.newsletterSection.title = title;
     if (subtitle !== undefined) page.newsletterSection.subtitle = subtitle;
+
+    const imageFile = files.image?.[0];
+    if (imageFile) {
+      if (page.newsletterSection.image) {
+        const oldFn = page.newsletterSection.image.split("/").pop();
+        const oldFp = path.join(journalUploadsFolder, oldFn);
+        fs.unlink(oldFp, (err) => {
+          if (err && err.code !== "ENOENT")
+            console.error("Failed to delete old journal image:", err.message);
+        });
+      }
+
+      const file = imageFile;
+      const baseName = `journal-${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 7)}`;
+      const webpFilename = `${baseName}.webp`;
+      const destPath = path.join(journalUploadsFolder, webpFilename);
+
+      const compressedBuffer = await compressImage(file.buffer, {
+        width: 1200,
+        quality: 82,
+      });
+      fs.writeFileSync(destPath, compressedBuffer);
+
+      const originalSize = file.size || file.buffer?.length || 0;
+      const compressedSize = compressedBuffer.length;
+      imageStats.push({
+        field: "Journal Image",
+        originalName: file.originalname,
+        originalSize,
+        compressedSize,
+        savedPercent:
+          originalSize > 0
+            ? Math.round((1 - compressedSize / originalSize) * 100)
+            : 0,
+      });
+
+      page.newsletterSection.image = `/uploads/stories/journal/${webpFilename}`;
+    }
 
     await page.save();
     res.status(200).json({
       message: "Newsletter section updated",
       page: await serializeStoriesPage(page),
+      imageStats,
     });
   } catch (error) {
     console.error("Error updating Newsletter section:", error);

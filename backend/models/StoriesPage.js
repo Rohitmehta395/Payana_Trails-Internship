@@ -27,6 +27,7 @@ const storiesPageSchema = new mongoose.Schema(
     newsletterSection: {
       title: { type: String, default: "The Payana Journal" },
       subtitle: { type: String, default: "Subscribe to receive our latest stories, journey updates, and exclusive reflections directly in your inbox." },
+      image: { type: String, default: "" },
     },
   },
   { timestamps: true },

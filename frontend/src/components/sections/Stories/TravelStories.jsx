@@ -179,7 +179,7 @@ const TravelStories = ({ data }) => {
             variants={fadeUp}
             className="group relative overflow-hidden bg-[#4A3B2A]/10 lg:col-span-7"
           >
-            <div className="aspect-[16/9]">
+            <div className="aspect-[16/7]">
               {image ? (
                 <>
                   <img

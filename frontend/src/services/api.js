@@ -41,6 +41,7 @@ const getFileNameFromDisposition = (contentDisposition, fallbackFileName) => {
 };
 
 export const api = {
+  IMAGE_BASE_URL,
   // 1. Fetch Trails (For ExploreOurTrails component)
   getTrails: async (category = "All", isAdmin = false) => {
     try {
@@ -1112,15 +1113,12 @@ export const api = {
     }
   },
 
-  updateNewsletterSection: async (dataBody) => {
+  updateNewsletterSection: async (formData) => {
     try {
       const response = await fetch(`${API_BASE_URL}/stories/newsletter-section`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          ...withAdminAuth(),
-        },
-        body: JSON.stringify(dataBody),
+        headers: withAdminAuth(),
+        body: formData,
       });
       const data = await response.json();
       if (!response.ok)
