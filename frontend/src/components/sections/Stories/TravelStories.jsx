@@ -240,7 +240,7 @@ const TravelStories = ({ data }) => {
 
           <button
             type="button"
-            onClick={() => navigate("/stories/blogs")}
+            onClick={() => navigate("/stories/blogs", { state: { scrollToFeatured: true } })}
             className="group inline-flex items-center gap-4 bg-[#4A3B2A] px-7 py-3 text-xs font-medium uppercase tracking-[0.2em] text-[#F3EFE9] transition-all duration-300 hover:bg-[#3A2E20]"
           >
             <span>Explore Stories</span>

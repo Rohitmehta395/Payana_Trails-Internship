@@ -91,94 +91,41 @@ const BlogCard = ({ blog, index }) => {
   );
 };
 
-// ─── Featured Blog (full-width) ───────────────────────────────────────────────
-const FeaturedBlogHero = ({ blog }) => {
-  const navigate = useNavigate();
-  if (!blog) return null;
-  return (
-    <motion.article
-      initial={{ opacity: 0, y: 32 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-      onClick={() => navigate(`/stories/blogs/${blog.slug}`)}
-      className="group cursor-pointer relative w-full overflow-hidden bg-[#4A3B2A]"
-      style={{ minHeight: "520px" }}
-    >
-      {blog.featuredImage && (
-        <img
-          src={`${IMAGE_BASE_URL}${blog.featuredImage}`}
-          alt={blog.title}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105 opacity-60"
-        />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#1a0f05]/80 via-[#1a0f05]/30 to-transparent" />
-
-      <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-14 lg:p-16">
-        <span className="inline-block px-3 py-1 text-xs tracking-[0.3em] uppercase font-semibold bg-[#F3EFE9]/15 backdrop-blur-sm text-[#F3EFE9] border border-[#F3EFE9]/20 mb-4 w-fit">
-          {blog.category}
-        </span>
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold text-[#F3EFE9] leading-tight mb-4 max-w-3xl group-hover:text-white transition-colors">
-          {blog.title}
-        </h2>
-        {blog.excerpt && (
-          <p className="text-[#F3EFE9]/75 text-base md:text-lg max-w-2xl leading-relaxed mb-6 line-clamp-2">
-            {blog.excerpt}
-          </p>
-        )}
-        <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4 text-[12px] tracking-widest uppercase text-[#F3EFE9]/80 font-bold">
-          <div className="flex items-center gap-6">
-            {blog.author && <span>{blog.author}</span>}
-            <span>{formatDate(blog.publishDate)}</span>
-          </div>
-
-          <div className="flex items-center gap-6 ml-auto">
-            {(blog.location || blog.destination) && (
-              <span className="text-[#F3EFE9]">
-                {[blog.location, blog.destination].filter(Boolean).join(", ")}
-              </span>
-            )}
-            <div className="flex items-center gap-2 text-[#F3EFE9]">
-              <span>Read Story</span>
-              <span className="w-8 h-px bg-[#F3EFE9] group-hover:w-16 transition-all duration-500" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </motion.article>
-  );
-};
 
 // ─── Featured Carousel ────────────────────────────────────────────────────────
 const FeaturedCarousel = ({ blogs }) => {
   const navigate = useNavigate();
-  const [idx, setIdx] = useState(0);
   const scrollRef = useRef(null);
 
   const scrollTo = (dir) => {
     if (!scrollRef.current) return;
     const card = scrollRef.current.firstChild;
-    const cardW = card ? card.offsetWidth + 24 : 320;
-    scrollRef.current.scrollBy({ left: dir * cardW * 2, behavior: "smooth" });
+    const gap = 32; // Matches gap-8
+    const cardW = card ? card.offsetWidth + gap : 380;
+    scrollRef.current.scrollBy({ left: dir * cardW, behavior: "smooth" });
   };
 
   if (!blogs || blogs.length === 0) return null;
 
   return (
     <div className="relative">
-      <div className="flex items-center justify-between mb-5">
-        <p className="text-xs tracking-[0.3em] uppercase text-[#4A3B2A]/50 font-medium">
-          More Featured Stories
-        </p>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <div className="h-px w-12 bg-[#4A3B2A]/40" />
+          <span className="text-xs tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
+            Featured Stories
+          </span>
+        </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => scrollTo(-1)}
-            className="w-9 h-9 border border-[#4A3B2A]/20 hover:border-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] text-[#4A3B2A] transition-all duration-300 flex items-center justify-center text-sm"
+            className="w-10 h-10 border border-[#4A3B2A]/20 hover:border-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] text-[#4A3B2A] transition-all duration-300 flex items-center justify-center text-sm"
           >
             ←
           </button>
           <button
             onClick={() => scrollTo(1)}
-            className="w-9 h-9 border border-[#4A3B2A]/20 hover:border-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] text-[#4A3B2A] transition-all duration-300 flex items-center justify-center text-sm"
+            className="w-10 h-10 border border-[#4A3B2A]/20 hover:border-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] text-[#4A3B2A] transition-all duration-300 flex items-center justify-center text-sm"
           >
             →
           </button>
@@ -187,14 +134,14 @@ const FeaturedCarousel = ({ blogs }) => {
 
       <div
         ref={scrollRef}
-        className="flex gap-6 overflow-x-auto pb-2 scroll-smooth"
+        className="flex gap-8 overflow-x-auto pb-4 scroll-smooth hide-scrollbar"
         style={{ scrollbarWidth: "none" }}
       >
         {blogs.map((blog) => (
           <article
             key={blog._id}
             onClick={() => navigate(`/stories/blogs/${blog.slug}`)}
-            className="group cursor-pointer flex-shrink-0 w-72 md:w-80 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-md transition-all duration-300 bg-[#FAF7F4]"
+            className="group cursor-pointer flex-shrink-0 w-[280px] md:w-[320px] lg:w-[calc((100%-64px)/3)] border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-md transition-all duration-300 bg-[#FAF7F4]"
           >
             <div
               className="relative overflow-hidden"
@@ -327,6 +274,24 @@ const BlogsListing = () => {
     fetchBlogs(1);
   }, [selectedCategory, destinationFilter]);
 
+  const hasScrolledRef = useRef(false);
+
+  // Scroll to featured stories if requested
+  useEffect(() => {
+    if (location.state?.scrollToFeatured && !hasScrolledRef.current && allFeatured.length > 0) {
+      const featuredElement = document.getElementById("featured-stories");
+      if (featuredElement) {
+        hasScrolledRef.current = true;
+        setTimeout(() => {
+          featuredElement.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 300);
+      }
+    }
+  }, [location.state?.scrollToFeatured, allFeatured]);
+
   // Scroll to filter section if navigated from Stories page with a category
   useEffect(() => {
     if (location.state?.category && filterSectionRef.current) {
@@ -361,9 +326,6 @@ const BlogsListing = () => {
 
   const hasMore = blogs.length < total;
 
-  // Featured split
-  const primaryFeatured = allFeatured[0] || null;
-  const restFeatured = allFeatured.slice(1);
 
   return (
     <div className="bg-[#F3EFE9] min-h-screen">
@@ -382,19 +344,8 @@ const BlogsListing = () => {
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
         {/* ── Featured Section ────────────────────────────── */}
         {allFeatured.length > 0 && (
-          <section className="mb-20">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-px w-12 bg-[#4A3B2A]/40" />
-              <span className="text-xs tracking-[0.3em] uppercase text-[#4A3B2A]/60 font-medium">
-                Featured
-              </span>
-            </div>
-            <FeaturedBlogHero blog={primaryFeatured} />
-            {restFeatured.length > 0 && (
-              <div className="mt-8">
-                <FeaturedCarousel blogs={restFeatured} />
-              </div>
-            )}
+          <section id="featured-stories" className="mb-20" style={{ scrollMarginTop: "100px" }}>
+            <FeaturedCarousel blogs={allFeatured} />
           </section>
         )}
 
