@@ -1,6 +1,13 @@
 import React, { useState, useRef } from "react";
 import MDEditor, { commands } from "@uiw/react-md-editor";
-import { ImageIcon, Loader2 } from "lucide-react";
+import { 
+  ImageIcon, 
+  Loader2, 
+  AlignLeft, 
+  AlignCenter, 
+  AlignRight, 
+  AlignJustify 
+} from "lucide-react";
 import { IMAGE_BASE_URL } from "../../services/api";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
@@ -32,7 +39,7 @@ const RichTextEditor = ({
       const url = await onImageUpload(file);
       if (url) {
         const alignmentTag =
-          imageAlignment === "left" || imageAlignment === "right"
+          imageAlignment === "left" || imageAlignment === "right" || imageAlignment === "center"
             ? ` | ${imageAlignment}`
             : "";
         const imageMarkdown = `\n![Image Description${alignmentTag}](${url})\n`;
@@ -71,25 +78,128 @@ const RichTextEditor = ({
     },
   };
 
+  const alignLeftCommand = {
+    name: "align-left",
+    keyCommand: "align-left",
+    buttonProps: { "aria-label": "Align Left", title: "Align Left" },
+    icon: <AlignLeft size={13} />,
+    execute: (state, api) => {
+      const selectedText = state.selectedText.trim();
+      const regex = /^<div style="text-align:\s*(left|center|right|justify)">\s*([\s\S]*?)\s*<\/div>$/i;
+      const match = selectedText.match(regex);
+
+      if (match) {
+        const [_, currentAlign, content] = match;
+        if (currentAlign === "left") {
+          api.replaceSelection(content.trim());
+        } else {
+          api.replaceSelection(`<div style="text-align: left">\n\n${content.trim()}\n\n</div>`);
+        }
+      } else {
+        api.replaceSelection(`<div style="text-align: left">\n\n${state.selectedText || " "}\n\n</div>`);
+      }
+    },
+  };
+
+  const alignCenterCommand = {
+    name: "align-center",
+    keyCommand: "align-center",
+    buttonProps: { "aria-label": "Align Center", title: "Align Center" },
+    icon: <AlignCenter size={13} />,
+    execute: (state, api) => {
+      const selectedText = state.selectedText.trim();
+      const regex = /^<div style="text-align:\s*(left|center|right|justify)">\s*([\s\S]*?)\s*<\/div>$/i;
+      const match = selectedText.match(regex);
+
+      if (match) {
+        const [_, currentAlign, content] = match;
+        if (currentAlign === "center") {
+          api.replaceSelection(content.trim());
+        } else {
+          api.replaceSelection(`<div style="text-align: center">\n\n${content.trim()}\n\n</div>`);
+        }
+      } else {
+        api.replaceSelection(`<div style="text-align: center">\n\n${state.selectedText || " "}\n\n</div>`);
+      }
+    },
+  };
+
+  const alignRightCommand = {
+    name: "align-right",
+    keyCommand: "align-right",
+    buttonProps: { "aria-label": "Align Right", title: "Align Right" },
+    icon: <AlignRight size={13} />,
+    execute: (state, api) => {
+      const selectedText = state.selectedText.trim();
+      const regex = /^<div style="text-align:\s*(left|center|right|justify)">\s*([\s\S]*?)\s*<\/div>$/i;
+      const match = selectedText.match(regex);
+
+      if (match) {
+        const [_, currentAlign, content] = match;
+        if (currentAlign === "right") {
+          api.replaceSelection(content.trim());
+        } else {
+          api.replaceSelection(`<div style="text-align: right">\n\n${content.trim()}\n\n</div>`);
+        }
+      } else {
+        api.replaceSelection(`<div style="text-align: right">\n\n${state.selectedText || " "}\n\n</div>`);
+      }
+    },
+  };
+
+  const alignJustifyCommand = {
+    name: "align-justify",
+    keyCommand: "align-justify",
+    buttonProps: { "aria-label": "Align Justify", title: "Align Justify" },
+    icon: <AlignJustify size={13} />,
+    execute: (state, api) => {
+      const selectedText = state.selectedText.trim();
+      const regex = /^<div style="text-align:\s*(left|center|right|justify)">\s*([\s\S]*?)\s*<\/div>$/i;
+      const match = selectedText.match(regex);
+
+      if (match) {
+        const [_, currentAlign, content] = match;
+        if (currentAlign === "justify") {
+          api.replaceSelection(content.trim());
+        } else {
+          api.replaceSelection(`<div style="text-align: justify">\n\n${content.trim()}\n\n</div>`);
+        }
+      } else {
+        api.replaceSelection(`<div style="text-align: justify">\n\n${state.selectedText || " "}\n\n</div>`);
+      }
+    },
+  };
+
   return (
     <div
       className={`rich-text-editor-container ${className}`}
       data-color-mode="light"
     >
-      <div className="mb-2 flex items-center justify-end gap-2 text-xs text-gray-600">
-        <label htmlFor="imageAlignment" className="font-medium text-[#4A3B2A]">
-          Image alignment
-        </label>
-        <select
-          id="imageAlignment"
-          value={imageAlignment}
-          onChange={(e) => setImageAlignment(e.target.value)}
-          className="rounded border border-gray-300 px-2 py-1 focus:border-[#4A3B2A] focus:outline-none"
-        >
-          <option value="default">Default</option>
-          <option value="left">Left</option>
-          <option value="right">Right</option>
-        </select>
+      <div className="mb-3 flex items-center justify-end gap-3 text-xs text-gray-600 bg-gray-50/50 p-2 rounded-lg border border-gray-100">
+        <span className="font-medium text-[#4A3B2A] flex items-center gap-1.5">
+          <ImageIcon size={14} /> Image upload alignment:
+        </span>
+        <div className="flex bg-white rounded-md border border-gray-200 p-0.5 shadow-sm">
+          {[
+            { id: 'left', icon: <AlignLeft size={14} />, label: 'Left Float' },
+            { id: 'default', icon: <AlignCenter size={14} />, label: 'Full Width / Center' },
+            { id: 'right', icon: <AlignRight size={14} />, label: 'Right Float' }
+          ].map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => setImageAlignment(opt.id)}
+              className={`p-1.5 rounded-sm transition-all ${
+                imageAlignment === opt.id 
+                  ? "bg-[#4A3B2A] text-white shadow-inner" 
+                  : "text-gray-500 hover:bg-gray-100 hover:text-[#4A3B2A]"
+              }`}
+              title={opt.label}
+            >
+              {opt.icon}
+            </button>
+          ))}
+        </div>
       </div>
       <input
         type="file"
@@ -113,10 +223,10 @@ const RichTextEditor = ({
           components: {
             img: ({ node, ...props }) => {
               const altText = props.alt || "";
-              const match = altText.match(/\|\s*(left|right)\s*$/i);
+              const match = altText.match(/\|\s*(left|right|center)\s*$/i);
               const alignment = match?.[1]?.toLowerCase() || null;
               const cleanAlt = altText
-                .replace(/\s*\|\s*(left|right)\s*$/i, "")
+                .replace(/\s*\|\s*(left|right|center)\s*$/i, "")
                 .trim();
               
               const src = props.src?.startsWith("http")
@@ -124,18 +234,21 @@ const RichTextEditor = ({
                 : `${IMAGE_BASE_URL}${props.src?.startsWith("/") ? "" : "/"}${props.src}`;
 
               const isAligned = alignment === "left" || alignment === "right";
+              const isCentered = alignment === "center";
 
               return (
                 <span 
                   className={`blog-inline-image ${alignment ? `blog-inline-image--${alignment}` : ""}`}
                   style={{
-                    display: "block",
+                    display: isCentered ? "flex" : "block",
+                    flexDirection: "column",
+                    alignItems: "center",
                     float: alignment === "left" ? "left" : alignment === "right" ? "right" : "none",
                     width: isAligned ? "42%" : "100%",
                     margin: isAligned 
                       ? (alignment === "left" ? "0.75rem 2.5rem 1.75rem 0" : "0.75rem 0 1.75rem 2.5rem")
                       : "1.5rem auto",
-                    clear: "both",
+                    clear: "none",
                   }}
                 >
                   <img
@@ -143,10 +256,11 @@ const RichTextEditor = ({
                     src={src}
                     alt={cleanAlt || props.alt}
                     style={{
-                      width: "100%",
+                      width: isCentered ? "70%" : "100%",
                       height: "auto",
                       borderRadius: "0.5rem",
                       display: "block",
+                      margin: isCentered ? "0 auto" : "0",
                     }}
                   />
                   {cleanAlt && cleanAlt !== "Image Description" && (
@@ -159,7 +273,21 @@ const RichTextEditor = ({
             },
             p: ({ node, children }) => {
               const childrenArray = React.Children.toArray(children);
-              const filteredChildren = childrenArray.filter(child => {
+              let alignment = null;
+
+              // Extract alignment from marker if present
+              const newChildren = childrenArray.map(child => {
+                if (typeof child === 'string') {
+                  const match = child.match(/^\[align-(left|center|right|justify)\]/);
+                  if (match) {
+                    alignment = match[1];
+                    return child.replace(match[0], '');
+                  }
+                }
+                return child;
+              });
+
+              const filteredChildren = newChildren.filter(child => {
                 if (typeof child === 'string' && !child.trim()) return false;
                 return true;
               });
@@ -176,13 +304,20 @@ const RichTextEditor = ({
                 if (imageChildren.length > 1) {
                   return (
                     <div className="blog-image-grid-preview">
-                      {children}
+                      {newChildren}
                     </div>
                   );
                 }
-                return <>{children}</>;
+                return <>{newChildren}</>;
               }
-              return <p className="mb-4">{children}</p>;
+              return (
+                <p 
+                  className="mb-4" 
+                  style={alignment ? { textAlign: alignment, clear: 'none', display: 'block' } : {}}
+                >
+                  {newChildren}
+                </p>
+              );
             },
             a: ({ node, ...props }) => {
               return (
@@ -198,6 +333,12 @@ const RichTextEditor = ({
           commands.italic,
           commands.strikethrough,
           commands.hr,
+          commands.divider,
+          alignLeftCommand,
+          alignCenterCommand,
+          alignRightCommand,
+          alignJustifyCommand,
+          commands.divider,
           commands.title,
           commands.divider,
           commands.link,
