@@ -129,13 +129,13 @@ const RichTextEditor = ({
                 <span 
                   className={`blog-inline-image ${alignment ? `blog-inline-image--${alignment}` : ""}`}
                   style={{
-                    display: isAligned ? "inline-block" : "block",
+                    display: "block",
                     float: alignment === "left" ? "left" : alignment === "right" ? "right" : "none",
-                    width: isAligned ? "50%" : "100%",
+                    width: isAligned ? "42%" : "100%",
                     margin: isAligned 
-                      ? (alignment === "left" ? "0.5rem 1.5rem 1rem 0" : "0.5rem 0 1rem 1.5rem")
+                      ? (alignment === "left" ? "0.75rem 2.5rem 1.75rem 0" : "0.75rem 0 1.75rem 2.5rem")
                       : "1.5rem auto",
-                    clear: isAligned ? "none" : "both",
+                    clear: "both",
                   }}
                 >
                   <img
@@ -159,11 +159,27 @@ const RichTextEditor = ({
             },
             p: ({ node, children }) => {
               const childrenArray = React.Children.toArray(children);
-              const isOnlyImage = childrenArray.length === 1 && 
-                React.isValidElement(childrenArray[0]) && 
-                childrenArray[0].props?.className?.includes("blog-inline-image");
+              const filteredChildren = childrenArray.filter(child => {
+                if (typeof child === 'string' && !child.trim()) return false;
+                return true;
+              });
 
-              if (isOnlyImage) {
+              const imageChildren = filteredChildren.filter(child => 
+                React.isValidElement(child) && 
+                child.props?.className?.includes("blog-inline-image")
+              );
+
+              const isOnlyImages = filteredChildren.length > 0 && 
+                                imageChildren.length === filteredChildren.length;
+
+              if (isOnlyImages) {
+                if (imageChildren.length > 1) {
+                  return (
+                    <div className="blog-image-grid-preview">
+                      {children}
+                    </div>
+                  );
+                }
                 return <>{children}</>;
               }
               return <p className="mb-4">{children}</p>;
@@ -216,6 +232,19 @@ const RichTextEditor = ({
         }
         .rich-text-editor-container .w-md-editor-preview {
           background-color: #f9fafb;
+        }
+        .rich-text-editor-container .blog-image-grid-preview {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1rem;
+          margin: 1.5rem 0;
+          clear: both;
+        }
+        .rich-text-editor-container .blog-image-grid-preview .blog-inline-image {
+          width: 100% !important;
+          float: none !important;
+          margin: 0 !important;
+          clear: none !important;
         }
       `}</style>
     </div>

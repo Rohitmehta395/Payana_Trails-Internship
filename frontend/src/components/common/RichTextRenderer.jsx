@@ -67,17 +67,43 @@ const RichTextRenderer = ({
             );
           },
           p: ({ node, children }) => {
-            // If the paragraph only contains an image, unwrap it to allow proper floating
             const childrenArray = React.Children.toArray(children);
-            const isOnlyImage = childrenArray.length === 1 && 
-              React.isValidElement(childrenArray[0]) && 
-              (childrenArray[0].props?.className?.includes("blog-inline-image") || 
-               childrenArray[0].props?.className?.includes("blog-image-full"));
+            
+            // Filter out whitespace/empty strings/newlines to accurately check content
+            const filteredChildren = childrenArray.filter(child => {
+              if (typeof child === 'string' && !child.trim()) return false;
+              return true;
+            });
 
-            if (isOnlyImage) {
+            // Check if all children are images (inline or full)
+            const imageChildren = filteredChildren.filter(child => 
+              React.isValidElement(child) && 
+              (child.props?.className?.includes("blog-inline-image") || 
+               child.props?.className?.includes("blog-image-full"))
+            );
+
+            const isOnlyImages = filteredChildren.length > 0 && 
+                              imageChildren.length === filteredChildren.length;
+
+            if (isOnlyImages) {
+              if (imageChildren.length > 1) {
+                // Multiple images together - render as a grid/gallery
+                return (
+                  <div className="blog-image-grid my-10">
+                    {children}
+                  </div>
+                );
+              }
+              // Single image - unwrap it to allow subsequent paragraphs to wrap around it
               return <>{children}</>;
             }
-            return <p className={paragraphClass}>{children}</p>;
+
+            // Standard paragraph with text (and potentially an image inside)
+            return (
+              <p className={paragraphClass}>
+                {children}
+              </p>
+            );
           },
           a: ({ node, ...props }) => {
             return (
@@ -176,27 +202,61 @@ const RichTextRenderer = ({
           width: 100%;
           display: block;
           clear: both;
-          margin: 2rem 0;
+          margin: 2.5rem 0;
         }
         .rich-text-renderer-container .wmde-markdown .blog-inline-image {
           width: 100%;
-          margin: 1.5rem 0;
+          margin: 2rem 0;
           display: block;
+          clear: both;
         }
+        /* Grid for multiple consecutive images */
+        .rich-text-renderer-container .wmde-markdown .blog-image-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+          clear: both;
+          margin: 2.5rem 0;
+        }
+        @media (min-width: 640px) {
+          .rich-text-renderer-container .wmde-markdown .blog-image-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+        @media (min-width: 1024px) {
+          .rich-text-renderer-container .wmde-markdown .blog-image-grid {
+            /* Support 3 columns if there are 3+ images */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          }
+        }
+        .rich-text-renderer-container .wmde-markdown .blog-image-grid .blog-inline-image,
+        .rich-text-renderer-container .wmde-markdown .blog-image-grid .blog-image-full {
+          width: 100% !important;
+          float: none !important;
+          margin: 0 !important;
+          height: 100%;
+        }
+        .rich-text-renderer-container .wmde-markdown .blog-image-grid .blog-inline-image img,
+        .rich-text-renderer-container .wmde-markdown .blog-image-grid .blog-image-full img {
+          height: 100%;
+          object-fit: cover;
+        }
+
         @media (min-width: 768px) {
           .rich-text-renderer-container .wmde-markdown .blog-inline-image {
-            width: 45%;
-            display: inline-block;
+            width: 42%;
+            display: block !important;
+            float: none;
           }
           .rich-text-renderer-container .wmde-markdown .blog-inline-image--left {
-            float: left;
-            margin: 0.5rem 1.75rem 1.25rem 0;
-            clear: left;
+            float: left !important;
+            margin: 0.75rem 2.5rem 1.75rem 0 !important;
+            clear: both !important; /* Forces vertical stacking to avoid squeezing */
           }
           .rich-text-renderer-container .wmde-markdown .blog-inline-image--right {
-            float: right;
-            margin: 0.5rem 0 1.25rem 1.75rem;
-            clear: right;
+            float: right !important;
+            margin: 0.75rem 0 1.75rem 2.5rem !important;
+            clear: both !important; /* Forces vertical stacking to avoid squeezing */
           }
         }
         .rich-text-renderer-container .wmde-markdown::after {
