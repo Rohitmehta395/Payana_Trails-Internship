@@ -128,7 +128,7 @@ export default function Header() {
       <div className="flex justify-center w-full pt-4">
         <div
           className={`pointer-events-auto transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] 
-          flex flex-col bg-[#F3EFE9]
+          flex flex-col bg-[#f8f4f4]
           ${
             isScrolled || isMenuOpen
               ? "w-full max-w-full rounded-none mt-[-16px] px-6 sm:px-12 shadow-md py-1 border-transparent"
