@@ -31,7 +31,7 @@ const StoriesNewsletter = ({ data }) => {
     <section
       id="newsletter"
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#F3EFE9] py-16 md:py-24"
+      className="relative overflow-hidden bg-[#F3EFE9] py-8 md:py-12"
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.03]"
@@ -62,7 +62,7 @@ const StoriesNewsletter = ({ data }) => {
 
             <Motion.h2
               variants={fadeUp}
-              className="mb-6 font-serif text-4xl font-semibold leading-tight text-[#4A3B2A] md:text-5xl"
+              className="mb-6 font-serif text-3xl font-semibold leading-tight text-[#4A3B2A] md:text-4xl lg:text-5xl"
             >
               {title || "The Payana Journal"}
             </Motion.h2>

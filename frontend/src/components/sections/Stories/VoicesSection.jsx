@@ -31,7 +31,7 @@ const VoicesSection = ({ data }) => {
     <section
       id="voices-from-the-trail"
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#F3EFE9] py-16 md:py-24"
+      className="relative overflow-hidden bg-[#F3EFE9] py-8 md:py-8"
     >
       <Motion.div
         variants={containerVariants}
@@ -76,7 +76,7 @@ const VoicesSection = ({ data }) => {
 
             <Motion.h2
               variants={fadeUp}
-              className="mb-6 font-serif text-4xl font-semibold leading-tight text-[#4A3B2A] md:text-5xl lg:text-6xl"
+              className="mb-6 font-serif text-3xl font-semibold leading-tight text-[#4A3B2A] md:text-4xl lg:text-5xl"
             >
               {title || "Voices from the Trail"}
             </Motion.h2>
