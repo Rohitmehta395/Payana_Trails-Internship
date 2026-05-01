@@ -13,17 +13,22 @@ import TawkChat from "../components/common/TawkChat";
 const Connect = () => {
   const { images: heroImgs } = usePageHeroImages("connect");
   const [faqs, setFaqs] = useState([]);
+  const [connectData, setConnectData] = useState(null);
 
   useEffect(() => {
-    const fetchFAQs = async () => {
+    const fetchData = async () => {
       try {
-        const data = await api.getFAQs();
-        setFaqs(data.slice(0, 3));
+        const [faqsData, pageData] = await Promise.all([
+          api.getFAQs(),
+          api.getConnectPage().catch(() => null)
+        ]);
+        setFaqs(faqsData.slice(0, 3));
+        setConnectData(pageData);
       } catch (err) {
-        console.error("Failed to fetch FAQs:", err);
+        console.error("Failed to fetch connect data:", err);
       }
     };
-    fetchFAQs();
+    fetchData();
   }, []);
 
   return (
@@ -34,12 +39,12 @@ const Connect = () => {
         images={heroImgs}
         breadcrumbs={[{ label: "HOME", path: "/" }, { label: "CONNECT" }]}
       />
-      <EnquirySection />
-      <ReferFriendSection />
-      <GiftJourneySection />
-      <FAQSection faqs={faqs} />
-      <ContactDetailsSection />
-      <SocialMediaSection />
+      <EnquirySection data={connectData?.enquirySection} />
+      <ReferFriendSection data={connectData?.referFriendSection} />
+      <GiftJourneySection data={connectData?.giftJourneySection} />
+      <FAQSection faqs={faqs} data={connectData?.faqSection} />
+      <ContactDetailsSection data={connectData?.connectSection} />
+      <SocialMediaSection data={connectData?.connectSection?.socialMedia} />
       <TawkChat />
     </div>
   );

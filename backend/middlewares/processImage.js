@@ -21,6 +21,10 @@ const RESIZE_PRESETS = {
   connectHeroImage:      { width: 1920, height: 1080 },
   referFriendsHeroImage: { width: 1920, height: 1080 },
   giftJourneyHeroImage:  { width: 1920, height: 1080 },
+  enquiryLeftImage:      { width: 1920, height: 1080 },
+  enquiryRightImage:     { width: 1920, height: 1080 },
+  referFriendImage:      { width: 1920, height: 1080 },
+  giftJourneyImage:      { width: 1920, height: 1080 },
 };
 
 const isProcessableImageField = (fieldname) => Boolean(RESIZE_PRESETS[fieldname]);

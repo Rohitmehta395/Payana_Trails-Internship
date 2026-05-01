@@ -28,7 +28,7 @@ const faqIcons = [
   />,
 ];
 
-const FAQSection = ({ faqs }) => {
+const FAQSection = ({ faqs, data }) => {
   return (
     <section
       id="faq-section"
@@ -45,16 +45,15 @@ const FAQSection = ({ faqs }) => {
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-8 h-[1px] bg-[#D4A373]"></div>
             <span className="text-[#D4A373] uppercase tracking-[0.3em] font-bold text-xs md:text-sm">
-              Knowledge Base
+              {data?.typographyText || "Knowledge Base"}
             </span>
             <div className="w-8 h-[1px] bg-[#D4A373]"></div>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#4A3B2A] leading-tight tracking-tight">
-            Frequently Asked{" "}
-            <span className="italic font-light">Questions</span>
+            {data?.titleBold || "Frequently Asked"} <span className="italic font-light">{data?.titleItalic || "Questions"}</span>
           </h2>
           <p className="text-[#4A3B2A]/70 text-sm md:text-base max-w-2xl mx-auto mt-3">
-            Everything you need to know before embarking on your Payana journey.
+            {data?.subtitle || "Everything you need to know before embarking on your Payana journey."}
           </p>
         </div>
 

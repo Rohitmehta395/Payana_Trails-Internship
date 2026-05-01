@@ -17,6 +17,7 @@ const TravelStoriesManager = () => {
     image: null,
     selectedBlogs: {},
     showFeatured: false,
+    showFeatured3: false,
   });
   const [currentImage, setCurrentImage] = useState("");
   const [blogs, setBlogs] = useState([]);
@@ -60,6 +61,7 @@ const TravelStoriesManager = () => {
           subtitle: ts.subtitle || "",
           selectedBlogs: ts.selectedBlogs || {},
           showFeatured: ts.showFeatured || false,
+          showFeatured3: ts.showFeatured3 || false,
         }));
         setCurrentImage(ts.image || ts.image1 || "");
         setBlogs(blogData.blogs || []);
@@ -104,6 +106,7 @@ const TravelStoriesManager = () => {
     form.append("mainTitle", formData.mainTitle);
     form.append("subtitle", formData.subtitle);
     form.append("showFeatured", formData.showFeatured);
+    form.append("showFeatured3", formData.showFeatured3);
     form.append("selectedBlogs", JSON.stringify(formData.selectedBlogs));
     if (formData.image) form.append("image", formData.image);
 
@@ -224,25 +227,51 @@ const TravelStoriesManager = () => {
             </p>
           </div>
 
-          <div className="mb-6 flex items-center gap-2 rounded-md border border-[#4A3B2A]/20 bg-[#F3EFE9]/30 p-3">
-            <input
-              type="checkbox"
-              id="showFeatured"
-              name="showFeatured"
-              checked={formData.showFeatured}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, showFeatured: e.target.checked }))
-              }
-              className="h-4 w-4 rounded border-gray-300 text-[#4A3B2A] focus:ring-[#4A3B2A]"
-            />
-            <label htmlFor="showFeatured" className="text-sm font-semibold text-[#4A3B2A]">
-              Show top 6 featured blogs instead of category selection
-            </label>
+          <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 rounded-md border border-[#4A3B2A]/20 bg-[#F3EFE9]/30 p-3">
+              <input
+                type="checkbox"
+                id="showFeatured3"
+                name="showFeatured3"
+                checked={formData.showFeatured3}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    showFeatured3: e.target.checked,
+                    showFeatured: e.target.checked ? false : prev.showFeatured,
+                  }))
+                }
+                className="h-4 w-4 rounded border-gray-300 text-[#4A3B2A] focus:ring-[#4A3B2A]"
+              />
+              <label htmlFor="showFeatured3" className="text-sm font-semibold text-[#4A3B2A]">
+                Show top 3 featured blogs instead of category selection
+              </label>
+            </div>
+
+            <div className="flex items-center gap-2 rounded-md border border-[#4A3B2A]/20 bg-[#F3EFE9]/30 p-3">
+              <input
+                type="checkbox"
+                id="showFeatured"
+                name="showFeatured"
+                checked={formData.showFeatured}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    showFeatured: e.target.checked,
+                    showFeatured3: e.target.checked ? false : prev.showFeatured3,
+                  }))
+                }
+                className="h-4 w-4 rounded border-gray-300 text-[#4A3B2A] focus:ring-[#4A3B2A]"
+              />
+              <label htmlFor="showFeatured" className="text-sm font-semibold text-[#4A3B2A]">
+                Show top 6 featured blogs instead of category selection
+              </label>
+            </div>
           </div>
 
           <div
             className={`grid grid-cols-1 gap-4 md:grid-cols-2 transition-opacity duration-300 ${
-              formData.showFeatured ? "opacity-40 pointer-events-none" : "opacity-100"
+              formData.showFeatured || formData.showFeatured3 ? "opacity-40 pointer-events-none" : "opacity-100"
             }`}
           >
             {CATEGORIES.map((category) => {

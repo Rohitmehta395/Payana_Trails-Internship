@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import enquiry1 from "../../../assets/connect/enquiry1.webp";
 import enquiry2 from "../../../assets/connect/enquiry2.webp";
 
-const EnquirySection = () => {
+import { IMAGE_BASE_URL } from "../../../services/api";
+
+const EnquirySection = ({ data }) => {
   return (
     <section
       id="enquiry-section"
@@ -14,25 +16,25 @@ const EnquirySection = () => {
         Explore
       </div>
 
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-16 relative z-10">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:pt-8 gap-10 lg:gap-16 relative z-10">
         {/* Left Typography Side */}
-        <div className="w-full lg:w-1/2 relative text-left">
+        <div className="w-full lg:w-1/2 relative text-left lg:pt-20">
           <div className="flex items-center gap-4 mb-5">
             <div className="w-12 h-[2px] bg-[#D4A373]"></div>
             <span className="text-[#D4A373] uppercase tracking-[0.3em] font-bold text-sm">
-              Tailored For You
+              {data?.typographyText || "Tailored For You"}
             </span>
           </div>
 
           <h2 className="text-4xl md:text-5xl lg:text-[4rem] font-bold text-[#4A3B2A] leading-[1.05] mb-5 tracking-tight font-serif drop-shadow-sm">
-            Craft Your <br />
-            <span className="italic font-light text-[#4A3B2A]/90">Journey.</span>
+            {data?.titleBold || "Craft Your"} <br />
+            <span className="italic font-light text-[#4A3B2A]/90">
+              {data?.titleItalic || "Journey."}
+            </span>
           </h2>
 
           <p className="text-[#4A3B2A]/70 text-base md:text-lg font-medium max-w-lg mb-8 leading-relaxed">
-            Travel is the only thing you buy that makes you richer. Share your
-            vision with our destination experts and we will curate an itinerary
-            that transcends the ordinary.
+            {data?.subtitle || "Travel is the only thing you buy that makes you richer. Share your vision with our destination experts and we will curate an itinerary that transcends the ordinary."}
           </p>
 
           <div className="relative inline-block group">
@@ -66,22 +68,22 @@ const EnquirySection = () => {
         {/* Right Imagery Side - Clean Elegance */}
         <div className="w-full lg:w-1/2 relative flex flex-col md:flex-row justify-end mt-6 lg:mt-0">
           {/* Back Image (Offset) */}
-          <div className="hidden md:block absolute top-0 right-16 lg:right-92 w-3/5 aspect-3/4 rounded-tr-[5rem] rounded-bl-[5rem] overflow-hidden shadow-lg mt-8 opacity-90 transition-transform duration-700 hover:-translate-y-2">
+          <div className="hidden md:block absolute top-0 right-16 lg:right-92 w-[60%] aspect-[4/5] rounded-tr-[5rem] rounded-bl-[5rem] overflow-hidden shadow-lg mt-4 opacity-90 transition-transform duration-700 hover:-translate-y-2">
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-[20s] hover:scale-110"
               style={{
-                backgroundImage: `url(${enquiry1})`,
+                backgroundImage: `url(${data?.rightImage ? `${IMAGE_BASE_URL}${data.rightImage}` : enquiry1})`,
               }}
             ></div>
             <div className="absolute inset-0 bg-[#4A3B2A]/5 mix-blend-multiply"></div>
           </div>
 
           {/* Front Image - Main Focus */}
-          <div className="relative z-10 w-full md:w-3/4 lg:w-[70%] aspect-[4/5] rounded-tl-[5rem] rounded-br-[5rem] overflow-hidden shadow-[0_30px_60px_rgba(74,59,42,0.15)] md:border-[10px] border-white ml-auto lg:mr-0 lg:mt-14 transition-transform duration-700 hover:-translate-y-2">
+          <div className="relative z-10 w-full md:w-3/4 lg:w-[70%] aspect-[4/5] rounded-tl-[5rem] rounded-br-[5rem] overflow-hidden shadow-[0_30px_60px_rgba(74,59,42,0.15)] md:border-[10px] border-white ml-auto lg:mr-0 lg:mt-8 transition-transform duration-700 hover:-translate-y-2">
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-[15s] hover:scale-110"
               style={{
-                backgroundImage: `url(${enquiry2})`,
+                backgroundImage: `url(${data?.leftImage ? `${IMAGE_BASE_URL}${data.leftImage}` : enquiry2})`,
               }}
             ></div>
             {/* Very subtle inward shadow for depth */}

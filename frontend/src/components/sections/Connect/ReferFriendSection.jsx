@@ -1,8 +1,9 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import referFriendImg from "../../../assets/connect/refer.jpg";
+import { IMAGE_BASE_URL } from "../../../services/api";
 
-const ReferFriendSection = () => {
+const ReferFriendSection = ({ data }) => {
   const navigate = useNavigate();
   const location = useLocation();
   return (
@@ -18,7 +19,7 @@ const ReferFriendSection = () => {
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-[12s] ease-out hover:scale-105"
                 style={{
-                  backgroundImage: `url(${referFriendImg})`,
+                  backgroundImage: `url(${data?.image ? `${IMAGE_BASE_URL}${data.image}` : referFriendImg})`,
                 }}
               ></div>
               <div className="absolute inset-0 bg-gradient-to-t from-[#4A3B2A]/18 via-transparent to-transparent"></div>
@@ -27,13 +28,13 @@ const ReferFriendSection = () => {
             {/* Floating small card */}
             <div className="absolute -bottom-6 left-6 md:left-8 bg-white rounded-2xl border border-[#4A3B2A]/10 shadow-[0_18px_35px_rgba(74,59,42,0.08)] px-6 py-5">
               <p className="text-[#D4A373] uppercase tracking-[0.25em] text-[10px] font-bold mb-2">
-                Referral Program
+                {data?.imageBlockLabel || "Referral Program"}
               </p>
               <p className="text-[#4A3B2A] font-serif text-2xl leading-none mb-1">
-                Share Payana
+                {data?.imageBlockTitle || "Share Payana"}
               </p>
               <p className="text-[#4A3B2A]/60 text-sm">
-                Invite friends to travel beautifully
+                {data?.imageBlockBody || "Invite friends to travel beautifully"}
               </p>
             </div>
           </div>
@@ -43,47 +44,44 @@ const ReferFriendSection = () => {
             <div className="flex items-center gap-4 mb-4">
               <div className="w-10 h-[1.5px] bg-[#D4A373]"></div>
               <span className="text-[#D4A373] uppercase tracking-[0.32em] font-bold text-md">
-                Refer A Friend
+                {data?.typographyText || "Refer A Friend"}
               </span>
               <div className="w-10 h-[1.5px] bg-[#D4A373]"></div>
             </div>
 
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#4A3B2A] leading-[1.05] tracking-tight mb-4">
-              Share the journey <br />
+              {data?.titleBold || "Share the journey"} <br />
               <span className="italic font-light text-[#4A3B2A]/85">
-                with someone special.
+                {data?.titleItalic || "with someone special."}
               </span>
             </h2>
 
             <p className="text-[#4A3B2A]/70 text-base leading-relaxed max-w-xl mb-6">
-              Introduce friends and family to Payana Trails and let them
-              discover travel that feels personal, thoughtful, and deeply
-              memorable.
+              {data?.subtitle || "Introduce friends and family to Payana Trails and let them discover travel that feels personal, thoughtful, and deeply memorable."}
             </p>
 
             <div className="grid sm:grid-cols-2 gap-3 mb-6 max-w-2xl">
               <div className="rounded-[1.5rem] border border-[#4A3B2A]/10 bg-white/80 p-4">
                 <p className="text-[#D4A373] uppercase tracking-[0.22em] text-[10px] font-bold mb-2">
-                  Thoughtful
+                  {data?.block1Label || "Thoughtful"}
                 </p>
                 <p className="text-[#4A3B2A] font-serif text-xl leading-none mb-1">
-                  Invites
+                  {data?.block1Title || "Invites"}
                 </p>
-                <p className="text-[#4A3B2A]/60 text-sm leading-relaxed">
-                  A refined way to introduce others to the Payana experience.
+                <p className="text-[#4A3B2A]/60 text-sm leading-relaxed whitespace-pre-wrap">
+                  {data?.block1Body || "A refined way to introduce others to the Payana experience."}
                 </p>
               </div>
 
               <div className="rounded-[1.5rem] border border-[#4A3B2A]/10 bg-white/80 p-4">
                 <p className="text-[#D4A373] uppercase tracking-[0.22em] text-[10px] font-bold mb-2">
-                  Exclusive
+                  {data?.block2Label || "Exclusive"}
                 </p>
                 <p className="text-[#4A3B2A] font-serif text-xl leading-none mb-1">
-                  Benefits
+                  {data?.block2Title || "Benefits"}
                 </p>
-                <p className="text-[#4A3B2A]/60 text-sm leading-relaxed">
-                  Unlock rewards while sharing exceptional journeys with your
-                  circle.
+                <p className="text-[#4A3B2A]/60 text-sm leading-relaxed whitespace-pre-wrap">
+                  {data?.block2Body || "Unlock rewards while sharing exceptional journeys with your circle."}
                 </p>
               </div>
             </div>

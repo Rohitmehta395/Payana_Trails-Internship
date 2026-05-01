@@ -1,8 +1,9 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import giftImg from "../../../assets/connect/gift.webp";
+import { IMAGE_BASE_URL } from "../../../services/api";
 
-const GiftJourneySection = () => {
+const GiftJourneySection = ({ data }) => {
   const navigate = useNavigate();
   const location = useLocation();
   return (
@@ -17,46 +18,44 @@ const GiftJourneySection = () => {
             <div className="flex items-center gap-4 mb-4">
               <div className="w-10 h-[1.5px] bg-[#D4A373]"></div>
               <span className="text-[#D4A373] uppercase tracking-[0.32em] font-bold text-md">
-                Gift A Journey
+                {data?.typographyText || "Gift A Journey"}
               </span>
               <div className="w-10 h-[1.5px] bg-[#D4A373]"></div>
             </div>
 
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-[#4A3B2A] leading-[1.05] tracking-tight mb-4">
-              Gift an extraordinary <br />
+              {data?.titleBold || "Gift an extraordinary"} <br />
               <span className="italic font-light text-[#4A3B2A]/85">
-                experience.
+                {data?.titleItalic || "experience."}
               </span>
             </h2>
 
             <p className="text-[#4A3B2A]/70 text-base leading-relaxed max-w-xl mb-6">
-              Surprise your loved ones with the gift of a lifetime. Whether it's
-              a curated journey or travel credits, give them an adventure they
-              will cherish forever.
+              {data?.subtitle || "Surprise your loved ones with the gift of a lifetime. Whether it's a curated journey or travel credits, give them an adventure they will cherish forever."}
             </p>
 
             <div className="grid sm:grid-cols-2 gap-3 mb-6 max-w-2xl">
               <div className="rounded-[1.5rem] border border-[#4A3B2A]/10 bg-white/80 p-4">
                 <p className="text-[#D4A373] uppercase tracking-[0.22em] text-[10px] font-bold mb-2">
-                  Flexible
+                  {data?.block1Label || "Flexible"}
                 </p>
                 <p className="text-[#4A3B2A] font-serif text-xl leading-none mb-1">
-                  Credits
+                  {data?.block1Title || "Credits"}
                 </p>
-                <p className="text-[#4A3B2A]/60 text-sm leading-relaxed">
-                  Allow them to choose their own perfect destination.
+                <p className="text-[#4A3B2A]/60 text-sm leading-relaxed whitespace-pre-wrap">
+                  {data?.block1Body || "Allow them to choose their own perfect destination."}
                 </p>
               </div>
 
               <div className="rounded-[1.5rem] border border-[#4A3B2A]/10 bg-white/80 p-4">
                 <p className="text-[#D4A373] uppercase tracking-[0.22em] text-[10px] font-bold mb-2">
-                  Curated
+                  {data?.block2Label || "Curated"}
                 </p>
                 <p className="text-[#4A3B2A] font-serif text-xl leading-none mb-1">
-                  Journeys
+                  {data?.block2Title || "Journeys"}
                 </p>
-                <p className="text-[#4A3B2A]/60 text-sm leading-relaxed">
-                  Gift a fully planned, breathtaking signature trail.
+                <p className="text-[#4A3B2A]/60 text-sm leading-relaxed whitespace-pre-wrap">
+                  {data?.block2Body || "Gift a fully planned, breathtaking signature trail."}
                 </p>
               </div>
             </div>
@@ -102,7 +101,7 @@ const GiftJourneySection = () => {
               <div
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-[12s] ease-out hover:scale-105"
                 style={{
-                  backgroundImage: `url(${giftImg})`,
+                  backgroundImage: `url(${data?.image ? `${IMAGE_BASE_URL}${data.image}` : giftImg})`,
                 }}
               ></div>
               <div className="absolute inset-0 bg-gradient-to-t from-[#4A3B2A]/25 via-transparent to-transparent"></div>
@@ -111,10 +110,10 @@ const GiftJourneySection = () => {
             {/* Floating small card */}
             <div className="absolute -bottom-6 right-6 md:right-auto md:-left-8 bg-white text-[#4A3B2A] rounded-2xl border border-[#D4A373]/20 shadow-[0_18px_35px_rgba(74,59,42,0.2)] px-6 py-5">
               <p className="text-[#D4A373] uppercase tracking-[0.25em] text-[10px] font-bold mb-2">
-                Memorable
+                {data?.imageBlockLabel || "Memorable"}
               </p>
               <p className="text-[#4A3B2A] font-serif text-2xl leading-none mb-1">
-                Surprises
+                {data?.imageBlockTitle || "Surprises"}
               </p>
               <div className="flex items-center gap-2 text-[#4A3B2A]/50 text-sm mt-2">
                 <svg
@@ -130,7 +129,7 @@ const GiftJourneySection = () => {
                     d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
                   />
                 </svg>
-                <span>Gift beautifully</span>
+                <span>{data?.imageBlockBody || "Gift beautifully"}</span>
               </div>
             </div>
           </div>

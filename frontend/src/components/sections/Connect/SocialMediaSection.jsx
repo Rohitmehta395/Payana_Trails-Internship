@@ -128,7 +128,7 @@ const SocialCard = ({ social, visible, index }) => {
   );
 };
 
-const SocialMediaSection = () => {
+const SocialMediaSection = ({ data }) => {
   const sectionRef = useRef(null);
   const [visible, setVisible] = useState(false);
 
@@ -185,44 +185,44 @@ const SocialMediaSection = () => {
             <div className="w-8 h-[1px] bg-[#4A3B2A]/30" />
           </div> */}
 
-          <h2
-            className="text-3xl md:text-4xl lg:text-5xl text-[#4A3B2A] leading-tight tracking-tight mb-4"
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontWeight: 400,
-            }}
-          >
-            Follow Our{" "}
-            <span
+            <h2
+              className="text-3xl md:text-4xl lg:text-5xl text-[#4A3B2A] leading-tight tracking-tight mb-4"
               style={{
-                fontStyle: "italic",
-                fontWeight: 300,
-                color: "rgba(74,59,42,0.7)",
+                fontFamily: "'Cormorant Garamond', serif",
+                fontWeight: 400,
               }}
             >
-              Journey
-            </span>
-          </h2>
+              {data?.titleBold || "Follow Our"} <span style={{ fontStyle: "italic", fontWeight: 300, color: "rgba(74,59,42,0.7)" }}>{data?.titleItalic || "Journey"}</span>
+            </h2>
 
           <p
             className="text-[#4A3B2A]/55 text-base md:text-lg max-w-lg mx-auto leading-relaxed"
             style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 300 }}
           >
-            Join our community across platforms and be the first to discover new
-            trails, stories, and journeys.
+            {data?.subtitle || "Join our community across platforms and be the first to discover new trails, stories, and journeys."}
           </p>
         </div>
 
         {/* Social Cards */}
         <div className="flex flex-wrap justify-center gap-4 md:gap-5">
-          {socialLinks.map((social, index) => (
-            <SocialCard
-              key={social.id}
-              social={social}
-              visible={visible}
-              index={index}
-            />
-          ))}
+          {socialLinks.map((social, index) => {
+            const dynamicItem = data?.items && data.items[index];
+            const activeLink = {
+              ...social,
+              name: dynamicItem?.text || social.name,
+              href: dynamicItem?.link || social.href,
+            };
+            if (!activeLink.href) return null;
+
+            return (
+              <SocialCard
+                key={social.id}
+                social={activeLink}
+                visible={visible}
+                index={index}
+              />
+            );
+          })}
         </div>
       </div>
     </section>

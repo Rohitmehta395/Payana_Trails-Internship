@@ -69,7 +69,7 @@ const contactItems = [
   },
 ];
 
-const ContactDetailsSection = () => {
+const ContactDetailsSection = ({ data }) => {
   const sectionRef = useRef(null);
   const [visible, setVisible] = useState(false);
 
@@ -109,33 +109,30 @@ const ContactDetailsSection = () => {
           <div className="flex items-center justify-center gap-3 mb-3">
             <div className="w-6 h-[1px] bg-[#4A3B2A]/30" />
             <span className="text-[#4A3B2A]/50 uppercase tracking-[0.35em] font-bold text-[12px]">
-              Get In Touch
+              {data?.typographyText || "Get In Touch"}
             </span>
             <div className="w-6 h-[1px] bg-[#4A3B2A]/30" />
           </div>
-          <h2
-            className="text-3xl md:text-4xl lg:text-5xl text-[#4A3B2A] leading-tight tracking-tight mb-4"
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontWeight: 400,
-            }}
-          >
-            Let's{" "}
-            <span
+            <h2
+              className="text-3xl md:text-4xl lg:text-5xl text-[#4A3B2A] leading-tight tracking-tight mb-4"
               style={{
-                fontStyle: "italic",
-                fontWeight: 300,
-                color: "rgba(74,59,42,0.7)",
+                fontFamily: "'Cormorant Garamond', serif",
+                fontWeight: 400,
               }}
             >
-              Connect
-            </span>
-          </h2>
+              {data?.titleBold || "Let's"} <span style={{ fontStyle: "italic", fontWeight: 300, color: "rgba(74,59,42,0.7)" }}>{data?.titleItalic || "Connect"}</span>
+            </h2>
         </div>
 
         {/* Contact Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5">
           {contactItems.map((item, index) => {
+            const dynamicValue = data?.[item.id] || item.value;
+            let dynamicHref = item.href;
+            if (item.id === "email" && data?.email) dynamicHref = `mailto:${data.email}`;
+            if (item.id === "phone" && data?.phone) dynamicHref = `https://wa.me/${data.phone.replace(/[^0-9]/g, '')}`;
+            if (item.id === "meet" && data?.meetLink) dynamicHref = data.meetLink;
+
             const cardStyle = {
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(24px)",
@@ -162,9 +159,9 @@ const ContactDetailsSection = () => {
                     {item.label}
                   </p>
                   <p className="text-[#4A3B2A] font-sans italic text-base leading-snug mb-2 truncate">
-                    {item.value}
+                    {dynamicValue}
                   </p>
-                  {item.href && (
+                  {dynamicHref && (
                     <span className="inline-flex items-center gap-1.5 text-[#4A3B2A]/40 text-[10px] uppercase tracking-widest group-hover:text-[#4A3B2A]/70 transition-colors duration-400">
                       {item.actionLabel}
                       <svg
@@ -189,10 +186,10 @@ const ContactDetailsSection = () => {
             const cardBase =
               "group relative bg-white/60 backdrop-blur-sm border border-[#4A3B2A]/10 rounded-xl px-5 py-4 hover:shadow-xl hover:bg-white/80 hover:border-[#4A3B2A]/20 hover:-translate-y-1 transition-all duration-500";
 
-            return item.href ? (
+            return dynamicHref ? (
               <a
                 key={item.id}
-                href={item.href}
+                href={dynamicHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cardBase}

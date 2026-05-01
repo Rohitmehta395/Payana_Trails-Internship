@@ -99,7 +99,7 @@ const TravelStories = ({ data }) => {
   const image = travelStories.image || travelStories.image1 || null;
   const categoryBlogs = travelStories.categoryBlogs || {};
   const featuredBlogs = travelStories.featuredBlogs || [];
-  const showFeatured = travelStories.showFeatured || false;
+  const showFeatured = travelStories.showFeatured || travelStories.showFeatured3 || false;
 
   const displayStories = showFeatured
     ? featuredBlogs.map((blog) => ({

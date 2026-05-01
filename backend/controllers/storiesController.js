@@ -108,10 +108,11 @@ const serializeStoriesPage = async (page) => {
     categoryBlogs,
   };
 
-  if (page.travelStories.showFeatured) {
+  if (page.travelStories.showFeatured || page.travelStories.showFeatured3) {
+    const limit = page.travelStories.showFeatured3 ? 3 : 6;
     const featuredBlogs = await Blog.find({ featured: true, isDraft: false })
       .sort({ order: 1, publishDate: -1 })
-      .limit(6)
+      .limit(limit)
       .select("-draftData");
     pageObject.travelStories.featuredBlogs = featuredBlogs;
   }
@@ -135,6 +136,7 @@ exports.getStoriesPage = async (req, res) => {
           image2: "",
           selectedBlogs: {},
           showFeatured: false,
+          showFeatured3: false,
         },
       });
     }
@@ -152,7 +154,7 @@ exports.updateTravelStoriesSection = async (req, res) => {
       page = new StoriesPage({});
     }
 
-    const { mainTitle, subtitle, selectedBlogs, showFeatured } = req.body;
+    const { mainTitle, subtitle, selectedBlogs, showFeatured, showFeatured3 } = req.body;
     const files = req.files || {};
     const imageStats = [];
 
@@ -163,6 +165,10 @@ exports.updateTravelStoriesSection = async (req, res) => {
     if (showFeatured !== undefined) {
       page.travelStories.showFeatured =
         showFeatured === "true" || showFeatured === true;
+    }
+    if (showFeatured3 !== undefined) {
+      page.travelStories.showFeatured3 =
+        showFeatured3 === "true" || showFeatured3 === true;
     }
 
     if (selectedBlogs !== undefined) {

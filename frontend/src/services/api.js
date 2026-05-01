@@ -337,6 +337,70 @@ export const api = {
     }
   },
 
+  getConnectPage: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/connect-page`);
+      if (!response.ok) throw new Error("Failed to fetch connect page");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getConnectPage):", error);
+      throw error;
+    }
+  },
+
+  updateConnectPage: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/connect-page`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+
+      if (response.status === 413) {
+        throw new Error("Files are too large. Please upload smaller files.");
+      }
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to update connect page");
+      }
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  previewConnectPageImageCompression: async (filesByField) => {
+    const previewData = new FormData();
+
+    Object.entries(filesByField).forEach(([field, value]) => {
+      const files = Array.isArray(value) ? value : [value];
+      files.filter(Boolean).forEach((file) => previewData.append(field, file));
+    });
+
+    if (![...previewData.keys()].length) {
+      return { imageStats: [] };
+    }
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/connect-page/preview-image-stats`,
+        {
+          method: "POST",
+          headers: withAdminAuth(),
+          body: previewData,
+        },
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to preview image compression");
+      }
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   createTrail: async (trailFormData) => {
     try {
       const response = await fetch(`${API_BASE_URL}/trails`, {

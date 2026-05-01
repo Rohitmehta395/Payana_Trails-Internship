@@ -18,6 +18,7 @@ const storiesPageSchema = new mongoose.Schema(
         default: {},
       },
       showFeatured: { type: Boolean, default: false },
+      showFeatured3: { type: Boolean, default: false },
     },
     voicesSection: {
       title: { type: String, default: "Voices from the Trail" },
