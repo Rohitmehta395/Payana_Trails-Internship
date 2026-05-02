@@ -24,10 +24,10 @@ const DayCard = ({ day, dayNumber, isOpen, onToggle }) => {
         aria-controls={panelId}
         className="relative z-10 flex w-full flex-col gap-6 px-6 py-6 text-left md:px-8 md:py-8"
       >
-        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-          <div className="flex items-start gap-4 md:gap-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start gap-3 md:gap-6">
             <div
-              className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border text-lg font-semibold transition-all duration-300 md:h-16 md:w-16 md:text-xl ${
+              className={`flex h-12 w-12 md:h-16 md:w-16 flex-shrink-0 items-center justify-center rounded-2xl border text-base md:text-xl font-semibold transition-all duration-300 ${
                 isOpen
                   ? "border-[#8B6B50]/25 bg-[#4A3B2A] text-[#FDFBF7]"
                   : "border-[#E5D7C5] bg-[#FDFBF7] text-[#8B6B50]"
@@ -36,40 +36,40 @@ const DayCard = ({ day, dayNumber, isOpen, onToggle }) => {
               {String(dayNumber).padStart(2, "0")}
             </div>
 
-            <div className="min-w-0">
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-[#E5D7C5] bg-[#FDFBF7] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8B6B50]">
+            <div className="min-w-0 flex-1">
+              <div className="mb-1.5 md:mb-3 flex flex-wrap items-center gap-1.5 md:gap-2">
+                <span className="rounded-full border border-[#E5D7C5] bg-[#FDFBF7] px-2 md:px-3 py-0.5 md:py-1 text-[9px] md:text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8B6B50]">
                   Day {dayNumber}
                 </span>
                 {day.accommodation && (
-                  <span className="rounded-full bg-[#8B6B50]/8 px-3 py-1 text-xs font-medium text-[#8B6B50]">
-                    Stay included
+                  <span className="rounded-full bg-[#8B6B50]/8 px-2 md:px-3 py-0.5 md:py-1 text-[9px] md:text-xs font-medium text-[#8B6B50]">
+                    Stay
                   </span>
                 )}
                 {day.meals && (
-                  <span className="rounded-full bg-[#4A3B2A]/6 px-3 py-1 text-xs font-medium text-[#5A4738]">
-                    Meals Included
+                  <span className="rounded-full bg-[#4A3B2A]/6 px-2 md:px-3 py-0.5 md:py-1 text-[9px] md:text-xs font-medium text-[#5A4738]">
+                    Meals
                   </span>
                 )}
               </div>
 
-              <h3 className="max-w-3xl font-serif text-2xl leading-tight text-[#4A3B2A] md:text-[1.5rem]">
+              <h3 className="font-serif text-[clamp(1.15rem,4.5vw,1.5rem)] leading-tight text-[#4A3B2A] md:text-[1.5rem]">
                 {day.title}
               </h3>
             </div>
           </div>
 
           <div
-            className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
+            className={`flex h-10 w-10 md:h-12 md:w-12 flex-shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
               isOpen
                 ? "border-[#8B6B50]/25 bg-[#8B6B50] text-white"
                 : "border-[#E5D7C5] bg-[#FDFBF7] text-[#8B6B50] group-hover:border-[#8B6B50]/25 group-hover:bg-[#FAF7F2]"
             }`}
           >
             {isOpen ? (
-              <Minus className="h-5 w-5" />
+              <Minus className="h-4 w-4 md:h-5 md:w-5" />
             ) : (
-              <Plus className="h-5 w-5" />
+              <Plus className="h-4 w-4 md:h-5 md:w-5" />
             )}
           </div>
         </div>
@@ -87,7 +87,7 @@ const DayCard = ({ day, dayNumber, isOpen, onToggle }) => {
           >
             <div className="relative z-10 flex flex-col gap-6 border-t border-[#4A3B2A]/10 px-6 pb-6 pt-2 md:px-8 md:pb-8">
               {/* Day Highlights */}
-              <div className="w-full rounded-[24px] border border-[#E5D7C5]/80 bg-[#FAF7F2] p-6">
+              <div className="w-full rounded-[24px] border border-[#E5D7C5]/80 bg-[#FAF7F2] p-5 md:p-6">
                 <div className="mb-6 flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5D7C5] bg-[#FDFBF7] text-[#8B6B50]">
                     <Compass className="h-4 w-4" />
@@ -108,7 +108,7 @@ const DayCard = ({ day, dayNumber, isOpen, onToggle }) => {
                     {day.points.map((point, idx) => (
                       <div
                         key={idx}
-                        className="flex gap-4 rounded-2xl border border-white/60 bg-white/70 px-4 py-4"
+                        className="flex gap-4 rounded-2xl border border-white/60 bg-white/70 px-3 py-3 md:px-4 md:py-4"
                       >
                         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#4A3B2A] text-xs font-semibold text-[#FDFBF7]">
                           {String(idx + 1).padStart(2, "0")}
@@ -129,7 +129,7 @@ const DayCard = ({ day, dayNumber, isOpen, onToggle }) => {
               {/* Accommodation & Meals */}
               <div className="grid gap-4 md:grid-cols-2 md:gap-6">
                 {day.accommodation && (
-                  <div className="rounded-[24px] border border-[#E5D7C5] bg-white p-5">
+                  <div className="rounded-[24px] border border-[#E5D7C5] bg-white p-4 md:p-5">
                     <div className="mb-3 flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FAF7F2] text-[#8B6B50]">
                         <Home className="h-4 w-4" />
@@ -150,7 +150,7 @@ const DayCard = ({ day, dayNumber, isOpen, onToggle }) => {
                 )}
 
                 {day.meals && (
-                  <div className="rounded-[24px] border border-[#E5D7C5] bg-white p-5">
+                  <div className="rounded-[24px] border border-[#E5D7C5] bg-white p-4 md:p-5">
                     <div className="mb-3 flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FAF7F2] text-[#8B6B50]">
                         <Coffee className="h-4 w-4" />

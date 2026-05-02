@@ -5,7 +5,13 @@ import { api } from "../../../services/api";
 const HomePageManager = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("hero");
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("homePageActiveTab") || "hero";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("homePageActiveTab", activeTab);
+  }, [activeTab]);
 
   const tabs = [
     { id: "hero", label: "Hero Section" },

@@ -15,8 +15,8 @@ const TravelSection = ({
 }) => {
   return (
     <div>
-      <h4 className="text-lg font-medium text-[#4A3B2A] mb-4 flex items-center gap-2">
-        <FiMapPin className="text-[#4A3B2A]" /> Travel Plans
+      <h4 className="text-base sm:text-lg font-medium text-[#4A3B2A] mb-5 flex items-center gap-2">
+        <FiMapPin className="text-[#4A3B2A] shrink-0" /> Travel Plans
       </h4>
       <div className="space-y-6">
         <SelectField

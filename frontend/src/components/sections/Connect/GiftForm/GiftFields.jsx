@@ -11,6 +11,19 @@ const GiftFields = ({
   handleCountryChange,
   handleBlur,
 }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const dropdownRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const hasJourney = Boolean(formData.journeyDetails);
   const hasCredit = Boolean(String(formData.giftValue || "").trim());
   const hasGiftTypeConflict = hasJourney && hasCredit;
@@ -318,33 +331,30 @@ const GiftFields = ({
                   </div>
                 </div>
 
-                <div className="relative flex-1 space-y-4">
+                <div className="relative flex-1 space-y-4" ref={dropdownRef}>
                   <div className="relative">
-                    <select
-                      name="journeyDetails"
-                      value={formData.journeyDetails}
-                      onChange={handleChange}
+                    <button
+                      type="button"
+                      onClick={() => setIsOpen(!isOpen)}
                       onBlur={handleBlur}
                       className={`
-                      w-full px-4 py-4 rounded-[1.25rem] border transition-all outline-none bg-white/50 appearance-none cursor-pointer text-[#4A3B2A] font-medium
-                      ${touched.journeyDetails && !formData.journeyDetails && !formData.giftValue ? "border-red-300" : "border-[#4A3B2A]/5 focus:border-[#4A3B2A]/30 sm:hover:bg-white"}
+                      w-full px-4 py-4 rounded-[1.25rem] border transition-all outline-none bg-white/50 flex items-center justify-between text-left cursor-pointer text-[#4A3B2A] font-medium
+                      ${
+                        touched.journeyDetails &&
+                        !formData.journeyDetails &&
+                        !formData.giftValue
+                          ? "border-red-300"
+                          : "border-[#4A3B2A]/5 focus:border-[#4A3B2A]/30 sm:hover:bg-white"
+                      }
                     `}
-                      required={!formData.giftValue}
                     >
-                      <option value="">Select a Journey</option>
-                      {trails.map((t, idx) => (
-                        <option
-                          key={idx}
-                          value={`${t.trailName} (${t.trailDestination})`}
-                        >
-                          {t.trailName} ({t.trailDestination})
-                        </option>
-                      ))}
-                      <option value="Others">Others (Please specify)</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                      <span className="truncate pr-4">
+                        {formData.journeyDetails || "Select a Journey"}
+                      </span>
                       <svg
-                        className="w-4 h-4 text-[#4A3B2A]/40"
+                        className={`w-4 h-4 text-[#4A3B2A]/40 transition-transform duration-300 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -356,7 +366,88 @@ const GiftFields = ({
                           d="M19 9l-7 7-7-7"
                         />
                       </svg>
-                    </div>
+                    </button>
+
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          className="absolute z-[100] left-0 right-0 mt-2 bg-white border border-[#4A3B2A]/10 rounded-2xl shadow-2xl overflow-hidden py-2 max-h-[240px] overflow-y-auto custom-scrollbar"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleChange({
+                                target: { name: "journeyDetails", value: "" },
+                              });
+                              setIsOpen(false);
+                            }}
+                            className="w-full text-left px-4 py-2.5 text-sm text-[#4A3B2A]/40 hover:bg-[#F3EFE9] transition-all"
+                          >
+                            Select a Journey
+                          </button>
+                          {trails.map((t, idx) => {
+                            const val = `${t.trailName} (${t.trailDestination})`;
+                            const isSelected = formData.journeyDetails === val;
+                            return (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={() => {
+                                  handleChange({
+                                    target: { name: "journeyDetails", value: val },
+                                  });
+                                  setIsOpen(false);
+                                }}
+                                className={`w-full text-left px-4 py-2.5 text-sm transition-all duration-200 flex items-center justify-between
+                                ${
+                                  isSelected
+                                    ? "bg-[#4A3B2A] text-white"
+                                    : "text-[#4A3B2A] hover:bg-[#F3EFE9]"
+                                }`}
+                              >
+                                <span className="truncate pr-4">{val}</span>
+                                {isSelected && (
+                                  <svg
+                                    className="w-4 h-4 shrink-0"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2.5"
+                                      d="M5 13l4 4L19 7"
+                                    />
+                                  </svg>
+                                )}
+                              </button>
+                            );
+                          })}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleChange({
+                                target: { name: "journeyDetails", value: "Others" },
+                              });
+                              setIsOpen(false);
+                            }}
+                            className={`w-full text-left px-4 py-2.5 text-sm transition-all duration-200 flex items-center justify-between
+                            ${
+                              formData.journeyDetails === "Others"
+                                ? "bg-[#4A3B2A] text-white"
+                                : "text-[#4A3B2A] hover:bg-[#F3EFE9]"
+                            }`}
+                          >
+                            <span>Others (Please specify)</span>
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
 
                   <AnimatePresence>

@@ -4,7 +4,7 @@ import { connectOptions } from "../constants.jsx";
 const ConnectSection = ({ formData, handleSelectChange }) => {
   return (
     <div>
-      <h4 className="text-lg font-medium text-[#4A3B2A] mb-4">
+      <h4 className="text-base sm:text-lg font-medium text-[#4A3B2A] mb-5">
         How would you like to connect?
       </h4>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

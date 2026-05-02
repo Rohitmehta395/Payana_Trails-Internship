@@ -5,7 +5,13 @@ import { api } from "../../../services/api";
 const ConnectManager = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("enquiry");
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("connectActiveTab") || "enquiry";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("connectActiveTab", activeTab);
+  }, [activeTab]);
 
   const tabs = [
     { id: "enquiry", label: "Enquiry" },

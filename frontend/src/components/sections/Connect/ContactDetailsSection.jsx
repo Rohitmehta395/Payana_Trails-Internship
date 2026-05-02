@@ -99,39 +99,51 @@ const ContactDetailsSection = ({ data }) => {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div
-          className="text-center mb-8"
+          className="text-center mb-10 sm:mb-12"
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? "translateY(0)" : "translateY(20px)",
             transition: "opacity 0.7s ease, transform 0.7s ease",
           }}
         >
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="w-6 h-[1px] bg-[#4A3B2A]/30" />
-            <span className="text-[#4A3B2A]/50 uppercase tracking-[0.35em] font-bold text-[12px]">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="w-6 sm:w-8 h-[1px] bg-[#4A3B2A]/30"></div>
+            <span className="text-[#4A3B2A]/50 uppercase tracking-[0.25em] sm:tracking-[0.35em] font-bold text-[10px] sm:text-[12px]">
               {data?.typographyText || "Get In Touch"}
             </span>
-            <div className="w-6 h-[1px] bg-[#4A3B2A]/30" />
+            <div className="w-6 sm:w-8 h-[1px] bg-[#4A3B2A]/30"></div>
           </div>
-            <h2
-              className="text-3xl md:text-4xl lg:text-5xl text-[#4A3B2A] leading-tight tracking-tight mb-4"
+          <h2
+            className="text-3xl sm:text-4xl lg:text-5xl text-[#4A3B2A] leading-tight tracking-tight mb-4 px-4 sm:px-0"
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 400,
+            }}
+          >
+            {data?.titleBold || "Let's"}{" "}
+            <span
               style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontWeight: 400,
+                fontStyle: "italic",
+                fontWeight: 300,
+                color: "rgba(74,59,42,0.7)",
               }}
             >
-              {data?.titleBold || "Let's"} <span style={{ fontStyle: "italic", fontWeight: 300, color: "rgba(74,59,42,0.7)" }}>{data?.titleItalic || "Connect"}</span>
-            </h2>
+              {data?.titleItalic || "Connect"}
+            </span>
+          </h2>
         </div>
 
         {/* Contact Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5 w-full max-w-2xl sm:max-w-none mx-auto px-4 sm:px-0">
           {contactItems.map((item, index) => {
             const dynamicValue = data?.[item.id] || item.value;
             let dynamicHref = item.href;
-            if (item.id === "email" && data?.email) dynamicHref = `mailto:${data.email}`;
-            if (item.id === "phone" && data?.phone) dynamicHref = `https://wa.me/${data.phone.replace(/[^0-9]/g, '')}`;
-            if (item.id === "meet" && data?.meetLink) dynamicHref = data.meetLink;
+            if (item.id === "email" && data?.email)
+              dynamicHref = `mailto:${data.email}`;
+            if (item.id === "phone" && data?.phone)
+              dynamicHref = `https://wa.me/${data.phone.replace(/[^0-9]/g, "")}`;
+            if (item.id === "meet" && data?.meetLink)
+              dynamicHref = data.meetLink;
 
             const cardStyle = {
               opacity: visible ? 1 : 0,
@@ -140,11 +152,11 @@ const ContactDetailsSection = ({ data }) => {
             };
 
             const Inner = (
-              <div className="flex items-start gap-4">
+              <div className="flex items-center sm:items-start gap-4">
                 {/* Icon */}
-                <div className="w-10 h-10 rounded-full bg-[#4A3B2A]/8 flex items-center justify-center text-[#4A3B2A] group-hover:bg-[#4A3B2A]/15 transition-colors duration-400 shrink-0 mt-0.5">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#4A3B2A]/8 flex items-center justify-center text-[#4A3B2A] group-hover:bg-[#4A3B2A]/15 transition-all duration-400 shrink-0 shadow-sm">
                   <svg
-                    className="w-5 h-5"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -154,11 +166,11 @@ const ContactDetailsSection = ({ data }) => {
                 </div>
 
                 {/* Content */}
-                <div className="flex flex-col min-w-0">
-                  <p className="text-[#4A3B2A]/50 uppercase tracking-[0.25em] text-[10px] font-bold mb-1">
+                <div className="flex flex-col min-w-0 flex-1">
+                  <p className="text-[#4A3B2A]/50 uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[9px] sm:text-[10px] font-bold mb-1">
                     {item.label}
                   </p>
-                  <p className="text-[#4A3B2A] font-sans italic text-base leading-snug mb-2 truncate">
+                  <p className="text-[#4A3B2A] font-sans italic text-base sm:text-lg leading-snug mb-1 truncate">
                     {dynamicValue}
                   </p>
                   {dynamicHref && (

@@ -10,15 +10,15 @@ const FormSidebar = () => {
       className="lg:col-span-1"
     >
       <div className="lg:sticky lg:top-8 space-y-8">
-        <div>
-          <span className="text-[#4A3B2A] font-semibold text-md uppercase tracking-wider">
+        <div className="text-center lg:text-left px-4 lg:px-0">
+          <span className="text-[#4A3B2A] font-semibold text-sm sm:text-md uppercase tracking-[0.2em] sm:tracking-wider">
             Start Your Journey
           </span>
-          <h2 className="text-4xl font-bold text-[#4A3B2A] mt-2 leading-tight">
-            Design Your <br />
-            <span className="text-[#4A3B2A] italic">Personal Trail</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#4A3B2A] mt-2 leading-tight">
+            Design Your <br className="hidden sm:block" />
+            <span className="text-[#4A3B2A] italic font-serif">Personal Trail</span>
           </h2>
-          <p className="text-[#4A3B2A]/70 mt-4 text-lg">
+          <p className="text-[#4A3B2A]/70 mt-4 text-base sm:text-lg max-w-lg mx-auto lg:mx-0">
             Share your travel preferences and we'll craft a unique journey just
             for you.
           </p>

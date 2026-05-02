@@ -58,29 +58,29 @@ const ExploreDestination = () => {
         <div className="relative group/slider">
           <button 
             onClick={() => scroll('left')} 
-            className="absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 z-10 bg-white/90 shadow-md p-2 rounded-full text-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-white transition-colors duration-300 backdrop-blur-sm opacity-0 group-hover/slider:opacity-100 hidden md:block"
+            className="absolute -left-4 md:-left-12 top-1/2 -translate-y-1/2 z-20 bg-white/90 shadow-lg p-3 rounded-full text-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-white transition-all duration-300 backdrop-blur-sm opacity-0 group-hover/slider:opacity-100 hidden md:flex items-center justify-center border border-[#4A3B2A]/10"
             aria-label="Previous destination"
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft size={24} strokeWidth={2.5} />
           </button>
 
           <div 
             ref={scrollContainerRef} 
-            className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth pb-4"
+            className="flex gap-4 md:gap-8 overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth pb-6 px-4 md:px-0"
           >
             {loading ? (
-              <div className="w-full flex justify-center items-center py-10">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4A3B2A]"></div>
+              <div className="w-full flex justify-center items-center py-20">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#4A3B2A]"></div>
               </div>
             ) : destinations.length === 0 ? (
-              <div className="w-full text-center text-[#4A3B2A]/70 py-10">
-                No destinations available.
+              <div className="w-full text-center text-[#4A3B2A]/70 py-20 italic font-serif text-lg">
+                No destinations available at the moment.
               </div>
             ) : (
               destinations.map((dest, index) => (
                 <div
                   key={dest._id}
-                  className="animate-fade-in-up flex-shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-24px)] snap-start flex justify-center"
+                  className="animate-fade-in-up flex-shrink-0 w-[280px] sm:w-[calc(50%-16px)] lg:w-[calc(25%-24px)] snap-start flex justify-center"
                   style={{ animationDelay: `${index * 150}ms` }}
                 >
                   <DestinationCard
@@ -98,11 +98,29 @@ const ExploreDestination = () => {
 
           <button 
             onClick={() => scroll('right')} 
-            className="absolute -right-4 md:-right-6 top-1/2 -translate-y-1/2 z-10 bg-white/90 shadow-md p-2 rounded-full text-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-white transition-colors duration-300 backdrop-blur-sm opacity-0 group-hover/slider:opacity-100 hidden md:block"
+            className="absolute -right-4 md:-right-12 top-1/2 -translate-y-1/2 z-20 bg-white/90 shadow-lg p-3 rounded-full text-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-white transition-all duration-300 backdrop-blur-sm opacity-0 group-hover/slider:opacity-100 hidden md:flex items-center justify-center border border-[#4A3B2A]/10"
             aria-label="Next destination"
           >
-            <ChevronRight size={24} />
+            <ChevronRight size={24} strokeWidth={2.5} />
           </button>
+
+          {/* Mobile Arrows (Below Slider) */}
+          <div className="flex md:hidden items-center justify-center gap-6 mt-4">
+            <button
+              onClick={() => scroll('left')}
+              className="flex items-center justify-center w-12 h-12 rounded-full border border-[#4A3B2A]/20 bg-white shadow-md active:scale-95 transition-all text-[#4A3B2A]"
+              aria-label="Previous destination"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button
+              onClick={() => scroll('right')}
+              className="flex items-center justify-center w-12 h-12 rounded-full border border-[#4A3B2A]/20 bg-white shadow-md active:scale-95 transition-all text-[#4A3B2A]"
+              aria-label="Next destination"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
         </div>
 
         {/* Call to Action Button */}

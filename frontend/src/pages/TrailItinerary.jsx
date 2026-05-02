@@ -172,10 +172,10 @@ const TrailItinerary = () => {
           itineraryDaysLength={itineraryDays.length}
         />
 
-        <section className="relative mx-auto max-w-[82rem] px-6 py-12 md:px-10 md:py-16 lg:px-12">
-          <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#8B6B50]/20 to-transparent md:inset-x-10 lg:inset-x-12" />
+        <section className="relative mx-auto w-full max-w-[82rem] px-4 sm:px-6 md:px-10 py-8 md:py-16 lg:px-12">
+          <div className="absolute inset-x-4 sm:inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#8B6B50]/20 to-transparent md:inset-x-10 lg:inset-x-12" />
 
-          <div className="grid gap-8 lg:grid-cols-[380px_minmax(0,1fr)] xl:gap-10">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[380px_minmax(0,1fr)] xl:gap-10">
             {/* Sidebar with Navigation */}
             <ItinerarySidebar
               itineraryDays={itineraryDays}
@@ -188,12 +188,12 @@ const TrailItinerary = () => {
             <div className="space-y-5 md:space-y-6">
               {/* Introduction Card */}
               <div className="rounded-[32px] border border-[#E5D7C5] bg-white p-6 shadow-[0_18px_40px_rgba(74,59,42,0.05)] md:p-8">
-                <div className="grid gap-5 md:grid-cols-[1.1fr_0.9fr] md:items-end">
+                <div className="grid gap-4 md:grid-cols-[1.1fr_0.9fr] md:items-end md:gap-5">
                   <div>
-                    <p className="text-[14px] font-semibold uppercase tracking-[0.16em] text-[#8B6B50]">
+                    <p className="text-[13px] md:text-[14px] font-semibold uppercase tracking-[0.16em] text-[#8B6B50]">
                       Detailed itinerary
                     </p>
-                    <h2 className="mt-3 font-serif text-3xl leading-tight text-[#4A3B2A] md:text-4xl">
+                    <h2 className="mt-2 md:mt-3 font-serif text-[clamp(1.75rem,5vw,2.25rem)] leading-tight text-[#4A3B2A] md:text-4xl">
                       Every day has its own rhythm.
                     </h2>
                   </div>

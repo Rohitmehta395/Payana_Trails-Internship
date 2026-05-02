@@ -72,31 +72,59 @@ const SignatureJourneys = () => {
     });
   };
 
-  const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -400, behavior: "smooth" });
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [cardsToShow, setCardsToShow] = useState(3);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setCardsToShow(1);
+      } else if (window.innerWidth < 1024) {
+        setCardsToShow(2);
+      } else {
+        setCardsToShow(3);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Ensure currentIndex is valid when cardsToShow changes
+  useEffect(() => {
+    if (journeys.length > 0 && currentIndex + cardsToShow > journeys.length) {
+      setCurrentIndex(Math.max(0, journeys.length - cardsToShow));
+    }
+  }, [cardsToShow, journeys.length, currentIndex]);
+
+  const nextSlide = () => {
+    if (currentIndex + cardsToShow < journeys.length) {
+      setCurrentIndex((prev) => prev + 1);
     }
   };
 
-  const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 400, behavior: "smooth" });
+  const prevSlide = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
     }
   };
+
+  const visibleCards = journeys.slice(currentIndex, currentIndex + cardsToShow);
 
   return (
-    <section className="w-full bg-[#F3EFE9] py-20 px-6 md:px-12 lg:px-24 font-['Lato',sans-serif] relative">
+    <section className="w-full bg-[#F3EFE9] py-16 sm:py-20 lg:py-24 px-4 sm:px-6 md:px-12 lg:px-24 font-sans relative overflow-hidden">
       {/* Section Header */}
-      <div className="flex flex-col items-center mb-16 text-center max-w-3xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold text-[#4A3B2A] mb-6 font-serif">
+      <div className="flex flex-col items-center mb-12 sm:mb-16 text-center max-w-3xl mx-auto">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#4A3B2A] mb-4 sm:mb-6 font-serif leading-tight px-4">
           {content.mainTitle}
         </h2>
 
-        {/* Divider Line matching the Hero section */}
-        <div className="w-[60px] h-[2px] bg-[#4A3B2A] mb-6"></div>
+        {/* Divider Line */}
+        <div className="w-[60px] h-[2px] bg-[#4A3B2A] mb-6 sm:mb-8 opacity-40"></div>
 
-        <p className="text-lg md:text-xl text-[#4A3B2A]/80 font-light leading-relaxed">
-          {content.subtitle.split("\n").map((line, idx, arr) => (
+        <p className="text-base sm:text-lg md:text-xl text-[#4A3B2A]/80 font-light leading-relaxed px-4">
+          {content.subtitle.split("\n").map((line, idx) => (
             <React.Fragment key={idx}>
               {idx > 0 && <br />}
               {line}
@@ -118,93 +146,91 @@ const SignatureJourneys = () => {
 
       {/* Carousel */}
       {!loading && !error && journeys.length === 0 && (
-        <div className="text-center text-[#4A3B2A]/70 py-10 text-lg">
+        <div className="text-center text-[#4A3B2A]/70 py-10 text-lg italic">
           No signature journeys available at the moment.
         </div>
       )}
 
       {!loading && !error && journeys.length > 0 && (
-        <div className="max-w-7xl mx-auto">
-          <div className="relative flex items-center group">
-            {/* Left Arrow */}
-            <button
-              onClick={scrollLeft}
-              className="absolute left-0 lg:-left-6 z-20 w-12 h-12 bg-white/80 backdrop-blur border border-[#4A3B2A]/20 text-[#4A3B2A] rounded-full flex items-center justify-center shadow-md hover:bg-[#4A3B2A] hover:text-white transition-all opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 disabled:opacity-0"
-              aria-label="Previous journeys"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
+        <div className="max-w-[1400px] mx-auto">
+          {/* Main Carousel Wrapper */}
+          <div className="flex flex-col items-center gap-8 w-full">
+            <div className="flex items-center justify-center gap-4 w-full">
+              {/* Desktop/Tablet Left Arrow */}
+              <button
+                onClick={prevSlide}
+                disabled={currentIndex === 0}
+                className={`hidden sm:flex items-center justify-center w-12 h-12 rounded-full border border-[#4A3B2A]/20 bg-white shadow-sm transition-all duration-300 z-10 shrink-0
+                  ${currentIndex === 0 ? "opacity-30 cursor-not-allowed" : "hover:bg-[#E3D5C4] hover:scale-105 cursor-pointer text-[#4A3B2A]"}`}
+              >
+                <ChevronLeft size={24} />
+              </button>
 
-            {/* Cards Container */}
-            <div
-              ref={scrollContainerRef}
-              className="flex overflow-x-auto gap-8 lg:gap-10 px-4 py-8 snap-x snap-mandatory hide-scroll-bar w-full"
-              style={{
-                scrollbarWidth: "none" /* Firefox */,
-                msOverflowStyle: "none" /* IE and Edge */,
-              }}
-            >
-              <style>{`
-                .hide-scroll-bar::-webkit-scrollbar {
-                  display: none;
-                }
-              `}</style>
+              {/* Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full justify-items-center transition-all duration-500 max-w-[1250px]">
+                {visibleCards.map((journey) => (
+                  <div key={journey._id} className="w-full flex justify-center">
+                    <EOTCard
+                      title={journey.trailName}
+                      description={journey.trailSubTitle}
+                      location={journey.trailDestination}
+                      duration={journey.duration}
+                      date={formatDate(journey.journeyDate)}
+                      trail={journey.trailRoute}
+                      trailType={journey.trailType || ""}
+                      imgSrc={
+                        journey.heroImage
+                          ? `${IMAGE_BASE_URL}${journey.heroImage}`
+                          : null
+                      }
+                      trailSlug={journey.slug}
+                      pricing={journey.pricing}
+                    />
+                  </div>
+                ))}
+              </div>
 
-              {journeys.map((journey) => (
-                <div
-                  key={journey._id}
-                  className="snap-center shrink-0 w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)] max-w-[400px] flex justify-center"
-                >
-                  <EOTCard
-                    title={journey.trailName}
-                    description={journey.trailSubTitle}
-                    location={journey.trailDestination}
-                    duration={journey.duration}
-                    date={formatDate(journey.journeyDate)}
-                    trail={journey.trailRoute}
-                    trailType={journey.trailType || ""}
-                    imgSrc={
-                      journey.heroImage
-                        ? `${IMAGE_BASE_URL}${journey.heroImage}`
-                        : null
-                    }
-                    trailSlug={journey.slug}
-                    pricing={journey.pricing}
-                  />
-                </div>
-              ))}
+              {/* Desktop/Tablet Right Arrow */}
+              <button
+                onClick={nextSlide}
+                disabled={currentIndex + cardsToShow >= journeys.length}
+                className={`hidden sm:flex items-center justify-center w-12 h-12 rounded-full border border-[#4A3B2A]/20 bg-white shadow-sm transition-all duration-300 z-10 shrink-0
+                  ${currentIndex + cardsToShow >= journeys.length ? "opacity-30 cursor-not-allowed" : "hover:bg-[#E3D5C4] hover:scale-105 cursor-pointer text-[#4A3B2A]"}`}
+              >
+                <ChevronRight size={24} />
+              </button>
             </div>
 
-            {/* Right Arrow */}
-            <button
-              onClick={scrollRight}
-              className="absolute right-0 lg:-right-6 z-20 w-12 h-12 bg-white/80 backdrop-blur border border-[#4A3B2A]/20 text-[#4A3B2A] rounded-full flex items-center justify-center shadow-md hover:bg-[#4A3B2A] hover:text-white transition-all opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
-              aria-label="Next journeys"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
+            {/* Mobile Arrows (Below Cards) */}
+            <div className="flex sm:hidden items-center justify-center gap-8 mt-2">
+              <button
+                onClick={prevSlide}
+                disabled={currentIndex === 0}
+                className={`flex items-center justify-center w-14 h-14 rounded-full border border-[#4A3B2A]/20 bg-white shadow-md transition-all duration-300
+                  ${currentIndex === 0 ? "opacity-30 cursor-not-allowed" : "active:scale-95 text-[#4A3B2A]"}`}
+              >
+                <ChevronLeft size={28} />
+              </button>
+              <button
+                onClick={nextSlide}
+                disabled={currentIndex + cardsToShow >= journeys.length}
+                className={`flex items-center justify-center w-14 h-14 rounded-full border border-[#4A3B2A]/20 bg-white shadow-md transition-all duration-300
+                  ${currentIndex + cardsToShow >= journeys.length ? "opacity-30 cursor-not-allowed" : "active:scale-95 text-[#4A3B2A]"}`}
+              >
+                <ChevronRight size={28} />
+              </button>
+            </div>
           </div>
 
-          <div className="mt-8 flex justify-center">
+          {/* Bottom CTA */}
+          <div className="mt-12 sm:mt-16 flex justify-center">
             <Link
               to="/journeys/signature"
               onClick={() => window.scrollTo(0, 0)}
-              className="group inline-flex items-center gap-2 rounded-full bg-[#4A3B2A] px-6 py-3 text-sm md:text-base font-semibold text-[#F3EFE9] shadow-[0_14px_28px_rgba(74,59,42,0.16)] transition-all duration-300 hover:bg-[#3A2C1C] hover:-translate-y-0.5"
+              className="group inline-flex items-center gap-3 rounded-full bg-[#4A3B2A] px-10 py-4 text-base font-semibold text-[#F3EFE9] shadow-[0_14px_28px_rgba(74,59,42,0.16)] transition-all duration-300 hover:bg-[#3A2C1C] hover:-translate-y-1"
             >
               <span>Explore Signature Trails</span>
-              <svg
-                className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              <ChevronRight size={20} className="transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
         </div>

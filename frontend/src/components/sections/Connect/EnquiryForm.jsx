@@ -159,7 +159,7 @@ const EnquiryForm = ({ onSuccess }) => {
   };
 
   return (
-    <section id="enquiry-section" className="py-16 px-4 bg-[#F3EFE9] scroll-mt-24">
+    <section id="enquiry-section" className="py-12 md:py-16 px-4 bg-[#F3EFE9] scroll-mt-24">
       <div className="max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
           {/* Sidebar */}
@@ -171,23 +171,23 @@ const EnquiryForm = ({ onSuccess }) => {
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-2"
           >
-            <div className="bg-white rounded-3xl shadow-xl border border-[#4A3B2A]/10 relative z-10 overflow-hidden">
+            <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl border border-[#4A3B2A]/10 relative z-10 overflow-hidden">
               {submitted ? (
                 <FormSuccess onReset={() => setSubmitted(false)} />
               ) : (
                 <>
-                  <div className="p-6 md:p-8 border-b border-[#4A3B2A]/10 bg-[#F3EFE9]/30 rounded-t-3xl flex items-center justify-between">
+                  <div className="p-5 md:p-8 border-b border-[#4A3B2A]/10 bg-[#F3EFE9]/30 rounded-t-2xl md:rounded-t-3xl flex items-center justify-between">
                     <div>
-                      <h3 className="text-2xl font-bold text-[#4A3B2A]">
+                      <h3 className="text-xl md:text-2xl font-bold text-[#4A3B2A]">
                         Enquiry Form
                       </h3>
-                      <p className="text-[#4A3B2A]/60 text-sm mt-1">
+                      <p className="text-[#4A3B2A]/60 text-xs md:text-sm mt-1">
                         Fields marked with * are required
                       </p>
                     </div>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">
+                  <form onSubmit={handleSubmit} className="p-5 md:p-8 space-y-8">
                     {/* Contact Section */}
                     <ContactSection
                       formData={formData}

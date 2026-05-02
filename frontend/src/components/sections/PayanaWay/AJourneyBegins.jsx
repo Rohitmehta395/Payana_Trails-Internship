@@ -52,7 +52,7 @@ const AJourneyBegins = ({ data }) => {
   return (
     <section
       id="ajourneybegins"
-      className="relative py-20 md:py-12 bg-[#F3EFE9] overflow-hidden"
+      className="relative py-12 md:py-12 bg-[#F3EFE9] overflow-hidden"
     >
       {/* Subtle Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(circle_at_center,#4A3B2A_1px,transparent_1px)] bg-size-[24px_24px]"></div>

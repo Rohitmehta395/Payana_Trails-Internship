@@ -30,7 +30,7 @@ const ShareExperience = () => {
   return (
     <section
       id="share-section"
-      className="relative w-full bg-[#F3EFE9] py-24 px-6 lg:px-12 overflow-hidden font-sans"
+      className="relative w-full bg-[#F3EFE9] py-8 px-6 lg:px-12 overflow-hidden font-sans"
     >
 
 

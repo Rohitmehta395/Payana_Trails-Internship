@@ -41,35 +41,35 @@ const ItineraryHeader = ({ transformed, itineraryDaysLength }) => {
         <Trees className="h-36 w-36 md:h-52 md:w-52" strokeWidth={1} />
       </motion.div>
 
-      <div className="relative mx-auto flex min-h-[85vh] max-w-[82rem] items-end px-6 pb-14 pt-28 md:px-10 md:pb-16 lg:px-12 lg:pb-20">
+      <div className="relative mx-auto flex min-h-[75vh] sm:min-h-[85vh] w-full max-w-[82rem] items-end px-6 pb-12 pt-24 md:px-10 md:pb-16 lg:px-12 lg:pb-20 lg:pt-32">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15 }}
-          className="max-w-4xl"
+          className="w-full max-w-4xl"
         >
           <Link
             to={`/trails/${transformed.slug}`}
-            className="mb-8 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium tracking-wide text-[#E5D7C5] backdrop-blur-md transition-all duration-300 hover:bg-white/15 hover:text-white"
+            className="mb-6 md:mb-8 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 md:px-5 md:py-2.5 text-xs md:text-sm font-medium tracking-wide text-[#E5D7C5] backdrop-blur-md transition-all duration-300 hover:bg-white/15 hover:text-white"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-3.5 w-3.5 md:h-4 md:w-4" />
             Back to trail
           </Link>
 
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#E5D7C5]/90">
+          <p className="text-[10px] md:text-[11px] font-semibold uppercase tracking-[0.28em] text-[#E5D7C5]/90">
             Payana Trails • Detailed itinerary
           </p>
 
-          <h1 className="mt-5 font-serif text-5xl leading-[1.02] text-[#FDFBF7] drop-shadow-[0_8px_24px_rgba(0,0,0,0.22)] md:text-6xl lg:text-[4.5rem]">
+          <h1 className="mt-4 md:mt-5 font-serif text-[clamp(2.1rem,8vw,4.5rem)] leading-[1.02] text-[#FDFBF7] drop-shadow-[0_8px_24px_rgba(0,0,0,0.22)] md:text-6xl lg:text-[4.5rem]">
             {transformed.trailName}
           </h1>
 
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#F3EFE9] md:text-lg">
+          <p className="mt-5 md:mt-6 max-w-2xl text-base leading-relaxed text-[#F3EFE9] md:text-lg">
             Follow the trail one day at a time, with each chapter revealing the
             pace, highlights, and practical details that shape the journey.
           </p>
 
-          <div className="mt-7 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-medium text-[#FDFBF7] backdrop-blur-md">
+          <div className="mt-6 md:mt-7 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-2.5 md:px-5 md:py-3 text-xs md:text-sm font-medium text-[#FDFBF7] backdrop-blur-md">
             <Compass className="h-4 w-4 text-[#E5D7C5]" />
             {itineraryDaysLength} curated day
             {itineraryDaysLength > 1 ? "s" : ""}

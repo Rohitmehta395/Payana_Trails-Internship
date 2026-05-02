@@ -131,13 +131,13 @@ const MovingGallery = ({ images = [], trailName = "Trail", isWrapped = false }) 
         {!isWrapped && <Particles />}
 
         {/* Header Section */}
-        <div className={`relative z-10 ${isWrapped ? "mb-8 pt-8 md:pt-10 px-6 md:px-10" : "mb-10"}`}>
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#4A3B2A]/10 bg-white/70 px-4 py-2 text-[15px] font-semibold uppercase tracking-[0.28em] text-[#6B513C] backdrop-blur-sm">
+        <div className={`relative z-10 ${isWrapped ? "mb-6 pt-8 md:pt-10 px-6 md:px-10" : "mb-8 md:mb-10"}`}>
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#4A3B2A]/10 bg-white/70 px-4 py-2 text-[13px] md:text-[15px] font-semibold uppercase tracking-[0.28em] text-[#6B513C] backdrop-blur-sm">
             <Sparkles className="h-4 w-4" />
             Glimpses of the Trail
           </div>
 
-          <h2 className="mt-5 font-serif text-[clamp(1.8rem,3.5vw,2.4rem)] leading-[1.1] tracking-tight text-[#2F2319]">
+          <h2 className="mt-4 md:mt-5 font-serif text-[clamp(1.7rem,4vw,2.4rem)] leading-[1.1] tracking-tight text-[#2F2319]">
             Moments along the trail that stay with you.
           </h2>
         </div>

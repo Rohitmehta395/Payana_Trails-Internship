@@ -38,7 +38,7 @@ export const NotFoundState = ({ onBack }) => (
         <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full border border-[#E5D7C5] bg-[#FAF7F2] text-[#8B6B50]">
           <Compass className="h-9 w-9" />
         </div>
-        <h1 className="font-serif text-4xl text-[#4A3B2A] md:text-5xl">
+        <h1 className="font-serif text-[clamp(2rem,6vw,3rem)] text-[#4A3B2A] md:text-5xl leading-tight">
           Trail not found
         </h1>
         <p className="mx-auto mt-4 max-w-md leading-relaxed text-[#8B6B50]">
@@ -69,7 +69,7 @@ export const ComingSoonState = ({ ogTitle, ogDescription, trailName, slug }) => 
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#8B6B50]">
             Journey in the making
           </p>
-          <h1 className="mt-4 font-serif text-4xl text-[#4A3B2A] md:text-5xl">
+          <h1 className="mt-4 font-serif text-[clamp(2rem,6vw,3rem)] text-[#4A3B2A] md:text-5xl leading-tight">
             Detailed itinerary coming soon
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-[#8B6B50]">

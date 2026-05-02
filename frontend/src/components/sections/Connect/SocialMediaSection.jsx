@@ -76,7 +76,7 @@ const SocialCard = ({ social, visible, index }) => {
       rel="noopener noreferrer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="group relative flex items-center gap-4 bg-white/60 border border-[#4A3B2A]/10 rounded-2xl px-6 py-5 hover:shadow-xl hover:bg-white/80 hover:border-[#4A3B2A]/20 hover:-translate-y-1 transition-all duration-400 min-w-[210px]"
+      className="group relative flex items-center gap-4 bg-white/60 border border-[#4A3B2A]/10 rounded-2xl px-6 py-5 hover:shadow-xl hover:bg-white/80 hover:border-[#4A3B2A]/20 hover:-translate-y-1 transition-all duration-400 w-full sm:w-auto sm:min-w-[210px]"
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(32px)",
@@ -137,7 +137,7 @@ const SocialMediaSection = ({ data }) => {
       ([entry]) => {
         if (entry.isIntersecting) {
           setVisible(true);
-          observer.disconnect(); 
+          observer.disconnect();
         }
       },
       { threshold: 0.12 },
@@ -150,7 +150,7 @@ const SocialMediaSection = ({ data }) => {
     <section
       id="social-media-section"
       ref={sectionRef}
-      className="py-20 md:py-12 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden"
+      className="py-8 md:py-12 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden"
     >
       {/* Watermark */}
       <div
@@ -167,44 +167,51 @@ const SocialMediaSection = ({ data }) => {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div
-          className="text-center mb-14 md:mb-16"
+          className="text-center mb-12 md:mb-16"
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? "translateY(0)" : "translateY(24px)",
             transition: "opacity 0.65s ease, transform 0.65s ease",
           }}
         >
-          {/* <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-8 h-[1px] bg-[#4A3B2A]/30" />
-            <span
-              className="text-[#4A3B2A]/50 uppercase tracking-[0.35em] text-xs md:text-sm font-bold"
-              style={{ fontFamily: "'DM Sans', sans-serif" }}
-            >
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="w-6 sm:w-8 h-[1px] bg-[#4A3B2A]/30"></div>
+            <span className="text-[#4A3B2A]/50 uppercase tracking-[0.25em] sm:tracking-[0.35em] font-bold text-[10px] sm:text-[12px]">
               Follow Our Journey
             </span>
-            <div className="w-8 h-[1px] bg-[#4A3B2A]/30" />
-          </div> */}
+            <div className="w-6 sm:w-8 h-[1px] bg-[#4A3B2A]/30"></div>
+          </div>
 
-            <h2
-              className="text-3xl md:text-4xl lg:text-5xl text-[#4A3B2A] leading-tight tracking-tight mb-4"
+          <h2
+            className="text-3xl sm:text-4xl lg:text-5xl text-[#4A3B2A] leading-tight tracking-tight mb-4 px-4 sm:px-0"
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 400,
+            }}
+          >
+            {data?.titleBold || "Follow Our"}{" "}
+            <span
               style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontWeight: 400,
+                fontStyle: "italic",
+                fontWeight: 300,
+                color: "rgba(74,59,42,0.7)",
               }}
             >
-              {data?.titleBold || "Follow Our"} <span style={{ fontStyle: "italic", fontWeight: 300, color: "rgba(74,59,42,0.7)" }}>{data?.titleItalic || "Journey"}</span>
-            </h2>
+              {data?.titleItalic || "Journey"}
+            </span>
+          </h2>
 
           <p
-            className="text-[#4A3B2A]/55 text-base md:text-lg max-w-lg mx-auto leading-relaxed"
+            className="text-[#4A3B2A]/55 text-sm sm:text-base md:text-lg max-w-lg mx-auto leading-relaxed px-6 sm:px-0"
             style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 300 }}
           >
-            {data?.subtitle || "Join our community across platforms and be the first to discover new trails, stories, and journeys."}
+            {data?.subtitle ||
+              "Join our community across platforms and be the first to discover new trails, stories, and journeys."}
           </p>
         </div>
 
         {/* Social Cards */}
-        <div className="flex flex-wrap justify-center gap-4 md:gap-5">
+        <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-4 md:gap-5 w-full max-w-2xl sm:max-w-none mx-auto px-4 sm:px-0">
           {socialLinks.map((social, index) => {
             const dynamicItem = data?.items && data.items[index];
             const activeLink = {

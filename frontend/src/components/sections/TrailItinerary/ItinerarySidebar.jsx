@@ -16,36 +16,36 @@ const ItinerarySidebar = ({
             Journey notes
           </p>
 
-          <h2 className="mt-4 font-serif text-3xl leading-tight text-[#4A3B2A]">
+          <h2 className="mt-4 font-serif text-[clamp(1.5rem,5vw,2rem)] leading-tight text-[#4A3B2A] break-words">
             Follow the trail, one chapter at a time.
           </h2>
         </div>
 
-        <div className="mt-6 grid grid-cols-3 gap-3">
-          <div className="flex flex-col items-center text-center rounded-2xl border border-[#E5D7C5] bg-white p-4">
-            <Compass className="h-4 w-4 text-[#8B6B50]" />
-            <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">
+        <div className="mt-6 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="flex flex-col items-center text-center rounded-2xl border border-[#E5D7C5] bg-white p-3 md:p-4">
+            <Compass className="h-3.5 w-3.5 md:h-4 md:w-4 text-[#8B6B50]" />
+            <p className="mt-2 md:mt-3 text-[9px] md:text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">
               Route
             </p>
-            <p className="mt-1 text-sm font-medium text-[#4A3B2A]">Day by day</p>
+            <p className="mt-1 text-xs md:text-sm font-medium text-[#4A3B2A]">Day by day</p>
           </div>
 
-          <div className="flex flex-col items-center text-center rounded-2xl border border-[#E5D7C5] bg-white p-4">
-            <Trees className="h-4 w-4 text-[#8B6B50]" />
-            <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">
+          <div className="flex flex-col items-center text-center rounded-2xl border border-[#E5D7C5] bg-white p-3 md:p-4">
+            <Trees className="h-3.5 w-3.5 md:h-4 md:w-4 text-[#8B6B50]" />
+            <p className="mt-2 md:mt-3 text-[9px] md:text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">
               Stops
             </p>
-            <p className="mt-1 text-sm font-medium text-[#4A3B2A]">
+            <p className="mt-1 text-xs md:text-sm font-medium text-[#4A3B2A]">
               Curated moments
             </p>
           </div>
 
-          <div className="flex flex-col items-center text-center rounded-2xl border border-[#E5D7C5] bg-white p-4">
-            <Home className="h-4 w-4 text-[#8B6B50]" />
-            <p className="mt-3 text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">
+          <div className="flex flex-col items-center text-center rounded-2xl border border-[#E5D7C5] bg-white p-3 md:p-4 xs:col-span-2 sm:col-span-1">
+            <Home className="h-3.5 w-3.5 md:h-4 md:w-4 text-[#8B6B50]" />
+            <p className="mt-2 md:mt-3 text-[9px] md:text-[10px] uppercase tracking-[0.18em] text-[#8B6B50]">
               Comfort
             </p>
-            <p className="mt-1 text-sm font-medium text-[#4A3B2A]">
+            <p className="mt-1 text-xs md:text-sm font-medium text-[#4A3B2A]">
               Stay + meals
             </p>
           </div>
@@ -56,7 +56,7 @@ const ItinerarySidebar = ({
             Browse the days
           </p>
 
-          <div className="max-h-[50vh] space-y-3 overflow-auto pr-1">
+          <div className="max-h-[none] lg:max-h-[50vh] space-y-3 overflow-auto pr-1">
             {itineraryDays.map((day, index) => (
               <button
                 key={`${day.title}-${index}`}

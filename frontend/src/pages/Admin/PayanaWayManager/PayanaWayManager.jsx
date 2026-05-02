@@ -5,7 +5,13 @@ import JourneysWithPurposeManager from "./JourneysWithPurposeManager";
 import InTheMediaManager from "./InTheMediaManager";
 
 const PayanaWayManager = () => {
-  const [activeTab, setActiveTab] = useState("aJourneyBegins");
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("payanaWayActiveTab") || "aJourneyBegins";
+  });
+
+  React.useEffect(() => {
+    localStorage.setItem("payanaWayActiveTab", activeTab);
+  }, [activeTab]);
 
   const tabs = [
     {

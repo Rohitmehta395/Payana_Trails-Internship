@@ -67,7 +67,7 @@ const ThePayanaDifference = ({ data }) => {
       className="relative bg-[#F3EFE9] overflow-hidden"
     >
       {/* Section Header */}
-      <div className="container mx-auto max-w-7xl px-6 pt-8 pb-4 md:pt-8">
+      <div className="container mx-auto max-w-7xl px-6 pb-4 md:pt-8">
         <SectionHeader
           title={data.mainTitle || "The Payana Difference"}
           subtitle={data.subtitle || "Our Philosophy"}

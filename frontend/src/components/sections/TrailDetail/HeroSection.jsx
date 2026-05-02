@@ -72,7 +72,7 @@ const HeroSection = ({ trail, backUrl = "/journeys" }) => {
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(34,24,16,0.2)_0%,rgba(34,24,16,0.6)_90%,rgba(34,24,16,0.95)_100%)]" />
 
       {/* Content Container */}
-      <div className="relative mx-auto flex min-h-[85vh] max-w-7xl flex-col justify-end px-6 pb-16 pt-32 text-[#F3EFE9] md:px-12 md:pb-20 lg:px-20">
+      <div className="relative mx-auto flex min-h-[75vh] sm:min-h-[85vh] max-w-7xl flex-col justify-end px-6 pb-12 pt-24 text-[#F3EFE9] md:px-12 md:pb-20 lg:px-20 lg:pt-32">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -80,21 +80,20 @@ const HeroSection = ({ trail, backUrl = "/journeys" }) => {
           className="w-full max-w-5xl"
         >
           {/* Back Button */}
-          <motion.div variants={itemVariants} className="mb-8">
+          <motion.div variants={itemVariants} className="mb-6 md:mb-8">
             <Link
               to={backUrl}
               onClick={() => window.scrollTo(0, 0)}
-              className="group inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium tracking-wide backdrop-blur-md transition-all duration-300 hover:bg-white/15 hover:pr-6"
+              className="group inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 md:px-5 md:py-2.5 text-xs md:text-sm font-medium tracking-wide backdrop-blur-md transition-all duration-300 hover:bg-white/15 hover:pr-6"
             >
-              <FiArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+              <FiArrowLeft className="h-3.5 w-3.5 md:h-4 md:w-4 transition-transform duration-300 group-hover:-translate-x-1" />
               <span>Back to Trails</span>
             </Link>
           </motion.div>
-
           {/* Title */}
           <motion.h1
             variants={itemVariants}
-            className="text-5xl font-serif leading-[1.1] tracking-tight drop-shadow-lg md:text-7xl lg:text-[5rem]"
+            className="text-[clamp(2.5rem,8vw,5rem)] font-serif leading-[1.1] tracking-tight drop-shadow-lg md:text-7xl lg:text-[5rem]"
           >
             {trail.trailName}
           </motion.h1>
@@ -102,7 +101,7 @@ const HeroSection = ({ trail, backUrl = "/journeys" }) => {
           {/* Subtitle */}
           <motion.p
             variants={itemVariants}
-            className="mt-6 max-w-3xl text-lg font-light leading-relaxed text-[#F3EFE9]/80 md:text-2xl"
+            className="mt-4 md:mt-6 max-w-3xl text-base font-light leading-relaxed text-[#F3EFE9]/80 md:text-2xl"
           >
             {trail.trailSubTitle}
           </motion.p>

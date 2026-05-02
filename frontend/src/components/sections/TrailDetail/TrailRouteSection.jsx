@@ -158,7 +158,7 @@ const TrailRouteSection = ({ trail }) => {
               Trail Highlights & Route Map
             </div>
 
-            <h2 className="mt-5 w-full max-w-none overflow-hidden text-ellipsis whitespace-nowrap font-serif text-[clamp(1.75rem,3.2vw,2.75rem)] leading-tight tracking-tight text-[#2F2319]">
+            <h2 className="mt-5 w-full max-w-none font-serif text-[clamp(1.75rem,3.2vw,2.75rem)] leading-tight tracking-tight text-[#2F2319]">
               Follow the path as the journey naturally unfolds.
             </h2>
 
@@ -181,8 +181,6 @@ const TrailRouteSection = ({ trail }) => {
           <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)] lg:items-stretch lg:gap-10">
             <motion.div variants={itemVariants} className="relative">
               <div className="relative rounded-[1.75rem] border border-[#4A3B2A]/8 bg-[linear-gradient(180deg,rgba(255,252,248,0.96)_0%,rgba(248,239,223,0.98)_100%)] p-5 shadow-[0_14px_38px_rgba(74,59,42,0.1)] md:p-6">
-                <div className="relative rounded-[1.75rem] border border-[#4A3B2A]/8 bg-[linear-gradient(180deg,rgba(255,252,248,0.96)_0%,rgba(248,239,223,0.98)_100%)] p-5 shadow-[0_14px_38px_rgba(74,59,42,0.1)] md:p-6" />
-
                 <motion.div variants={containerVariants} className="space-y-4">
                   {routeSteps.length > 0 ? (
                     routeSteps.map((step, index) => {
@@ -237,7 +235,7 @@ const TrailRouteSection = ({ trail }) => {
             </motion.div>
 
             <motion.div variants={itemVariants} className="relative h-full">
-              <div className="relative flex h-full flex-col overflow-hidden rounded-4xl border border-[rgba(74,59,42,0.1)] bg-[linear-gradient(180deg,rgba(74,59,42,0.92)_0%,rgba(51,39,28,0.96)_100%)] p-4 shadow-[0_18px_45px_rgba(74,59,42,0.18)] md:p-5">
+              <div className="relative flex h-full flex-col overflow-hidden rounded-3xl md:rounded-4xl border border-[rgba(74,59,42,0.1)] bg-[linear-gradient(180deg,rgba(74,59,42,0.92)_0%,rgba(51,39,28,0.96)_100%)] p-4 shadow-[0_18px_45px_rgba(74,59,42,0.18)] md:p-5">
                 <div className="absolute inset-x-6 top-5 flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.24em] text-[#F8F1E7]/60">
                   <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[rgba(255,255,255,0.06)] px-3 py-2 backdrop-blur-sm">
                     <LuMap className="h-4 w-4" />

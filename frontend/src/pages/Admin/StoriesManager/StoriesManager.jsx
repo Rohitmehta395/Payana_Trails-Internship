@@ -10,7 +10,13 @@ import GuestStoriesManager from "./GuestStoriesManager";
 
 // view: "section" | "blogList" | "blogForm"
 const StoriesManager = () => {
-  const [activeTab, setActiveTab] = useState("travelStories");
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("storiesActiveTab") || "travelStories";
+  });
+
+  React.useEffect(() => {
+    localStorage.setItem("storiesActiveTab", activeTab);
+  }, [activeTab]);
   const [blogView, setBlogView] = useState("list"); // "list" | "form"
   const [editBlog, setEditBlog] = useState(null);
 

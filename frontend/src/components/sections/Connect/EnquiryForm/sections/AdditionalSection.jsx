@@ -7,8 +7,8 @@ import { roomPreferences } from "../constants.jsx";
 const AdditionalSection = ({ formData, touched, handleChange, handleSelectChange, handleBlur }) => {
   return (
     <div>
-      <h4 className="text-lg font-medium text-[#4A3B2A] mb-4 flex items-center gap-2">
-        <FiMessageSquare className="text-[#4A3B2A]" /> Additional Details
+      <h4 className="text-base sm:text-lg font-medium text-[#4A3B2A] mb-5 flex items-center gap-2">
+        <FiMessageSquare className="text-[#4A3B2A] shrink-0" /> Additional Details
       </h4>
       <div className="space-y-6">
         <SelectField

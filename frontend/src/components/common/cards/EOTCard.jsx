@@ -64,22 +64,22 @@ const EOTCard = ({
       </div>
 
       {/* Content Section */}
-      <div className="relative z-10 px-2 pb-1 flex-1 flex flex-col gap-3">
+      <div className="relative z-10 px-1 sm:px-2 pb-1 flex-1 flex flex-col gap-2 sm:gap-3">
         {/* Title, Separator Line & Description Group */}
         <div className="flex flex-col items-center w-full">
           {/* Title */}
-          <div className="min-h-[2.8rem] flex items-center justify-center w-full">
-            <h3 className="text-[21px] font-bold text-[#4A3B2A] text-center leading-tight line-clamp-2">
+          <div className="min-h-[2.4rem] sm:min-h-[2.8rem] flex items-center justify-center w-full">
+            <h3 className="text-[19px] sm:text-[21px] font-bold text-[#4A3B2A] text-center leading-tight line-clamp-2 px-1">
               {title}
             </h3>
           </div>
 
           {/* Separator Line */}
-          <hr className="w-[60%] border-[#4A3B2A]/20 my-1.5" />
+          <hr className="w-[60%] border-[#4A3B2A]/20 my-1 sm:my-1.5" />
 
           {/* 2) Description (Sub-Heading) */}
-          <div className="min-h-[2.6rem] flex items-center justify-center w-full">
-            <p className="text-[#4A3B2A]/80 text-[16px] text-center font-medium line-clamp-2 w-full px-2">
+          <div className="min-h-[2.4rem] sm:min-h-[2.6rem] flex items-center justify-center w-full">
+            <p className="text-[#4A3B2A]/80 text-[14px] sm:text-[16px] text-center font-medium line-clamp-2 w-full px-2">
               {description}
             </p>
           </div>
@@ -87,8 +87,8 @@ const EOTCard = ({
 
         {/* Pricing centered in available space */}
         {pricing ? (
-          <div className="flex-1 flex items-center justify-center w-full py-1">
-            <span className="text-[#4A3B2A] text-[15px] font-bold bg-[#4A3B2A]/5 px-3 py-1 rounded-full border border-[#4A3B2A]/10 shadow-sm">
+          <div className="flex-1 flex items-center justify-center w-full py-0.5 sm:py-1">
+            <span className="text-[#4A3B2A] text-[13px] sm:text-[15px] font-bold bg-[#4A3B2A]/5 px-3 py-1 rounded-full border border-[#4A3B2A]/10 shadow-sm">
               {pricing}
             </span>
           </div>
@@ -99,27 +99,27 @@ const EOTCard = ({
         {/* Info Row: Location (Left) and Duration (Right) */}
         <div className="flex justify-between items-center w-full text-[#4A3B2A] mt-auto gap-2">
           {/* 3) Location (Country Name) */}
-          <div className="flex items-center gap-1.5 justify-start overflow-hidden">
+          <div className="flex items-center gap-1 sm:gap-1.5 justify-start overflow-hidden">
             <LuMapPin
-              className="w-[18px] h-[18px] shrink-0"
+              className="w-[16px] h-[16px] sm:w-[18px] sm:h-[18px] shrink-0"
               strokeWidth="2.5"
             />
-            <span className="text-[15px] sm:text-[16px] font-bold truncate">
+            <span className="text-[14px] sm:text-[16px] font-bold truncate">
               {location}
             </span>
           </div>
 
           {/* Duration */}
           <div className="flex justify-end shrink-0">
-            <div className="px-3 py-1 rounded-full border border-[#4A3B2A]/20 text-[12px] sm:text-[13px] font-bold tracking-wide bg-white/40 whitespace-nowrap shadow-sm backdrop-blur-sm">
+            <div className="px-2 sm:px-3 py-1 rounded-full border border-[#4A3B2A]/20 text-[11px] sm:text-[13px] font-bold tracking-wide bg-white/40 whitespace-nowrap shadow-sm backdrop-blur-sm">
               {duration}
             </div>
           </div>
         </div>
 
         {/* 4) Trail Route Text */}
-        <div className="bg-[#F3EFE9]/70 backdrop-blur-sm rounded-2xl p-4 flex justify-center items-center shadow-inner border border-[#4A3B2A]/10 w-full mt-1 min-h-[72px]">
-          <span className="text-[#4A3B2A]/80 text-[15px] text-center font-medium line-clamp-2 block w-full px-2">
+        <div className="bg-[#F3EFE9]/70 backdrop-blur-sm rounded-2xl p-3 sm:p-4 flex justify-center items-center shadow-inner border border-[#4A3B2A]/10 w-full mt-1 min-h-[60px] sm:min-h-[72px]">
+          <span className="text-[#4A3B2A]/80 text-[13px] sm:text-[15px] text-center font-medium line-clamp-2 block w-full px-1 sm:px-2">
             {trail}
           </span>
         </div>

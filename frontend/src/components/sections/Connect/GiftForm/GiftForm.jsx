@@ -161,7 +161,7 @@ const GiftForm = ({ initialData = {} }) => {
   return (
     <section
       id="gift-section"
-      className="py-24 px-4 bg-[#F3EFE9] border-t border-[#4A3B2A]/5"
+      className="px-4 bg-[#F3EFE9] border-t border-[#4A3B2A]/5"
     >
       <div className="max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">

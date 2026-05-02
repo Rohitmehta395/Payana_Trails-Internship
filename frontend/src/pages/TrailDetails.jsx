@@ -113,8 +113,8 @@ const TrailDetails = () => {
       <TrailRouteSection trail={transformed} />
 
       {/* Unified Essentials & Moments Section */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-8 md:px-10">
-        <div className="relative overflow-hidden rounded-[2.5rem] border border-[#4A3B2A]/12 bg-[linear-gradient(145deg,#fffdf8_0%,#f9f3e9_50%,#f2e9d8_100%)] shadow-[0_20px_50px_rgba(74,59,42,0.1)]">
+      <section className="mx-auto w-full max-w-7xl px-4 py-6 md:px-10 md:py-12">
+        <div className="relative overflow-hidden rounded-3xl md:rounded-[2.5rem] border border-[#4A3B2A]/12 bg-[linear-gradient(145deg,#fffdf8_0%,#f9f3e9_50%,#f2e9d8_100%)] shadow-[0_20px_50px_rgba(74,59,42,0.1)]">
           <Particles />
           <TrailInclusionsSection
             includedItems={transformed.whatsIncluded || []}

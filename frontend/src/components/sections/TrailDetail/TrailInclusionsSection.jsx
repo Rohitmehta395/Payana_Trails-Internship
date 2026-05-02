@@ -370,7 +370,7 @@ const TrailInclusionsSection = ({
               Trail Essentials
             </div>
 
-            <h2 className="mt-5 font-serif text-[clamp(1.8rem,3.5vw,2.4rem)] leading-[1.1] tracking-tight text-[#2F2319]">
+            <h2 className="mt-5 font-serif text-[clamp(1.7rem,4vw,2.4rem)] leading-[1.1] tracking-tight text-[#2F2319]">
               What the journey covers, and what you should plan on your own.
             </h2>
           </motion.div>

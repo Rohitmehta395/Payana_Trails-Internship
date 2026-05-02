@@ -7,8 +7,8 @@ import CountryCodeDropdown from "../../../../common/CountryCodeDropdown";
 const ContactSection = ({ formData, touched, handleChange, handleCountryChange, handleBlur }) => {
   return (
     <div>
-      <h4 className="text-lg font-medium text-[#4A3B2A] mb-4 flex items-center gap-2">
-        <FiUser className="text-[#4A3B2A]" /> Contact Information
+      <h4 className="text-base sm:text-lg font-medium text-[#4A3B2A] mb-5 flex items-center gap-2">
+        <FiUser className="text-[#4A3B2A] shrink-0" /> Contact Information
       </h4>
       <div className="grid md:grid-cols-2 gap-6">
         <InputField

@@ -86,15 +86,15 @@ const JourneySnapshot = ({ trail }) => {
       className="w-full overflow-hidden rounded-3xl border border-[#4A3B2A]/10 bg-white shadow-[0_8px_30px_rgba(74,59,42,0.04)]"
     >
       {/* Top Section: Standard Items */}
-      <div className="grid grid-cols-2 divide-y divide-[#4A3B2A]/5 lg:flex lg:flex-row lg:divide-x lg:divide-y-0 relative z-10 border-b border-[#4A3B2A]/5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 divide-y divide-[#4A3B2A]/5 lg:flex lg:flex-row lg:divide-x lg:divide-y-0 relative z-10 border-b border-[#4A3B2A]/5">
         {snapshotItems.map((item, idx) => {
           const Icon = item.icon;
           return (
             <motion.div
               variants={itemVariants}
               key={item.label}
-              className={`group flex flex-1 flex-col items-center justify-center p-8 text-center transition-all duration-500 hover:bg-[#F3EFE9]/50 ${
-                idx === snapshotItems.length - 1 ? "col-span-2 lg:col-span-1" : ""
+              className={`group flex flex-1 flex-col items-center justify-center p-6 sm:p-8 text-center transition-all duration-500 hover:bg-[#F3EFE9]/50 ${
+                idx === snapshotItems.length - 1 ? "sm:col-span-2 lg:col-span-1" : ""
               }`}
             >
               <div className="relative mb-4 flex items-center justify-center">
