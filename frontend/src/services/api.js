@@ -1655,4 +1655,56 @@ export const api = {
       throw error;
     }
   },
+
+  // --- FOOTER ROUTES ---
+  getFooter: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/footer`);
+      if (!response.ok) throw new Error("Failed to fetch footer data");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getFooter):", error);
+      throw error;
+    }
+  },
+
+  updateFooter: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/footer`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+
+      if (response.status === 413) {
+        throw new Error("Logo file too large. Please upload a smaller image.");
+      }
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to update footer");
+      }
+      return data;
+    } catch (error) {
+      console.error("API Error (updateFooter):", error);
+      throw error;
+    }
+  },
+
+  deleteFooterLogo: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/footer/logo`, {
+        method: "DELETE",
+        headers: withAdminAuth(),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to delete logo");
+      }
+      return data;
+    } catch (error) {
+      console.error("API Error (deleteFooterLogo):", error);
+      throw error;
+    }
+  },
 };

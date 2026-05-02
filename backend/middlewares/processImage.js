@@ -26,6 +26,7 @@ const RESIZE_PRESETS = {
   referFriendImage:      { width: 1920, height: 1080 },
   giftJourneyImage:      { width: 1920, height: 1080 },
   headerLogo:            { width: 512,  height: 512  }, // Header logo – square emblem
+  footerLogo:            { width: 512,  height: 512  }, // Footer logo – square emblem
 };
 
 const isProcessableImageField = (fieldname) => Boolean(RESIZE_PRESETS[fieldname]);

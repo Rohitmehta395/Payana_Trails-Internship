@@ -11,6 +11,7 @@ import StoriesManager from "./StoriesManager/StoriesManager";
 import ConnectManager from "./ConnectManager/ConnectManager";
 import JourneyManager from "./JourneyManager/JourneyManager";
 import HeaderManager from "./HeaderManager/HeaderManager";
+import FooterManager from "./FooterManager/FooterManager";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -102,6 +103,14 @@ const AdminDashboard = () => {
       iconPath:
         "M4 6h16M4 12h16M4 18h7",
       render: () => <HeaderManager />,
+    },
+    {
+      id: "footer",
+      label: "Footer",
+      heading: "Footer Settings",
+      iconPath:
+        "M4 6h16M4 12h16M13 18h7",
+      render: () => <FooterManager />,
     },
   ];
   const activeSection = tabs.find((tab) => tab.id === activeTab) || tabs[0];

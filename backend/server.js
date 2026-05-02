@@ -37,6 +37,7 @@ const externalStoriesRoutes = require("./routes/externalStoriesRoutes");
 const connectPageRoutes = require("./routes/connectPageRoutes");
 const journeyPageRoutes = require("./routes/journeyPageRoutes");
 const headerRoutes = require("./routes/headerRoutes");
+const footerRoutes = require("./routes/footerRoutes");
 
 // Routes
 app.use("/api/admin", adminRoutes);
@@ -55,6 +56,7 @@ app.use("/api/external-stories", externalStoriesRoutes);
 app.use("/api/connect-page", connectPageRoutes);
 app.use("/api/journey-page", journeyPageRoutes);
 app.use("/api/header", headerRoutes);
+app.use("/api/footer", footerRoutes);
 
 // ── Serve React frontend (production) ────────────────────────────────────────
 // In production the React app is built into ../frontend/dist. Express serves it
