@@ -220,46 +220,48 @@ const ThePayanaDifferenceManager = () => {
             ) : (
               entries.map((entry, index) => (
                 <div key={index} className="bg-white p-5 rounded-md border border-gray-200 shadow-sm relative group">
-                  <div className="absolute top-4 right-4 flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => moveEntryUp(index)}
-                      disabled={index === 0}
-                      className="w-10 h-10 flex items-center justify-center rounded-2xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    >
-                      <ChevronUp size={20} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => moveEntryDown(index)}
-                      disabled={index === entries.length - 1}
-                      className="w-10 h-10 flex items-center justify-center rounded-2xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    >
-                      <ChevronDown size={20} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => removeEntry(index)}
-                      className="w-10 h-10 flex items-center justify-center rounded-2xl border border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors"
-                      title="Remove Entry"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => toggleCollapse(index)}
-                      className="w-10 h-10 flex items-center justify-center rounded-2xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors"
-                      title={!expandedEntries.has(index) ? "Expand Entry" : "Collapse Entry"}
-                    >
-                      {!expandedEntries.has(index) ? <ChevronsDown size={20} /> : <ChevronsUp size={20} />}
-                    </button>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <div className="flex items-center gap-2 order-2 sm:order-2 ml-auto">
+                      <button
+                        type="button"
+                        onClick={() => moveEntryUp(index)}
+                        disabled={index === 0}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronUp size={20} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveEntryDown(index)}
+                        disabled={index === entries.length - 1}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronDown size={20} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeEntry(index)}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl border border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+                        title="Remove Entry"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => toggleCollapse(index)}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors"
+                        title={!expandedEntries.has(index) ? "Expand Entry" : "Collapse Entry"}
+                      >
+                        {!expandedEntries.has(index) ? <ChevronsDown size={20} /> : <ChevronsUp size={20} />}
+                      </button>
+                    </div>
                   </div>
                   
-                  <div className={`flex flex-col gap-4 ${!expandedEntries.has(index) ? "" : "pr-[180px] pt-2"}`}>
+                  <div className={`flex flex-col gap-4`}>
                     
                     {/* Collapsed State Preview */}
                     {!expandedEntries.has(index) && (
-                      <div className="flex items-center gap-4 pr-[180px] cursor-pointer" onClick={() => toggleCollapse(index)}>
+                      <div className="flex items-center gap-4 cursor-pointer" onClick={() => toggleCollapse(index)}>
                         <div className="w-12 h-12 bg-[#F3EFE9] text-[#4A3B2A] rounded-lg border border-[#4A3B2A]/20 flex-shrink-0 flex items-center justify-center font-bold text-lg">
                            {String(index + 1).padStart(2, "0")}
                         </div>
@@ -315,6 +317,7 @@ const ThePayanaDifferenceManager = () => {
                       </div>
                     )}
                   </div>
+
                 </div>
               ))
             )}

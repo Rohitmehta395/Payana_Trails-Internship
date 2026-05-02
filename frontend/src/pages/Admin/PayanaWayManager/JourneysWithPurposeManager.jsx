@@ -229,46 +229,48 @@ const JourneysWithPurposeManager = () => {
             ) : (
               blocks.map((block, index) => (
                 <div key={index} className="bg-white p-5 rounded-md border border-gray-200 shadow-sm relative group">
-                  <div className="absolute top-4 right-4 flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => moveBlockUp(index)}
-                      disabled={index === 0}
-                      className="w-10 h-10 flex items-center justify-center rounded-2xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    >
-                      <ChevronUp size={20} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => moveBlockDown(index)}
-                      disabled={index === blocks.length - 1}
-                      className="w-10 h-10 flex items-center justify-center rounded-2xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    >
-                      <ChevronDown size={20} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => removeBlock(index)}
-                      className="w-10 h-10 flex items-center justify-center rounded-2xl border border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors"
-                      title="Remove Block"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => toggleCollapse(index)}
-                      className="w-10 h-10 flex items-center justify-center rounded-2xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors"
-                      title={!expandedBlocks.has(index) ? "Expand Block" : "Collapse Block"}
-                    >
-                      {!expandedBlocks.has(index) ? <ChevronsDown size={20} /> : <ChevronsUp size={20} />}
-                    </button>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <div className="flex items-center gap-2 order-2 sm:order-2 ml-auto">
+                      <button
+                        type="button"
+                        onClick={() => moveBlockUp(index)}
+                        disabled={index === 0}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronUp size={20} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveBlockDown(index)}
+                        disabled={index === blocks.length - 1}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        <ChevronDown size={20} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeBlock(index)}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl border border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+                        title="Remove Block"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => toggleCollapse(index)}
+                        className="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors"
+                        title={!expandedBlocks.has(index) ? "Expand Block" : "Collapse Block"}
+                      >
+                        {!expandedBlocks.has(index) ? <ChevronsDown size={20} /> : <ChevronsUp size={20} />}
+                      </button>
+                    </div>
                   </div>
                   
-                  <div className={`flex flex-col gap-4 ${!expandedBlocks.has(index) ? "" : "pr-[180px] pt-2"}`}>
+                  <div className={`flex flex-col gap-4`}>
                     
                     {/* Collapsed State Preview */}
                     {!expandedBlocks.has(index) && (
-                      <div className="flex items-center gap-4 pr-[180px] cursor-pointer" onClick={() => toggleCollapse(index)}>
+                      <div className="flex items-center gap-4 cursor-pointer" onClick={() => toggleCollapse(index)}>
                         <div className="w-16 h-12 bg-gray-100 rounded border border-gray-200 overflow-hidden flex-shrink-0 flex items-center justify-center">
                            {block.image ? (
                              <img src={`${IMAGE_BASE_URL}${block.image}`} alt="Preview" className="w-full h-full object-cover" />
@@ -278,7 +280,7 @@ const JourneysWithPurposeManager = () => {
                         </div>
                         <div className="flex-1 overflow-hidden">
                            <p className="text-sm font-medium text-gray-800 truncate">
-                             {block.description ? block.description.split('\n')[0] : "Empty Description"}
+                             {block.description ? block.description.replace(/<[^>]*>?/gm, '').split('\n')[0] : "Empty Description"}
                            </p>
                            <p className="text-xs text-gray-500 truncate">
                              {block.description ? block.description.length + " characters" : "Please add a description"}
@@ -294,13 +296,13 @@ const JourneysWithPurposeManager = () => {
                         {/* Image Upload */}
                         <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                           <label className="block text-sm font-semibold text-[#4A3B2A] mb-3">Block Image (1920x1080px)</label>
-                          <div className="flex items-start gap-6">
+                          <div className="flex flex-col md:flex-row items-start gap-6">
                             {block.image && (
-                              <div className="w-40 h-28 flex-shrink-0">
+                              <div className="w-full md:w-40 h-48 md:h-28 flex-shrink-0">
                                 <img src={`${IMAGE_BASE_URL}${block.image}`} alt={`Block ${index}`} className="w-full h-full object-cover rounded-lg border border-gray-200 shadow-sm" />
                               </div>
                             )}
-                            <div className="flex-1">
+                            <div className="flex-1 w-full">
                               <input
                                 type="file"
                                 onChange={(e) => handleFileChange(index, e)}

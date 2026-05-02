@@ -301,7 +301,7 @@ const AJourneyBeginsManager = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Admin Image (1920x1080px)
@@ -314,7 +314,7 @@ const AJourneyBeginsManager = () => {
                 <img
                   src={`${IMAGE_BASE_URL}${currentImages.adminImage}`}
                   alt="Admin"
-                  className="h-32 object-contain rounded-md bg-white border border-gray-200"
+                  className="w-full h-48 md:h-32 object-contain rounded-md bg-white border border-gray-200"
                 />
               </div>
             )}
@@ -340,7 +340,7 @@ const AJourneyBeginsManager = () => {
                 <img
                   src={`${IMAGE_BASE_URL}${currentImages.signatureImage}`}
                   alt="Signature"
-                  className="h-16 object-contain rounded-md bg-white border border-gray-200"
+                  className="w-full h-24 md:h-16 object-contain rounded-md bg-white border border-gray-200"
                 />
               </div>
             )}

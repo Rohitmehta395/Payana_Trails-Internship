@@ -260,7 +260,7 @@ const DestinationManager = () => {
   return (
     <div ref={sectionRef} className="space-y-6">
       {/* TOP ACTIONS BAR */}
-      <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
         <h2 className="text-lg font-bold text-[#4A3B2A]">
           {showForm
             ? isEditing
@@ -428,96 +428,98 @@ const DestinationManager = () => {
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 text-sm">
-                  <th className="p-4 w-10"></th>
-                  <th className="p-4 font-medium uppercase min-w-[120px]">
-                    Image
-                  </th>
-                  <th className="p-4 font-medium uppercase w-full">
-                    Destination Name
-                  </th>
-                  <th className="p-4 font-medium uppercase min-w-[200px]">
-                    Geography
-                  </th>
-                  <th className="p-4 font-medium uppercase text-center">
-                    Status
-                  </th>
-                  <th className="p-4 font-medium uppercase text-center w-48">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              {fetching ? (
-                <tbody>
-                  <tr>
-                    <td colSpan="6" className="p-8 text-center text-gray-500">
-                      <div className="flex justify-center">
-                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-600"></div>
-                      </div>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-200 text-gray-500 text-sm">
+                    <th className="p-4 w-10"></th>
+                    <th className="p-4 font-medium uppercase min-w-[120px]">
+                      Image
+                    </th>
+                    <th className="p-4 font-medium uppercase w-full">
+                      Destination Name
+                    </th>
+                    <th className="p-4 font-medium uppercase min-w-[200px] hidden sm:table-cell">
+                      Geography
+                    </th>
+                    <th className="p-4 font-medium uppercase text-center">
+                      Status
+                    </th>
+                    <th className="p-4 font-medium uppercase text-center w-48">
+                      Actions
+                    </th>
                   </tr>
-                </tbody>
-              ) : destinations.length === 0 ? (
-                <tbody>
-                  <tr>
-                    <td colSpan="6" className="p-8 text-center text-gray-500">
-                      No destinations added yet.
-                    </td>
-                  </tr>
-                </tbody>
-              ) : (
-                <DraggableTableBody
-                  items={destinations}
-                  renderRow={(dest) => (
-                    <>
-                      <td className="p-4">
-                        <img
-                          src={`${IMAGE_BASE_URL}${dest.heroImage}`}
-                          alt={dest.name}
-                          className="w-24 h-16 object-cover rounded shadow-sm border border-gray-200"
-                          onError={handleImageError}
-                        />
-                      </td>
-                      <td className="p-4 font-bold text-[#4A3B2A] flex items-center gap-2">
-                        {dest.name}
-                        {dest.status === 'draft' && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800">
-                            Draft
-                          </span>
-                        )}
-                      </td>
-                      <td className="p-4 text-gray-600">
-                        {getDestinationGeography(dest) || "Not set"}
-                      </td>
-                      <td className="p-4 text-center">
-                        <StatusToggle
-                          isActive={dest.isActive}
-                          onToggle={() => handleToggle(dest._id)}
-                        />
-                      </td>
-                      <td className="p-4">
-                        <div className="flex justify-center gap-2">
-                          <button
-                            onClick={() => handleEdit(dest)}
-                            className="px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(dest._id)}
-                            className="px-3 py-1.5 text-sm bg-red-50 text-red-600 rounded hover:bg-red-100 transition-colors"
-                          >
-                            Delete
-                          </button>
+                </thead>
+                {fetching ? (
+                  <tbody>
+                    <tr>
+                      <td colSpan="6" className="p-8 text-center text-gray-500">
+                        <div className="flex justify-center">
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-600"></div>
                         </div>
                       </td>
-                    </>
-                  )}
-                />
-              )}
-            </table>
+                    </tr>
+                  </tbody>
+                ) : destinations.length === 0 ? (
+                  <tbody>
+                    <tr>
+                      <td colSpan="6" className="p-8 text-center text-gray-500">
+                        No destinations added yet.
+                      </td>
+                    </tr>
+                  </tbody>
+                ) : (
+                  <DraggableTableBody
+                    items={destinations}
+                    renderRow={(dest) => (
+                      <>
+                        <td className="p-4">
+                          <img
+                            src={`${IMAGE_BASE_URL}${dest.heroImage}`}
+                            alt={dest.name}
+                            className="w-24 h-16 object-cover rounded shadow-sm border border-gray-200"
+                            onError={handleImageError}
+                          />
+                        </td>
+                        <td className="p-4 font-bold text-[#4A3B2A] flex items-center gap-2">
+                          <span className="truncate max-w-[150px] sm:max-w-none">{dest.name}</span>
+                          {dest.status === 'draft' && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800">
+                              Draft
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-4 text-gray-600 hidden sm:table-cell">
+                          {getDestinationGeography(dest) || "Not set"}
+                        </td>
+                        <td className="p-4 text-center">
+                          <StatusToggle
+                            isActive={dest.isActive}
+                            onToggle={() => handleToggle(dest._id)}
+                          />
+                        </td>
+                        <td className="p-4">
+                          <div className="flex justify-center gap-2">
+                            <button
+                              onClick={() => handleEdit(dest)}
+                              className="px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition-colors"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(dest._id)}
+                              className="px-3 py-1.5 text-sm bg-red-50 text-red-600 rounded hover:bg-red-100 transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </>
+                    )}
+                  />
+                )}
+              </table>
+            </div>
           </DndContext>
         </div>
       )}

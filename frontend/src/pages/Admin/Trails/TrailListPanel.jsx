@@ -82,8 +82,8 @@ const TrailListPanel = ({
                 <th className="border-b border-gray-200 p-4 font-semibold">
                   Trail Name
                 </th>
-                <th className="border-b border-gray-200 p-4 font-semibold">Theme</th>
-                <th className="border-b border-gray-200 p-4 font-semibold">
+                <th className="border-b border-gray-200 p-4 font-semibold hidden lg:table-cell">Theme</th>
+                <th className="border-b border-gray-200 p-4 font-semibold hidden md:table-cell">
                   Destination
                 </th>
                 <th className="border-b border-gray-200 p-4 text-center font-semibold">
@@ -136,7 +136,7 @@ const TrailListPanel = ({
                       <td className="p-4 font-medium text-gray-900">
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-2">
-                            <span>{trail.trailName}</span>
+                            <span className="truncate max-w-[120px] sm:max-w-none">{trail.trailName}</span>
                             {trail.status === "draft" && (
                               <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800">
                                 Draft
@@ -155,7 +155,8 @@ const TrailListPanel = ({
                                   }`}
                                 >
                                   <CalendarDays size={11} />
-                                  {liveDays.length}-day itinerary
+                                  <span className="hidden xs:inline">{liveDays.length}-day itinerary</span>
+                                  <span className="xs:hidden">{liveDays.length}D</span>
                                 </span>
                               )}
                               {hasDraftChanges && (
@@ -168,13 +169,13 @@ const TrailListPanel = ({
                         </div>
                       </td>
 
-                      <td className="p-4">
+                      <td className="p-4 hidden lg:table-cell">
                         <span className="rounded-full bg-[#F3EFE9] px-2.5 py-1 text-xs font-semibold text-[#4A3B2A]">
                           {trail.trailTheme}
                         </span>
                       </td>
 
-                      <td className="p-4">{trail.trailDestination}</td>
+                      <td className="p-4 hidden md:table-cell">{trail.trailDestination}</td>
 
                       <td className="p-4 text-center">
                         <StatusToggle

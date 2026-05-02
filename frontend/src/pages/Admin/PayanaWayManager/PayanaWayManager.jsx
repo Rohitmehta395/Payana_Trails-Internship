@@ -32,8 +32,8 @@ const PayanaWayManager = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="border-b border-gray-200">
-        <nav className="flex space-x-8 px-6" aria-label="Tabs">
+      <div className="border-b border-gray-200 overflow-x-auto no-scrollbar">
+        <nav className="flex space-x-8 px-6 min-w-max" aria-label="Tabs">
           {tabs.map((tab) => (
             <button
               key={tab.id}

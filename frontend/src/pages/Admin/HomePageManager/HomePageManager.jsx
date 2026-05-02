@@ -45,14 +45,21 @@ const HomePageManager = () => {
   };
 
   if (loading) {
-    return <div className="text-[#4A3B2A] p-4 font-medium">Loading Home Page Settings...</div>;
+    return (
+      <div className="text-[#4A3B2A] p-4 font-medium">
+        Loading Home Page Settings...
+      </div>
+    );
   }
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       {/* Tab Navigation */}
       <div className="border-b border-gray-200">
-        <nav className="flex space-x-8 px-6 overflow-x-auto no-scrollbar" aria-label="Home Page Tabs">
+        <nav
+          className="flex space-x-8 px-6 overflow-x-auto no-scrollbar"
+          aria-label="Home Page Tabs"
+        >
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -70,7 +77,11 @@ const HomePageManager = () => {
       </div>
 
       <div className="p-6">
-        <HomePageForm initialData={data} onSave={handleSave} activeTab={activeTab} />
+        <HomePageForm
+          initialData={data}
+          onSave={handleSave}
+          activeTab={activeTab}
+        />
       </div>
     </div>
   );

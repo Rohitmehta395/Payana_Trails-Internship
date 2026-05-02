@@ -43,14 +43,21 @@ const ConnectManager = () => {
   };
 
   if (loading) {
-    return <div className="text-[#4A3B2A] p-4 font-medium">Loading Connect Page Settings...</div>;
+    return (
+      <div className="text-[#4A3B2A] p-4 font-medium">
+        Loading Connect Page Settings...
+      </div>
+    );
   }
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       {/* Tab Navigation */}
       <div className="border-b border-gray-200">
-        <nav className="flex space-x-8 px-6 overflow-x-auto no-scrollbar" aria-label="Connect Tabs">
+        <nav
+          className="flex space-x-8 px-6 overflow-x-auto no-scrollbar"
+          aria-label="Connect Tabs"
+        >
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -68,7 +75,11 @@ const ConnectManager = () => {
       </div>
 
       <div className="p-6">
-        <ConnectForm initialData={data} onSave={handleSave} activeTab={activeTab} />
+        <ConnectForm
+          initialData={data}
+          onSave={handleSave}
+          activeTab={activeTab}
+        />
       </div>
     </div>
   );

@@ -828,7 +828,7 @@ const AddTrail = () => {
 
   return (
     <div ref={sectionRef} className="space-y-6">
-      <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
         <h2 className="text-lg font-bold text-[#4A3B2A]">
           {showForm
             ? isEditing
