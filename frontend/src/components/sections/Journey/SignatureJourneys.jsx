@@ -4,23 +4,32 @@ import EOTCard from "../../common/cards/EOTCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
 
+const DEFAULT_CONTENT = {
+  mainTitle: "Signature Journeys",
+  subtitle:
+    "Discover our carefully curated experiences, blending rich heritage, immersive culture, breathtaking landscapes and unforgettable wildlife encounters.",
+};
+
 const SignatureJourneys = () => {
   const [journeys, setJourneys] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+  const [content, setContent] = useState(DEFAULT_CONTENT);
+
   const scrollContainerRef = useRef(null);
 
   useEffect(() => {
     const fetchTrails = async () => {
       try {
         const data = await api.getTrails();
-        
+
         // Filter only signature journeys (based on trailType containing 'signature' or being exactly 'Signature Journey')
-        const signatureTrips = data.filter(trail => 
-          trail.trailType && trail.trailType.toLowerCase().includes("signature")
+        const signatureTrips = data.filter(
+          (trail) =>
+            trail.trailType &&
+            trail.trailType.toLowerCase().includes("signature")
         );
-        
+
         setJourneys(signatureTrips);
         setLoading(false);
       } catch (err) {
@@ -31,6 +40,26 @@ const SignatureJourneys = () => {
     };
 
     fetchTrails();
+  }, []);
+
+  // Fetch dynamic section content
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const data = await api.getJourneyPage();
+        if (data?.signatureJourneys) {
+          setContent({
+            mainTitle:
+              data.signatureJourneys.mainTitle || DEFAULT_CONTENT.mainTitle,
+            subtitle:
+              data.signatureJourneys.subtitle || DEFAULT_CONTENT.subtitle,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load Signature Journeys section content:", err);
+      }
+    };
+    fetchContent();
   }, []);
 
   const formatDate = (dateString) => {
@@ -60,16 +89,19 @@ const SignatureJourneys = () => {
       {/* Section Header */}
       <div className="flex flex-col items-center mb-16 text-center max-w-3xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-bold text-[#4A3B2A] mb-6 font-serif">
-          Signature Journeys
+          {content.mainTitle}
         </h2>
 
         {/* Divider Line matching the Hero section */}
         <div className="w-[60px] h-[2px] bg-[#4A3B2A] mb-6"></div>
 
         <p className="text-lg md:text-xl text-[#4A3B2A]/80 font-light leading-relaxed">
-          Discover our carefully curated experiences, blending rich heritage,
-          immersive culture, breathtaking landscapes and unforgettable wildlife
-          encounters.
+          {content.subtitle.split("\n").map((line, idx, arr) => (
+            <React.Fragment key={idx}>
+              {idx > 0 && <br />}
+              {line}
+            </React.Fragment>
+          ))}
         </p>
       </div>
 

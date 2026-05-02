@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Compass, Map, Minus } from "lucide-react";
+import { Compass, Map } from "lucide-react";
 import BrownBtn from "../../common/buttons/BrownBtn";
+import { api } from "../../../services/api";
 
 // Updated default images to match your new object structure { desktop, mobile }
 const defaultImages = [
@@ -19,8 +20,36 @@ const defaultImages = [
   },
 ];
 
+// Default content (fallbacks)
+const DEFAULT_CONTENT = {
+  miniTitle: "Explore Our World",
+  mainTitle: "JOURNEYS THAT STAY,\nLONG AFTER YOU RETURN",
+  subtitle:
+    "Trails designed for those who value depth over distance – shaped by stories, places and experiences that stay with you.",
+};
+
 export default function Hero({ images = defaultImages }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [content, setContent] = useState(DEFAULT_CONTENT);
+
+  // Fetch dynamic content
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const data = await api.getJourneyPage();
+        if (data?.hero) {
+          setContent({
+            miniTitle: data.hero.miniTitle || DEFAULT_CONTENT.miniTitle,
+            mainTitle: data.hero.mainTitle || DEFAULT_CONTENT.mainTitle,
+            subtitle: data.hero.subtitle || DEFAULT_CONTENT.subtitle,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load Hero section content:", err);
+      }
+    };
+    fetchContent();
+  }, []);
 
   // Auto-slide effect
   useEffect(() => {
@@ -46,6 +75,29 @@ export default function Hero({ images = defaultImages }) {
       opacity: 1,
       transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
     },
+  };
+
+  // Render main title with line breaks preserved
+  const renderMainTitle = (title) => {
+    const upper = title.toUpperCase();
+    const lines = upper.split("\n");
+    return lines.map((line, idx) => (
+      <React.Fragment key={idx}>
+        {idx > 0 && <br className="hidden sm:block" />}
+        {line}
+      </React.Fragment>
+    ));
+  };
+
+  // Render subtitle with line breaks preserved
+  const renderSubtitle = (text) => {
+    const lines = text.split("\n");
+    return lines.map((line, idx) => (
+      <React.Fragment key={idx}>
+        {idx > 0 && <br />}
+        {line}
+      </React.Fragment>
+    ));
   };
 
   return (
@@ -121,7 +173,7 @@ export default function Hero({ images = defaultImages }) {
           >
             <div className="w-10 h-[1px] bg-[#B89474]" />
             <p className="text-[10px] md:text-[11px] font-semibold uppercase tracking-[0.35em] text-[#E5D7C5]">
-              Explore Our World
+              {content.miniTitle}
             </p>
           </motion.div>
 
@@ -130,9 +182,7 @@ export default function Hero({ images = defaultImages }) {
             variants={itemVariants}
             className="text-[1.75rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[3.75rem] font-semibold leading-[1.2] sm:leading-[1.1] font-serif text-[#FDFBF7] mb-6 drop-shadow-[0_8px_24px_rgba(0,0,0,0.25)]"
           >
-            JOURNEYS THAT STAY,
-            <br className="hidden sm:block" />
-            <span className="text-[#D4A373]"> LONG AFTER</span> YOU RETURN
+            {renderMainTitle(content.mainTitle)}
           </motion.h1>
 
           {/* Description */}
@@ -140,8 +190,7 @@ export default function Hero({ images = defaultImages }) {
             variants={itemVariants}
             className="text-[#F3EFE9] text-sm sm:text-lg lg:text-xl leading-relaxed mb-10 max-w-xl mx-auto sm:mx-0 font-light drop-shadow-[0_4px_10px_rgba(0,0,0,0.15)]"
           >
-            Trails designed for those who value depth over distance – shaped by
-            stories, places and experiences that stay with you.
+            {renderSubtitle(content.subtitle)}
           </motion.p>
 
           {/* Button CTA */}

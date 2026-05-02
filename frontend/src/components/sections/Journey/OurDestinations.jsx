@@ -9,9 +9,16 @@ import {
   getDestinationGeography,
 } from "../../../constants/destinationGeographies";
 
+const DEFAULT_CONTENT = {
+  mainTitle: "Our Destinations",
+  subtitle:
+    "The world is full of wonders waiting to be explored. Our handpicked destinations offer a gateway to extraordinary experiences.",
+};
+
 const OurDestinations = () => {
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState(DEFAULT_CONTENT);
   const scrollContainerRef = useRef(null);
 
   const scroll = (direction) => {
@@ -40,7 +47,27 @@ const OurDestinations = () => {
       }
     };
     fetchDestinations();
-  }, []); 
+  }, []);
+
+  // Fetch dynamic section content
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const data = await api.getJourneyPage();
+        if (data?.ourDestinations) {
+          setContent({
+            mainTitle:
+              data.ourDestinations.mainTitle || DEFAULT_CONTENT.mainTitle,
+            subtitle:
+              data.ourDestinations.subtitle || DEFAULT_CONTENT.subtitle,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load Our Destinations section content:", err);
+      }
+    };
+    fetchContent();
+  }, []);
 
   return (
     <section className="relative w-full py-12 md:py-12 px-6 md:px-12 lg:px-24 bg-[#F3EFE9]">
@@ -48,15 +75,19 @@ const OurDestinations = () => {
         {/* Section Header */}
         <div className="flex flex-col items-center mb-16 text-center max-w-3xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-[#4A3B2A] mb-6 font-serif">
-            Our Destinations
+            {content.mainTitle}
           </h2>
 
           {/* Divider Line matching the Hero section */}
           <div className="w-[60px] h-[2px] bg-[#4A3B2A] mb-6"></div>
 
           <p className="text-lg md:text-xl text-[#4A3B2A]/80 font-light leading-relaxed">
-            The world is full of wonders waiting to be explored. Our handpicked
-            destinations offer a gateway to extraordinary experiences.
+            {content.subtitle.split("\n").map((line, idx) => (
+              <React.Fragment key={idx}>
+                {idx > 0 && <br />}
+                {line}
+              </React.Fragment>
+            ))}
           </p>
         </div>
 

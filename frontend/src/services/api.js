@@ -1489,4 +1489,118 @@ export const api = {
       throw error;
     }
   },
+
+  // --- JOURNEY PAGE ROUTES ---
+  getJourneyPage: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/journey-page`);
+      if (!response.ok) throw new Error("Failed to fetch Journey page data");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getJourneyPage):", error);
+      throw error;
+    }
+  },
+
+  updateJourneyHeroSection: async (data) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/journey-page/hero`, {
+        method: "PUT",
+        headers: withAdminAuth({ "Content-Type": "application/json" }),
+        body: JSON.stringify(data),
+      });
+      const resData = await response.json();
+      if (!response.ok)
+        throw new Error(resData.message || "Failed to update Hero section");
+      return resData;
+    } catch (error) {
+      console.error("API Error (updateJourneyHeroSection):", error);
+      throw error;
+    }
+  },
+
+  updateJourneySignatureSection: async (data) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/journey-page/signature-journeys`,
+        {
+          method: "PUT",
+          headers: withAdminAuth({ "Content-Type": "application/json" }),
+          body: JSON.stringify(data),
+        }
+      );
+      const resData = await response.json();
+      if (!response.ok)
+        throw new Error(
+          resData.message || "Failed to update Signature Journeys section"
+        );
+      return resData;
+    } catch (error) {
+      console.error("API Error (updateJourneySignatureSection):", error);
+      throw error;
+    }
+  },
+
+  updateJourneyOurTrailsSection: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/journey-page/our-trails`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+      const resData = await response.json();
+      if (!response.ok)
+        throw new Error(
+          resData.message || "Failed to update Our Trails section"
+        );
+      return resData;
+    } catch (error) {
+      console.error("API Error (updateJourneyOurTrailsSection):", error);
+      throw error;
+    }
+  },
+
+  updateJourneyOurDestinationsSection: async (data) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/journey-page/our-destinations`,
+        {
+          method: "PUT",
+          headers: withAdminAuth({ "Content-Type": "application/json" }),
+          body: JSON.stringify(data),
+        }
+      );
+      const resData = await response.json();
+      if (!response.ok)
+        throw new Error(
+          resData.message || "Failed to update Our Destinations section"
+        );
+      return resData;
+    } catch (error) {
+      console.error("API Error (updateJourneyOurDestinationsSection):", error);
+      throw error;
+    }
+  },
+
+  updateJourneyPayanaJourneySection: async (formData) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/journey-page/payana-journey`,
+        {
+          method: "PUT",
+          headers: withAdminAuth(),
+          body: formData,
+        }
+      );
+      const resData = await response.json();
+      if (!response.ok)
+        throw new Error(
+          resData.message || "Failed to update Payana Journey section"
+        );
+      return resData;
+    } catch (error) {
+      console.error("API Error (updateJourneyPayanaJourneySection):", error);
+      throw error;
+    }
+  },
 };
