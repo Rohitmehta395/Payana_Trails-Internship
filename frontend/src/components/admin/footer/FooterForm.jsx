@@ -367,11 +367,12 @@ const FooterForm = ({ initialData, onSave, onDeleteLogo, activeTab }) => {
         return (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="flex items-start gap-8 flex-wrap">
+              {/* Preview box */}
               <div className="flex-shrink-0">
-                <p className="text-xs font-bold text-gray-400 mb-3 uppercase tracking-widest">
-                  Logo Preview
+                <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">
+                  Current Logo
                 </p>
-                <div className="h-32 w-32 flex items-center justify-center bg-[#4A3B2A] border-4 border-gray-50 rounded-2xl p-4 shadow-inner overflow-hidden">
+                <div className="h-24 w-24 flex items-center justify-center bg-[#f8f4f4] border border-gray-200 rounded-md p-1">
                   {logoPreview || currentLogo ? (
                     <img
                       src={logoPreview || `${IMAGE_BASE_URL}${currentLogo}`}
@@ -379,10 +380,8 @@ const FooterForm = ({ initialData, onSave, onDeleteLogo, activeTab }) => {
                       className="h-full w-full object-contain"
                     />
                   ) : (
-                    <span className="text-[10px] text-white/30 italic text-center uppercase tracking-tighter">
-                      Default
-                      <br />
-                      Logo
+                    <span className="text-[10px] text-gray-400 italic text-center">
+                      Default Logo
                     </span>
                   )}
                 </div>
@@ -390,47 +389,54 @@ const FooterForm = ({ initialData, onSave, onDeleteLogo, activeTab }) => {
                   <button
                     type="button"
                     onClick={handleDeleteLogo}
-                    className="mt-3 flex items-center gap-1.5 text-xs font-bold text-red-500 hover:text-red-600 transition-colors bg-red-50 px-3 py-1.5 rounded-full"
+                    className="mt-2 flex items-center gap-1.5 text-xs font-medium text-red-600 hover:text-red-700 transition-colors"
                   >
-                    <Trash2 size={12} /> Delete Custom
+                    <Trash2 size={12} />
+                    Delete Custom Logo
                   </button>
                 )}
+                <p className="text-[10px] text-gray-400 mt-2 font-medium">
+                  Aspect Ratio: 1:1 (Square)
+                </p>
               </div>
 
+              {/* Upload control */}
               <div className="flex-1 min-w-[280px]">
-                <p className="text-xs font-bold text-gray-400 mb-3 uppercase tracking-widest">
-                  Upload Branding
+                <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">
+                  Upload New Logo
                 </p>
-                <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-center transition-all hover:border-[#4A3B2A]/30 hover:bg-[#F3EFE9]/20 group">
-                  <button
-                    type="button"
-                    onClick={() => fileRef.current?.click()}
-                    className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center text-[#4A3B2A] mb-3 group-hover:scale-110 transition-transform"
-                  >
-                    <Upload size={20} />
-                  </button>
-                  <p className="text-sm font-bold text-[#4A3B2A] mb-1">
-                    Click to upload logo
-                  </p>
-                  <p className="text-[10px] text-gray-400">
-                    SVG, PNG, JPG or WebP (max 5MB)
-                  </p>
-                  <p className="text-[10px] text-gray-400">
-                    Recommended Size <b>512 x 512 px (1:1 Square)</b>
-                  </p>
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleLogoChange}
-                  />
-                </div>
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="flex items-center gap-2 px-4 py-2 border border-[#4A3B2A] text-[#4A3B2A] rounded-md text-sm hover:bg-[#F3EFE9] transition-colors"
+                >
+                  <Upload size={14} />
+                  Choose File
+                </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleLogoChange}
+                />
                 {logoFile && (
-                  <p className="text-xs text-emerald-600 mt-2 font-bold flex items-center gap-1">
-                    ✓ {logoFile.name} selected
+                  <p className="text-xs text-emerald-700 mt-2 font-medium flex items-center gap-1.5 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100 w-fit">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    {logoFile.name} selected
                   </p>
                 )}
+                <div className="mt-4 text-[11px] text-gray-500 space-y-2 max-w-lg">
+                  <p className="flex items-center gap-2">
+                    <span className="text-gray-400">📐</span> Recommended size: <strong className="text-gray-700">512 × 512 px</strong> (1:1 ratio)
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <span className="text-gray-400">🖼️</span> Formats: <span className="text-gray-700">PNG, SVG, WebP (transparent background recommended)</span>
+                  </p>
+                  <p className="flex items-center gap-2 text-amber-600 font-medium">
+                    <span className="text-amber-500">⚠️</span> Uploading a new logo will delete the previous one.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -534,10 +540,11 @@ const FooterForm = ({ initialData, onSave, onDeleteLogo, activeTab }) => {
         );
       case "location":
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="space-y-6">
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            {/* First Row: Brand & Map */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                    <h4 className="text-xs font-black text-[#4A3B2A] mb-4 uppercase tracking-widest border-b border-gray-50 pb-2">Location Brand</h4>
+                    <h4 className="text-xs font-bold text-[#4A3B2A] mb-4 uppercase tracking-widest border-b border-gray-50 pb-2">Location Brand</h4>
                     <FormField
                     label="Quote / Motto"
                     id="footer-motto"
@@ -547,7 +554,7 @@ const FooterForm = ({ initialData, onSave, onDeleteLogo, activeTab }) => {
                     />
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                    <h4 className="text-xs font-black text-[#4A3B2A] mb-4 uppercase tracking-widest border-b border-gray-50 pb-2">Map Integration</h4>
+                    <h4 className="text-xs font-bold text-[#4A3B2A] mb-4 uppercase tracking-widest border-b border-gray-50 pb-2">Map Integration</h4>
                     <div className="grid grid-cols-1 gap-4">
                         <FormField
                         label="Map Button Text"
@@ -565,31 +572,31 @@ const FooterForm = ({ initialData, onSave, onDeleteLogo, activeTab }) => {
                     </div>
                 </div>
             </div>
-            <div className="space-y-6">
-                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                    <h4 className="text-xs font-black text-[#4A3B2A] mb-4 uppercase tracking-widest border-b border-gray-50 pb-2">Contact Information</h4>
+
+            {/* Second Row: Contact Info */}
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <h4 className="text-xs font-bold text-[#4A3B2A] mb-4 uppercase tracking-widest border-b border-gray-50 pb-2">Contact Information</h4>
+                <FormField
+                label="Physical Address"
+                id="footer-address"
+                type="textarea"
+                value={data.address}
+                onChange={(v) => setData({ ...data, address: v })}
+                hint="Full office or registered address"
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-4">
                     <FormField
-                    label="Physical Address"
-                    id="footer-address"
-                    type="textarea"
-                    value={data.address}
-                    onChange={(v) => setData({ ...data, address: v })}
-                    hint="Full office or registered address"
+                    label="Official Email"
+                    id="footer-email"
+                    value={data.email}
+                    onChange={(v) => setData({ ...data, email: v })}
                     />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                        <FormField
-                        label="Official Email"
-                        id="footer-email"
-                        value={data.email}
-                        onChange={(v) => setData({ ...data, email: v })}
-                        />
-                        <FormField
-                        label="Primary Phone"
-                        id="footer-phone"
-                        value={data.phone}
-                        onChange={(v) => setData({ ...data, phone: v })}
-                        />
-                    </div>
+                    <FormField
+                    label="Primary Phone"
+                    id="footer-phone"
+                    value={data.phone}
+                    onChange={(v) => setData({ ...data, phone: v })}
+                    />
                 </div>
             </div>
           </div>
