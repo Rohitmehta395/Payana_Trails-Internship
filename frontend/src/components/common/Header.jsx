@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { api } from "../../services/api";
+import { api, IMAGE_BASE_URL } from "../../services/api";
 import {
   DESTINATION_GEOGRAPHIES,
   buildDestinationListingPath,
@@ -33,11 +33,27 @@ const buildDestinationsSubmenu = (destinations) =>
     };
   });
 
+// ── Fallback / default header content ────────────────────────────────────────
+const FALLBACK = {
+  siteName: "Payana Trails",
+  navLabels: {
+    home: "Home",
+    journey: "Journeys",
+    payanaWay: "Payana Way",
+    stories: "Stories",
+    connect: "Connect",
+  },
+  mobileNumber: "+91 86604 60512",
+};
+
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUiHidden, setIsUiHidden] = useState(false);
   const [destinations, setDestinations] = useState([]);
+
+  // Dynamic header content
+  const [headerData, setHeaderData] = useState(null);
 
   const location = useLocation();
   // State to track which mobile submenus are open
@@ -74,6 +90,38 @@ export default function Header() {
     fetchDestinations();
   }, []);
 
+  // Fetch dynamic header content
+  useEffect(() => {
+    const fetchHeaderData = async () => {
+      try {
+        const data = await api.getHeader();
+        if (data && Object.keys(data).length > 0) {
+          setHeaderData(data);
+        }
+      } catch (error) {
+        console.error("Error fetching header data:", error);
+      }
+    };
+
+    fetchHeaderData();
+  }, []);
+
+  // Resolved values — use dynamic data when available, fallback otherwise
+  const siteName = headerData?.siteName || FALLBACK.siteName;
+  const navLabels = {
+    home:      headerData?.navLabels?.home      || FALLBACK.navLabels.home,
+    journey:   headerData?.navLabels?.journey   || FALLBACK.navLabels.journey,
+    payanaWay: headerData?.navLabels?.payanaWay || FALLBACK.navLabels.payanaWay,
+    stories:   headerData?.navLabels?.stories   || FALLBACK.navLabels.stories,
+    connect:   headerData?.navLabels?.connect   || FALLBACK.navLabels.connect,
+  };
+  const mobileNumber = headerData?.mobileNumber || FALLBACK.mobileNumber;
+  // Strip spaces/dashes for tel: and wa.me: links
+  const mobileNumberRaw = mobileNumber.replace(/[\s\-]/g, "");
+  const waLink = `https://wa.me/${mobileNumberRaw}?text=Hello!%20I%20would%20like%20to%20plan%20a%20journey%20with%20Payana%20Trails.`;
+  // Resolve logo: admin-uploaded logo takes priority, then fallback to bundled asset
+  const logoSrc = headerData?.logo ? `${IMAGE_BASE_URL}${headerData.logo}` : logo;
+
   const handleNavClick = () => {
     window.scrollTo(0, 0);
     setIsMenuOpen(false);
@@ -92,9 +140,9 @@ export default function Header() {
 
   // Updated navigation structure with nested submenus
   const navItems = [
-    { name: "Home", path: "/" },
+    { name: navLabels.home, path: "/" },
     {
-      name: "Journeys",
+      name: navLabels.journey,
       path: "/journeys",
       submenu: [
         {
@@ -114,9 +162,9 @@ export default function Header() {
         },
       ],
     },
-    { name: "Payana Way", path: "/payana-way" },
-    { name: "Stories", path: "/stories" },
-    { name: "Connect", path: "/connect" },
+    { name: navLabels.payanaWay, path: "/payana-way" },
+    { name: navLabels.stories, path: "/stories" },
+    { name: navLabels.connect, path: "/connect" },
   ];
 
   return (
@@ -143,17 +191,16 @@ export default function Header() {
               onClick={handleNavClick}
             >
               <img
-                src={logo}
+                src={logoSrc}
                 alt="Payana Trails Logo"
                 className="h-8 w-auto sm:h-10 transition-transform duration-300 group-hover:scale-105"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src =
-                    "https://placehold.co/150x70/F3EFE9/4A3B2A?text=Logo";
+                  e.currentTarget.src = logo;
                 }}
               />
               <span className="text-[#4A3B2A] text-lg lg:text-xl font-serif italic font-semibold whitespace-nowrap">
-                Payana Trails
+                {siteName}
               </span>
             </Link>
 
@@ -280,7 +327,7 @@ export default function Header() {
               <div className="flex items-center bg-[#4A3B2A] text-[#F3EFE9] rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 overflow-hidden">
                 {/* WhatsApp Icon Link */}
                 <a
-                  href="https://wa.me/918660460512?text=Hello!%20I%20would%20like%20to%20plan%20a%20journey%20with%20Payana%20Trails."
+                  href={waLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center pl-5 pr-3 py-2 hover:bg-[#68533B] transition-colors border-r border-[#F3EFE9]/20"
@@ -290,11 +337,11 @@ export default function Header() {
                 </a>
                 {/* Phone Number Link */}
                 <a
-                  href="tel:+918660460512"
+                  href={`tel:${mobileNumberRaw}`}
                   className="pr-5 pl-3 py-2 text-[14px] font-medium hover:bg-[#68533B] transition-colors tracking-wide"
                   title="Call Us"
                 >
-                  +91 86604 60512
+                  {mobileNumber}
                 </a>
               </div>
             </div>
@@ -493,7 +540,7 @@ export default function Header() {
                 <div className="flex items-center w-full bg-[#4A3B2A] text-[#F3EFE9] rounded-full shadow-md overflow-hidden text-[16px] font-medium">
                   {/* WhatsApp Icon Link */}
                   <a
-                    href="https://wa.me/918660460512?text=Hello!%20I%20would%20like%20to%20plan%20a%20journey%20with%20Payana%20Trails."
+                    href={waLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center py-3 px-5 hover:bg-[#68533B] transition-colors duration-300 border-r border-[#F3EFE9]/20"
@@ -503,11 +550,11 @@ export default function Header() {
                   </a>
                   {/* Phone Number Link */}
                   <a
-                    href="tel:+918660460512"
+                    href={`tel:${mobileNumberRaw}`}
                     className="flex-1 flex items-center justify-center py-3 hover:bg-[#68533B] transition-colors duration-300 tracking-wide"
                     title="Call Us"
                   >
-                    +91 86604 60512
+                    {mobileNumber}
                   </a>
                 </div>
               </div>

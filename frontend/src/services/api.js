@@ -1603,4 +1603,56 @@ export const api = {
       throw error;
     }
   },
+
+  // --- HEADER ROUTES ---
+  getHeader: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/header`);
+      if (!response.ok) throw new Error("Failed to fetch header data");
+      return await response.json();
+    } catch (error) {
+      console.error("API Error (getHeader):", error);
+      throw error;
+    }
+  },
+
+  updateHeader: async (formData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/header`, {
+        method: "PUT",
+        headers: withAdminAuth(),
+        body: formData,
+      });
+
+      if (response.status === 413) {
+        throw new Error("Logo file too large. Please upload a smaller image.");
+      }
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to update header");
+      }
+      return data;
+    } catch (error) {
+      console.error("API Error (updateHeader):", error);
+      throw error;
+    }
+  },
+
+  deleteHeaderLogo: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/header/logo`, {
+        method: "DELETE",
+        headers: withAdminAuth(),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to delete logo");
+      }
+      return data;
+    } catch (error) {
+      console.error("API Error (deleteHeaderLogo):", error);
+      throw error;
+    }
+  },
 };

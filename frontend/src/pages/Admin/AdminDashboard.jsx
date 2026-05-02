@@ -10,6 +10,7 @@ import PayanaWayManager from "./PayanaWayManager/PayanaWayManager";
 import StoriesManager from "./StoriesManager/StoriesManager";
 import ConnectManager from "./ConnectManager/ConnectManager";
 import JourneyManager from "./JourneyManager/JourneyManager";
+import HeaderManager from "./HeaderManager/HeaderManager";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -93,6 +94,14 @@ const AdminDashboard = () => {
       iconPath:
         "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
       render: () => <ConnectManager />,
+    },
+    {
+      id: "header",
+      label: "Header",
+      heading: "Header Settings",
+      iconPath:
+        "M4 6h16M4 12h16M4 18h7",
+      render: () => <HeaderManager />,
     },
   ];
   const activeSection = tabs.find((tab) => tab.id === activeTab) || tabs[0];
