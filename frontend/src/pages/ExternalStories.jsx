@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { api, IMAGE_BASE_URL } from "../services/api";
 import CommonHero from "../components/common/CommonHero";
@@ -89,6 +90,9 @@ const ExternalStoryCard = ({ blog, index }) => {
 
 const ExternalStories = () => {
   const { images: heroImgs } = usePageHeroImages("stories");
+  const [guestSectionImage, setGuestSectionImage] = useState(null);
+  const [guestSectionTitle, setGuestSectionTitle] = useState("GUEST STORIES");
+  const location = useLocation();
 
   const [blogs, setBlogs] = useState([]);
   const [total, setTotal] = useState(0);
@@ -105,6 +109,19 @@ const ExternalStories = () => {
   const [destinationFilter, setDestinationFilter] = useState("");
 
   const LIMIT = 9;
+
+  useEffect(() => {
+    api.getStoriesPage()
+      .then(data => {
+        if (data?.guestStoriesSection?.image) {
+          setGuestSectionImage(`${IMAGE_BASE_URL}${data.guestStoriesSection.image}`);
+        }
+        if (data?.guestStoriesSection?.title) {
+          setGuestSectionTitle(data.guestStoriesSection.title);
+        }
+      })
+      .catch(err => console.error("Failed to fetch guest stories hero data:", err));
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -157,6 +174,17 @@ const ExternalStories = () => {
     fetchBlogs(1);
   }, [selectedCategory, destinationFilter, fetchBlogs]);
 
+  useEffect(() => {
+    if (location.state?.scrollToBlogs) {
+      setTimeout(() => {
+        const element = document.getElementById("blogs-section");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+    }
+  }, [location]);
+
   const handleCategorySelect = (cat) => {
     setSelectedCategory(cat);
   };
@@ -182,10 +210,10 @@ const ExternalStories = () => {
   return (
     <div className="bg-[#F3EFE9] min-h-screen">
       <CommonHero
-        title="GUEST STORIES"
+        title={guestSectionTitle}
         subtitle="MOMENTS FROM OUR TRAVELLERS"
-        images={heroImgs}
-        bgImage={storiesImg}
+        images={guestSectionImage ? [{ desktop: guestSectionImage, mobile: guestSectionImage }] : heroImgs}
+        bgImage={guestSectionImage || storiesImg}
         breadcrumbs={[
           { label: "HOME", path: "/" },
           { label: "STORIES", path: "/stories" },
@@ -196,7 +224,7 @@ const ExternalStories = () => {
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
         
         {/* Search & Filter Section */}
-        <section className="mb-14">
+        <section id="blogs-section" className="mb-14">
           <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-start md:items-center">
             {/* Destination Search */}
             <div className="relative flex-1 max-w-md" ref={dropdownRef}>

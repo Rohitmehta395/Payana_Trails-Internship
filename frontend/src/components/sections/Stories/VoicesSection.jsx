@@ -69,12 +69,24 @@ const VoicesSection = ({ data }) => {
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const { data: homeData } = useHomePageData();
 
+  const testimonialScrollRef = useRef(null);
+
+  const scroll = (direction) => {
+    if (testimonialScrollRef.current) {
+      const container = testimonialScrollRef.current;
+      const scrollAmount = container.offsetWidth / (window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1);
+      container.scrollBy({
+        left: direction === "next" ? scrollAmount : -scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
   const { title, subtitle, image } = data || {};
 
   const testimonials = (homeData?.testimonials?.images || [])
     .filter((img) => img.isActive !== false)
-    .sort((a, b) => a.order - b.order)
-    .slice(0, 3);
+    .sort((a, b) => a.order - b.order);
 
   const fadeUp = {
     hidden: { opacity: 0, y: 32 },
@@ -175,25 +187,45 @@ const VoicesSection = ({ data }) => {
 
         {testimonials.length > 0 && (
           <Motion.div variants={fadeUp} className="mt-14 md:mt-20">
-            <div className="mb-8 flex items-center gap-4">
-              <div className="h-px w-10 bg-[#4A3B2A]/40" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-[#4A3B2A]/60">
-                Latest Testimonials
-              </span>
+            <div className="mb-8 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="h-px w-10 bg-[#4A3B2A]/40" />
+                <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-[#4A3B2A]/60">
+                  Latest Testimonials
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => scroll("prev")}
+                  className="flex h-10 w-10 items-center justify-center border border-[#4A3B2A]/20 bg-[#FAF7F4] text-[#4A3B2A] transition-all hover:bg-[#4A3B2A] hover:text-[#F3EFE9]"
+                  aria-label="Previous testimonial"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <button
+                  onClick={() => scroll("next")}
+                  className="flex h-10 w-10 items-center justify-center border border-[#4A3B2A]/20 bg-[#FAF7F4] text-[#4A3B2A] transition-all hover:bg-[#4A3B2A] hover:text-[#F3EFE9]"
+                  aria-label="Next testimonial"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </div>
             </div>
 
-            <Motion.div
-              variants={containerVariants}
-              className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3"
+            <div
+              ref={testimonialScrollRef}
+              className="flex gap-7 overflow-x-auto pb-4 hide-scrollbar snap-x snap-mandatory"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {testimonials.map((testimonial, index) => (
-                <TestimonialCard
-                  key={testimonial._id}
-                  testimonial={testimonial}
-                  index={index}
-                />
+                <div key={testimonial._id} className="min-w-full md:min-w-[calc(50%-14px)] lg:min-w-[calc(33.333%-18.66px)] snap-start">
+                  <TestimonialCard
+                    testimonial={testimonial}
+                    index={index}
+                  />
+                </div>
               ))}
-            </Motion.div>
+            </div>
           </Motion.div>
         )}
 

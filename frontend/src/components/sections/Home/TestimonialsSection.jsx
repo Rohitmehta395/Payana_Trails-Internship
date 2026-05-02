@@ -101,7 +101,7 @@ const TestimonialsSection = () => {
               <div
                 key={img._id}
                 onClick={() => handleImageClick(img)}
-                className="flex-none w-full sm:w-[calc((100%-1.5rem)/2)] md:w-[calc((100%-2*1.5rem)/3)] lg:w-[calc((100%-3*1.5rem)/4)] h-[340px] sm:h-[380px] bg-[#F8F5F2] rounded-2xl overflow-hidden snap-start cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 flex flex-col group"
+                className="flex-none w-full sm:w-[calc((100%-1.5rem)/2)] md:w-[calc((100%-2*1.5rem)/3)] lg:w-[calc((100%-2*1.5rem)/3)] h-[340px] sm:h-[380px] bg-[#F8F5F2] rounded-2xl overflow-hidden snap-start cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 flex flex-col group"
               >
                 {/* Image Section (Top 50%) */}
                 <div className="h-1/2 w-full overflow-hidden relative">

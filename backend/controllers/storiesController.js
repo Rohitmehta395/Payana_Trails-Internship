@@ -118,10 +118,9 @@ const serializeStoriesPage = async (page) => {
     pageObject.travelStories.featuredBlogs = featuredBlogs;
   }
 
-  // Fetch top 3 external stories for the guest stories section
+  // Fetch external stories for the guest stories section
   const guestStories = await ExternalStory.find({ isDraft: false })
     .sort({ order: 1, createdAt: -1 })
-    .limit(3)
     .select("-draftData");
   pageObject.guestStoriesSection = {
     ...pageObject.guestStoriesSection,
