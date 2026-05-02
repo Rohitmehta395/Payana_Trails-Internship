@@ -14,7 +14,6 @@ const ThePayanaWayForm = ({ data, onChange, onFileSelect, compressionStats, comp
 
   return (
     <div className="mb-8 border border-gray-200 rounded-lg p-6 bg-gray-50">
-      <h2 className="text-xl font-bold text-[#4A3B2A] mb-4">2. The Payana Way</h2>
       
       <div className="grid grid-cols-1 gap-4 mb-4">
         <div>

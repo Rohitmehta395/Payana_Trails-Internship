@@ -88,24 +88,13 @@ const mergeData = (initial, defaults) => {
   };
 };
 
-const HomePageForm = ({ initialData, onSave }) => {
-  const [activeTab, setActiveTab] = useState("hero");
+const HomePageForm = ({ initialData, onSave, activeTab }) => {
   const [data, setData] = useState(() => mergeData(initialData, defaultData));
   const [files, setFiles] = useState({});
   const [compressionPreviews, setCompressionPreviews] = useState({});
   const [compressionLoading, setCompressionLoading] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
-
-  const tabs = [
-    { id: "hero", label: "Hero Section" },
-    { id: "payanaWay", label: "The Payana Way" },
-    { id: "stories", label: "Stories & Voices" },
-    { id: "newsletter", label: "Newsletter" },
-    { id: "connect", label: "Connect" },
-    { id: "referGift", label: "Refer & Gift" },
-    { id: "testimonials", label: "Testimonials" },
-  ];
 
   const handleSectionChange = (section, newData) => {
     setData((prev) => ({ ...prev, [section]: newData }));
@@ -177,24 +166,6 @@ const HomePageForm = ({ initialData, onSave }) => {
 
   return (
     <div>
-      {/* Tabs */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${
-              activeTab === tab.id
-                ? "bg-[#4A3B2A] text-white shadow-md"
-                : "bg-gray-200 text-[#4A3B2A] hover:bg-gray-300"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
       <form onSubmit={handleSubmit}>
         {message && (
           <div className={`mb-6 p-4 rounded-lg ${message.type === 'success' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>

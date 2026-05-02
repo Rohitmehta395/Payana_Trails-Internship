@@ -12,7 +12,6 @@ const ReferGiftSectionForm = ({ data, onChange, onFileSelect, onGiftImageSelect,
 
   return (
     <div className="mb-8 border border-gray-200 rounded-lg p-6 bg-gray-50">
-      <h2 className="text-xl font-bold text-[#4A3B2A] mb-6">6. Refer and Gift Section</h2>
       
       {/* Main Titles */}
       <div className="mb-6 p-4 border border-gray-200 rounded bg-white">

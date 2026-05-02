@@ -13,8 +13,6 @@ const FAQSectionForm = ({
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      <h3 className="text-xl font-bold text-[#4A3B2A] border-b pb-2">FAQ Section</h3>
-      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <FormField
           label="Typography Text"

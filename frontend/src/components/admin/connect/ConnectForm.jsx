@@ -92,22 +92,13 @@ const mergeData = (initial, defaults) => {
   };
 };
 
-const ConnectForm = ({ initialData, onSave }) => {
-  const [activeTab, setActiveTab] = useState("enquiry");
+const ConnectForm = ({ initialData, onSave, activeTab }) => {
   const [data, setData] = useState(() => mergeData(initialData, defaultData));
   const [files, setFiles] = useState({});
   const [compressionPreviews, setCompressionPreviews] = useState({});
   const [compressionLoading, setCompressionLoading] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
-
-  const tabs = [
-    { id: "enquiry", label: "Enquiry" },
-    { id: "referFriend", label: "Refer a Friend" },
-    { id: "giftJourney", label: "Gift a Journey" },
-    { id: "faq", label: "FAQ Section" },
-    { id: "connect", label: "Connect Section" },
-  ];
 
   const handleSectionChange = (section, newData) => {
     setData((prev) => ({ ...prev, [section]: newData }));
@@ -179,23 +170,6 @@ const ConnectForm = ({ initialData, onSave }) => {
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2 mb-6">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 rounded-md font-medium text-sm transition-colors ${
-              activeTab === tab.id
-                ? "bg-[#4A3B2A] text-white shadow-md"
-                : "bg-gray-200 text-[#4A3B2A] hover:bg-gray-300"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
       <form onSubmit={handleSubmit}>
         {message && (
           <div className={`mb-6 p-4 rounded-lg ${message.type === 'success' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>

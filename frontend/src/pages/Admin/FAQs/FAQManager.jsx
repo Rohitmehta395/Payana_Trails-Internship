@@ -184,13 +184,7 @@ const FAQManager = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-        <h2 className="text-lg font-bold text-[#4A3B2A]">
-          {showForm
-            ? isEditing
-              ? "Edit FAQ"
-              : "Create New FAQs"
-            : "All FAQs"}
-        </h2>
+        
         <button
           onClick={() => {
             if (showForm) {

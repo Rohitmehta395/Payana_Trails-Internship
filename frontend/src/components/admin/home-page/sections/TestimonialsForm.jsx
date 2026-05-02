@@ -405,11 +405,8 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+    <div className="space-y-6">
       <div className="mb-6">
-        <h3 className="text-lg font-bold text-[#4A3B2A] mb-1">
-          Testimonials Content
-        </h3>
         <p className="text-sm text-gray-500">
           Update the titles and manage testimonial images.
         </p>

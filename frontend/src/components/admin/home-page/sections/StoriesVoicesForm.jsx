@@ -8,7 +8,7 @@ const StoriesVoicesForm = ({ data, onChange, onFileSelect, compressionStats, com
 
   return (
     <div className="mb-8 border border-gray-200 rounded-lg p-6 bg-gray-50">
-      <h2 className="text-xl font-bold text-[#4A3B2A] mb-4">3. Stories & Voices</h2>
+      
       <div className="grid grid-cols-1 gap-4 mb-4">
         <div>
           <label className="block text-sm font-semibold text-[#4A3B2A] mb-1">Title</label>

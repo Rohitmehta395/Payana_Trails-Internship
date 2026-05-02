@@ -603,55 +603,66 @@ const FooterForm = ({ initialData, onSave, onDeleteLogo, activeTab }) => {
         );
       case "bottom":
         return (
-          <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-6 border-b border-gray-50 pb-4">
                   <div>
-                    <h4 className="text-xs font-black text-[#4A3B2A] uppercase tracking-widest">Bottom Inline Links</h4>
-                    <p className="text-[10px] text-gray-400 mt-0.5">Visible at the very bottom of every page</p>
+                    <h4 className="text-xs font-bold text-[#4A3B2A] uppercase tracking-widest">Bottom Inline Links</h4>
+                    <p className="text-[10px] text-gray-400 mt-0.5 font-medium">Visible at the very bottom of every page</p>
                   </div>
                   <button
                     type="button"
                     onClick={addBottomLink}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#4A3B2A]/5 text-[#4A3B2A] rounded-xl text-xs font-bold hover:bg-[#4A3B2A]/10 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#4A3B2A] text-white rounded-xl text-xs font-bold hover:bg-[#3a2d20] transition-all shadow-md shadow-[#4A3B2A]/10 active:scale-95"
                     >
                     <Plus size={14} /> Add Link
                   </button>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {data.bottomLinks.map((link, idx) => (
-                  <div key={idx} className="flex gap-2 items-center p-4 border border-gray-50 rounded-2xl bg-gray-50/50 group hover:border-[#4A3B2A]/10 transition-all">
-                    <div className="flex-1 space-y-2">
-                      <input
-                        type="text"
-                        placeholder="Link Label"
-                        value={link.label}
-                        onChange={(e) => updateBottomLink(idx, "label", e.target.value)}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-[#4A3B2A] font-bold"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Path"
-                        value={link.url}
-                        onChange={(e) => updateBottomLink(idx, "url", e.target.value)}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-[10px] text-gray-500 font-mono"
-                      />
+                  <div key={idx} className="flex gap-4 items-center p-5 border border-gray-100 rounded-2xl bg-gray-50/30 group hover:border-[#4A3B2A]/10 transition-all relative">
+                    <div className="flex-1 space-y-4">
+                      <div>
+                        <label className="block text-[9px] font-bold text-gray-400 mb-1 uppercase tracking-tighter">Label</label>
+                        <input
+                            type="text"
+                            placeholder="e.g. Terms of Service"
+                            value={link.label}
+                            onChange={(e) => updateBottomLink(idx, "label", e.target.value)}
+                            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-xs text-[#4A3B2A] font-bold focus:ring-2 focus:ring-[#4A3B2A]/5 focus:border-[#4A3B2A]/20 transition-all bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[9px] font-bold text-gray-400 mb-1 uppercase tracking-tighter">Redirect URL</label>
+                        <input
+                            type="text"
+                            placeholder="/terms"
+                            value={link.url}
+                            onChange={(e) => updateBottomLink(idx, "url", e.target.value)}
+                            className="w-full border border-gray-200 rounded-lg px-4 py-2 text-[10px] text-gray-500 font-mono focus:ring-2 focus:ring-[#4A3B2A]/5 focus:border-[#4A3B2A]/20 transition-all bg-white"
+                        />
+                      </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => removeBottomLink(idx)}
-                      className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-white rounded-lg transition-all opacity-0 group-hover:opacity-100 shadow-sm"
+                      className="absolute -top-2 -right-2 w-7 h-7 bg-white text-gray-300 hover:text-red-500 border border-gray-100 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md hover:scale-110 active:scale-90"
                     >
                       <X size={14} />
                     </button>
                   </div>
                 ))}
               </div>
+              {data.bottomLinks.length === 0 && (
+                <div className="py-12 text-center border-2 border-dashed border-gray-100 rounded-2xl">
+                    <p className="text-sm font-medium text-gray-400 italic">No bottom links added yet.</p>
+                </div>
+              )}
             </div>
 
             <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <h4 className="text-xs font-black text-[#4A3B2A] mb-4 uppercase tracking-widest border-b border-gray-50 pb-2">Copyright Settings</h4>
+                <h4 className="text-xs font-bold text-[#4A3B2A] mb-4 uppercase tracking-widest border-b border-gray-50 pb-2">Copyright Settings</h4>
                 <FormField
                 label="Copyright Text"
                 id="footer-copyright"
