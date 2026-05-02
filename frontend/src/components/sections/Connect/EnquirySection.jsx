@@ -9,7 +9,7 @@ const EnquirySection = ({ data }) => {
   return (
     <section
       id="enquiry-section"
-      className="py-8 px-4 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden"
+      className="py-8 px-4 md:py-0 md:px-8 bg-[#F3EFE9] relative z-10 overflow-hidden"
     >
       {/* Subtle background text watermark */}
       <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -ml-24 text-[20rem] font-serif italic font-bold text-[#F3EFE9]/50 select-none pointer-events-none z-0 tracking-tighter mix-blend-multiply hidden lg:block">
@@ -35,7 +35,8 @@ const EnquirySection = ({ data }) => {
           </h2>
 
           <p className="text-[#4A3B2A]/70 text-sm sm:text-base md:text-lg font-medium max-w-lg mb-10 leading-relaxed px-6 sm:px-0">
-            {data?.subtitle || "Travel is the only thing you buy that makes you richer. Share your vision with our destination experts and we will curate an itinerary that transcends the ordinary."}
+            {data?.subtitle ||
+              "Travel is the only thing you buy that makes you richer. Share your vision with our destination experts and we will curate an itinerary that transcends the ordinary."}
           </p>
 
           <div className="relative inline-block group mb-4">
