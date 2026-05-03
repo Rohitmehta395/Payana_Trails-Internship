@@ -3,7 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import { motion } from "framer-motion";
 
-const CommonHero = ({ title, description, images = [], bgImage, breadcrumbs }) => {
+const CommonHero = ({
+  title,
+  description,
+  images = [],
+  bgImage,
+  breadcrumbs,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
 
@@ -12,8 +18,8 @@ const CommonHero = ({ title, description, images = [], bgImage, breadcrumbs }) =
     images.length > 0
       ? images
       : bgImage
-      ? [{ desktop: bgImage, mobile: bgImage }]
-      : [];
+        ? [{ desktop: bgImage, mobile: bgImage }]
+        : [];
 
   useEffect(() => {
     if (heroImages.length <= 1) return;

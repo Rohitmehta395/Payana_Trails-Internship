@@ -6,70 +6,6 @@ import useHomePageData from "../../../hooks/useHomePageData";
 import { preloadImage } from "../../../utils/imageUtils";
 
 // ---------------------------------------------------------------------------
-// HeroSkeleton – branded warm-tone loader shown while the first DB image
-// is in flight. Never shows black/empty, always feels on-brand.
-// ---------------------------------------------------------------------------
-function HeroSkeleton() {
-  return (
-    <section
-      className="relative w-full h-[100dvh] flex flex-col justify-center items-center overflow-hidden"
-      style={{ background: "linear-gradient(160deg, #3A2E22 0%, #4A3B2A 50%, #5C4A35 100%)" }}
-      aria-label="Loading hero section"
-    >
-      {/* Subtle animated shimmer overlay */}
-      <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent 0%, #7A6650 40%, transparent 100%)",
-          animation: "hero-shimmer 2s ease-in-out infinite",
-        }}
-      />
-
-      {/* Brand logo / pulse indicator */}
-      <div className="relative z-10 flex flex-col items-center gap-6">
-        <div
-          className="w-16 h-16 rounded-full border-2 border-[#F3EFE9]/30 flex items-center justify-center"
-          style={{ animation: "hero-pulse 2s ease-in-out infinite" }}
-        >
-          <div
-            className="w-10 h-10 rounded-full"
-            style={{ background: "rgba(243,239,233,0.15)" }}
-          />
-        </div>
-        <div className="flex gap-1.5">
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="w-1.5 h-1.5 rounded-full bg-[#F3EFE9]/40"
-              style={{
-                animation: `hero-dot-bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Inline keyframe styles */}
-      <style>{`
-        @keyframes hero-shimmer {
-          0%   { transform: translateX(-100%); }
-          100% { transform: translateX(200%); }
-        }
-        @keyframes hero-pulse {
-          0%, 100% { opacity: 0.4; transform: scale(1); }
-          50%       { opacity: 0.8; transform: scale(1.08); }
-        }
-        @keyframes hero-dot-bounce {
-          0%, 100% { transform: translateY(0);    opacity: 0.4; }
-          50%       { transform: translateY(-6px); opacity: 0.9; }
-        }
-      `}</style>
-    </section>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Hero – renders only after the first DB image has been preloaded + decoded.
 // ---------------------------------------------------------------------------
 export default function Hero({ images = [], loading = false }) {
@@ -128,16 +64,22 @@ export default function Hero({ images = [], loading = false }) {
     );
   };
 
-  // Show branded skeleton while the DB fetch is in flight OR while the
-  // first image is being decoded — never a black screen.
-  if (loading || images.length === 0 || !firstImageReady) {
-    return <HeroSkeleton />;
-  }
-
-  const firstImg = images[0];
+  // While the DB fetch is in flight or the image hasn't decoded yet, keep
+  // the section fully transparent and non-interactive so nothing is visible.
+  // Once ready, fade in smoothly — no flash, no skeleton, no layout shift.
+  const isReady = !loading && images.length > 0 && firstImageReady;
+  const firstImg = images[0] ?? null;
 
   return (
-    <section className="relative w-full h-[100dvh] flex flex-col justify-end overflow-hidden bg-[#4A3B2A] pb-24 sm:pb-28 lg:pb-32">
+    <section
+      className="relative w-full h-[100dvh] flex flex-col justify-end overflow-hidden pb-24 sm:pb-28 lg:pb-32"
+      style={{
+        opacity: isReady ? 1 : 0,
+        visibility: isReady ? "visible" : "hidden",
+        transition: isReady ? "opacity 0.6s ease" : "none",
+        background: "transparent",
+      }}
+    >
       {/* LCP preload hints for the first image */}
       <Helmet>
         {firstImg?.desktop && (
