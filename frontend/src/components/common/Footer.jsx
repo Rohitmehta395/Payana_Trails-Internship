@@ -5,11 +5,9 @@ import {
   FaInstagram,
   FaWhatsapp,
   FaFacebook,
-  FaLocationDot,
-  FaEnvelope,
-  FaPhone,
   FaLinkedin,
 } from "react-icons/fa6";
+import { MapPin, Mail, Phone } from "lucide-react";
 import logoImg from "/logo.webp";
 import { useNewsletter } from "../../context/NewsletterContext";
 import { api, IMAGE_BASE_URL } from "../../services/api";
@@ -123,6 +121,8 @@ const Footer = () => {
               <img
                 src={brandLogo}
                 alt={brandName}
+                width="80"
+                height="80"
                 className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover shadow-lg border-2 border-[#F3EFE9]/20"
               />
               <span className="text-[#F3EFE9] text-2xl italic tracking-wide font-serif drop-shadow-md">
@@ -206,7 +206,7 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   className="text-[10px] font-medium uppercase tracking-wider bg-[#F3EFE9]/10 hover:bg-[#F3EFE9]/20 text-[#F3EFE9] px-3 py-1.5 rounded-full border border-[#F3EFE9]/20 transition-all duration-300 flex items-center gap-1.5 shrink-0"
                 >
-                  <FaLocationDot size={12} className="text-[#F3EFE9]/70 group-hover:text-white transition-colors" />
+                  <MapPin size={12} className="text-[#F3EFE9]/70 group-hover:text-white transition-colors" />
                   {mapButtonText}
                 </a>
               )}
@@ -223,7 +223,7 @@ const Footer = () => {
               className="flex items-center gap-2 text-[14px] transition-all duration-300 opacity-80 hover:opacity-100 hover:text-white group"
             >
               <div className="w-8 h-8 bg-[#F3EFE9]/10 rounded-full flex items-center justify-center group-hover:bg-[#F3EFE9]/20 transition-colors">
-                <FaEnvelope size={14} />
+                <Mail size={14} />
               </div>
               {email}
             </a>
@@ -236,7 +236,7 @@ const Footer = () => {
               className="flex items-center gap-2 text-[14px] transition-all duration-300 opacity-80 hover:opacity-100 hover:text-white group"
             >
               <div className="w-8 h-8 bg-[#F3EFE9]/10 rounded-full flex items-center justify-center group-hover:bg-[#F3EFE9]/20 transition-colors">
-                <FaPhone size={14} />
+                <Phone size={14} />
               </div>
               <div className="flex flex-col items-start">
                 <span className="font-semibold tracking-widest leading-none">

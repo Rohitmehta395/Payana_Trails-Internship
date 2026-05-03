@@ -8,8 +8,8 @@ import {
   getDestinationGeography,
 } from "../../constants/destinationGeographies";
 
-// Importing React Icons
-import { FiChevronDown, FiChevronRight, FiMenu, FiX } from "react-icons/fi";
+// Importing Lucide Icons
+import { ChevronDown, ChevronRight, Menu, X, Phone } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 
 const buildDestinationsSubmenu = (destinations) =>
@@ -193,6 +193,8 @@ export default function Header() {
               <img
                 src={logoSrc}
                 alt="Payana Trails Logo"
+                width="160"
+                height="40"
                 className="h-8 w-auto sm:h-10 transition-transform duration-300 group-hover:scale-105"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
@@ -218,7 +220,7 @@ export default function Header() {
                           onClick={handleNavClick}
                         >
                           {item.name}
-                          <FiChevronDown className="w-4 h-4 transition-transform" />
+                          <ChevronDown className="w-4 h-4 transition-transform" />
                         </Link>
 
                         {/* Primary Dropdown Container */}
@@ -235,7 +237,7 @@ export default function Header() {
                                       onClick={handleNavClick}
                                     >
                                       {sub.name}
-                                      <FiChevronRight className="w-4 h-4 transition-transform" />
+                                      <ChevronRight className="w-4 h-4 transition-transform" />
                                     </Link>
 
                                     {/* Secondary Dropdown Container */}
@@ -251,7 +253,7 @@ export default function Header() {
                                                   onClick={handleNavClick}
                                                 >
                                                   {sub2.name}
-                                                  <FiChevronDown className="w-4 h-4 transition-transform group-hover/sub2:rotate-180" />
+                                                  <ChevronDown className="w-4 h-4 transition-transform group-hover/sub2:rotate-180" />
                                                 </Link>
 
                                                 <div className="hidden group-hover/sub2:block mt-1 pr-2">
@@ -353,9 +355,9 @@ export default function Header() {
               className="lg:hidden p-2 text-[#4A3B2A]"
             >
               {isMenuOpen ? (
-                <FiX className="w-6 h-6" strokeWidth="2.5" />
+                <X className="w-6 h-6" strokeWidth="2.5" />
               ) : (
-                <FiMenu className="w-6 h-6" strokeWidth="2.5" />
+                <Menu className="w-6 h-6" strokeWidth="2.5" />
               )}
             </button>
           </div>
@@ -386,7 +388,7 @@ export default function Header() {
                           onClick={(e) => toggleMobileMenu(item.name, e)}
                           className="p-2 text-[#4A3B2A] bg-[#4A3B2A]/5 rounded-md"
                         >
-                          <FiChevronDown
+                          <ChevronDown
                             className={`w-4 h-4 transition-transform ${
                               mobileMenuState[item.name] ? "rotate-180" : ""
                             }`}
@@ -421,7 +423,7 @@ export default function Header() {
                                       }
                                       className="p-1.5 text-[#4A3B2A] bg-[#4A3B2A]/5 rounded-md"
                                     >
-                                      <FiChevronDown
+                                      <ChevronDown
                                         className={`w-4 h-4 transition-transform ${
                                           mobileMenuState[sub.name]
                                             ? "rotate-180"
@@ -461,7 +463,7 @@ export default function Header() {
                                                   }
                                                   className="p-1.5 text-[#4A3B2A] bg-[#4A3B2A]/5 rounded-md"
                                                 >
-                                                  <FiChevronDown
+                                                  <ChevronDown
                                                     className={`w-4 h-4 transition-transform ${
                                                       mobileMenuState[sub2.name]
                                                         ? "rotate-180"

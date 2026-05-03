@@ -2,13 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate, useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LuArrowRight, LuDownload, LuSparkles } from "react-icons/lu";
+import { ArrowLeft, ArrowRight, Download, Sparkles } from "lucide-react";
 import { api } from "../services/api";
 import {
   normalizePublicItinerary,
   transformTrailMedia,
 } from "../utils/trailPresentation";
-import { ArrowLeft } from "lucide-react";
 
 // Sub-components
 import {
@@ -209,7 +208,7 @@ const TrailItinerary = () => {
                   
                   <div className="relative flex items-center gap-4">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#D4A373]/20 text-[#D4A373]">
-                      <LuSparkles className="h-5 w-5" />
+                      <Sparkles className="h-5 w-5" />
                     </div>
                     <p className="text-sm leading-relaxed text-[#8B6B50] md:text-[15px] italic">
                       This is an indicative itinerary. Every Payana Trails journey
@@ -269,7 +268,7 @@ const TrailItinerary = () => {
 
               <span className="relative z-10 flex items-center gap-2">
                 Enquire Now
-                <LuArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                 <motion.div
                   animate={{
                     rotate: isHoveringEnquire ? [0, 15, -15, 0] : 0,
@@ -281,7 +280,7 @@ const TrailItinerary = () => {
                     repeatDelay: 1,
                   }}
                 >
-                  <LuSparkles className="h-4 w-4 text-[#D4A373]" />
+                  <Sparkles className="h-4 w-4 text-[#D4A373]" />
                 </motion.div>
               </span>
             </motion.button>
@@ -299,7 +298,7 @@ const TrailItinerary = () => {
               <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-full" />
               <span className="relative z-10 flex items-center gap-2">
                 Download Itinerary
-                <LuDownload className="h-5 w-5 transition-transform duration-300 group-hover:translate-y-0.5" />
+                <Download className="h-5 w-5 transition-transform duration-300 group-hover:translate-y-0.5" />
               </span>
             </motion.a>
           )}

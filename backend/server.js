@@ -39,24 +39,26 @@ const journeyPageRoutes = require("./routes/journeyPageRoutes");
 const headerRoutes = require("./routes/headerRoutes");
 const footerRoutes = require("./routes/footerRoutes");
 
+const cacheMiddleware = require("./middlewares/cacheMiddleware");
+
 // Routes
-app.use("/api/admin", adminRoutes);
-app.use("/api/trails", trailRoutes);
-app.use("/api/destinations", destinationRoutes);
-app.use("/api/page-heroes", pageHeroRoutes);
+app.use("/api/admin", adminRoutes); // No cache for admin
+app.use("/api/trails", cacheMiddleware(300), trailRoutes);
+app.use("/api/destinations", cacheMiddleware(300), destinationRoutes);
+app.use("/api/page-heroes", cacheMiddleware(300), pageHeroRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/enquiries", enquiryRoutes);
 app.use("/api/referrals", referralRoutes);
 app.use("/api/gifts", giftRoutes);
-app.use("/api/faqs", faqRoutes);
-app.use("/api/home-page", homePageRoutes);
-app.use("/api/payana-way", payanaWayRoutes);
-app.use("/api/stories", storiesRoutes);
-app.use("/api/external-stories", externalStoriesRoutes);
-app.use("/api/connect-page", connectPageRoutes);
-app.use("/api/journey-page", journeyPageRoutes);
-app.use("/api/header", headerRoutes);
-app.use("/api/footer", footerRoutes);
+app.use("/api/faqs", cacheMiddleware(300), faqRoutes);
+app.use("/api/home-page", cacheMiddleware(300), homePageRoutes);
+app.use("/api/payana-way", cacheMiddleware(300), payanaWayRoutes);
+app.use("/api/stories", cacheMiddleware(300), storiesRoutes);
+app.use("/api/external-stories", cacheMiddleware(300), externalStoriesRoutes);
+app.use("/api/connect-page", cacheMiddleware(300), connectPageRoutes);
+app.use("/api/journey-page", cacheMiddleware(300), journeyPageRoutes);
+app.use("/api/header", cacheMiddleware(300), headerRoutes);
+app.use("/api/footer", cacheMiddleware(300), footerRoutes);
 
 // ── Serve React frontend (production) ────────────────────────────────────────
 // In production the React app is built into ../frontend/dist. Express serves it
