@@ -74,7 +74,10 @@ const App = () => {
                   />
                   <Route path="payana-way" element={<PayanaWay />} />
                   <Route path="stories" element={<Stories />} />
-                  <Route path="stories/testimonials" element={<Testimonials />} />
+                  <Route
+                    path="stories/testimonials"
+                    element={<Testimonials />}
+                  />
                   <Route path="stories/blogs" element={<BlogsListing />} />
                   <Route
                     path="stories/external"

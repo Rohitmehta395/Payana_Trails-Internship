@@ -2,13 +2,14 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import Hero from "../components/sections/Home/Hero";
 import ExploreOurTrails from "../components/sections/Home/ExploreOurTrails";
-import SignatureTrails from "../components/sections/Home/SignatureTrails";
 import PayanaWay from "../components/sections/Home/PayanaWay";
 import StoriesMoments from "../components/sections/Home/StoriesMoments";
 import ClosingInvitation from "../components/sections/Home/ClosingInvitation";
 import ShareExperience from "../components/sections/Home/ShareExperience";
 import TestimonialsSection from "../components/sections/Home/TestimonialsSection";
-import usePageHeroImages, { prefetchPageHeroImages } from "../hooks/usePageHeroImages";
+import usePageHeroImages, {
+  prefetchPageHeroImages,
+} from "../hooks/usePageHeroImages";
 
 // Kick off the DB fetch immediately when this module is first imported.
 // By the time any component renders, the request is already in flight.
@@ -30,7 +31,6 @@ import imgD11 from "../assets/Home/hero/Desktop/11.Floating_Market_Thailand.webp
 import imgD12 from "../assets/Home/hero/Desktop/12.Mount_Kailas_Tibet.webp";
 
 //Mobile
-// import imgM1 from "../assets/Home/hero/Mobile/1.LionesswithcubsKenya-Portrait.webp";
 import imgM2 from "../assets/Home/hero/Mobile/1.Rose CityofPetra-Jordan-Portrait.jpg";
 import imgM3 from "../assets/Home/hero/Mobile/3.PyramidsandCamels-Egypt-Portrait.jpg";
 import imgM4 from "../assets/Home/hero/Mobile/2.Cheetah-Tanzania-Portrait.jpg";
@@ -60,7 +60,6 @@ const FALLBACK_IMAGES = [
   { desktop: imgD12, mobile: imgM12 },
 ];
 
-
 const Home = () => {
   const SITE_URL = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
   const API_BASE_URL =
@@ -68,18 +67,30 @@ const Home = () => {
   const OG_IMAGE = `${API_BASE_URL}/page-heroes/home/primary-image`;
 
   // Pull images from DB; fall back to static assets if DB has none
-  const { images: heroImages, loading: heroLoading } = usePageHeroImages("home", FALLBACK_IMAGES);
+  const { images: heroImages, loading: heroLoading } = usePageHeroImages(
+    "home",
+    FALLBACK_IMAGES,
+  );
   return (
     <>
       <Helmet>
         <title>Payana Trails | Thoughtfully Designed Journeys</title>
-        <meta name="description" content="Small groups. Deeper experiences. Discover our curated trails around the world." />
+        <meta
+          name="description"
+          content="Small groups. Deeper experiences. Discover our curated trails around the world."
+        />
 
         {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Payana Trails" />
-        <meta property="og:title" content="Payana Trails | Thoughtfully Designed Journeys" />
-        <meta property="og:description" content="Small groups. Deeper experiences. Discover our curated trails around the world." />
+        <meta
+          property="og:title"
+          content="Payana Trails | Thoughtfully Designed Journeys"
+        />
+        <meta
+          property="og:description"
+          content="Small groups. Deeper experiences. Discover our curated trails around the world."
+        />
         <meta property="og:image" content={OG_IMAGE} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
@@ -87,21 +98,26 @@ const Home = () => {
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Payana Trails | Thoughtfully Designed Journeys" />
-        <meta name="twitter:description" content="Small groups. Deeper experiences. Discover our curated trails around the world." />
+        <meta
+          name="twitter:title"
+          content="Payana Trails | Thoughtfully Designed Journeys"
+        />
+        <meta
+          name="twitter:description"
+          content="Small groups. Deeper experiences. Discover our curated trails around the world."
+        />
         <meta name="twitter:image" content={OG_IMAGE} />
       </Helmet>
 
       <div>
-      <Hero images={heroImages} loading={false} />
-      <ExploreOurTrails />
-      {/* <SignatureTrails /> */}
-      <ExploreDestination />
-      <PayanaWay />
-      <StoriesMoments />
-      <ClosingInvitation />
-      <ShareExperience />
-      <TestimonialsSection />
+        <Hero images={heroImages} loading={false} />
+        <ExploreOurTrails />
+        <ExploreDestination />
+        <PayanaWay />
+        <StoriesMoments />
+        <ClosingInvitation />
+        <ShareExperience />
+        <TestimonialsSection />
       </div>
     </>
   );

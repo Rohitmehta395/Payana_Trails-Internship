@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.webp";
 import { api, IMAGE_BASE_URL } from "../../services/api";
 import {
   DESTINATION_GEOGRAPHIES,

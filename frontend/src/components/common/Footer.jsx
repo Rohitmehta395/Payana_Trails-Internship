@@ -10,7 +10,7 @@ import {
   FaPhone,
   FaLinkedin,
 } from "react-icons/fa6";
-import logoImg from "/logo.svg";
+import logoImg from "/logo.webp";
 import { useNewsletter } from "../../context/NewsletterContext";
 import { api, IMAGE_BASE_URL } from "../../services/api";
 
