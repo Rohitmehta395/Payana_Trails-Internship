@@ -4,6 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { IMAGE_BASE_URL } from "../../../services/api";
 import useHomePageData from "../../../hooks/useHomePageData";
 
+const formatMonthYearForDisplay = (val) => {
+  if (!val) return "";
+  if (!/^\d{4}-\d{2}$/.test(val)) return val;
+  const [year, month] = val.split("-");
+  const d = new Date(year, month - 1);
+  return d.toLocaleString("en-US", { month: "short", year: "numeric" });
+};
+
 const TestimonialCard = ({ testimonial, index }) => {
   const navigate = useNavigate();
 
@@ -24,39 +32,57 @@ const TestimonialCard = ({ testimonial, index }) => {
       onClick={() =>
         navigate("/stories/testimonials", { state: { testimonial } })
       }
-      className="group cursor-pointer flex flex-col bg-[#FAF7F4] hover:bg-white transition-all duration-300 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-lg"
+      className="group cursor-pointer flex flex-col bg-[#FAF7F4] hover:bg-white transition-all duration-300 border border-[#4A3B2A]/5 hover:border-[#4A3B2A]/15 hover:shadow-xl rounded-2xl p-5 sm:p-6 h-[250px] sm:h-[260px] relative overflow-hidden"
     >
-      <div className="relative overflow-hidden" style={{ paddingTop: "62%" }}>
-        {testimonial.url ? (
-          <img
-            src={`${IMAGE_BASE_URL}${testimonial.url}`}
-            alt={testimonial.alt || "Testimonial"}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-[#4A3B2A]/10 flex items-center justify-center">
-            <span className="text-[#4A3B2A]/30 text-xs tracking-widest uppercase">
-              No Image
-            </span>
-          </div>
-        )}
-        <span className="absolute top-4 left-4 px-3 py-1 text-[10px] tracking-[0.2em] uppercase font-medium bg-[#4A3B2A] text-[#F3EFE9]">
-          Testimonial
-        </span>
+      {/* Quotation Mark Decal */}
+      <div className="absolute top-2 right-2 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity pointer-events-none">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="#4A3B2A">
+          <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C14.9124 8 14.017 7.10457 14.017 6V3H21.017V15C21.017 18.3137 18.3307 21 15.017 21H14.017ZM3.017 21L3.017 18C3.017 16.8954 3.91243 16 5.017 16H8.017C8.56928 16 9.017 15.5523 9.017 15V9C9.017 8.44772 8.56928 8 8.017 8H5.017C3.91243 8 3.017 7.10457 3.017 6V3H10.017V15C10.017 18.3137 7.33071 21 4.017 21H3.017Z" />
+        </svg>
       </div>
 
-      <div className="p-6 flex flex-col flex-1">
-        {testimonial.alt && (
-          <h3 className="text-lg font-serif font-semibold text-[#4A3B2A] leading-snug mb-3 group-hover:text-[#3A2E20] transition-colors line-clamp-2">
-            {testimonial.alt}
-          </h3>
-        )}
-        <p className="text-sm text-[#4A3B2A]/60 leading-relaxed line-clamp-2 flex-1 italic">
-          "{testimonial.fullContent || testimonial.shortDescription || "No story content provided."}"
+      <div className="flex-1 pb-4">
+        <p className="text-[#4A3B2A]/70 text-sm sm:text-base leading-relaxed line-clamp-3 font-serif italic">
+          "
+          {testimonial.shortDescription ||
+            testimonial.fullContent ||
+            "A journey that transformed our perspective on the wild..."}
+          "
         </p>
-        <div className="mt-4 flex items-center gap-2 text-[11px] tracking-widest uppercase text-[#4A3B2A] font-medium">
-          <span>Read More</span>
-          <span className="w-6 h-px bg-[#4A3B2A] group-hover:w-12 transition-all duration-400" />
+      </div>
+
+      <div className="flex items-center gap-4 mt-auto pt-5 border-t border-[#4A3B2A]/10">
+        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#4A3B2A]/10 group-hover:border-[#4A3B2A]/30 transition-colors shadow-sm flex-shrink-0 flex items-center justify-center bg-[#4A3B2A]/5">
+          {testimonial.url ? (
+            <img
+              src={`${IMAGE_BASE_URL}${testimonial.url}`}
+              alt={testimonial.alt || "Guest"}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center text-center p-1 bg-[#4A3B2A]/10 w-full h-full" title="This guest preferred not to share an image">
+              <span className="text-[8px] font-bold text-[#4A3B2A]/30 uppercase leading-tight">
+                No Image Shared
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex justify-between items-start gap-2">
+            <h3 className="text-sm sm:text-base font-serif font-bold text-[#4A3B2A] truncate">
+              {testimonial.alt}
+            </h3>
+            {testimonial.monthYear && (
+              <span className="text-[10px] text-gray-400 whitespace-nowrap mt-1">
+                {formatMonthYearForDisplay(testimonial.monthYear)}
+              </span>
+            )}
+          </div>
+          {testimonial.destination && (
+            <p className="text-[10px] tracking-[0.15em] uppercase font-bold text-[#4A3B2A]/40 truncate">
+              {testimonial.destination}
+            </p>
+          )}
         </div>
       </div>
     </Motion.article>
@@ -74,7 +100,9 @@ const VoicesSection = ({ data }) => {
   const scroll = (direction) => {
     if (testimonialScrollRef.current) {
       const container = testimonialScrollRef.current;
-      const scrollAmount = container.offsetWidth / (window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1);
+      const scrollAmount =
+        container.offsetWidth /
+        (window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1);
       container.scrollBy({
         left: direction === "next" ? scrollAmount : -scrollAmount,
         behavior: "smooth",
@@ -200,29 +228,51 @@ const VoicesSection = ({ data }) => {
                   className="flex h-10 w-10 items-center justify-center border border-[#4A3B2A]/20 bg-[#FAF7F4] text-[#4A3B2A] transition-all hover:bg-[#4A3B2A] hover:text-[#F3EFE9]"
                   aria-label="Previous testimonial"
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                  </svg>
                 </button>
                 <button
                   onClick={() => scroll("next")}
                   className="flex h-10 w-10 items-center justify-center border border-[#4A3B2A]/20 bg-[#FAF7F4] text-[#4A3B2A] transition-all hover:bg-[#4A3B2A] hover:text-[#F3EFE9]"
                   aria-label="Next testimonial"
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
                 </button>
               </div>
             </div>
 
             <div
               ref={testimonialScrollRef}
-              className="flex gap-7 overflow-x-auto pb-4 hide-scrollbar snap-x snap-mandatory"
+              className="flex gap-7 overflow-x-auto overflow-y-hidden pb-4 hide-scrollbar snap-x snap-mandatory"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {testimonials.map((testimonial, index) => (
-                <div key={testimonial._id} className="min-w-full md:min-w-[calc(50%-14px)] lg:min-w-[calc(33.333%-18.66px)] snap-start">
-                  <TestimonialCard
-                    testimonial={testimonial}
-                    index={index}
-                  />
+                <div
+                  key={testimonial._id}
+                  className="min-w-full md:min-w-[calc(50%-14px)] lg:min-w-[calc(33.333%-18.66px)] snap-start"
+                >
+                  <TestimonialCard testimonial={testimonial} index={index} />
                 </div>
               ))}
             </div>
@@ -247,4 +297,3 @@ const VoicesSection = ({ data }) => {
 };
 
 export default VoicesSection;
-

@@ -5,6 +5,14 @@ import useHomePageData from "../../../hooks/useHomePageData";
 import { IMAGE_BASE_URL } from "../../../services/api";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
+const formatMonthYearForDisplay = (val) => {
+  if (!val) return "";
+  if (!/^\d{4}-\d{2}$/.test(val)) return val;
+  const [year, month] = val.split("-");
+  const d = new Date(year, month - 1);
+  return d.toLocaleString("en-US", { month: "short", year: "numeric" });
+};
+
 const TestimonialsSection = () => {
   const { data: homeData } = useHomePageData();
   const navigate = useNavigate();
@@ -96,46 +104,71 @@ const TestimonialsSection = () => {
           {/* Carousel Track */}
           <div
             ref={carouselRef}
-            className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-10 pt-4 px-4 md:px-0"
+            className="flex gap-4 sm:gap-6 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scrollbar-hide pb-10 pt-4 px-4 md:px-0"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {images.map((img, idx) => (
               <div
                 key={img._id}
                 onClick={() => handleImageClick(img)}
-                className="flex-none w-[280px] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-2*1.5rem)/3)] h-[360px] sm:h-[400px] bg-white rounded-2xl overflow-hidden snap-start cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-[#4A3B2A]/10 flex flex-col group"
+                className="flex-none w-[280px] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] h-[250px] sm:h-[260px] bg-white rounded-2xl p-5 sm:p-6 snap-start cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-[#4A3B2A]/5 flex flex-col group relative overflow-hidden"
               >
-                {/* Image Section (Top 50%) */}
-                <div className="h-1/2 w-full overflow-hidden relative">
-                  <img
-                    src={`${IMAGE_BASE_URL}${img.url}`}
-                    alt={img.alt || `Testimonial ${idx + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#4A3B2A]/60 to-transparent opacity-40 group-hover:opacity-20 transition-opacity duration-300" />
+                {/* Quotation Mark Icon */}
+                <div className="absolute -top-4 -right-4 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity pointer-events-none">
+                  <svg
+                    width="120"
+                    height="120"
+                    viewBox="0 0 24 24"
+                    fill="#4A3B2A"
+                  >
+                    <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C14.9124 8 14.017 7.10457 14.017 6V3H21.017V15C21.017 18.3137 18.3307 21 15.017 21H14.017ZM3.017 21L3.017 18C3.017 16.8954 3.91243 16 5.017 16H8.017C8.56928 16 9.017 15.5523 9.017 15V9C9.017 8.44772 8.56928 8 8.017 8H5.017C3.91243 8 3.017 7.10457 3.017 6V3H10.017V15C10.017 18.3137 7.33071 21 4.017 21H3.017Z" />
+                  </svg>
                 </div>
 
-                {/* Text Section (Bottom 50%) */}
-                <div className="h-1/2 p-5 sm:p-6 flex flex-col justify-between bg-white">
-                  <div>
-                    {img.alt && (
-                      <h4 className="font-serif font-bold text-lg text-[#4A3B2A] mb-2 line-clamp-1">
-                        {img.alt}
-                      </h4>
-                    )}
-                    <p className="text-[#4A3B2A]/80 text-sm leading-relaxed line-clamp-3 font-sans italic">
-                      "{img.shortDescription ||
-                        "Read about this beautiful journey experience..."}"
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className="flex-1 pb-4">
+                    <p className="text-[#4A3B2A]/80 text-sm sm:text-base leading-relaxed line-clamp-3 font-serif italic">
+                      "
+                      {img.shortDescription ||
+                        "An unforgettable journey through the heart of nature..."}
+                      "
                     </p>
                   </div>
 
-                  <div className="flex items-center text-[#4A3B2A] font-bold text-sm mt-3 pt-3 border-t border-[#4A3B2A]/10 group-hover:text-[#6a5439] transition-colors">
-                    <span>Read more</span>
-                    <ArrowRight
-                      size={16}
-                      className="ml-2 transform group-hover:translate-x-1 transition-transform"
-                    />
+                  <div className="flex items-center gap-4 mt-auto pt-5 border-t border-[#4A3B2A]/10">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#4A3B2A]/10 flex-shrink-0 group-hover:border-[#4A3B2A]/30 transition-colors shadow-sm flex items-center justify-center bg-gray-50">
+                      {img.url ? (
+                        <img
+                          src={`${IMAGE_BASE_URL}${img.url}`}
+                          alt={img.alt || "Guest"}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center text-center p-1 bg-[#4A3B2A]/10 w-full h-full" title="This guest preferred not to share an image">
+                          <span className="text-[8px] font-bold text-[#4A3B2A]/30 uppercase leading-tight">
+                            No Image Shared
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start gap-2">
+                        <h4 className="font-serif font-bold text-sm sm:text-base text-[#4A3B2A] truncate">
+                          {img.alt}
+                        </h4>
+                        {img.monthYear && (
+                          <span className="text-[10px] text-gray-400 whitespace-nowrap mt-1">
+                            {formatMonthYearForDisplay(img.monthYear)}
+                          </span>
+                        )}
+                      </div>
+                      {img.destination && (
+                        <p className="text-[10px] tracking-[0.15em] uppercase font-bold text-[#4A3B2A]/40 truncate">
+                          {img.destination}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

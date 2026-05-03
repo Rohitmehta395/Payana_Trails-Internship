@@ -26,14 +26,10 @@ import {
   Monitor,
   ArrowRight,
   Edit2,
-  X
+  X,
 } from "lucide-react";
 
-const SortableImageCard = ({
-  image,
-  onDelete,
-  onEdit,
-}) => {
+const SortableImageCard = ({ image, onDelete, onEdit }) => {
   const {
     attributes,
     listeners,
@@ -48,7 +44,7 @@ const SortableImageCard = ({
     transition,
   };
 
-  const imgSrc = `${IMAGE_BASE_URL}${image.url}`;
+  const imgSrc = image.url ? `${IMAGE_BASE_URL}${image.url}` : null;
 
   return (
     <div
@@ -69,23 +65,40 @@ const SortableImageCard = ({
         <GripVertical size={14} />
       </button>
 
-      <div className="relative w-full aspect-video bg-gray-100 overflow-hidden">
-        <img
-          src={imgSrc}
-          alt={image.alt || "Testimonial"}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          onError={(e) => {
-            e.target.src = "https://placehold.co/400x225?text=Image";
-          }}
-        />
+      <div className="relative w-full aspect-video bg-gray-100 overflow-hidden flex items-center justify-center">
+        {imgSrc ? (
+          <img
+            src={imgSrc}
+            alt={image.alt || "Testimonial"}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            onError={(e) => {
+              e.target.src = "https://placehold.co/400x225?text=Image";
+            }}
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center text-gray-400 p-4 text-center">
+            <ImageIcon size={24} className="mb-1 opacity-40" />
+            <p className="text-[10px] font-bold text-[#4A3B2A]/40 uppercase leading-tight">No Image Shared</p>
+          </div>
+        )}
+        {image.destination && (
+          <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white px-2 py-0.5 rounded text-[10px] font-medium">
+            {image.destination}
+          </div>
+        )}
       </div>
 
       <div className="px-3 py-2 flex-1 flex flex-col">
-        <p className="text-xs font-semibold text-gray-700 truncate mb-1">
-          {image.alt || (
-            <span className="italic text-gray-300">No alt text</span>
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-xs font-semibold text-gray-700 truncate">
+            {image.alt || <span className="italic text-gray-300">No name</span>}
+          </p>
+          {image.monthYear && (
+            <span className="text-[10px] text-gray-400">
+              {formatMonthYearForDisplay(image.monthYear)}
+            </span>
           )}
-        </p>
+        </div>
         <p className="text-xs text-gray-500 line-clamp-2">
           {image.shortDescription || (
             <span className="italic text-gray-300">No short description</span>
@@ -93,217 +106,300 @@ const SortableImageCard = ({
         </p>
       </div>
 
-      <div className="px-3 pb-3 flex items-center justify-between gap-2">
+      <div className="px-3 pb-3 flex items-center justify-between gap-2 mt-auto">
         <button
           onClick={() => onEdit(image)}
-          className="flex-1 flex items-center justify-center p-1.5 text-blue-500 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+          className="flex-1 flex items-center justify-center p-1.5 text-blue-500 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-xs"
           title="Edit details"
         >
-          <Edit2 size={14} className="mr-1" /> Edit
+          <Edit2 size={12} className="mr-1" /> Edit
         </button>
         <button
           onClick={() => onDelete(image._id)}
-          className="flex-1 flex items-center justify-center p-1.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+          className="flex-1 flex items-center justify-center p-1.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg transition-colors text-xs"
           title="Delete image"
         >
-          <Trash2 size={14} className="mr-1" /> Delete
+          <Trash2 size={12} className="mr-1" /> Delete
         </button>
       </div>
     </div>
   );
 };
 
-const UploadZone = ({ onUploaded }) => {
-  const [files, setFiles] = useState([]);
-  const [previews, setPreviews] = useState([]);
-  const [uploading, setUploading] = useState(false);
-  const [isDragOver, setIsDragOver] = useState(false);
+const formatMonthYearForInput = (val) => {
+  if (!val) return "";
+  if (/^\d{4}-\d{2}$/.test(val)) return val;
+  const d = new Date(val);
+  if (!isNaN(d.getTime())) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  }
+  return "";
+};
+
+const formatMonthYearForDisplay = (val) => {
+  if (!val) return "";
+  if (!/^\d{4}-\d{2}$/.test(val)) return val;
+  const [year, month] = val.split("-");
+  const d = new Date(year, month - 1);
+  return d.toLocaleString("en-US", { month: "short", year: "numeric" });
+};
+
+const AddTestimonialForm = ({ onUploaded, onCancel }) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    destination: "",
+    monthYear: "",
+    shortDescription: "",
+    fullContent: "",
+    image: null,
+  });
+  const [availableDestinations, setAvailableDestinations] = useState([]);
+  const [isOtherDestination, setIsOtherDestination] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
-  const [imageStats, setImageStats] = useState([]);
+  const [preview, setPreview] = useState(null);
   const fileRef = useRef();
 
-  const handleFiles = (selected) => {
-    const arr = Array.from(selected);
-    setFiles(arr);
-    setPreviews(arr.map((f) => URL.createObjectURL(f)));
-    setMessage(null);
-    setImageStats([]);
+  useEffect(() => {
+    api
+      .getDestinations(true)
+      .then((data) => {
+        const names = [...new Set(data.map((d) => d.name))].sort();
+        setAvailableDestinations(names);
+      })
+      .catch((err) => console.error("Error fetching destinations:", err));
+  }, []);
+
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    if (name === "destinationSelect") {
+      if (value === "Other") {
+        setIsOtherDestination(true);
+        setFormData((prev) => ({ ...prev, destination: "" }));
+      } else {
+        setIsOtherDestination(false);
+        setFormData((prev) => ({ ...prev, destination: value }));
+      }
+      return;
+    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleUpload = async () => {
-    if (!files.length) return;
-    setUploading(true);
-    setMessage(null);
-    setImageStats([]);
-    try {
-      const response = await api.uploadTestimonialImages(files, "Testimonial");
-      setMessage({
-        type: "success",
-        text: `${files.length} image(s) uploaded!`,
-      });
-      if (response.imageStats) {
-        setImageStats(response.imageStats);
-      }
-      setFiles([]);
-      setPreviews([]);
-      if (onUploaded) onUploaded();
-      
-      setTimeout(() => {
-        setMessage(null);
-        setImageStats([]);
-      }, 4000); // 4 seconds so they have time to read the compression stats
-    } catch (err) {
-      setMessage({ type: "error", text: err.message || "Upload failed." });
-    } finally {
-      setUploading(false);
+  const handleFile = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setFormData((prev) => ({ ...prev, image: file }));
+      setPreview(URL.createObjectURL(file));
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name.trim()) {
+      setMessage({ type: "error", text: "Name is required." });
+      return;
+    }
+    setLoading(true);
+    setMessage(null);
+    try {
+      const extraData = {
+        alt: formData.name,
+        destination: formData.destination,
+        monthYear: formData.monthYear,
+        shortDescription: formData.shortDescription,
+        fullContent: formData.fullContent,
+      };
+      
+      const imagesToUpload = formData.image ? [formData.image] : [];
+      await api.uploadTestimonialImages(imagesToUpload, extraData);
+      onUploaded();
+    } catch (err) {
+      setMessage({
+        type: "error",
+        text: err.message || "Failed to add testimonial.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const inputClass =
+    "w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A] text-sm";
+
   return (
-    <div className="space-y-4">
-      <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setIsDragOver(true);
-        }}
-        onDragLeave={() => setIsDragOver(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setIsDragOver(false);
-          if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
-        }}
-        onClick={() => fileRef.current?.click()}
-        className={`relative border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-200 ${
-          isDragOver
-            ? "border-[#4A3B2A] bg-[#4A3B2A]/5 scale-[1.01]"
-            : files.length > 0
-              ? "border-[#4A3B2A]/40 bg-[#F3EFE9]/30"
-              : "border-gray-300 hover:border-[#4A3B2A]/50 hover:bg-gray-50"
-        }`}
-        style={{ minHeight: 140 }}
-      >
-        <input
-          ref={fileRef}
-          type="file"
-          multiple
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => handleFiles(e.target.files)}
-        />
-        <div className="flex flex-col items-center justify-center gap-3 p-8">
-          <div
-            className={`p-4 rounded-full transition-colors ${
-              isDragOver || files.length > 0 ? "bg-[#4A3B2A]/10" : "bg-gray-100"
-            }`}
-          >
-            <Monitor
-              size={26}
-              className={
-                isDragOver || files.length > 0
-                  ? "text-[#4A3B2A]"
-                  : "text-gray-400"
-              }
-            />
-          </div>
-          {files.length > 0 ? (
-            <div className="text-center">
-              <p className="font-semibold text-[#4A3B2A] text-sm">
-                {files.length} file(s) ready
-              </p>
-              <p className="text-xs text-gray-400 mt-0.5">
-                Click to change selection
-              </p>
-            </div>
-          ) : (
-            <div className="text-center">
-              <p className="font-medium text-gray-700 text-sm">
-                {isDragOver
-                  ? "Drop images here"
-                  : "Drop images or click to browse"}
-              </p>
-              <p className="text-xs text-gray-400 mt-0.5">
-                Multiple images supported
-              </p>
-            </div>
-          )}
-        </div>
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+        <h3 className="font-bold text-[#4A3B2A]">Add New Testimonial</h3>
+        <button
+          onClick={onCancel}
+          className="text-gray-400 hover:text-gray-600"
+        >
+          <X size={20} />
+        </button>
       </div>
 
-      {previews.length > 0 && (
-        <div className="grid gap-2 grid-cols-3 sm:grid-cols-4">
-          {previews.map((src, i) => (
-            <div
-              key={i}
-              className="relative overflow-hidden rounded-lg border border-gray-200 bg-gray-100"
-              style={{ aspectRatio: "16/9" }}
-            >
-              <img src={src} alt="" className="w-full h-full object-cover" />
-            </div>
-          ))}
-        </div>
-      )}
-
-      <button
-        onClick={handleUpload}
-        disabled={uploading || files.length === 0}
-        type="button"
-        className={`w-full py-3 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 ${
-          files.length === 0
-            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-            : "bg-[#4A3B2A] text-white hover:bg-[#3a2d20] shadow-sm hover:shadow"
-        }`}
-      >
-        {uploading ? (
-          <>
-            <Loader2 size={16} className="animate-spin" /> Uploading…
-          </>
-        ) : (
-          <>
-            <Upload size={15} />
-            {files.length > 0
-              ? `Upload ${files.length} image(s)`
-              : `Select images above to upload`}
-          </>
-        )}
-      </button>
-
-      {message && (
-        <div
-          className={`text-sm rounded-xl px-4 py-3 border flex flex-col gap-2 ${
-            message.type === "success"
-              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-              : "bg-red-50 text-red-700 border-red-200"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            {message.type === "success" ? (
-              <Check size={14} />
-            ) : (
-              <AlertCircle size={14} />
-            )}
-            <span className="font-medium">{message.text}</span>
+      <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        {message && (
+          <div
+            className={`p-3 rounded-lg text-sm ${message.type === "error" ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"}`}
+          >
+            {message.text}
           </div>
-          
-          {imageStats && imageStats.length > 0 && (
-            <div className="mt-2 space-y-2 border-t border-emerald-200/50 pt-2">
-              <p className="text-xs font-semibold text-emerald-800">Compression Results:</p>
-              {imageStats.map((stat, idx) => (
-                <div key={idx} className="flex justify-between items-center text-xs bg-white/50 px-2 py-1.5 rounded">
-                  <span className="truncate max-w-[150px]" title={stat.originalName}>{stat.originalName}</span>
-                  <div className="flex items-center gap-3">
-                    <span className="text-emerald-600/70 line-through">{(stat.originalSize / 1024).toFixed(1)} KB</span>
-                    <ArrowRight size={10} className="text-emerald-400" />
-                    <span className="font-semibold text-emerald-700">{(stat.compressedSize / 1024).toFixed(1)} KB</span>
-                    <span className="bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">
-                      -{stat.savedPercent}%
-                    </span>
-                  </div>
-                </div>
-              ))}
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+              Name (with Location)
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInput}
+              className={inputClass}
+              placeholder="e.g. John Doe, New York"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+              Destination
+            </label>
+            <div className="space-y-2">
+              <select
+                name="destinationSelect"
+                value={isOtherDestination ? "Other" : formData.destination}
+                onChange={handleInput}
+                className={inputClass}
+              >
+                <option value="">Select a destination</option>
+                {availableDestinations.map((dest) => (
+                  <option key={dest} value={dest}>
+                    {dest}
+                  </option>
+                ))}
+                <option value="Other">Other (Type manually)</option>
+              </select>
+              {isOtherDestination && (
+                <input
+                  type="text"
+                  name="destination"
+                  value={formData.destination}
+                  onChange={handleInput}
+                  className={inputClass + " bg-blue-50/30 border-blue-200"}
+                  placeholder="Type destination..."
+                />
+              )}
             </div>
-          )}
+          </div>
         </div>
-      )}
+
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+            Month / Year
+          </label>
+          <input
+            type="month"
+            name="monthYear"
+            value={formatMonthYearForInput(formData.monthYear)}
+            onChange={handleInput}
+            className={inputClass}
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+            Short Description (2-line preview)
+          </label>
+          <textarea
+            name="shortDescription"
+            value={formData.shortDescription}
+            onChange={handleInput}
+            className={inputClass}
+            rows="2"
+            placeholder="Brief summary..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+            Full Description
+          </label>
+          <textarea
+            name="fullContent"
+            value={formData.fullContent}
+            onChange={handleInput}
+            className={inputClass}
+            rows="4"
+            placeholder="The complete story..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+            Testimonial Image (Optional)
+          </label>
+          <div
+            onClick={() => fileRef.current?.click()}
+            className={`mt-1 border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-colors ${preview ? "border-emerald-200 bg-emerald-50/30" : "border-gray-200 hover:border-[#4A3B2A]/50 bg-gray-50"}`}
+          >
+            <input
+              type="file"
+              ref={fileRef}
+              onChange={handleFile}
+              accept="image/*"
+              className="hidden"
+            />
+            {preview ? (
+              <div className="flex flex-col items-center gap-2">
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="h-24 object-contain rounded border border-emerald-100"
+                />
+                <p className="text-xs text-emerald-600 font-medium">
+                  Click to change image
+                </p>
+              </div>
+            ) : (
+              <div className="py-4">
+                <Upload size={24} className="mx-auto text-gray-400 mb-2" />
+                <p className="text-sm text-gray-500">Click to upload image</p>
+                <p className="text-[10px] text-gray-400 mt-2 italic">
+                  Recommended: Square image (512x512px). Leave blank if guest
+                  prefers not to share their image.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-6 py-2 text-sm font-medium text-gray-600 hover:text-gray-800"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-8 py-2 bg-[#4A3B2A] text-white rounded-lg text-sm font-medium hover:bg-[#3a2d20] transition-colors flex items-center gap-2 disabled:opacity-70"
+          >
+            {loading ? (
+              <>
+                <Loader2 size={16} className="animate-spin" /> Adding...
+              </>
+            ) : (
+              <>
+                <Check size={16} /> Save Testimonial
+              </>
+            )}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
@@ -313,8 +409,29 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
   const [loading, setLoading] = useState(true);
   const [globalMessage, setGlobalMessage] = useState(null);
   const [editingImage, setEditingImage] = useState(null);
-  const [editFormData, setEditFormData] = useState({ alt: "", shortDescription: "", fullContent: "" });
+  const [editFormData, setEditFormData] = useState({
+    alt: "",
+    shortDescription: "",
+    fullContent: "",
+    destination: "",
+    monthYear: "",
+    imageFile: null,
+    imagePreview: null,
+  });
+  const [isAdding, setIsAdding] = useState(false);
   const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [availableDestinations, setAvailableDestinations] = useState([]);
+  const [isOtherDestinationEdit, setIsOtherDestinationEdit] = useState(false);
+
+  useEffect(() => {
+    api
+      .getDestinations(true)
+      .then((data) => {
+        const names = [...new Set(data.map((d) => d.name))].sort();
+        setAvailableDestinations(names);
+      })
+      .catch((err) => console.error("Error fetching destinations:", err));
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -364,7 +481,9 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
   };
 
   const handleDelete = async (imageId) => {
-    if (!window.confirm("Delete this testimonial image? This cannot be undone."))
+    if (
+      !window.confirm("Delete this testimonial image? This cannot be undone.")
+    )
       return;
     try {
       await api.deleteTestimonialImage(imageId);
@@ -377,24 +496,43 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
 
   const handleEditClick = (image) => {
     setEditingImage(image);
+    const names = availableDestinations;
+    const isOther = image.destination && !names.includes(image.destination);
+    setIsOtherDestinationEdit(isOther);
     setEditFormData({
       alt: image.alt || "",
       shortDescription: image.shortDescription || "",
-      fullContent: image.fullContent || ""
+      fullContent: image.fullContent || "",
+      destination: image.destination || "",
+      monthYear: image.monthYear || "",
+      imageFile: null,
+      imagePreview: image.url ? `${IMAGE_BASE_URL}${image.url}` : null,
     });
   };
 
   const handleSaveEdit = async () => {
     if (!editingImage) return;
     setIsSavingEdit(true);
+    const formData = new FormData();
+    formData.append("alt", editFormData.alt);
+    formData.append("shortDescription", editFormData.shortDescription);
+    formData.append("fullContent", editFormData.fullContent);
+    formData.append("destination", editFormData.destination);
+    formData.append("monthYear", editFormData.monthYear);
+    
+    if (editFormData.imageFile) {
+      formData.append("testimonialImage", editFormData.imageFile);
+    }
+
     try {
-      const payload = {
-        alt: editFormData.alt,
-        shortDescription: editFormData.shortDescription,
-        fullContent: editFormData.fullContent
-      };
-      await api.updateTestimonialImage(editingImage._id, payload);
-      setImages((prev) => prev.map((img) => img._id === editingImage._id ? { ...img, ...payload } : img));
+      const result = await api.updateTestimonialImage(editingImage._id, formData);
+      const updatedImage = result.page.testimonials.images.find(img => img._id === editingImage._id);
+      
+      setImages((prev) =>
+        prev.map((img) =>
+          img._id === editingImage._id ? updatedImage : img,
+        ),
+      );
       showMessage("success", "Testimonial updated successfully.");
       setEditingImage(null);
     } catch (err) {
@@ -404,11 +542,23 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
     }
   };
 
+  const handleEditImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setEditFormData((prev) => ({
+        ...prev,
+        imageFile: file,
+        imagePreview: URL.createObjectURL(file),
+      }));
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="mb-6">
         <p className="text-sm text-gray-500">
-          Update the titles and manage testimonial images.
+          Update the titles and manage testimonial images. (Changes here will
+          reflect on home page)
         </p>
       </div>
 
@@ -433,7 +583,9 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
             <input
               type="text"
               value={data?.titleItalic || ""}
-              onChange={(e) => onChange({ ...data, titleItalic: e.target.value })}
+              onChange={(e) =>
+                onChange({ ...data, titleItalic: e.target.value })
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
               placeholder="e.g. Experience"
             />
@@ -467,18 +619,27 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
           </div>
         )}
 
-        <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
-          <div className="flex items-center gap-2 mb-4">
-            <Upload size={18} className="text-[#4A3B2A]" />
-            <h3 className="font-semibold text-[#4A3B2A]">
-              Add Testimonial Images
-            </h3>
+        {!isAdding ? (
+          <div className="flex justify-center py-4">
+            <button
+              type="button"
+              onClick={() => setIsAdding(true)}
+              className="flex items-center gap-2 px-6 py-3 bg-[#4A3B2A] text-white rounded-xl font-bold shadow-lg hover:bg-[#3a2d20] transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <Upload size={20} />
+              Add Testimonial
+            </button>
           </div>
-          <UploadZone onUploaded={() => {
-            fetchImages();
-            if (onRefresh) onRefresh();
-          }} />
-        </div>
+        ) : (
+          <AddTestimonialForm
+            onUploaded={() => {
+              setIsAdding(false);
+              fetchImages();
+              if (onRefresh) onRefresh();
+            }}
+            onCancel={() => setIsAdding(false)}
+          />
+        )}
 
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
           <div className="flex items-center justify-between mb-5">
@@ -543,34 +704,128 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <h3 className="text-xl font-bold text-[#4A3B2A]">Edit Testimonial</h3>
-              <button 
+              <h3 className="text-xl font-bold text-[#4A3B2A]">
+                Edit Testimonial
+              </h3>
+              <button
                 onClick={() => setEditingImage(null)}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
-            
-            <div className="p-6 space-y-5 flex-1">
-              <div className="flex justify-center mb-6">
-                <img 
-                  src={`${IMAGE_BASE_URL}${editingImage.url}`} 
-                  alt="Preview" 
-                  className="h-32 object-contain rounded-lg border border-gray-200"
-                />
+
+            <div className="p-6 space-y-6 flex-1 overflow-y-auto max-h-[70vh]">
+              {/* Image Update Section */}
+              <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex flex-col sm:flex-row gap-6 items-start">
+                <div className="w-full sm:w-32 shrink-0">
+                  <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Image Preview</p>
+                  <div className="aspect-square rounded-full overflow-hidden border-2 border-gray-200 bg-white relative group shadow-sm flex items-center justify-center">
+                    {editFormData.imagePreview ? (
+                      <img
+                        src={editFormData.imagePreview}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-gray-400 p-2 text-center">
+                        <ImageIcon size={20} className="mb-1 opacity-40" />
+                        <p className="text-[8px] font-bold text-[#4A3B2A]/40 uppercase leading-tight">No Image Shared</p>
+                      </div>
+                    )}
+                    <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleEditImageChange}
+                      />
+                      <span className="text-white text-[10px] font-bold uppercase tracking-wider">Change</span>
+                    </label>
+                  </div>
+                </div>
+                <div className="flex-1 space-y-3 w-full">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Replace Testimonial Image
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditImageChange}
+                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#4A3B2A]/10 file:text-[#4A3B2A] hover:file:bg-[#4A3B2A]/20 cursor-pointer"
+                  />
+                  <p className="text-[10px] text-gray-400 mt-2 italic">
+                    Recommended: Square image (512x512px). Image will be auto-compressed.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Name / Location
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.alt}
+                    onChange={(e) =>
+                      setEditFormData({ ...editFormData, alt: e.target.value })
+                    }
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+                    placeholder="e.g. John Doe, Mumbai"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Destination
+                  </label>
+                  <div className="space-y-2">
+                    <select
+                      value={isOtherDestinationEdit ? "Other" : editFormData.destination}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === "Other") {
+                          setIsOtherDestinationEdit(true);
+                          setEditFormData({ ...editFormData, destination: "" });
+                        } else {
+                          setIsOtherDestinationEdit(false);
+                          setEditFormData({ ...editFormData, destination: val });
+                        }
+                      }}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+                    >
+                      <option value="">Select a destination</option>
+                      {availableDestinations.map((dest) => (
+                        <option key={dest} value={dest}>{dest}</option>
+                      ))}
+                      <option value="Other">Other (Type manually)</option>
+                    </select>
+                    {isOtherDestinationEdit && (
+                      <input
+                        type="text"
+                        value={editFormData.destination}
+                        onChange={(e) =>
+                          setEditFormData({ ...editFormData, destination: e.target.value })
+                        }
+                        className="w-full px-4 py-2 border border-blue-200 bg-blue-50/30 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
+                        placeholder="Type destination..."
+                      />
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Alt Text / Name
+                  Month / Year
                 </label>
                 <input
-                  type="text"
-                  value={editFormData.alt}
-                  onChange={(e) => setEditFormData({...editFormData, alt: e.target.value})}
+                  type="month"
+                  value={formatMonthYearForInput(editFormData.monthYear)}
+                  onChange={(e) =>
+                    setEditFormData({ ...editFormData, monthYear: e.target.value })
+                  }
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
-                  placeholder="e.g. John Doe"
                 />
               </div>
 
@@ -580,12 +835,13 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
                 </label>
                 <textarea
                   value={editFormData.shortDescription}
-                  onChange={(e) => setEditFormData({...editFormData, shortDescription: e.target.value})}
+                  onChange={(e) =>
+                    setEditFormData({ ...editFormData, shortDescription: e.target.value })
+                  }
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
                   rows="2"
                   placeholder="A short preview of the testimonial..."
                 />
-                <p className="text-xs text-gray-400 mt-1">This will be shown on the home page card.</p>
               </div>
 
               <div>
@@ -594,12 +850,13 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
                 </label>
                 <textarea
                   value={editFormData.fullContent}
-                  onChange={(e) => setEditFormData({...editFormData, fullContent: e.target.value})}
+                  onChange={(e) =>
+                    setEditFormData({ ...editFormData, fullContent: e.target.value })
+                  }
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#4A3B2A] focus:border-[#4A3B2A]"
                   rows="6"
                   placeholder="The complete testimonial story..."
                 />
-                <p className="text-xs text-gray-400 mt-1">This will be shown on the Stories page.</p>
               </div>
             </div>
 
@@ -617,9 +874,14 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
                 disabled={isSavingEdit}
               >
                 {isSavingEdit ? (
-                  <><Loader2 size={16} className="animate-spin mr-2" /> Saving...</>
+                  <>
+                    <Loader2 size={16} className="animate-spin mr-2" />{" "}
+                    Saving...
+                  </>
                 ) : (
-                  <><Check size={16} className="mr-2" /> Save Changes</>
+                  <>
+                    <Check size={16} className="mr-2" /> Save Changes
+                  </>
                 )}
               </button>
             </div>

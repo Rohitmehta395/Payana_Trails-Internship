@@ -107,6 +107,7 @@ router.put(
 router.put(
   "/testimonials/:imageId",
   requireAdmin,
+  upload.single("testimonialImage"),
   homePageController.updateTestimonial
 );
 

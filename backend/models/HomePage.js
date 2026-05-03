@@ -55,10 +55,12 @@ const homePageSchema = new mongoose.Schema(
       subtitle: { type: String, default: "" },
       images: [
         {
-          url: { type: String, required: true },
+          url: { type: String, required: false },
           alt: { type: String, default: "" },
           shortDescription: { type: String, default: "" },
           fullContent: { type: String, default: "" },
+          destination: { type: String, default: "" },
+          monthYear: { type: String, default: "" },
           isActive: { type: Boolean, default: true },
           order: { type: Number, default: 0 },
         }

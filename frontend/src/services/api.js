@@ -953,12 +953,17 @@ export const api = {
   },
 
   // --- TESTIMONIALS ROUTES ---
-  uploadTestimonialImages: async (files, alt = "") => {
+  uploadTestimonialImages: async (files, extraData = {}) => {
     try {
       const formData = new FormData();
       const fileArr = Array.isArray(files) ? files : [files];
       fileArr.forEach((f) => formData.append("testimonialImages", f));
-      formData.append("alt", alt);
+      
+      Object.entries(extraData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value);
+        }
+      });
 
       const response = await fetch(`${API_BASE_URL}/home-page/testimonials`, {
         method: "POST",
@@ -1018,12 +1023,18 @@ export const api = {
 
   updateTestimonialImage: async (imageId, payload) => {
     try {
+      const isFormData = payload instanceof FormData;
+      const headers = withAdminAuth();
+      if (!isFormData) {
+        headers["Content-Type"] = "application/json";
+      }
+
       const response = await fetch(
         `${API_BASE_URL}/home-page/testimonials/${imageId}`,
         {
           method: "PUT",
-          headers: withAdminAuth({ "Content-Type": "application/json" }),
-          body: JSON.stringify(payload),
+          headers,
+          body: isFormData ? payload : JSON.stringify(payload),
         },
       );
       const data = await response.json();

@@ -5,7 +5,6 @@ import StoriesVoicesForm from "./sections/StoriesVoicesForm";
 import NewsletterSectionForm from "./sections/NewsletterSectionForm";
 import ConnectSectionForm from "./sections/ConnectSectionForm";
 import ReferGiftSectionForm from "./sections/ReferGiftSectionForm";
-import TestimonialsForm from "./sections/TestimonialsForm";
 import { Loader2, Save } from "lucide-react";
 import { api } from "../../../services/api";
 
@@ -242,20 +241,7 @@ const HomePageForm = ({ initialData, onSave, activeTab }) => {
           </ReferGiftSectionForm>
         )}
 
-        {activeTab === "testimonials" && (
-          <TestimonialsForm 
-            data={data.testimonials || {}} 
-            onChange={(d) => handleSectionChange("testimonials", d)} 
-            onRefresh={async () => {
-              // This relies on the parent component triggering a full refetch
-              // But since we are directly mutating DB from TestimonialsForm for images,
-              // we can just call window.location.reload() or we can pass a refetch down.
-              // For now, let's keep it simple. The form itself maintains state.
-            }}
-          >
-            <SaveButton />
-          </TestimonialsForm>
-        )}
+        {/* Testimonials moved to Stories Page Section */}
       </form>
     </div>
   );

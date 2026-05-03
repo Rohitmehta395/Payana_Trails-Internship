@@ -20,8 +20,13 @@ const HomePageManager = () => {
     { id: "newsletter", label: "Newsletter" },
     { id: "connect", label: "Connect" },
     { id: "referGift", label: "Refer & Gift" },
-    { id: "testimonials", label: "Testimonials" },
   ];
+
+  useEffect(() => {
+    if (!tabs.find(t => t.id === activeTab)) {
+      setActiveTab("hero");
+    }
+  }, [activeTab, tabs]);
 
   useEffect(() => {
     fetchData();

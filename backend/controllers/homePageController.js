@@ -82,10 +82,6 @@ const testimonialsFolder = path.join(__dirname, "..", "uploads", "homePage", "te
 
 exports.uploadTestimonials = async (req, res) => {
   try {
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ message: "No images provided." });
-    }
-
     if (!fs.existsSync(testimonialsFolder)) fs.mkdirSync(testimonialsFolder, { recursive: true });
 
     let homePage = await HomePage.findOne();
@@ -99,36 +95,59 @@ exports.uploadTestimonials = async (req, res) => {
     const startOrder = homePage.testimonials.images.length;
     const imageStats = [];
 
-    for (let i = 0; i < req.files.length; i++) {
-      const file = req.files[i];
-      const baseName = `testimonial-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-      const webpFilename = `${baseName}.webp`;
-      const destPath = path.join(testimonialsFolder, webpFilename);
+    // Case 1: Images are provided
+    if (req.files && req.files.length > 0) {
+      for (let i = 0; i < req.files.length; i++) {
+        const file = req.files[i];
+        const baseName = `testimonial-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+        const webpFilename = `${baseName}.webp`;
+        const destPath = path.join(testimonialsFolder, webpFilename);
 
-      const compressedBuffer = await sharp(file.buffer)
-        .resize(1920, 1080, { fit: "inside", withoutEnlargement: true })
-        .webp({ quality: 80 })
-        .toBuffer();
+        const compressedBuffer = await sharp(file.buffer)
+          .resize(512, 512, { fit: "cover" })
+          .webp({ quality: 80 })
+          .toBuffer();
 
-      fs.writeFileSync(destPath, compressedBuffer);
+        fs.writeFileSync(destPath, compressedBuffer);
 
-      const originalSize = file.size || file.buffer?.length || 0;
-      const compressedSize = compressedBuffer.length;
-      
-      imageStats.push({
-        variant: "desktop",
-        originalName: file.originalname,
-        originalSize,
-        compressedSize,
-        savedPercent: originalSize > 0 ? Math.round((1 - compressedSize / originalSize) * 100) : 0,
-      });
+        const originalSize = file.size || file.buffer?.length || 0;
+        const compressedSize = compressedBuffer.length;
+        
+        imageStats.push({
+          variant: "desktop",
+          originalName: file.originalname,
+          originalSize,
+          compressedSize,
+          savedPercent: originalSize > 0 ? Math.round((1 - compressedSize / originalSize) * 100) : 0,
+        });
 
+        homePage.testimonials.images.push({
+          url: `/uploads/homePage/testimonials/${webpFilename}`,
+          alt: req.body.alt || "",
+          shortDescription: req.body.shortDescription || "",
+          fullContent: req.body.fullContent || "",
+          destination: req.body.destination || "",
+          monthYear: req.body.monthYear || "",
+          isActive: true,
+          order: startOrder + i,
+        });
+      }
+    } 
+    // Case 2: No images, but text data provided (single testimonial)
+    else if (req.body.alt || req.body.shortDescription) {
       homePage.testimonials.images.push({
-        url: `/uploads/homePage/testimonials/${webpFilename}`,
+        url: null, // No image
         alt: req.body.alt || "",
+        shortDescription: req.body.shortDescription || "",
+        fullContent: req.body.fullContent || "",
+        destination: req.body.destination || "",
+        monthYear: req.body.monthYear || "",
         isActive: true,
-        order: startOrder + i,
+        order: startOrder,
       });
+    }
+    else {
+      return res.status(400).json({ message: "No data or images provided." });
     }
 
     await homePage.save();
@@ -198,7 +217,7 @@ exports.deleteTestimonial = async (req, res) => {
 exports.updateTestimonial = async (req, res) => {
   try {
     const { imageId } = req.params;
-    const { shortDescription, fullContent, alt } = req.body;
+    const { shortDescription, fullContent, alt, destination, monthYear } = req.body;
 
     const homePage = await HomePage.findOne();
     if (!homePage || !homePage.testimonials) {
@@ -208,9 +227,43 @@ exports.updateTestimonial = async (req, res) => {
     const imgEntry = homePage.testimonials.images.id(imageId);
     if (!imgEntry) return res.status(404).json({ message: "Image not found" });
 
+    // Handle Image Update
+    if (req.file) {
+      try {
+        // Delete old image
+        const oldPath = path.join(__dirname, "..", imgEntry.url);
+        if (fs.existsSync(oldPath)) {
+          fs.unlinkSync(oldPath);
+        }
+
+        // Process new image
+        const testimonialsFolder = path.join(__dirname, "..", "uploads", "homePage", "testimonials");
+        if (!fs.existsSync(testimonialsFolder)) {
+          fs.mkdirSync(testimonialsFolder, { recursive: true });
+        }
+
+        const baseName = `testimonial-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+        const webpFilename = `${baseName}.webp`;
+        const destPath = path.join(testimonialsFolder, webpFilename);
+
+        const compressedBuffer = await sharp(req.file.buffer)
+          .resize(512, 512, { fit: "cover" })
+          .webp({ quality: 80 })
+          .toBuffer();
+
+        fs.writeFileSync(destPath, compressedBuffer);
+        imgEntry.url = `/uploads/homePage/testimonials/${webpFilename}`;
+      } catch (uploadError) {
+        console.error("Error updating testimonial image:", uploadError);
+        return res.status(500).json({ message: "Failed to process new image", error: uploadError.message });
+      }
+    }
+
     if (shortDescription !== undefined) imgEntry.shortDescription = shortDescription;
     if (fullContent !== undefined) imgEntry.fullContent = fullContent;
     if (alt !== undefined) imgEntry.alt = alt;
+    if (destination !== undefined) imgEntry.destination = destination;
+    if (monthYear !== undefined) imgEntry.monthYear = monthYear;
 
     await homePage.save();
 

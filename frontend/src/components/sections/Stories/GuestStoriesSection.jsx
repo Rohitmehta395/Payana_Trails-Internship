@@ -17,7 +17,7 @@ const ExternalStoryCard = ({ blog, index }) => {
         delay: index * 0.07,
         ease: [0.25, 0.1, 0.25, 1],
       }}
-      className="group cursor-pointer flex flex-col bg-[#FAF7F4] hover:bg-white transition-colors duration-300 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-lg"
+      className="group cursor-pointer flex flex-col bg-[#FAF7F4] hover:bg-white transition-colors duration-300 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-lg w-full h-full"
     >
       <div className="relative overflow-hidden" style={{ paddingTop: "62%" }}>
         {blog.featuredImage ? (
@@ -210,11 +210,11 @@ const GuestStoriesSection = ({ data }) => {
 
             <div
               ref={guestScrollRef}
-              className="flex gap-7 overflow-x-auto pb-4 hide-scrollbar snap-x snap-mandatory"
+              className="flex gap-7 overflow-x-auto overflow-y-hidden pb-4 hide-scrollbar snap-x snap-mandatory"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {stories.map((story, index) => (
-                <div key={story._id} className="min-w-full md:min-w-[calc(50%-14px)] lg:min-w-[calc(33.333%-18.66px)] snap-start">
+                <div key={story._id} className="flex min-w-full md:min-w-[calc(50%-14px)] lg:min-w-[calc(33.333%-18.66px)] snap-start">
                   <ExternalStoryCard
                     blog={story}
                     index={index}

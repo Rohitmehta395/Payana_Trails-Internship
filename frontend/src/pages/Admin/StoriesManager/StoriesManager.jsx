@@ -7,6 +7,7 @@ import NewsletterManager from "./NewsletterManager";
 import ExternalStoryList from "./ExternalStoryList";
 import ExternalStoryForm from "./ExternalStoryForm";
 import GuestStoriesManager from "./GuestStoriesManager";
+import TestimonialsManager from "./TestimonialsManager";
 
 // view: "section" | "blogList" | "blogForm"
 const StoriesManager = () => {
@@ -29,6 +30,7 @@ const StoriesManager = () => {
     { id: "blogManagement", label: "Blog Management" },
     { id: "externalStories", label: "External Stories" },
     { id: "voices", label: "Voices from the Trail" },
+    { id: "testimonials", label: "Testimonials" },
     { id: "newsletter", label: "Newsletter Section" },
   ];
 
@@ -112,6 +114,7 @@ const StoriesManager = () => {
       <div className="p-6">
         {activeTab === "travelStories" && <TravelStoriesManager />}
         {activeTab === "voices" && <VoicesManager />}
+        {activeTab === "testimonials" && <TestimonialsManager />}
         {activeTab === "newsletter" && <NewsletterManager />}
 
         {activeTab === "blogManagement" && (
