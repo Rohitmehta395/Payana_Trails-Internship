@@ -47,14 +47,14 @@ const ExternalStoryForm = ({ editStory = null, onSaved, onCancel }) => {
           isDraft: editStory.isDraft || false,
           featuredImage: null,
         }
-      : defaultForm
+      : defaultForm,
   );
 
   const [availableDestinations, setAvailableDestinations] = useState([]);
   const [isOtherDestination, setIsOtherDestination] = useState(false);
 
   const [currentImage, setCurrentImage] = useState(
-    isEdit ? editStory.featuredImage || "" : ""
+    isEdit ? editStory.featuredImage || "" : "",
   );
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -69,13 +69,16 @@ const ExternalStoryForm = ({ editStory = null, onSaved, onCancel }) => {
   };
 
   useEffect(() => {
-    api.getDestinations(true).then(data => {
-      const names = [...new Set(data.map(d => d.name))].sort();
-      setAvailableDestinations(names);
-      if (formData.destination && !names.includes(formData.destination)) {
-        setIsOtherDestination(true);
-      }
-    }).catch(err => console.error("Error fetching destinations:", err));
+    api
+      .getDestinations(true)
+      .then((data) => {
+        const names = [...new Set(data.map((d) => d.name))].sort();
+        setAvailableDestinations(names);
+        if (formData.destination && !names.includes(formData.destination)) {
+          setIsOtherDestination(true);
+        }
+      })
+      .catch((err) => console.error("Error fetching destinations:", err));
   }, []);
 
   const handleInput = (e) => {
@@ -83,10 +86,10 @@ const ExternalStoryForm = ({ editStory = null, onSaved, onCancel }) => {
     if (name === "destinationSelect") {
       if (value === "Other") {
         setIsOtherDestination(true);
-        setFormData(prev => ({ ...prev, destination: "" }));
+        setFormData((prev) => ({ ...prev, destination: "" }));
       } else {
         setIsOtherDestination(false);
-        setFormData(prev => ({ ...prev, destination: value }));
+        setFormData((prev) => ({ ...prev, destination: value }));
       }
       return;
     }
@@ -141,7 +144,8 @@ const ExternalStoryForm = ({ editStory = null, onSaved, onCancel }) => {
     fd.append("location", formData.location);
     fd.append("externalUrl", formData.externalUrl);
     fd.append("isDraft", asDraft ? "true" : "false");
-    if (formData.featuredImage) fd.append("featuredImage", formData.featuredImage);
+    if (formData.featuredImage)
+      fd.append("featuredImage", formData.featuredImage);
     return fd;
   };
 
@@ -159,7 +163,10 @@ const ExternalStoryForm = ({ editStory = null, onSaved, onCancel }) => {
     try {
       let res;
       if (isEdit) {
-        res = await api.updateExternalStory(editStory._id, buildFormData(asDraft));
+        res = await api.updateExternalStory(
+          editStory._id,
+          buildFormData(asDraft),
+        );
       } else {
         res = await api.createExternalStory(buildFormData(asDraft));
         savedStoryId.current = res.blog._id;
@@ -169,12 +176,14 @@ const ExternalStoryForm = ({ editStory = null, onSaved, onCancel }) => {
       let msg = isEdit
         ? "Story updated successfully!"
         : asDraft
-        ? "Draft saved!"
-        : "Story published!";
+          ? "Draft saved!"
+          : "Story published!";
       if (res.imageStats?.length) {
         msg +=
           " Compression: " +
-          res.imageStats.map((s) => `${s.field} (${s.savedPercent}%)`).join(", ");
+          res.imageStats
+            .map((s) => `${s.field} (${s.savedPercent}%)`)
+            .join(", ");
       }
       showMsg("success", msg, 6000);
       if (onSaved) onSaved(res.blog);
@@ -316,7 +325,8 @@ const ExternalStoryForm = ({ editStory = null, onSaved, onCancel }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Location <span className="text-gray-400 font-normal">(Optional)</span>
+              Location{" "}
+              <span className="text-gray-400 font-normal">(Optional)</span>
             </label>
             <input
               type="text"
@@ -367,7 +377,8 @@ const ExternalStoryForm = ({ editStory = null, onSaved, onCancel }) => {
             Featured Image (Optional)
           </label>
           <p className="text-xs text-gray-500 mb-3">
-            If left blank, we'll try to fetch the image from the External URL automatically.
+            If left blank, we'll try to fetch the image from the External URL
+            automatically.
           </p>
           {currentImage && (
             <div className="mb-3">
@@ -390,12 +401,18 @@ const ExternalStoryForm = ({ editStory = null, onSaved, onCancel }) => {
 
         {imageStats.length > 0 && (
           <div className="bg-blue-50 border border-blue-200 rounded-md p-4 text-sm">
-            <p className="font-medium text-blue-800 mb-1">Compression Results:</p>
+            <p className="font-medium text-blue-800 mb-1">
+              Compression Results:
+            </p>
             {imageStats.map((stat, i) => (
               <p key={i} className="text-blue-700">
-                <strong>{stat.field}</strong>: {(stat.originalSize / 1024).toFixed(0)}KB →{" "}
+                <strong>{stat.field}</strong>:{" "}
+                {(stat.originalSize / 1024).toFixed(0)}KB →{" "}
                 {(stat.compressedSize / 1024).toFixed(0)}KB (
-                <span className="text-green-700 font-semibold">{stat.savedPercent}% saved</span>)
+                <span className="text-green-700 font-semibold">
+                  {stat.savedPercent}% saved
+                </span>
+                )
               </p>
             ))}
           </div>
@@ -415,7 +432,11 @@ const ExternalStoryForm = ({ editStory = null, onSaved, onCancel }) => {
             disabled={isSaving}
             className="px-6 py-2 bg-[#4A3B2A] text-white rounded-md text-sm font-medium hover:bg-[#3A2E20] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {isSaving ? "Publishing…" : isEdit ? "Update Story" : "Publish Story"}
+            {isSaving
+              ? "Publishing…"
+              : isEdit
+                ? "Update Story"
+                : "Publish Story"}
           </button>
         </div>
       </form>

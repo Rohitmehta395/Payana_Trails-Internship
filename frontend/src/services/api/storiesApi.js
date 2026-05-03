@@ -537,7 +537,9 @@ export const createExternalStory = async (formData) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to create external story");
+      throw new Error(
+        data.error || data.message || "Failed to create external story",
+      );
     }
 
     return data;
@@ -567,7 +569,9 @@ export const updateExternalStory = async (id, formData) => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to update external story");
+      throw new Error(
+        data.error || data.message || "Failed to update external story",
+      );
     }
 
     return data;
