@@ -12,8 +12,9 @@ import { NewsletterProvider } from "./context/NewsletterContext";
 // ─── Page-level code splitting ───────────────────────────────────────────────
 // Each lazy() call creates a separate chunk that only loads when the route is visited.
 
+import Home from "./pages/Home";
+
 // Public pages
-const Home = lazy(() => import("./pages/Home"));
 const Journeys = lazy(() => import("./pages/Journeys"));
 const PayanaWay = lazy(() => import("./pages/PayanaWay"));
 const Stories = lazy(() => import("./pages/Stories"));
