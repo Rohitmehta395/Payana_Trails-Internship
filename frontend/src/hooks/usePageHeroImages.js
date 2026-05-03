@@ -42,7 +42,7 @@ export function prefetchPageHeroImages(pageKey) {
 // ---------------------------------------------------------------------------
 // Helper – transform raw DB image records into { desktop, mobile, alt, _id }
 // ---------------------------------------------------------------------------
-function transformImages(rawImages, IMAGE_BASE_URL) {
+function transformImages(rawImages) {
   return rawImages
     .filter((img) => img.isActive)
     .sort((a, b) => a.order - b.order)
@@ -63,17 +63,14 @@ function transformImages(rawImages, IMAGE_BASE_URL) {
 /**
  * usePageHeroImages(pageKey, fallbackImages)
  *
- * Returns { images, loading }.
+ * DB-first strategy:
+ *  - While the DB fetch is in flight → images = [], loading = true
+ *    (Hero will show a branded skeleton, not fallback images)
+ *  - Once the DB fetch resolves with active images → images = DB images, loading = false
+ *  - If the DB fetch resolves with no active images OR errors → images = fallbackImages, loading = false
  *
- * Behaviour:
- *  1. If prefetchPageHeroImages(pageKey) has already been called and the
- *     fetch is complete, the hook resolves synchronously (loading = false,
- *     images = db or fallback) on the very first render – zero flicker.
- *  2. If the fetch is still in flight, the hook starts with fallback images
- *     (so the hero renders immediately) and switches to DB images once the
- *     promise resolves.
- *  3. If no prefetch was started, it falls back to fetching on mount (old
- *     behaviour), so nothing breaks.
+ * If prefetchPageHeroImages(pageKey) was already called and the fetch
+ * resolved before the hook first runs, we skip loading entirely (zero flicker).
  */
 const usePageHeroImages = (pageKey, fallbackImages = []) => {
   const entry = prefetchCache[pageKey];
@@ -82,39 +79,50 @@ const usePageHeroImages = (pageKey, fallbackImages = []) => {
   // If the prefetch already resolved before this hook first runs, we can
   // skip the loading phase entirely.
   const resolvedSync = entry && entry.data !== null;
+  const erroredSync = entry && entry.error !== null && entry.data === null;
 
   const getInitialImages = () => {
-    if (!resolvedSync) return fallbackImages;
-    const active = transformImages(entry.data.images || [], IMAGE_BASE_URL);
-    return active.length > 0 ? active : fallbackImages;
+    if (resolvedSync) {
+      const active = transformImages(entry.data?.images || []);
+      return active.length > 0 ? active : fallbackImages;
+    }
+    if (erroredSync) {
+      return fallbackImages;
+    }
+    // Still loading – return empty so Hero shows skeleton
+    return [];
   };
 
   const [images, setImages] = useState(getInitialImages);
-  // loading=false when we already have DB data; otherwise true until fetch done
-  const [loading, setLoading] = useState(!resolvedSync);
+  // loading=false only when we have a definitive result (DB images OR fallback after error/empty)
+  const [loading, setLoading] = useState(!resolvedSync && !erroredSync);
   const mounted = useRef(true);
 
   useEffect(() => {
     mounted.current = true;
-    return () => { mounted.current = false; };
+    return () => {
+      mounted.current = false;
+    };
   }, []);
 
   useEffect(() => {
     // Already resolved synchronously — nothing to do.
-    if (resolvedSync) return;
+    if (resolvedSync || erroredSync) return;
 
     let cancelled = false;
 
     const handleData = (data) => {
       if (cancelled || !mounted.current) return;
       if (data && (data.images || []).length > 0) {
-        const active = transformImages(data.images, IMAGE_BASE_URL);
+        const active = transformImages(data.images);
         if (active.length > 0) {
           setImages(active);
         } else {
+          // DB has images but none are active → use fallback
           setImages(fallbackImages);
         }
       } else {
+        // DB returned empty → use fallback
         setImages(fallbackImages);
       }
       setLoading(false);
@@ -122,7 +130,10 @@ const usePageHeroImages = (pageKey, fallbackImages = []) => {
 
     const handleError = (err) => {
       if (cancelled || !mounted.current) return;
-      console.warn(`usePageHeroImages(${pageKey}): using fallback images`, err?.message);
+      console.warn(
+        `usePageHeroImages(${pageKey}): DB fetch failed, using fallback images`,
+        err?.message
+      );
       setImages(fallbackImages);
       setLoading(false);
     };
@@ -134,13 +145,12 @@ const usePageHeroImages = (pageKey, fallbackImages = []) => {
         .catch(handleError);
     } else {
       // No prefetch — fetch now (graceful degradation).
-      api
-        .getPageHeroImages(pageKey)
-        .then(handleData)
-        .catch(handleError);
+      api.getPageHeroImages(pageKey).then(handleData).catch(handleError);
     }
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageKey]);
 

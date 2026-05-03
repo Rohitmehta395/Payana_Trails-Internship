@@ -10,14 +10,12 @@ import TestimonialsSection from "../components/sections/Home/TestimonialsSection
 import usePageHeroImages, {
   prefetchPageHeroImages,
 } from "../hooks/usePageHeroImages";
+import ExploreDestination from "../components/sections/Home/ExploreDestination";
 
-// Kick off the DB fetch immediately when this module is first imported.
-// By the time any component renders, the request is already in flight.
-prefetchPageHeroImages("home");
-
-//HardCoded Hero Images
-//Desktop
-// import imgD1 from "../assets/Home/hero/Desktop/4.Lioness_with_cubs_Kenya.webp";
+// ---------------------------------------------------------------------------
+// Static fallback images – used ONLY if the DB fetch fails or returns
+// no active images. They are never shown during normal loading.
+// ---------------------------------------------------------------------------
 import imgD2 from "../assets/Home/hero/Desktop/1.Rose_City_of_Petra_Jordan.webp";
 import imgD3 from "../assets/Home/hero/Desktop/3.Pyramids_and_Camels_Egypt.webp";
 import imgD4 from "../assets/Home/hero/Desktop/2.Giraffe_couple_Tanzania.webp";
@@ -30,7 +28,6 @@ import imgD10 from "../assets/Home/hero/Desktop/10.Great_Wall_of_China_Landscape
 import imgD11 from "../assets/Home/hero/Desktop/11.Floating_Market_Thailand.webp";
 import imgD12 from "../assets/Home/hero/Desktop/12.Mount_Kailas_Tibet.webp";
 
-//Mobile
 import imgM2 from "../assets/Home/hero/Mobile/1.Rose CityofPetra-Jordan-Portrait.jpg";
 import imgM3 from "../assets/Home/hero/Mobile/3.PyramidsandCamels-Egypt-Portrait.jpg";
 import imgM4 from "../assets/Home/hero/Mobile/2.Cheetah-Tanzania-Portrait.jpg";
@@ -42,9 +39,11 @@ import imgM9 from "../assets/Home/hero/Mobile/9.TigersNest-Bhutan-Portrait.jpg";
 import imgM10 from "../assets/Home/hero/Mobile/10.GreatWallofChina-Portrait.jpg";
 import imgM11 from "../assets/Home/hero/Mobile/11.FloatingMarket-Thailand-Portrait.jpg";
 import imgM12 from "../assets/Home/hero/Mobile/12.MountKailas-Tibet-Portrait.jpg";
-import ExploreDestination from "../components/sections/Home/ExploreDestination";
 
-// Static fallback images
+// Kick off the DB fetch immediately when this module is first imported.
+// By the time any component renders, the request is already in flight.
+prefetchPageHeroImages("home");
+
 const FALLBACK_IMAGES = [
   { desktop: "/heroBg-desktop.webp", mobile: "/heroBg-mobile.jpg" },
   { desktop: imgD2, mobile: imgM2 },
@@ -66,11 +65,13 @@ const Home = () => {
     import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
   const OG_IMAGE = `${API_BASE_URL}/page-heroes/home/primary-image`;
 
-  // Pull images from DB; fall back to static assets if DB has none
+  // Pull images from DB; fall back to static assets only if DB fails or is empty.
+  // While loading, `images` will be [] and `loading` will be true.
   const { images: heroImages, loading: heroLoading } = usePageHeroImages(
     "home",
-    FALLBACK_IMAGES,
+    FALLBACK_IMAGES
   );
+
   return (
     <>
       <Helmet>
@@ -110,7 +111,8 @@ const Home = () => {
       </Helmet>
 
       <div>
-        <Hero images={heroImages} loading={false} />
+        {/* Pass loading flag through – Hero handles skeleton state internally */}
+        <Hero images={heroImages} loading={heroLoading} />
         <ExploreOurTrails />
         <ExploreDestination />
         <PayanaWay />

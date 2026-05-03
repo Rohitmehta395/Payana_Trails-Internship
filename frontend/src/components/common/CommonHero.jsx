@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiChevronDown } from "react-icons/fi";
-import { motion, AnimatePresence } from "framer-motion";
+import { FiArrowLeft } from "react-icons/fi";
+import { motion } from "framer-motion";
 
 const CommonHero = ({ title, description, images = [], bgImage, breadcrumbs }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -58,31 +58,56 @@ const CommonHero = ({ title, description, images = [], bgImage, breadcrumbs }) =
       initial="hidden"
       animate="visible"
       variants={staggerContainer}
-      className="relative w-full h-[60vh] md:h-[550px] flex flex-col justify-center items-center text-center overflow-hidden bg-[#110C08]"
+      className="relative w-full h-[60vh] md:h-[550px] flex flex-col justify-center items-center text-center overflow-hidden bg-[#4A3B2A]"
     >
-      {/* Background Image Slider (Cross-fade) */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Background Image Slider – uses <picture>/<img> for proper          */}
+      {/* browser hint attributes (fetchPriority, loading, decoding).        */}
+      {/* ------------------------------------------------------------------ */}
       <div className="absolute inset-0 z-0">
-        {heroImages.map((img, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 w-full h-full transition-opacity duration-[1500ms] ease-in-out ${
-              index === currentIndex ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {/* Mobile Background */}
+        {heroImages.map((img, index) => {
+          const isFirst = index === 0;
+          const mobilesrc = img.mobile || img.desktop || img;
+          const desktopsrc = img.desktop || img;
+
+          return (
             <div
-              className="absolute inset-0 bg-cover bg-center sm:hidden"
-              style={{ backgroundImage: `url(${img.mobile || img.desktop || img})` }}
-            />
-            {/* Desktop Background */}
-            <div
-              className="absolute inset-0 bg-cover bg-center hidden sm:block"
-              style={{ backgroundImage: `url(${img.desktop || img})` }}
-            />
-          </div>
-        ))}
-        
-        {/* Background Gradient Overlays for Readability */}
+              key={index}
+              className={`absolute inset-0 w-full h-full transition-opacity duration-[1500ms] ease-in-out ${
+                index === currentIndex ? "opacity-100" : "opacity-0"
+              }`}
+              aria-hidden={index !== currentIndex}
+            >
+              {/* Mobile image */}
+              <picture className="absolute inset-0 w-full h-full sm:hidden">
+                <img
+                  src={mobilesrc}
+                  alt={img.alt || title || ""}
+                  className="w-full h-full object-cover object-center"
+                  loading={isFirst ? "eager" : "lazy"}
+                  fetchPriority={isFirst ? "high" : "low"}
+                  decoding="async"
+                  draggable={false}
+                />
+              </picture>
+
+              {/* Desktop image */}
+              <picture className="absolute inset-0 w-full h-full hidden sm:block">
+                <img
+                  src={desktopsrc}
+                  alt={img.alt || title || ""}
+                  className="w-full h-full object-cover object-center"
+                  loading={isFirst ? "eager" : "lazy"}
+                  fetchPriority={isFirst ? "high" : "low"}
+                  decoding="async"
+                  draggable={false}
+                />
+              </picture>
+            </div>
+          );
+        })}
+
+        {/* Gradient Overlays for Readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#4A3B2A]/40 via-transparent to-[#4A3B2A]/60 z-10" />
         <div className="absolute inset-0 bg-black/20 z-10" />
       </div>
@@ -153,35 +178,6 @@ const CommonHero = ({ title, description, images = [], bgImage, breadcrumbs }) =
           {renderBackButton()}
         </motion.div>
       </div>
-
-      {/* Scroll Down Indicator */}
-      {/* <motion.div
-        variants={fadeUpItem}
-        className="hidden md:block absolute bottom-10 left-1/2 -translate-x-1/2 z-20"
-      >
-        <button
-          onClick={() => {
-            window.scrollTo({
-              top: 900,
-              behavior: "smooth",
-            });
-          }}
-          className="group flex flex-col items-center gap-2"
-        >
-          <div className="flex items-center gap-3 bg-[#4A3B2A]/30 hover:bg-[#4A3B2A]/50 backdrop-blur-md border border-[#F3EFE9]/20 px-6 py-3 rounded-full transition-all duration-500 shadow-2xl cursor-pointer">
-            <span className="text-[#F3EFE9] text-[10px] md:text-xs tracking-[0.3em] uppercase font-medium opacity-80 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-              Scroll to Explore
-            </span>
-            <motion.div
-              animate={{ y: [0, 4, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="text-[#F3EFE9] cursor-pointer"
-            >
-              <FiChevronDown className="w-4 h-4 md:w-5 md:h-5" />
-            </motion.div>
-          </div>
-        </button>
-      </motion.div> */}
     </motion.section>
   );
 };
