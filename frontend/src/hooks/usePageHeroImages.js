@@ -89,15 +89,13 @@ const usePageHeroImages = (pageKey, fallbackImages = []) => {
     if (erroredSync) {
       return fallbackImages;
     }
-    // While loading, return fallbackImages so the UI can paint immediately
-    return fallbackImages;
+    // Still loading – return empty so Hero shows skeleton
+    return [];
   };
 
   const [images, setImages] = useState(getInitialImages);
-  // loading=false if we have fallback images to show immediately
-  const [loading, setLoading] = useState(
-    !resolvedSync && !erroredSync && fallbackImages.length === 0
-  );
+  // loading=false only when we have a definitive result (DB images OR fallback after error/empty)
+  const [loading, setLoading] = useState(!resolvedSync && !erroredSync);
   const mounted = useRef(true);
 
   useEffect(() => {
