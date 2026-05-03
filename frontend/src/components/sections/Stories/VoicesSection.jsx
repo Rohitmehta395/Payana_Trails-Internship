@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { motion as Motion, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { IMAGE_BASE_URL } from "../../../services/api";
+import { User } from "lucide-react";
 import useHomePageData from "../../../hooks/useHomePageData";
 
 const formatMonthYearForDisplay = (val) => {
@@ -60,10 +61,8 @@ const TestimonialCard = ({ testimonial, index }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="flex flex-col items-center justify-center text-center p-1 bg-[#4A3B2A]/10 w-full h-full" title="This guest preferred not to share an image">
-              <span className="text-[8px] font-bold text-[#4A3B2A]/30 uppercase leading-tight">
-                No Image Shared
-              </span>
+            <div className="flex items-center justify-center bg-[#4A3B2A]/10 w-full h-full" title="This guest preferred not to share an image">
+              <User size={24} className="text-[#4A3B2A]/20" />
             </div>
           )}
         </div>

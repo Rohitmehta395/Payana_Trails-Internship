@@ -3,7 +3,7 @@ import { FaHeart } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import useHomePageData from "../../../hooks/useHomePageData";
 import { IMAGE_BASE_URL } from "../../../services/api";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight, User } from "lucide-react";
 
 const formatMonthYearForDisplay = (val) => {
   if (!val) return "";
@@ -145,10 +145,8 @@ const TestimonialsSection = () => {
                           loading="lazy"
                         />
                       ) : (
-                        <div className="flex flex-col items-center justify-center text-center p-1 bg-[#4A3B2A]/10 w-full h-full" title="This guest preferred not to share an image">
-                          <span className="text-[8px] font-bold text-[#4A3B2A]/30 uppercase leading-tight">
-                            No Image Shared
-                          </span>
+                        <div className="flex items-center justify-center bg-[#4A3B2A]/10 w-full h-full" title="This guest preferred not to share an image">
+                          <User size={24} className="text-[#4A3B2A]/20" />
                         </div>
                       )}
                     </div>

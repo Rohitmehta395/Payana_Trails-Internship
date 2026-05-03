@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { motion as Motion, useInView, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, User } from "lucide-react";
 import CommonHero from "../components/common/CommonHero";
 import storiesImg from "../assets/Home/Stories/stories-moments.webp";
 import usePageHeroImages from "../hooks/usePageHeroImages";
@@ -53,10 +53,8 @@ const TestimonialModal = ({ testimonial, onClose }) => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-[#4A3B2A]/10 flex items-center justify-center p-2 text-center">
-                  <span className="text-[10px] font-bold text-[#4A3B2A]/40 uppercase leading-tight">
-                    No Image Shared
-                  </span>
+                <div className="w-full h-full bg-[#4A3B2A]/10 flex items-center justify-center">
+                  <User size={48} className="text-[#4A3B2A]/20" />
                 </div>
               )}
             </div>
@@ -163,10 +161,8 @@ const TestimonialCard = ({ testimonial, index, isFocused, onClick }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-[#4A3B2A]/10 flex items-center justify-center p-1 text-center">
-              <span className="text-[8px] font-bold text-[#4A3B2A]/30 uppercase leading-tight">
-                No Image Shared
-              </span>
+            <div className="w-full h-full bg-[#4A3B2A]/10 flex items-center justify-center">
+              <User size={24} className="text-[#4A3B2A]/20" />
             </div>
           )}
         </div>

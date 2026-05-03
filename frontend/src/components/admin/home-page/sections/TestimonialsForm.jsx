@@ -27,6 +27,7 @@ import {
   ArrowRight,
   Edit2,
   X,
+  User,
 } from "lucide-react";
 
 const SortableImageCard = ({ image, onDelete, onEdit }) => {
@@ -77,8 +78,7 @@ const SortableImageCard = ({ image, onDelete, onEdit }) => {
           />
         ) : (
           <div className="flex flex-col items-center justify-center text-gray-400 p-4 text-center">
-            <ImageIcon size={24} className="mb-1 opacity-40" />
-            <p className="text-[10px] font-bold text-[#4A3B2A]/40 uppercase leading-tight">No Image Shared</p>
+            <User size={32} className="opacity-20 text-[#4A3B2A]" />
           </div>
         )}
         {image.destination && (
@@ -729,8 +729,7 @@ const TestimonialsForm = ({ data, onChange, children, onRefresh }) => {
                       />
                     ) : (
                       <div className="flex flex-col items-center justify-center text-gray-400 p-2 text-center">
-                        <ImageIcon size={20} className="mb-1 opacity-40" />
-                        <p className="text-[8px] font-bold text-[#4A3B2A]/40 uppercase leading-tight">No Image Shared</p>
+                        <User size={32} className="opacity-20 text-[#4A3B2A]" />
                       </div>
                     )}
                     <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
