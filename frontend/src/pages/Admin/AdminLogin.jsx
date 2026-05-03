@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { api } from "../../services/api";
 
 const AdminLogin = () => {
@@ -79,7 +79,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F3EFE9] py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#F3EFE9] py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-md border border-gray-100">
         <div>
           <h2 className="mt-6 text-center text-3xl font-bold text-[#4A3B2A]">
@@ -358,6 +358,26 @@ const AdminLogin = () => {
           </form>
         )}
       </div>
+
+      <Link
+        to="/"
+        className="mt-6 flex items-center justify-center text-sm font-medium text-[#4A3B2A] hover:opacity-80 transition-opacity"
+      >
+        <svg
+          className="mr-2 h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
+        </svg>
+        Back to Website
+      </Link>
     </div>
   );
 };
