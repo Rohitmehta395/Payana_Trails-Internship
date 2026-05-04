@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { motion as Motion, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { IMAGE_BASE_URL } from "../../../services/api";
 import { User } from "lucide-react";
 import useHomePageData from "../../../hooks/useHomePageData";
+import CursorMessage from "../../common/CursorMessage";
 
 const formatMonthYearForDisplay = (val) => {
   if (!val) return "";
@@ -15,6 +16,7 @@ const formatMonthYearForDisplay = (val) => {
 
 const TestimonialCard = ({ testimonial, index }) => {
   const navigate = useNavigate();
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <Motion.article
@@ -33,8 +35,11 @@ const TestimonialCard = ({ testimonial, index }) => {
       onClick={() =>
         navigate("/stories/testimonials", { state: { testimonial } })
       }
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className="group cursor-pointer flex flex-col bg-[#FAF7F4] hover:bg-white transition-all duration-300 border border-[#4A3B2A]/5 hover:border-[#4A3B2A]/15 hover:shadow-xl rounded-2xl p-5 sm:p-6 h-[250px] sm:h-[260px] relative overflow-hidden"
     >
+      <CursorMessage message="Click to read more" isVisible={isHovered} />
       {/* Quotation Mark Decal */}
       <div className="absolute top-2 right-2 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity pointer-events-none">
         <svg width="80" height="80" viewBox="0 0 24 24" fill="#4A3B2A">

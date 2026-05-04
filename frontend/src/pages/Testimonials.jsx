@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { motion as Motion, useInView, AnimatePresence } from "framer-motion";
 import { X, User } from "lucide-react";
 import CommonHero from "../components/common/CommonHero";
+import CursorMessage from "../components/common/CursorMessage";
 import storiesImg from "../assets/Home/Stories/stories-moments.webp";
 import usePageHeroImages from "../hooks/usePageHeroImages";
 import useHomePageData from "../hooks/useHomePageData";
@@ -103,6 +104,7 @@ const TestimonialModal = ({ testimonial, onClose }) => {
 
 const TestimonialCard = ({ testimonial, index, isFocused, onClick }) => {
   const cardRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     if (isFocused && cardRef.current) {
@@ -129,12 +131,15 @@ const TestimonialCard = ({ testimonial, index, isFocused, onClick }) => {
         },
       }}
       onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={`group cursor-pointer flex flex-col transition-all duration-300 border rounded-2xl p-6 sm:p-8 min-h-[280px] relative overflow-hidden ${
         isFocused
           ? "bg-white border-[#4A3B2A] shadow-xl"
           : "bg-[#FAF7F4] border-[#4A3B2A]/5 hover:bg-white hover:border-[#4A3B2A]/15 hover:shadow-xl"
       }`}
     >
+      <CursorMessage message="Click to read more" isVisible={isHovered} />
       {/* Quotation Mark Decal */}
       <div className="absolute top-2 right-2 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity pointer-events-none">
         <svg width="80" height="80" viewBox="0 0 24 24" fill="#4A3B2A">

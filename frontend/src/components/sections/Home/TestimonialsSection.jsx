@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { FaHeart } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import useHomePageData from "../../../hooks/useHomePageData";
 import { IMAGE_BASE_URL } from "../../../services/api";
 import { ChevronLeft, ChevronRight, ArrowRight, User } from "lucide-react";
+import CursorMessage from "../../common/CursorMessage";
 
 const formatMonthYearForDisplay = (val) => {
   if (!val) return "";
@@ -17,6 +18,7 @@ const TestimonialsSection = () => {
   const { data: homeData } = useHomePageData();
   const navigate = useNavigate();
   const carouselRef = useRef(null);
+  const [hoveredCardId, setHoveredCardId] = useState(null);
 
   const testimonialsData = homeData?.testimonials || {};
   const images = (testimonialsData.images || [])
@@ -111,8 +113,14 @@ const TestimonialsSection = () => {
               <div
                 key={img._id}
                 onClick={() => handleImageClick(img)}
+                onMouseEnter={() => setHoveredCardId(img._id)}
+                onMouseLeave={() => setHoveredCardId(null)}
                 className="flex-none w-[280px] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] h-[250px] sm:h-[260px] bg-white rounded-2xl p-5 sm:p-6 snap-start cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-[#4A3B2A]/5 flex flex-col group relative overflow-hidden"
               >
+                <CursorMessage
+                  message="Click to read more"
+                  isVisible={hoveredCardId === img._id}
+                />
                 {/* Quotation Mark Icon */}
                 <div className="absolute -top-4 -right-4 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity pointer-events-none">
                   <svg
