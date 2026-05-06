@@ -31,7 +31,7 @@ const buildDestinationsSubmenu = (destinations) =>
       path: buildDestinationListingPath({ geography }),
       submenu: countries.length > 0 ? countries : undefined,
     };
-  });
+  }).filter((item) => item.submenu !== undefined);
 
 // ── Fallback / default header content ────────────────────────────────────────
 const FALLBACK = {
@@ -155,12 +155,12 @@ export default function Header() {
             { name: "Cultural & Immersive Trails", path: "/journeys/cultural" },
           ],
         },
-        {
+        destinationSubmenu.length > 0 && {
           name: "Destinations",
           path: buildDestinationListingPath(),
           submenu: destinationSubmenu,
         },
-      ],
+      ].filter(Boolean),
     },
     { name: navLabels.payanaWay, path: "/payana-way" },
     { name: navLabels.stories, path: "/stories" },
