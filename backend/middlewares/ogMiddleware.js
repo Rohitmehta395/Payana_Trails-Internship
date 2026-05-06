@@ -155,6 +155,18 @@ const STATIC_PAGE_META = {
     description:
       "Reflections, insights, and moments from journeys across the world. Discover the spirit of travel through our stories.",
   },
+  "/stories/external": {
+    pageKey: "stories",
+    title: "Stories from Our Guests | Payana Trails",
+    description:
+      "Guest stories and reflections from travellers who have experienced journeys with Payana Trails.",
+  },
+  "/stories/testimonials": {
+    pageKey: "stories",
+    title: "Voices from the Trail | Payana Trails",
+    description:
+      "Read testimonials and voices from travellers who have journeyed with Payana Trails.",
+  },
 
   // ── Connect ───────────────────────────────────────────────────────────────
   "/connect": {
