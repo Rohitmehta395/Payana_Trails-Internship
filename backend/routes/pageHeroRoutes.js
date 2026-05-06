@@ -25,10 +25,19 @@ const cpUpload = upload.fields([
  */
 const decode = (raw) => raw.replace(/~/g, "/");
 
+const getRequestOrigin = (req) => {
+  const forwardedProto = req.get("x-forwarded-proto");
+  const forwardedHost = req.get("x-forwarded-host");
+  const proto = (forwardedProto || req.protocol || "http").split(",")[0].trim();
+  const host = (forwardedHost || req.get("host") || "").split(",")[0].trim();
+
+  return host ? `${proto}://${host}` : "";
+};
+
 const toAbsoluteUrl = (req, value) => {
   if (!value) return "";
   if (/^https?:\/\//i.test(value)) return value;
-  const origin = `${req.protocol}://${req.get("host")}`;
+  const origin = getRequestOrigin(req);
   return `${origin}${value.startsWith("/") ? value : `/${value}`}`;
 };
 

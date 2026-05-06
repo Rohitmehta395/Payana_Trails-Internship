@@ -275,6 +275,19 @@ function toAbsoluteUrl(base, value) {
   return `${base}${value.startsWith("/") ? value : `/${value}`}`;
 }
 
+function stripTrailingSlash(value = "") {
+  return value.replace(/\/+$/, "");
+}
+
+function getRequestOrigin(req) {
+  const forwardedProto = req.get("x-forwarded-proto");
+  const forwardedHost = req.get("x-forwarded-host");
+  const proto = (forwardedProto || req.protocol || "http").split(",")[0].trim();
+  const host = (forwardedHost || req.get("host") || "").split(",")[0].trim();
+
+  return host ? `${proto}://${host}` : "";
+}
+
 /** Build the canonical page URL for og:url. */
 function buildPageUrl(siteUrl, originalUrl = "/") {
   const safe = originalUrl.startsWith("/") ? originalUrl : `/${originalUrl}`;
@@ -300,11 +313,16 @@ module.exports = async function ogMiddleware(req, res, next) {
     return next();
   }
 
-  const SITE_URL =
-    process.env.SITE_URL || "http://localhost:5173";
-  const IMAGE_BASE =
+  const requestOrigin = getRequestOrigin(req);
+  const SITE_URL = stripTrailingSlash(
+    process.env.SITE_URL || requestOrigin || "http://localhost:5173"
+  );
+  const IMAGE_BASE = stripTrailingSlash(
     process.env.IMAGE_BASE_URL ||
-    `http://localhost:${process.env.PORT || 8000}`;
+      process.env.SITE_URL ||
+      requestOrigin ||
+      `http://localhost:${process.env.PORT || 8000}`
+  );
 
   // Instruct our server NOT to serve stale DB data.
   // WhatsApp/Facebook will still maintain their own external cache — we
