@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { IMAGE_BASE_URL } from "../../../services/api";
 
 const TrailForm = ({
@@ -37,6 +37,7 @@ const TrailForm = ({
   formatCompressionStat,
   pdfCompressionStats,
   pdfCompressing,
+  destinations,
 }) => {
   const inputClasses =
     "w-full p-2.5 border border-gray-300 rounded text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#4A3B2A] focus:border-[#4A3B2A] transition-colors";
@@ -159,6 +160,20 @@ const TrailForm = ({
     );
   };
 
+  const [isManualDestination, setIsManualDestination] = useState(false);
+
+  useEffect(() => {
+    // If the current destination is not in the list and not empty, default to manual mode
+    if (formData.trailDestination && destinations && destinations.length > 0) {
+      const exists = destinations.some(
+        (d) => d.name.toLowerCase() === formData.trailDestination.toLowerCase()
+      );
+      if (!exists) {
+        setIsManualDestination(true);
+      }
+    }
+  }, [destinations, formData.trailDestination]);
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden animate-fade-in">
       <div className="h-1 w-full bg-[#4A3B2A]"></div>
@@ -226,16 +241,43 @@ const TrailForm = ({
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1">
-                Destination
-              </label>
-              <input
-                type="text"
-                name="trailDestination"
-                value={formData.trailDestination}
-                onChange={handleChange}
-                className={inputClasses}
-              />
+              <div className="flex justify-between items-center mb-1">
+                <label className="block text-xs font-semibold text-gray-600">
+                  Destination
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setIsManualDestination(!isManualDestination)}
+                  className="text-[10px] text-[#4A3B2A] hover:underline font-bold uppercase tracking-wider"
+                >
+                  {isManualDestination ? "Select from list" : "Add Manually"}
+                </button>
+              </div>
+              {isManualDestination ? (
+                <input
+                  type="text"
+                  name="trailDestination"
+                  value={formData.trailDestination}
+                  onChange={handleChange}
+                  placeholder="Type destination name..."
+                  className={inputClasses}
+                />
+              ) : (
+                <select
+                  name="trailDestination"
+                  value={formData.trailDestination}
+                  onChange={handleChange}
+                  className={`${inputClasses} bg-white`}
+                >
+                  <option value="">Select Destination</option>
+                  {destinations &&
+                    destinations.map((dest) => (
+                      <option key={dest._id} value={dest.name}>
+                        {dest.name}
+                      </option>
+                    ))}
+                </select>
+              )}
             </div>
 
             <div className="md:col-span-2">

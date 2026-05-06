@@ -77,6 +77,8 @@ const AddTrail = () => {
 
   const [trails, setTrails] = useState([]);
   const [loadingTrails, setLoadingTrails] = useState(true);
+  const [destinations, setDestinations] = useState([]);
+  const [loadingDestinations, setLoadingDestinations] = useState(false);
 
   // --- FORM STATE ---
   const initialFormState = {
@@ -182,8 +184,21 @@ const AddTrail = () => {
     }
   };
 
+  const fetchDestinations = async () => {
+    setLoadingDestinations(true);
+    try {
+      const data = await api.getDestinations(true);
+      setDestinations(data);
+    } catch (error) {
+      console.error("Failed to fetch destinations", error);
+    } finally {
+      setLoadingDestinations(false);
+    }
+  };
+
   useEffect(() => {
     fetchExistingTrails();
+    fetchDestinations();
   }, []);
 
   useEffect(() => {
@@ -900,6 +915,7 @@ const AddTrail = () => {
           formatCompressionStat={formatCompressionStat}
           pdfCompressionStats={pdfCompressionStats}
           pdfCompressing={pdfCompressing}
+          destinations={destinations}
         />
       )}
 

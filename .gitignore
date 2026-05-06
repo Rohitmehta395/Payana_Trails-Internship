@@ -1,3 +1,6 @@
 .agents
 graphify-out
 .gitattributes
+AGENTS.md
+.codex
+.github
