@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion as Motion, useInView, AnimatePresence } from "framer-motion";
 import { X, User } from "lucide-react";
 import CommonHero from "../components/common/CommonHero";
@@ -196,7 +196,8 @@ const TestimonialCard = ({ testimonial, index, isFocused, onClick }) => {
 const Testimonials = () => {
   const { images: heroImgs } = usePageHeroImages("stories");
   const { data: homeData, loading } = useHomePageData();
-  const location = useLocation();
+   const location = useLocation();
+   const navigate = useNavigate();
   const focusTestimonial = location.state?.testimonial;
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
@@ -304,7 +305,18 @@ const Testimonials = () => {
             </Motion.div>
           )}
         </Motion.div>
-      </section>
+       </section>
+ 
+       {/* Bottom Back Button */}
+       <div className="pb-24 flex justify-center">
+         <button
+           onClick={() => navigate(-1)}
+           className="group inline-flex items-center gap-4 border border-[#4A3B2A]/30 hover:border-[#4A3B2A] px-10 py-4 text-xs tracking-[0.25em] uppercase font-medium text-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] transition-all duration-300"
+         >
+           <span className="w-5 h-px bg-current group-hover:w-10 transition-all duration-500" />
+           <span>Back</span>
+         </button>
+       </div>
 
       <AnimatePresence>
         {selectedTestimonial && (

@@ -17,7 +17,7 @@ const ExternalStoryCard = ({ blog, index }) => {
         delay: index * 0.07,
         ease: [0.25, 0.1, 0.25, 1],
       }}
-      className="group cursor-pointer flex flex-col bg-[#FAF7F4] hover:bg-white transition-colors duration-300 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-lg w-full h-full"
+      className="group cursor-pointer flex flex-col h-full bg-[#FAF7F4] hover:bg-white transition-colors duration-300 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-lg w-full"
     >
       <div className="relative overflow-hidden" style={{ paddingTop: "62%" }}>
         {blog.featuredImage ? (

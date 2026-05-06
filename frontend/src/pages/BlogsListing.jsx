@@ -596,14 +596,21 @@ const GuestStoriesSection = () => {
         {externalStories.map((story, i) => (
           <div
             key={story._id}
-            className="flex-shrink-0 w-[280px] md:w-[320px] lg:w-[380px]"
+            className="flex flex-shrink-0 w-[280px] md:w-[320px] lg:w-[380px]"
           >
             <ExternalStoryCard blog={story} index={i} />
           </div>
         ))}
       </div>
 
-      <div className="mt-14 flex justify-center">
+      <div className="mt-14 flex flex-wrap justify-center gap-4 md:gap-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="group inline-flex items-center gap-4 border border-[#4A3B2A]/30 hover:border-[#4A3B2A] px-10 py-4 text-xs tracking-[0.25em] uppercase font-medium text-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] transition-all duration-300"
+        >
+          <span className="w-5 h-px bg-current group-hover:w-10 transition-all duration-500" />
+          <span>Back</span>
+        </button>
         <button
           onClick={() => navigate("/stories/external")}
           className="group inline-flex items-center gap-4 border border-[#4A3B2A]/30 hover:border-[#4A3B2A] px-10 py-4 text-xs tracking-[0.25em] uppercase font-medium text-[#4A3B2A] hover:bg-[#4A3B2A] hover:text-[#F3EFE9] transition-all duration-300"
@@ -631,7 +638,7 @@ const ExternalStoryCard = ({ blog, index }) => {
         delay: index * 0.07,
         ease: [0.25, 0.1, 0.25, 1],
       }}
-      className="group cursor-pointer flex flex-col bg-[#FAF7F4] hover:bg-white transition-colors duration-300 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-lg"
+      className="group cursor-pointer flex flex-col h-full bg-[#FAF7F4] hover:bg-white transition-colors duration-300 border border-[#4A3B2A]/10 hover:border-[#4A3B2A]/25 hover:shadow-lg"
     >
       <div className="relative overflow-hidden" style={{ paddingTop: "62%" }}>
         {blog.featuredImage ? (
