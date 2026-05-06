@@ -11,6 +11,7 @@ import {
 // Importing Lucide Icons
 import { ChevronDown, ChevronRight, Menu, X, Phone } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
+import { updateFavicon } from "../../utils/favicon";
 
 const buildDestinationsSubmenu = (destinations) =>
   DESTINATION_GEOGRAPHIES.map((geography) => {
@@ -97,6 +98,8 @@ export default function Header() {
         const data = await api.getHeader();
         if (data && Object.keys(data).length > 0) {
           setHeaderData(data);
+          // Update favicon based on logo existence
+          updateFavicon(data.logo ? `${IMAGE_BASE_URL}${data.logo}` : null);
         }
       } catch (error) {
         console.error("Error fetching header data:", error);

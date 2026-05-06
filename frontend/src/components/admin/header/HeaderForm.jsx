@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Loader2, Save, Upload, Trash2 } from "lucide-react";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
+import { updateFavicon } from "../../../utils/favicon";
 
 // ─── Default / fallback values ───────────────────────────────────────────────
 const DEFAULT_DATA = {
@@ -73,6 +74,7 @@ const HeaderForm = ({ initialData, onSave, onDeleteLogo }) => {
       await onDeleteLogo();
       setLogoPreview(null);
       setLogoFile(null);
+      updateFavicon(null);
       setMessage({ type: "success", text: "Custom logo deleted. Using default." });
       setTimeout(() => setMessage(null), 3000);
     } catch (err) {
@@ -103,7 +105,11 @@ const HeaderForm = ({ initialData, onSave, onDeleteLogo }) => {
     }
 
     try {
-      await onSave(formData);
+      const result = await onSave(formData);
+      // Update favicon immediately
+      if (result?.logo) {
+        updateFavicon(`${IMAGE_BASE_URL}${result.logo}`);
+      }
       setMessage({ type: "success", text: "Header settings updated successfully!" });
       setLogoFile(null);
       setTimeout(() => setMessage(null), 3000);

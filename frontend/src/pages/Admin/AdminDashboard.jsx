@@ -12,6 +12,8 @@ import ConnectManager from "./ConnectManager/ConnectManager";
 import JourneyManager from "./JourneyManager/JourneyManager";
 import HeaderManager from "./HeaderManager/HeaderManager";
 import FooterManager from "./FooterManager/FooterManager";
+import { api, IMAGE_BASE_URL } from "../../services/api";
+import { updateFavicon } from "../../utils/favicon";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -125,6 +127,17 @@ const AdminDashboard = () => {
     if (!token) {
       navigate("/admin/login");
     }
+
+    // Sync favicon in admin panel
+    const syncFavicon = async () => {
+      try {
+        const headerData = await api.getHeader();
+        updateFavicon(headerData?.logo ? `${IMAGE_BASE_URL}${headerData.logo}` : null);
+      } catch (err) {
+        console.error("Failed to sync favicon in admin", err);
+      }
+    };
+    syncFavicon();
   }, [navigate]);
 
   const handleLogout = () => {
