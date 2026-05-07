@@ -77,13 +77,13 @@ const STATIC_PAGE_META = {
   // ── Home ──────────────────────────────────────────────────────────────────
   "/": {
     pageKey: "home",
-    title: "Payana Trails | Thoughtfully Designed Journeys",
+    title: "Payana Trails | Journeys, thoughtfully curated!",
     description:
       "Small groups. Deeper experiences. Discover our curated trails around the world.",
   },
   "/home": {
     pageKey: "home",
-    title: "Payana Trails | Thoughtfully Designed Journeys",
+    title: "Payana Trails | Journeys, thoughtfully curated!",
     description:
       "Small groups. Deeper experiences. Discover our curated trails around the world.",
   },
