@@ -75,7 +75,7 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>Payana Trails | Thoughtfully Designed Journeys</title>
+        <title>Payana Trails | Journeys, thoughtfully curated!</title>
         <meta
           name="description"
           content="Small groups. Deeper experiences. Discover our curated trails around the world."
@@ -86,7 +86,7 @@ const Home = () => {
         <meta property="og:site_name" content="Payana Trails" />
         <meta
           property="og:title"
-          content="Payana Trails | Thoughtfully Designed Journeys"
+          content="Payana Trails | Journeys, thoughtfully curated!"
         />
         <meta
           property="og:description"
@@ -101,7 +101,7 @@ const Home = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content="Payana Trails | Thoughtfully Designed Journeys"
+          content="Payana Trails | Journeys, thoughtfully curated!"
         />
         <meta
           name="twitter:description"

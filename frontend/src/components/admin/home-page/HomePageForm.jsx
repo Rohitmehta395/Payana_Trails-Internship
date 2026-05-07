@@ -12,7 +12,7 @@ import { api } from "../../../services/api";
 const defaultData = {
   heroSection: {
     headerTitle: "Curated Journeys for Travellers who value Stories over Sightseeing",
-    subtitle: "Small groups. Deeper experiences. Thoughtfully designed journeys.",
+    subtitle: "Small groups. Deeper experiences. Journeys, thoughtfully curated!",
   },
   thePayanaWay: {
     title: "The Payana Way",

@@ -20,7 +20,7 @@ export default function Hero({ images = [], loading = false }) {
     headerTitle:
       "Curated Journeys for Travellers who value Stories over Sightseeing",
     subtitle:
-      "Small groups. Deeper experiences. Thoughtfully designed journeys.",
+      "Small groups. Deeper experiences. Journeys, thoughtfully curated!",
   };
 
   // Track viewport for choosing the correct preload src
