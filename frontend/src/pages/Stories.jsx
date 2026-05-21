@@ -10,7 +10,7 @@ import GuestStoriesSection from "../components/sections/Stories/GuestStoriesSect
 import StoriesNewsletter from "../components/sections/Stories/StoriesNewsletter";
 
 const Stories = () => {
-  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.payanatrails.com", "payanatrails.com");
+  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.", "");
   const { images: heroImgs } = usePageHeroImages("stories");
   const [storiesData, setStoriesData] = React.useState(null);
 

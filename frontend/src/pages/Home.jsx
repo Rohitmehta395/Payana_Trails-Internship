@@ -60,8 +60,8 @@ const FALLBACK_IMAGES = [
 ];
 
 const Home = () => {
-  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.payanatrails.com", "payanatrails.com");
-  const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "https://payanatrails.com/api").replace("www.payanatrails.com", "payanatrails.com");
+  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.", "");
+  const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "https://payanatrails.com/api").replace("www.", "");
   const OG_IMAGE = `${API_BASE_URL}/page-heroes/home/primary-image`;
 
   // Pull images from DB; fall back to static assets only if DB fails or is empty.

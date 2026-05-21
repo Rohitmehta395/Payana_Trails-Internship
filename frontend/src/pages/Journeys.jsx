@@ -24,7 +24,7 @@ const FALLBACK_IMAGES = [
 ];
 
 const Journeys = () => {
-  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.payanatrails.com", "payanatrails.com");
+  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.", "");
   // Pull hero images from the DB; falls back to static Unsplash images
   const { images: heroImages } = usePageHeroImages("journeys", FALLBACK_IMAGES);
 

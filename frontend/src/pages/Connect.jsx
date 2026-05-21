@@ -12,7 +12,7 @@ import SocialMediaSection from "../components/sections/Connect/SocialMediaSectio
 import TawkChat from "../components/common/TawkChat";
 
 const Connect = () => {
-  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.payanatrails.com", "payanatrails.com");
+  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.", "");
   const { images: heroImgs } = usePageHeroImages("connect");
   const [faqs, setFaqs] = useState([]);
   const [connectData, setConnectData] = useState(null);

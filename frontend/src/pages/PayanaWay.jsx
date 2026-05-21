@@ -10,7 +10,7 @@ import JourneysWithPurpose from "../components/sections/PayanaWay/JourneysWithPu
 import InTheMedia from "../components/sections/PayanaWay/InTheMedia";
 
 const PayanaWay = () => {
-  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.payanatrails.com", "payanatrails.com");
+  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.", "");
   const { images: heroImgs } = usePageHeroImages("payana-way");
   const [pageData, setPageData] = useState(null);
 

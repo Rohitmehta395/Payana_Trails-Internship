@@ -195,7 +195,7 @@ const TestimonialCard = ({ testimonial, index, isFocused, onClick }) => {
 };
 
 const Testimonials = () => {
-  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.payanatrails.com", "payanatrails.com");
+  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.", "");
   const { images: heroImgs } = usePageHeroImages("stories");
   const { data: homeData, loading } = useHomePageData();
    const location = useLocation();
