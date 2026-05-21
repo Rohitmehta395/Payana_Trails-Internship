@@ -66,15 +66,48 @@ app.use("/api/footer", cacheMiddleware(60), footerRoutes);
 // including the homepage and all trail pages — all from a single domain.
 const FRONTEND_DIST = path.join(__dirname, "..", "frontend", "dist");
 if (fs.existsSync(FRONTEND_DIST)) {
-  // Serve static assets (JS, CSS, images)
-  app.use(express.static(FRONTEND_DIST));
+  // Serve static assets (JS, CSS, images). Prevent serving index.html automatically.
+  app.use(express.static(FRONTEND_DIST, { index: false }));
 
-  // Also serve the hero image referenced in OG tags from the public folder.
-  // (It is baked into dist/heroBg-desktop.webp after `npm run build`.)
+  function getRequestOrigin(req) {
+    const forwardedProto = req.get("x-forwarded-proto");
+    const forwardedHost = req.get("x-forwarded-host");
+    const proto = (forwardedProto || req.protocol || "http").split(",")[0].trim();
+    const host = (forwardedHost || req.get("host") || "").split(",")[0].trim();
+    return host ? `${proto}://${host}` : "";
+  }
+
+  let indexHtmlCache = null;
 
   // SPA catch-all: every non-API, non-file route returns index.html
   app.get(/^(?!\/api|\/uploads).*$/, (req, res) => {
-    res.sendFile(path.join(FRONTEND_DIST, "index.html"));
+    if (!indexHtmlCache) {
+      const indexPath = path.join(FRONTEND_DIST, "index.html");
+      if (!fs.existsSync(indexPath)) {
+        return res.status(404).send("index.html not found");
+      }
+      indexHtmlCache = fs.readFileSync(indexPath, "utf8");
+    }
+    
+    let html = indexHtmlCache;
+
+    const requestOrigin = getRequestOrigin(req);
+    const siteUrl = (process.env.SITE_URL || requestOrigin || "https://payanatrails.com").replace(/\/+$/, "");
+    const reqPath = req.path === '/' ? '' : req.path;
+    const fullUrl = req.path === '/' ? siteUrl + '/' : `${siteUrl}${reqPath}`;
+
+    // Inject self-referencing canonical and og:url for the current route
+    html = html
+      .replace(
+        /<link rel="canonical" href="[^"]*" \/>/gi,
+        `<link rel="canonical" href="${fullUrl}" />`
+      )
+      .replace(
+        /<meta property="og:url" content="[^"]*" \/>/gi,
+        `<meta property="og:url" content="${fullUrl}" />`
+      );
+
+    res.send(html);
   });
 } else {
   // Development / standalone API mode — basic health-check route only
