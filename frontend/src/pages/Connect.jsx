@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import CommonHero from "../components/common/CommonHero";
 import usePageHeroImages from "../hooks/usePageHeroImages";
 import { api } from "../services/api";
@@ -11,6 +12,7 @@ import SocialMediaSection from "../components/sections/Connect/SocialMediaSectio
 import TawkChat from "../components/common/TawkChat";
 
 const Connect = () => {
+  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.payanatrails.com", "payanatrails.com");
   const { images: heroImgs } = usePageHeroImages("connect");
   const [faqs, setFaqs] = useState([]);
   const [connectData, setConnectData] = useState(null);
@@ -33,6 +35,12 @@ const Connect = () => {
 
   return (
     <div className="bg-[#F3EFE9] min-h-screen">
+      <Helmet>
+        <title>Connect | Payana Trails</title>
+        <meta name="description" content="Get in touch with Payana Trails." />
+        <link rel="canonical" href={`${SITE_URL}/connect`} />
+        <meta property="og:url" content={`${SITE_URL}/connect`} />
+      </Helmet>
       <CommonHero
         title="CONNECT"
         subtitle="REACH OUT TO US"

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion as Motion, useInView, AnimatePresence } from "framer-motion";
 import { X, User } from "lucide-react";
@@ -194,6 +195,7 @@ const TestimonialCard = ({ testimonial, index, isFocused, onClick }) => {
 };
 
 const Testimonials = () => {
+  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.payanatrails.com", "payanatrails.com");
   const { images: heroImgs } = usePageHeroImages("stories");
   const { data: homeData, loading } = useHomePageData();
    const location = useLocation();
@@ -228,6 +230,12 @@ const Testimonials = () => {
 
   return (
     <div className="bg-[#F3EFE9] min-h-screen">
+      <Helmet>
+        <title>Testimonials | Payana Trails</title>
+        <meta name="description" content="Hear what our travelers have to say." />
+        <link rel="canonical" href={`${SITE_URL}/testimonials`} />
+        <meta property="og:url" content={`${SITE_URL}/testimonials`} />
+      </Helmet>
       <CommonHero
         title="VOICES FROM THE TRAIL"
         subtitle="TESTIMONIALS"

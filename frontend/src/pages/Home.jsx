@@ -60,9 +60,8 @@ const FALLBACK_IMAGES = [
 ];
 
 const Home = () => {
-  const SITE_URL = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
-  const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.payanatrails.com", "payanatrails.com");
+  const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "https://payanatrails.com/api").replace("www.payanatrails.com", "payanatrails.com");
   const OG_IMAGE = `${API_BASE_URL}/page-heroes/home/primary-image`;
 
   // Pull images from DB; fall back to static assets only if DB fails or is empty.
@@ -80,6 +79,7 @@ const Home = () => {
           name="description"
           content="Small groups. Deeper experiences. Discover our curated trails around the world."
         />
+        <link rel="canonical" href={`${SITE_URL}/`} />
 
         {/* Open Graph */}
         <meta property="og:type" content="website" />
@@ -95,7 +95,7 @@ const Home = () => {
         <meta property="og:image" content={OG_IMAGE} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:url" content={SITE_URL} />
+        <meta property="og:url" content={`${SITE_URL}/`} />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />

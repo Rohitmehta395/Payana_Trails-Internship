@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import CommonHero from "../components/common/CommonHero";
 import storiesImg from "../assets/Home/Stories/stories-moments.webp";
 import usePageHeroImages from "../hooks/usePageHeroImages";
@@ -9,6 +10,7 @@ import GuestStoriesSection from "../components/sections/Stories/GuestStoriesSect
 import StoriesNewsletter from "../components/sections/Stories/StoriesNewsletter";
 
 const Stories = () => {
+  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.payanatrails.com", "payanatrails.com");
   const { images: heroImgs } = usePageHeroImages("stories");
   const [storiesData, setStoriesData] = React.useState(null);
 
@@ -21,6 +23,12 @@ const Stories = () => {
 
   return (
     <div className="bg-[#F3EFE9] min-h-screen">
+      <Helmet>
+        <title>Stories | Payana Trails</title>
+        <meta name="description" content="Read travel stories and tales from the trails." />
+        <link rel="canonical" href={`${SITE_URL}/stories`} />
+        <meta property="og:url" content={`${SITE_URL}/stories`} />
+      </Helmet>
       <CommonHero
         title="STORIES"
         subtitle="TALES FROM THE TRAILS"

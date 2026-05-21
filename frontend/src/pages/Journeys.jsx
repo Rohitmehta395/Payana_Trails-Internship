@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import Hero from "../components/sections/Journey/Hero";
 import SignatureJourneys from "../components/sections/Journey/SignatureJourneys";
 import OurTrails from "../components/sections/Journey/OurTrails";
@@ -23,11 +24,18 @@ const FALLBACK_IMAGES = [
 ];
 
 const Journeys = () => {
+  const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://payanatrails.com").replace("www.payanatrails.com", "payanatrails.com");
   // Pull hero images from the DB; falls back to static Unsplash images
   const { images: heroImages } = usePageHeroImages("journeys", FALLBACK_IMAGES);
 
   return (
     <>
+      <Helmet>
+        <title>Journeys | Payana Trails</title>
+        <meta name="description" content="Explore our signature journeys and destinations around the world." />
+        <link rel="canonical" href={`${SITE_URL}/journeys`} />
+        <meta property="og:url" content={`${SITE_URL}/journeys`} />
+      </Helmet>
       {/* Pass the correctly structured array to the Hero component */}
       <Hero images={heroImages} />
       <SignatureJourneys />
