@@ -331,9 +331,9 @@ module.exports = async function ogMiddleware(req, res, next) {
   );
   const IMAGE_BASE = stripTrailingSlash(
     process.env.IMAGE_BASE_URL ||
-      process.env.SITE_URL ||
-      requestOrigin ||
-      `http://localhost:${process.env.PORT || 8000}`
+    process.env.SITE_URL ||
+    requestOrigin ||
+    `http://localhost:${process.env.PORT || 8000}`
   );
 
   // Instruct our server NOT to serve stale DB data.

@@ -35,6 +35,25 @@ const footerSchema = new mongoose.Schema(
       }
     ],
     copyrightText: { type: String, required: true, default: "© 2026 Payana Trails. All Rights Reserved." },
+    payNowEnabled: { type: Boolean, required: false, default: false },
+    payNowUrl: {
+      type: String,
+      required: false,
+      default: "",
+      validate: {
+        validator: function(v) {
+          if (!this.payNowEnabled) return true;
+          if (!v) return false;
+          try {
+            const url = new URL(v);
+            return url.protocol === "http:" || url.protocol === "https:";
+          } catch (_) {
+            return false;
+          }
+        },
+        message: props => `${props.value} is not a valid absolute HTTP/HTTPS URL!`
+      }
+    },
   },
   { timestamps: true }
 );

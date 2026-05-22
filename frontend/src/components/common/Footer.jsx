@@ -41,6 +41,8 @@ const Footer = () => {
   const email = data?.email || "info@payanatrails.com";
   const phone = data?.phone || "+91 8660460512";
   const copyrightText = data?.copyrightText || `© ${new Date().getFullYear()} Payana Trails. All Rights Reserved.`;
+  const payNowEnabled = data?.payNowEnabled || false;
+  const payNowUrl = data?.payNowUrl || "";
 
   // Social icons mapping
   const socialIconMap = {
@@ -218,6 +220,20 @@ const Footer = () => {
 
           {/* Contact Links */}
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center mt-3 lg:mt-0 bg-black/10 px-4 py-3 rounded-xl border border-white/5 shadow-inner">
+            {payNowEnabled && payNowUrl && (
+              <>
+                <a
+                  href={payNowUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-5 py-2 bg-[#F3EFE9] text-[#4A3B2A] rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 shadow-md hover:bg-white hover:text-[#4A3B2A] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shrink-0"
+                >
+                  Pay Now
+                </a>
+                <div className="hidden sm:block w-px h-6 bg-[#F3EFE9]/20"></div>
+              </>
+            )}
+
             <a
               href={`mailto:${email}`}
               className="flex items-center gap-2 text-[14px] transition-all duration-300 opacity-80 hover:opacity-100 hover:text-white group"

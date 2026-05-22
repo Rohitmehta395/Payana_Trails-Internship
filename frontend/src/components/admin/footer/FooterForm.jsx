@@ -82,6 +82,8 @@ const DEFAULT_DATA = {
     { label: "Connect", url: "/connect" },
   ],
   copyrightText: "© 2026 Payana Trails. All Rights Reserved.",
+  payNowEnabled: false,
+  payNowUrl: "",
 };
 
 const mergeData = (initial, defaults) => {
@@ -340,6 +342,25 @@ const FooterForm = ({ initialData, onSave, onDeleteLogo, activeTab }) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
+
+    // URL Validation for Pay Now button
+    if (data.payNowEnabled) {
+      if (!data.payNowUrl || data.payNowUrl.trim() === "") {
+        setMessage({ type: "error", text: "Payment URL is required when 'Pay Now' button is enabled." });
+        setLoading(false);
+        return;
+      }
+      try {
+        const url = new URL(data.payNowUrl);
+        if (url.protocol !== "http:" && url.protocol !== "https:") {
+          throw new Error();
+        }
+      } catch (_) {
+        setMessage({ type: "error", text: "Please enter a valid absolute payment URL (must start with http:// or https://)." });
+        setLoading(false);
+        return;
+      }
+    }
 
     const formData = new FormData();
     formData.append("data", JSON.stringify(data));
@@ -670,6 +691,43 @@ const FooterForm = ({ initialData, onSave, onDeleteLogo, activeTab }) => {
                 onChange={(v) => setData({ ...data, copyrightText: v })}
                 hint="Use standard format, e.g. © 2026 Payana Trails. All Rights Reserved."
                 />
+            </div>
+          </div>
+        );
+      case "payNow":
+        return (
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+              <h4 className="text-xs font-bold text-[#4A3B2A] mb-4 uppercase tracking-widest border-b border-gray-50 pb-2">
+                Pay Now Settings
+              </h4>
+              
+              <div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl mb-6">
+                <input
+                  type="checkbox"
+                  id="payNowEnabled"
+                  checked={data.payNowEnabled}
+                  onChange={(e) => setData({ ...data, payNowEnabled: e.target.checked })}
+                  className="w-4 h-4 accent-[#4A3B2A] cursor-pointer"
+                />
+                <label
+                  htmlFor="payNowEnabled"
+                  className="text-sm font-semibold text-[#4A3B2A] cursor-pointer select-none"
+                >
+                  Enable "Pay Now" Button
+                  <span className="block text-xs text-gray-500 font-normal mt-0.5">
+                    Toggle visibility of the "Pay Now" button in the frontend footer.
+                  </span>
+                </label>
+              </div>
+
+              <FormField
+                label="Payment Link URL"
+                id="payNowUrl"
+                value={data.payNowUrl}
+                onChange={(v) => setData({ ...data, payNowUrl: v })}
+                hint="URL where customers will be redirected to make payments (e.g. https://razorpay.com/pay-link)"
+              />
             </div>
           </div>
         );

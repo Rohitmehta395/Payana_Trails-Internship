@@ -13,6 +13,7 @@ const FooterManager = () => {
     { id: "columns", label: "Link Columns" },
     { id: "location", label: "Location & Info" },
     { id: "bottom", label: "Bottom Footer" },
+    { id: "payNow", label: "Pay Now" },
   ];
 
   useEffect(() => {
