@@ -1,31 +1,37 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import wildlifeImg from "../../../assets/Home/PayanaWay/Payana-way.webp";
 import BrownBtn from "../../common/buttons/BrownBtn";
 import useHomePageData from "../../../hooks/useHomePageData";
 import { IMAGE_BASE_URL } from "../../../services/api";
 
 const PayanaWay = () => {
+  const navigate = useNavigate();
   const { data: homeData } = useHomePageData();
 
   const wayData = homeData?.thePayanaWay || {
     title: "The Payana Way",
     subtitle: "A more thoughtful way to experience the world",
-    quote: "We believe travel should be unhurried, immersive and deeply meaningful. Our journeys are thoughtfully designed to let you slow down, travel at ease, and connect with each destination. Because true travel is not about seeing more, but experiencing more.",
+    quote:
+      "We believe travel should be unhurried, immersive and deeply meaningful. Our journeys are thoughtfully designed to let you slow down, travel at ease, and connect with each destination. Because true travel is not about seeing more, but experiencing more.",
     highlights: [
       "Personalised Journeys",
       "Curated Experiences",
       "Slow & Immersive Travel",
       "Seamless & Transparent",
     ],
-    heroImage: null
+    heroImage: null,
   };
 
-  const features = wayData.highlights?.length === 4 ? wayData.highlights : [
-    "Personalised Journeys",
-    "Curated Experiences",
-    "Slow & Immersive Travel",
-    "Seamless & Transparent",
-  ];
+  const features =
+    wayData.highlights?.length === 4
+      ? wayData.highlights
+      : [
+          "Personalised Journeys",
+          "Curated Experiences",
+          "Slow & Immersive Travel",
+          "Seamless & Transparent",
+        ];
 
   return (
     <section className="bg-[#F3EFE9] w-full py-12 sm:py-14 font-sans">
@@ -54,7 +60,11 @@ const PayanaWay = () => {
             {/* Image Container */}
             <div className="relative overflow-hidden rounded-tr-[2.5rem] sm:rounded-tr-[3rem] rounded-bl-[2.5rem] sm:rounded-bl-[3rem] rounded-tl-xl rounded-br-xl shadow-lg bg-[#4A3B2A]/5 h-full w-full">
               <img
-                src={wayData.heroImage ? `${IMAGE_BASE_URL}${wayData.heroImage}` : wildlifeImg}
+                src={
+                  wayData.heroImage
+                    ? `${IMAGE_BASE_URL}${wayData.heroImage}`
+                    : wildlifeImg
+                }
                 alt={wayData.title}
                 className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover/main:scale-105"
               />
@@ -93,6 +103,7 @@ const PayanaWay = () => {
             <div className="flex justify-center lg:justify-start w-full lg:w-auto">
               <BrownBtn
                 text="Explore The Payana Way &rarr;"
+                onClick={() => navigate("/payana-way")}
                 className="w-full sm:w-fit px-8 py-3 sm:py-4 text-[15px] sm:text-[18px] shadow-lg transition-transform duration-300 hover:-translate-y-1"
               />
             </div>

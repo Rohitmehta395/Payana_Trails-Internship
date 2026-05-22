@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import CreamBtn from "../../common/buttons/CreamBtn";
 import BrownBtn from "../../common/buttons/BrownBtn";
 import storyImg from "../../../assets/Home/Stories/stories-moments.webp";
@@ -9,6 +10,7 @@ import useHomePageData from "../../../hooks/useHomePageData";
 import { IMAGE_BASE_URL } from "../../../services/api";
 
 const StoriesMoments = () => {
+  const navigate = useNavigate();
   const { openNewsletterModal } = useNewsletter();
   const { data: homeData } = useHomePageData();
   const [showTooltip, setShowTooltip] = useState(false);
@@ -73,6 +75,7 @@ const StoriesMoments = () => {
           <div className="absolute bottom-8 sm:bottom-12 left-6 sm:left-12 z-10">
             <CreamBtn
               text="Explore Our Travel Stories &rarr;"
+              onClick={() => navigate("/stories")}
               className="px-6 py-3 sm:px-8 sm:py-3.5 text-[15px] sm:text-[16px] shadow-lg hover:shadow-xl font-bold"
             />
           </div>
