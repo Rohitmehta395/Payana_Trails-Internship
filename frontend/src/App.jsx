@@ -26,6 +26,7 @@ const BlogsListing = lazy(() => import("./pages/BlogsListing"));
 const ExternalStories = lazy(() => import("./pages/ExternalStories"));
 const TrailDetails = lazy(() => import("./pages/TrailDetails"));
 const TrailItinerary = lazy(() => import("./pages/TrailItinerary"));
+const PayNowRedirect = lazy(() => import("./pages/PayNowRedirect"));
 
 // Connect sub-pages
 const EnquiryPage = lazy(() =>
@@ -154,6 +155,7 @@ const App = () => {
                         element={<GiftPage />}
                       />
                       <Route path="unsubscribe" element={<Unsubscribe />} />
+                      <Route path="pay-now" element={<PayNowRedirect />} />
                       <Route path="trails/:slug" element={<TrailDetails />} />
                       <Route
                         path="trails/:slug/itinerary"
