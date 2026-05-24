@@ -58,14 +58,9 @@ const BOT_PATTERNS = [
   "Slackbot",
   "Discordbot",
   "Pinterest",
-  "bingbot",
-  "Googlebot",
-  "Applebot",
   "redditbot",
   "Snapchat",
   "vkShare",
-  "W3C_Validator",
-  "ia_archiver",
 ];
 
 // ── Static Page Metadata ──────────────────────────────────────────────────────
