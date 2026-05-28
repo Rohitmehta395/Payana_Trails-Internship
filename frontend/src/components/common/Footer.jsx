@@ -33,81 +33,141 @@ const Footer = () => {
   // --- Fallbacks / Defaults ---
   const brandLogo = data?.logo ? `${IMAGE_BASE_URL}${data.logo}` : logoImg;
   const brandName = data?.brandName || "Payana Trails";
-  const subtitle = data?.subtitle || "Crafting meaningful journeys through thoughtful, immersive travel experiences.";
+  const subtitle =
+    data?.subtitle ||
+    "Crafting meaningful journeys through thoughtful, immersive travel experiences.";
   const motto = data?.motto || "Journeys, thoughtfully curated!";
   const mapButtonText = data?.mapButtonText || "VIEW ON MAP";
-  const mapLink = data?.mapLink || "https://maps.google.com/?q=Sowmya+Springs+Basavanagudi+Bangalore";
-  const address = data?.address || "110, Sowmya Springs, Basavanagudi, Bangalore - 560 004";
+  const mapLink =
+    data?.mapLink ||
+    "https://maps.google.com/?q=Sowmya+Springs+Basavanagudi+Bangalore";
+  const address =
+    data?.address || "110, Sowmya Springs, Basavanagudi, Bangalore - 560 004";
   const email = data?.email || "info@payanatrails.com";
   const phone = data?.phone || "+91 8660460512";
-  const copyrightText = data?.copyrightText || `© ${new Date().getFullYear()} Payana Trails. All Rights Reserved.`;
+  const copyrightText =
+    data?.copyrightText ||
+    `© ${new Date().getFullYear()} Payana Trails. All Rights Reserved.`;
   const payNowEnabled = data?.payNowEnabled || false;
   const payNowUrl = data?.payNowUrl || "";
 
   // Social icons mapping
   const socialIconMap = {
-    WhatsApp: { icon: FaWhatsapp, color: "text-[#25D366]", hover: "hover:bg-[#25D366]", defaultUrl: "https://wa.me/918660460512" },
-    Facebook: { icon: FaFacebook, color: "text-[#1877F2]", hover: "hover:bg-[#1877F2]", defaultUrl: "https://www.facebook.com/payanatrails/" },
-    Instagram: { icon: FaInstagram, color: "text-[#E1306C]", hover: "hover:bg-[#E1306C]", defaultUrl: "https://www.instagram.com/payanatrails/" },
-    YouTube: { icon: FaYoutube, color: "text-[#FF0000]", hover: "hover:bg-[#FF0000]", defaultUrl: "https://www.youtube.com/@PayanaTrails" },
-    LinkedIn: { icon: FaLinkedin, color: "text-[#0077B5]", hover: "hover:bg-[#0077B5]", defaultUrl: "https://www.linkedin.com/company/payana-trails/" },
+    WhatsApp: {
+      icon: FaWhatsapp,
+      color: "text-[#25D366]",
+      hover: "hover:bg-[#25D366]",
+      defaultUrl: "https://wa.me/918660460512",
+    },
+    Facebook: {
+      icon: FaFacebook,
+      color: "text-[#1877F2]",
+      hover: "hover:bg-[#1877F2]",
+      defaultUrl: "https://www.facebook.com/payanatrails/",
+    },
+    Instagram: {
+      icon: FaInstagram,
+      color: "text-[#E1306C]",
+      hover: "hover:bg-[#E1306C]",
+      defaultUrl: "https://www.instagram.com/payanatrails/",
+    },
+    YouTube: {
+      icon: FaYoutube,
+      color: "text-[#FF0000]",
+      hover: "hover:bg-[#FF0000]",
+      defaultUrl: "https://www.youtube.com/@PayanaTrails",
+    },
+    LinkedIn: {
+      icon: FaLinkedin,
+      color: "text-[#0077B5]",
+      hover: "hover:bg-[#0077B5]",
+      defaultUrl: "https://www.linkedin.com/company/payana-trails/",
+    },
   };
 
-  const socialLinks = (data?.socialLinks?.length > 0 ? data.socialLinks : Object.keys(socialIconMap).map(platform => ({
-    platform,
-    url: socialIconMap[platform].defaultUrl
-  }))).map(link => ({
+  const socialLinks = (
+    data?.socialLinks?.length > 0
+      ? data.socialLinks
+      : Object.keys(socialIconMap).map((platform) => ({
+          platform,
+          url: socialIconMap[platform].defaultUrl,
+        }))
+  ).map((link) => ({
     ...link,
-    url: link.url || socialIconMap[link.platform]?.defaultUrl || ""
+    url: link.url || socialIconMap[link.platform]?.defaultUrl || "",
   }));
 
-  const footerMenus = data?.columns?.length > 0 ? data.columns : [
-    {
-      heading: "Journeys",
-      links: [
-        { label: "Signature Trails", url: "/journeys/signature" },
-        { label: "Wildlife Trails", url: "/journeys/wildlife" },
-        { label: "Heritage Trails", url: "/journeys/heritage" },
-        { label: "Cultural & Immersive Trails", url: "/journeys/cultural" },
-      ],
-    },
-    {
-      heading: "The Payana Way",
-      links: [
-        { label: "A Journey Begins", url: "/payana-way#ajourneybegins" },
-        { label: "The Payana Difference", url: "/payana-way#the-payana-difference" },
-        { label: "Journeys with Purpose", url: "/payana-way#journeys-with-purpose" },
-        { label: "In the Media", url: "/payana-way#in-the-media" },
-      ],
-    },
-    {
-      heading: "Stories",
-      links: [
-        { label: "Travel Stories", url: "/stories#travel-stories" },
-        { label: "Stories from our Guests", url: "/stories#guest-stories" },
-        { label: "Voices from the Trail", url: "/stories#voices-from-the-trail" },
-        { label: "Newsletter", url: "/stories#newsletter" },
-      ],
-    },
-    {
-      heading: "Connect",
-      links: [
-        { label: "Enquiry", url: "/connect#enquiry-section" },
-        { label: "FAQs", url: "/connect#faq-section" },
-        { label: "Refer Your Friends", url: "/connect#referral-section" },
-        { label: "Gift a Journey", url: "/connect#gift-section" },
-        { label: "Connect With Us", url: "/connect#contact-details-section" },
-      ],
-    },
-  ];
+  const footerMenus =
+    data?.columns?.length > 0
+      ? data.columns
+      : [
+          {
+            heading: "Journeys",
+            links: [
+              { label: "Signature Trails", url: "/journeys/signature" },
+              { label: "Wildlife Trails", url: "/journeys/wildlife" },
+              { label: "Heritage Trails", url: "/journeys/heritage" },
+              {
+                label: "Cultural & Immersive Trails",
+                url: "/journeys/cultural",
+              },
+            ],
+          },
+          {
+            heading: "The Payana Way",
+            links: [
+              { label: "A Journey Begins", url: "/payana-way#ajourneybegins" },
+              {
+                label: "The Payana Difference",
+                url: "/payana-way#the-payana-difference",
+              },
+              {
+                label: "Journeys with Purpose",
+                url: "/payana-way#journeys-with-purpose",
+              },
+              { label: "In the Media", url: "/payana-way#in-the-media" },
+            ],
+          },
+          {
+            heading: "Stories",
+            links: [
+              { label: "Travel Stories", url: "/stories#travel-stories" },
+              {
+                label: "Stories from our Guests",
+                url: "/stories#guest-stories",
+              },
+              {
+                label: "Voices from the Trail",
+                url: "/stories#voices-from-the-trail",
+              },
+              { label: "Newsletter", url: "/stories#newsletter" },
+            ],
+          },
+          {
+            heading: "Connect",
+            links: [
+              { label: "Enquiry", url: "/connect#enquiry-section" },
+              { label: "FAQs", url: "/connect#faq-section" },
+              { label: "Refer Your Friends", url: "/connect#referral-section" },
+              { label: "Gift a Journey", url: "/connect#gift-section" },
+              {
+                label: "Connect With Us",
+                url: "/connect#contact-details-section",
+              },
+            ],
+          },
+        ];
 
-  const bottomLinks = data?.bottomLinks?.length > 0 ? data.bottomLinks : [
-    { label: "Home", url: "/" },
-    { label: "Journeys", url: "/journeys" },
-    { label: "Payana Way", url: "/payana-way" },
-    { label: "Stories", url: "/stories" },
-    { label: "Connect", url: "/connect" },
-  ];
+  const bottomLinks =
+    data?.bottomLinks?.length > 0
+      ? data.bottomLinks
+      : [
+          { label: "Home", url: "/" },
+          { label: "Journeys", url: "/journeys" },
+          { label: "Payana Way", url: "/payana-way" },
+          { label: "Stories", url: "/stories" },
+          { label: "Connect", url: "/connect" },
+        ];
 
   return (
     <footer className="relative bg-gradient-to-b from-[#4A3B2A] to-[#2E2419] w-full pt-10 pb-6 overflow-hidden font-sans">
@@ -208,7 +268,10 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   className="text-[10px] font-medium uppercase tracking-wider bg-[#F3EFE9]/10 hover:bg-[#F3EFE9]/20 text-[#F3EFE9] px-3 py-1.5 rounded-full border border-[#F3EFE9]/20 transition-all duration-300 flex items-center gap-1.5 shrink-0"
                 >
-                  <MapPin size={12} className="text-[#F3EFE9]/70 group-hover:text-white transition-colors" />
+                  <MapPin
+                    size={12}
+                    className="text-[#F3EFE9]/70 group-hover:text-white transition-colors"
+                  />
                   {mapButtonText}
                 </a>
               )}
@@ -291,22 +354,24 @@ const Footer = () => {
           <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-3 gap-y-1">
             <div className="flex items-center gap-x-3 font-medium tracking-wide opacity-70">
               <Link
-                to="/privacy-policy"
-                className="hover:text-white hover:opacity-100 transition-colors"
-                onClick={() => window.scrollTo(0, 0)}
-              >
-                Privacy Policy
-              </Link>
-              <span className="opacity-40 font-light select-none">|</span>
-              <Link
                 to="/terms-and-conditions"
                 className="hover:text-white hover:opacity-100 transition-colors"
                 onClick={() => window.scrollTo(0, 0)}
               >
                 Terms & Conditions
               </Link>
+              <span className="opacity-40 font-light select-none">|</span>
+              <Link
+                to="/privacy-policy"
+                className="hover:text-white hover:opacity-100 transition-colors"
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                Privacy Policy
+              </Link>
             </div>
-            <span className="hidden md:inline opacity-40 font-light select-none">|</span>
+            <span className="hidden md:inline opacity-40 font-light select-none">
+              |
+            </span>
             <div className="font-medium tracking-wide text-center md:text-right opacity-60">
               {copyrightText}
             </div>
