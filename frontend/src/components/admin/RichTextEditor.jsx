@@ -6,7 +6,11 @@ import {
   AlignLeft, 
   AlignCenter, 
   AlignRight, 
-  AlignJustify 
+  AlignJustify,
+  Heading1,
+  Heading2,
+  Heading3,
+  Underline,
 } from "lucide-react";
 import { IMAGE_BASE_URL } from "../../services/api";
 import "@uiw/react-md-editor/markdown-editor.css";
@@ -166,6 +170,77 @@ const RichTextEditor = ({
         }
       } else {
         api.replaceSelection(`<div style="text-align: justify">\n\n${state.selectedText || " "}\n\n</div>`);
+      }
+    },
+  };
+
+  // ─── Heading Toggle Commands ──────────────────────────────────────────────
+  // Each heading button toggles: if the line already has that heading level,
+  // remove it (revert to paragraph). Otherwise, set it to that level.
+
+  const makeHeadingCommand = (level, IconComponent, label) => ({
+    name: `heading-${level}`,
+    keyCommand: `heading-${level}`,
+    buttonProps: { "aria-label": label, title: label },
+    icon: <IconComponent size={14} />,
+    execute: (state, api) => {
+      const prefix = "#".repeat(level) + " ";
+      const selectedText = state.selectedText;
+
+      // Get full lines by expanding selection to line boundaries
+      const beforeCursor = state.text.substring(0, state.selection.start);
+      const afterCursor = state.text.substring(state.selection.end);
+      const lineStart = beforeCursor.lastIndexOf("\n") + 1;
+      const lineEnd = afterCursor.indexOf("\n");
+      const fullLineEnd =
+        lineEnd === -1
+          ? state.text.length
+          : state.selection.end + lineEnd;
+
+      const currentLine = state.text.substring(lineStart, fullLineEnd);
+
+      // Check if line already has this heading level
+      if (currentLine.startsWith(prefix)) {
+        // Toggle OFF — remove the heading prefix
+        const newLine = currentLine.substring(prefix.length);
+        const newText =
+          state.text.substring(0, lineStart) +
+          newLine +
+          state.text.substring(fullLineEnd);
+        // We need to use onChange directly since api.replaceSelection works on selection
+        onChange(newText);
+      } else {
+        // Strip any existing heading prefix (# through ######)
+        const stripped = currentLine.replace(/^#{1,6}\s/, "");
+        const newLine = prefix + stripped;
+        const newText =
+          state.text.substring(0, lineStart) +
+          newLine +
+          state.text.substring(fullLineEnd);
+        onChange(newText);
+      }
+    },
+  });
+
+  const h1Command = makeHeadingCommand(1, Heading1, "Heading 1");
+  const h2Command = makeHeadingCommand(2, Heading2, "Heading 2");
+  const h3Command = makeHeadingCommand(3, Heading3, "Heading 3");
+
+  // ─── Underline Command ────────────────────────────────────────────────────
+  const underlineCommand = {
+    name: "underline",
+    keyCommand: "underline",
+    buttonProps: { "aria-label": "Underline", title: "Underline" },
+    icon: <Underline size={13} />,
+    execute: (state, api) => {
+      const selectedText = state.selectedText;
+      // Toggle: if already wrapped in <u>...</u>, unwrap it
+      const underlineRegex = /^<u>(.*)<\/u>$/s;
+      const match = selectedText.match(underlineRegex);
+      if (match) {
+        api.replaceSelection(match[1]);
+      } else {
+        api.replaceSelection(`<u>${selectedText || "text"}</u>`);
       }
     },
   };
@@ -339,7 +414,11 @@ const RichTextEditor = ({
           alignRightCommand,
           alignJustifyCommand,
           commands.divider,
-          commands.title,
+          h1Command,
+          h2Command,
+          h3Command,
+          commands.divider,
+          underlineCommand,
           commands.divider,
           commands.link,
           commands.quote,

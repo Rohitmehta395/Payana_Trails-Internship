@@ -170,6 +170,18 @@ const STATIC_PAGE_META = {
     description:
       "Reach out to us. Enquire about a journey, send a referral, or simply say hello — we'd love to hear from you.",
   },
+
+  // ── Legal ─────────────────────────────────────────────────────────────────
+  "/privacy-policy": {
+    pageKey: "privacy-policy",
+    title: "Privacy Policy | Payana Trails",
+    description: "Privacy Policy for Payana Trails.",
+  },
+  "/terms-and-conditions": {
+    pageKey: "terms-and-conditions",
+    title: "Terms & Conditions | Payana Trails",
+    description: "Terms and Conditions for Payana Trails.",
+  },
 };
 
 // ── Page-Specific Fallback OG Images ─────────────────────────────────────────
@@ -205,6 +217,8 @@ const PAGE_FALLBACK_OG_IMAGES = {
   "journeys/heritage": "/og-heritage.webp",
   "journeys/cultural": "/og-cultural.webp",
   "journeys/wildlife": "/og-wildlife.avif",
+  "privacy-policy": "/heroBg-desktop.webp",
+  "terms-and-conditions": "/heroBg-desktop.webp",
 };
 
 // Final safety-net used when no page-specific fallback exists (e.g. unknown pageKey)

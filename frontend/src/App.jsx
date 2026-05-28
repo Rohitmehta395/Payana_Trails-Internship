@@ -27,6 +27,7 @@ const ExternalStories = lazy(() => import("./pages/ExternalStories"));
 const TrailDetails = lazy(() => import("./pages/TrailDetails"));
 const TrailItinerary = lazy(() => import("./pages/TrailItinerary"));
 const PayNowRedirect = lazy(() => import("./pages/PayNowRedirect"));
+const LegalPage = lazy(() => import("./pages/LegalPage"));
 
 // Connect sub-pages
 const EnquiryPage = lazy(() =>
@@ -161,6 +162,8 @@ const App = () => {
                         path="trails/:slug/itinerary"
                         element={<TrailItinerary />}
                       />
+                      <Route path="privacy-policy" element={<LegalPage type="privacy-policy" />} />
+                      <Route path="terms-and-conditions" element={<LegalPage type="terms-and-conditions" />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>

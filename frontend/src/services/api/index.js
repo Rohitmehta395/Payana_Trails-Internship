@@ -13,6 +13,7 @@ import * as payanaWayApi from "./payanaWayApi";
 import * as storiesApi from "./storiesApi";
 import * as journeyPageApi from "./journeyPageApi";
 import * as layoutApi from "./layoutApi";
+import * as legalPageApi from "./legalPageApi";
 
 /**
  * Central API object that combines all API modules into one export.
@@ -97,6 +98,11 @@ export const api = {
    * Layout/header/footer/shared site settings API methods.
    */
   ...layoutApi,
+
+  /**
+   * Legal page (Privacy Policy, Terms & Conditions) API methods.
+   */
+  ...legalPageApi,
 };
 
 /**

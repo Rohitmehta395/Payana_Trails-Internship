@@ -287,9 +287,29 @@ const Footer = () => {
             ))}
           </div>
 
-          {/* Copyright */}
-          <div className="font-medium tracking-wide text-center md:text-right opacity-60">
-            {copyrightText}
+          {/* Legal links + Copyright */}
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-3 gap-y-1">
+            <div className="flex items-center gap-x-3 font-medium tracking-wide opacity-70">
+              <Link
+                to="/privacy-policy"
+                className="hover:text-white hover:opacity-100 transition-colors"
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                Privacy Policy
+              </Link>
+              <span className="opacity-40 font-light select-none">|</span>
+              <Link
+                to="/terms-and-conditions"
+                className="hover:text-white hover:opacity-100 transition-colors"
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                Terms & Conditions
+              </Link>
+            </div>
+            <span className="hidden md:inline opacity-40 font-light select-none">|</span>
+            <div className="font-medium tracking-wide text-center md:text-right opacity-60">
+              {copyrightText}
+            </div>
           </div>
         </div>
       </div>

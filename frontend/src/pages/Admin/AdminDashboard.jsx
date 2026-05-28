@@ -12,6 +12,7 @@ import ConnectManager from "./ConnectManager/ConnectManager";
 import JourneyManager from "./JourneyManager/JourneyManager";
 import HeaderManager from "./HeaderManager/HeaderManager";
 import FooterManager from "./FooterManager/FooterManager";
+import LegalPageManager from "./LegalPageManager/LegalPageManager";
 import { api, IMAGE_BASE_URL } from "../../services/api";
 import { updateFavicon } from "../../utils/favicon";
 
@@ -118,6 +119,13 @@ const AdminDashboard = () => {
       heading: "Footer Settings",
       iconPath: "M4 6h16M4 12h16M13 18h7",
       render: () => <FooterManager />,
+    },
+    {
+      id: "legalPages",
+      label: "Legal Pages",
+      heading: "Legal Pages",
+      iconPath: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
+      render: () => <LegalPageManager />,
     },
   ];
   const activeSection = tabs.find((tab) => tab.id === activeTab) || tabs[0];

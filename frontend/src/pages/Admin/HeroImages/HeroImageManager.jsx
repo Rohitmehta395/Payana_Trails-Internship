@@ -45,6 +45,8 @@ import {
   Smartphone,
   Monitor,
   AlertCircle,
+  ShieldCheck,
+  FileText,
 } from "lucide-react";
 import { api, IMAGE_BASE_URL } from "../../../services/api";
 
@@ -102,6 +104,18 @@ const PAGE_META = {
     Icon: AlertCircle,
     path: "/connect/faqs",
     group: "main",
+  },
+  "privacy-policy": {
+    label: "Privacy Policy",
+    Icon: ShieldCheck,
+    path: "/privacy-policy",
+    group: "legal",
+  },
+  "terms-and-conditions": {
+    label: "Terms & Conditions",
+    Icon: FileText,
+    path: "/terms-and-conditions",
+    group: "legal",
   },
 };
 
@@ -1130,6 +1144,65 @@ const HeroImageManager = () => {
                 </p>
                 {Object.entries(PAGE_META)
                   .filter(([, m]) => m.group === "journeys")
+                  .map(([key, m]) => {
+                    const active = key === selectedPage;
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => {
+                          setSelectedPage(key);
+                          setPageSelectOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-left transition-all duration-150 ${
+                          active
+                            ? "bg-[#4A3B2A] text-white"
+                            : "text-gray-700 hover:bg-[#F3EFE9] hover:text-[#4A3B2A]"
+                        }`}
+                      >
+                        <span
+                          className={`w-7 h-7 flex items-center justify-center rounded-lg shrink-0 ${
+                            active ? "bg-white/20" : "bg-[#F3EFE9]"
+                          }`}
+                        >
+                          <m.Icon
+                            size={14}
+                            strokeWidth={2}
+                            className={active ? "text-white" : "text-[#4A3B2A]"}
+                          />
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p
+                            className={`font-medium leading-tight truncate ${active ? "text-white" : "text-gray-800"}`}
+                          >
+                            {m.label}
+                          </p>
+                          <p
+                            className={`text-[11px] truncate ${active ? "text-white/60" : "text-gray-400"}`}
+                          >
+                            {m.path}
+                          </p>
+                        </div>
+                        {active && (
+                          <ArrowRight
+                            size={13}
+                            className="text-white/70 shrink-0"
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+              </div>
+
+              {/* Divider */}
+              <div className="mx-4 my-1.5 border-t border-gray-100" />
+
+              {/* Legal Pages */}
+              <div className="px-2 pb-2">
+                <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                  Legal Pages
+                </p>
+                {Object.entries(PAGE_META)
+                  .filter(([, m]) => m.group === "legal")
                   .map(([key, m]) => {
                     const active = key === selectedPage;
                     return (

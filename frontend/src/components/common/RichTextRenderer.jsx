@@ -151,6 +151,10 @@ const RichTextRenderer = ({
           line-height: 1.75;
           background-color: transparent !important;
         }
+        .rich-text-renderer-container .wmde-markdown .anchor,
+        .rich-text-renderer-container .wmde-markdown .octicon-link {
+          display: none !important;
+        }
         .rich-text-renderer-container .wmde-markdown h1 {
           font-size: 1.875rem;
           font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
