@@ -39,7 +39,7 @@ const connectPageRoutes = require("./routes/connectPageRoutes");
 const journeyPageRoutes = require("./routes/journeyPageRoutes");
 const headerRoutes = require("./routes/headerRoutes");
 const footerRoutes = require("./routes/footerRoutes");
-const legalPageRoutes = require("./routes/legalPageRoutes");
+const legalSectionRoutes = require("./routes/legalSectionRoutes");
 
 const cacheMiddleware = require("./middlewares/cacheMiddleware");
 
@@ -61,7 +61,7 @@ app.use("/api/connect-page", cacheMiddleware(60), connectPageRoutes);
 app.use("/api/journey-page", cacheMiddleware(60), journeyPageRoutes);
 app.use("/api/header", cacheMiddleware(60), headerRoutes);
 app.use("/api/footer", cacheMiddleware(60), footerRoutes);
-app.use("/api/legal", cacheMiddleware(60), legalPageRoutes);
+app.use("/api/legal-sections", cacheMiddleware(60), legalSectionRoutes);
 
 // ── Per-page meta for server-side injection ───────────────────────────────────
 // Googlebot receives index.html (not the OG middleware HTML) and reads these

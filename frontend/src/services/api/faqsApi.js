@@ -16,7 +16,8 @@ export const getFAQs = async (isAdmin = false) => {
       ? `${API_BASE_URL}/faqs?admin=true`
       : `${API_BASE_URL}/faqs`;
 
-    const response = await fetch(url);
+    const options = isAdmin ? { headers: withAdminAuth() } : {};
+    const response = await fetch(url, options);
 
     if (!response.ok) throw new Error("Failed to fetch FAQs");
 

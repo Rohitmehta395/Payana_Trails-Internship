@@ -1,101 +1,117 @@
 import { API_BASE_URL, withAdminAuth } from "./config";
 
-/**
- * Fetches a published legal page by type (public).
- *
- * @param {string} type - "privacy-policy" or "terms-and-conditions"
- * @returns {Promise<Object>} Legal page data.
- * @throws {Error} Throws if the page cannot be fetched.
- */
-export const getLegalPage = async (type) => {
+export const getLegalSections = async (type, isAdmin = false) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/legal/${type}`);
+    const url = isAdmin
+      ? `${API_BASE_URL}/legal-sections/${type}?admin=true`
+      : `${API_BASE_URL}/legal-sections/${type}`;
 
-    if (!response.ok) throw new Error("Failed to fetch legal page");
+    const options = isAdmin ? { headers: withAdminAuth() } : {};
+    const response = await fetch(url, options);
+
+    if (!response.ok) throw new Error("Failed to fetch legal sections");
 
     return await response.json();
   } catch (error) {
-    console.error("API Error (getLegalPage):", error);
+    console.error("API Error (getLegalSections):", error);
     throw error;
   }
 };
 
-/**
- * Fetches a legal page for the admin panel (includes draftData).
- *
- * @param {string} type - "privacy-policy" or "terms-and-conditions"
- * @returns {Promise<Object>} Full legal page data including drafts.
- * @throws {Error} Throws if the admin page cannot be fetched.
- */
-export const getLegalPageAdmin = async (type) => {
+export const createLegalSection = async (type, data) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/legal/${type}/admin`, {
-      headers: withAdminAuth(),
+    const response = await fetch(`${API_BASE_URL}/legal-sections/${type}`, {
+      method: "POST",
+      headers: withAdminAuth({ "Content-Type": "application/json" }),
+      body: JSON.stringify(data),
     });
 
-    if (!response.ok) throw new Error("Failed to fetch admin legal page");
+    const resData = await response.json();
 
-    return await response.json();
+    if (!response.ok) {
+      throw new Error(resData.message || "Failed to create section");
+    }
+
+    return resData;
   } catch (error) {
-    console.error("API Error (getLegalPageAdmin):", error);
     throw error;
   }
 };
 
-/**
- * Creates or updates a legal page (publish or save as draft).
- *
- * @param {string} type - "privacy-policy" or "terms-and-conditions"
- * @param {Object} data - { title, content, isDraft }
- * @returns {Promise<Object>} Updated legal page response.
- * @throws {Error} Throws if the update fails.
- */
-export const updateLegalPage = async (type, data) => {
+export const updateLegalSection = async (type, id, data) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/legal/${type}`, {
+    const response = await fetch(`${API_BASE_URL}/legal-sections/${type}/${id}`, {
       method: "PUT",
       headers: withAdminAuth({ "Content-Type": "application/json" }),
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
+    const resData = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message || "Failed to update legal page");
+      throw new Error(resData.message || "Failed to update section");
     }
 
-    return result;
+    return resData;
   } catch (error) {
-    console.error("API Error (updateLegalPage):", error);
     throw error;
   }
 };
 
-/**
- * Autosaves draft data for a legal page without publishing.
- *
- * @param {string} type - "privacy-policy" or "terms-and-conditions"
- * @param {Object} draftData - { title, content }
- * @returns {Promise<Object>} Autosave response.
- * @throws {Error} Throws if the autosave fails.
- */
-export const autosaveLegalPage = async (type, draftData) => {
+export const deleteLegalSection = async (type, id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/legal/${type}/autosave`, {
-      method: "PATCH",
-      headers: withAdminAuth({ "Content-Type": "application/json" }),
-      body: JSON.stringify({ draftData }),
+    const response = await fetch(`${API_BASE_URL}/legal-sections/${type}/${id}`, {
+      method: "DELETE",
+      headers: withAdminAuth(),
     });
 
-    const result = await response.json();
+    const resData = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message || "Failed to autosave legal page");
+      throw new Error(resData.message || "Failed to delete section");
     }
 
-    return result;
+    return resData;
   } catch (error) {
-    console.error("API Error (autosaveLegalPage):", error);
+    throw error;
+  }
+};
+
+export const reorderLegalSections = async (type, payload) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/legal-sections/${type}/reorder`, {
+      method: "PUT",
+      headers: withAdminAuth({ "Content-Type": "application/json" }),
+      body: JSON.stringify(payload),
+    });
+
+    const resData = await response.json();
+
+    if (!response.ok) {
+      throw new Error(resData.message || "Failed to reorder sections");
+    }
+
+    return resData;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const toggleLegalSectionStatus = async (type, id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/legal-sections/${type}/${id}/toggle`, {
+      method: "PATCH",
+      headers: withAdminAuth(),
+    });
+
+    const resData = await response.json();
+
+    if (!response.ok) {
+      throw new Error(resData.message || "Failed to toggle section");
+    }
+
+    return resData;
+  } catch (error) {
     throw error;
   }
 };
