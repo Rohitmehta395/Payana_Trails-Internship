@@ -70,87 +70,108 @@ app.use("/api/legal-sections", cacheMiddleware(60), legalSectionRoutes);
 // even if Googlebot does not fully render the React app.
 const PAGE_META = {
   "/": {
+    pageKey: "home",
     title: "Payana Trails | Journeys, thoughtfully curated!",
     description: "Small groups. Deeper experiences. Discover our curated trails around the world.",
   },
   "/home": {
+    pageKey: "home",
     title: "Payana Trails | Journeys, thoughtfully curated!",
     description: "Small groups. Deeper experiences. Discover our curated trails around the world.",
   },
   "/journeys": {
+    pageKey: "journeys",
     title: "Journeys | Payana Trails",
     description: "Explore signature, wildlife, heritage, cultural, and destination-led journeys thoughtfully designed by Payana Trails.",
   },
   "/journey": {
+    pageKey: "journeys",
     title: "Journeys | Payana Trails",
     description: "Explore signature, wildlife, heritage, cultural, and destination-led journeys thoughtfully designed by Payana Trails.",
   },
   "/journeys/signature": {
+    pageKey: "journeys/signature",
     title: "Signature Trails | Payana Trails",
     description: "A handpicked collection of Payana Trails journeys with unforgettable landscapes, stories, and experiences.",
   },
   "/journeys/wildlife": {
+    pageKey: "journeys/wildlife",
     title: "Wildlife Trails | Payana Trails",
     description: "Explore wildlife journeys where every sighting unfolds at nature's pace, with comfort and depth.",
   },
   "/journeys/heritage": {
+    pageKey: "journeys/heritage",
     title: "Heritage Trails | Payana Trails",
     description: "Discover stories, architecture, and living legacies that have shaped civilisations across time.",
   },
   "/journeys/cultural": {
+    pageKey: "journeys/cultural",
     title: "Cultural & Immersive Trails | Payana Trails",
     description: "Meaningful encounters that connect you with the people, traditions, and spirit of each destination.",
   },
   "/journeys/destinations": {
+    pageKey: "journeys/destinations",
     title: "Destinations | Payana Trails",
     description: "Explore handpicked destinations that open the door to extraordinary journeys and deeper travel experiences.",
   },
   "/payana-way": {
+    pageKey: "payana-way",
     title: "The Payana Way | Payana Trails",
     description: "Discover the philosophy behind Payana Trails — journeys built on depth, purpose, and meaningful human connections.",
   },
   "/stories": {
+    pageKey: "stories",
     title: "Stories | Payana Trails",
     description: "Reflections, insights, and moments from journeys across the world. Discover the spirit of travel through our stories.",
   },
   "/stories/blogs": {
+    pageKey: "stories",
     title: "Travel Stories | Payana Trails",
     description: "Reflections, insights, and moments from journeys across the world. Discover the spirit of travel through our stories.",
   },
   "/stories/external": {
+    pageKey: "stories",
     title: "Stories from Our Guests | Payana Trails",
     description: "Guest stories and reflections from travellers who have experienced journeys with Payana Trails.",
   },
   "/stories/testimonials": {
+    pageKey: "stories",
     title: "Voices from the Trail | Payana Trails",
     description: "Read testimonials and voices from travellers who have journeyed with Payana Trails.",
   },
   "/connect": {
+    pageKey: "connect",
     title: "Connect | Payana Trails",
     description: "Reach out to us. Enquire about a journey, send a referral, or simply say hello — we'd love to hear from you.",
   },
   "/connect/enquiry": {
+    pageKey: "connect",
     title: "Enquiry | Payana Trails",
     description: "Submit an enquiry about a journey with Payana Trails and we will get back to you shortly.",
   },
   "/connect/faqs": {
+    pageKey: "connect/faqs",
     title: "FAQs | Payana Trails",
     description: "Frequently asked questions about Payana Trails journeys, bookings, and travel experiences.",
   },
   "/connect/refer": {
+    pageKey: "connect",
     title: "Refer a Friend | Payana Trails",
     description: "Refer a friend to Payana Trails and earn travel credits for your next journey.",
   },
   "/connect/gift-a-journey": {
+    pageKey: "connect",
     title: "Gift a Journey | Payana Trails",
     description: "Gift a meaningful travel experience to someone special with Payana Trails.",
   },
   "/privacy-policy": {
+    pageKey: "privacy-policy",
     title: "Privacy Policy | Payana Trails",
     description: "Read the Privacy Policy of Payana Trails to understand how we collect, use, and protect your personal information.",
   },
   "/terms-and-conditions": {
-    title: "Terms & Conditions | Payana Trails",
+    pageKey: "terms-and-conditions",
+    title: "Terms-and-conditions",
     description: "Review the Terms and Conditions governing the use of Payana Trails services, website, and travel bookings.",
   },
 };
@@ -189,6 +210,11 @@ if (fs.existsSync(FRONTEND_DIST)) {
     // Look up page-specific meta; fall back to homepage defaults for unknown routes
     // (e.g. /trails/:slug — those get their meta injected by the React Helmet component)
     const meta = PAGE_META[req.path] || PAGE_META["/"];
+    const pageKey = meta.pageKey || "home";
+    // Replace ~ with / if needed, though pageKeys like journeys/wildlife shouldn't be encoded here
+    // But the API route is /api/page-heroes/:pageKey/primary-image and expects URL encoding or ~
+    // The API uses `decode(req.params.pageKey)` which replaces ~ with /.
+    const apiPageKey = pageKey.replace(/\//g, "~");
 
     // Inject all SEO-relevant meta tags server-side so Googlebot sees the correct
     // values immediately without needing to execute JavaScript first.
@@ -212,7 +238,7 @@ if (fs.existsSync(FRONTEND_DIST)) {
         /<meta name="description" content="[^"]*" \/>/i,
         `<meta name="description" content="${meta.description}" />`
       )
-      // Open Graph title & description
+      // Open Graph title & description & image
       .replace(
         /<meta property="og:title" content="[^"]*" \/>/i,
         `<meta property="og:title" content="${meta.title}" />`
@@ -221,7 +247,11 @@ if (fs.existsSync(FRONTEND_DIST)) {
         /<meta property="og:description" content="[^"]*" \/>/i,
         `<meta property="og:description" content="${meta.description}" />`
       )
-      // Twitter Card title & description
+      .replace(
+        /<meta property="og:image" content="[^"]*" \/>/i,
+        `<meta property="og:image" content="${siteUrl}/api/page-heroes/${encodeURIComponent(apiPageKey)}/primary-image" />`
+      )
+      // Twitter Card title & description & image
       .replace(
         /<meta name="twitter:title" content="[^"]*" \/>/i,
         `<meta name="twitter:title" content="${meta.title}" />`
@@ -229,6 +259,10 @@ if (fs.existsSync(FRONTEND_DIST)) {
       .replace(
         /<meta name="twitter:description" content="[^"]*" \/>/i,
         `<meta name="twitter:description" content="${meta.description}" />`
+      )
+      .replace(
+        /<meta name="twitter:image" content="[^"]*" \/>/i,
+        `<meta name="twitter:image" content="${siteUrl}/api/page-heroes/${encodeURIComponent(apiPageKey)}/primary-image" />`
       );
 
     res.send(html);

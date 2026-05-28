@@ -61,6 +61,9 @@ const BOT_PATTERNS = [
   "redditbot",
   "Snapchat",
   "vkShare",
+  "Applebot",
+  "SkypeUriPreview",
+  "Line",
 ];
 
 // ── Static Page Metadata ──────────────────────────────────────────────────────
