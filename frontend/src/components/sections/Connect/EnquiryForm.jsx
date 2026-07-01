@@ -32,6 +32,7 @@ const EnquiryForm = ({ onSuccess }) => {
     guests: "2",
     roomPreference: "Standard",
     message: "",
+    referredBy: "",
     connectMethod: "eMail",
     cfTurnstileResponse: "",
   });
@@ -151,6 +152,7 @@ const EnquiryForm = ({ onSuccess }) => {
         guests: "2",
         roomPreference: "Standard",
         message: "",
+        referredBy: "",
         connectMethod: "eMail",
       });
       setTouched({});

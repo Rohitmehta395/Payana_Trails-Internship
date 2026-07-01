@@ -1,5 +1,5 @@
 export const validateField = (name, value) => {
-  if (!value && name !== "otherDestination" && name !== "message") {
+  if (!value && name !== "otherDestination" && name !== "message" && name !== "referredBy") {
     return "This field is required";
   }
   if (name === "email" && value && !/^\S+@\S+\.\S+$/.test(value)) {

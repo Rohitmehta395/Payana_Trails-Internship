@@ -17,6 +17,7 @@ router.post(
     body("name").trim().notEmpty().withMessage("Name is required").escape(),
     body("email").trim().isEmail().withMessage("Valid email is required").normalizeEmail(),
     body("message").optional().trim().escape(),
+    body("referredBy").optional().trim().escape(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -36,7 +37,8 @@ router.post(
     guests, 
     roomPreference, 
     connectMethod, 
-    message 
+    message,
+    referredBy
   } = req.body;
 
   try {
@@ -55,6 +57,7 @@ router.post(
       roomPreference,
       connectMethod,
       message,
+      referredBy,
     });
 
     // 2. Setup Transporter
@@ -124,6 +127,11 @@ router.post(
                 <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9; font-weight: bold;">Preferred Connect:</td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9;">${connectMethod}</td>
               </tr>
+              ${referredBy ? `
+              <tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9; font-weight: bold;">Referred By:</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #F3EFE9;">${referredBy}</td>
+              </tr>` : ''}
             </table>
 
             <div style="margin-top: 30px; padding: 20px; background-color: #FDFBF8; border-radius: 8px; border-left: 4px solid #4A3B2A;">
@@ -192,6 +200,11 @@ router.post(
                 <td style="padding: 8px 0; border-bottom: 1px dotted #F3EFE9; font-weight: bold;">Connect via:</td>
                 <td style="padding: 8px 0; border-bottom: 1px dotted #F3EFE9;">${connectMethod || 'eMail'}</td>
               </tr>
+              ${referredBy ? `
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px dotted #F3EFE9; font-weight: bold;">Referred By:</td>
+                <td style="padding: 8px 0; border-bottom: 1px dotted #F3EFE9;">${referredBy}</td>
+              </tr>` : ''}
             </table>
 
             ${message ? `

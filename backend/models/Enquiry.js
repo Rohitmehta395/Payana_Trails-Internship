@@ -64,6 +64,10 @@ const enquirySchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    referredBy: {
+      type: String,
+      trim: true,
+    },
     status: {
       type: String,
       enum: ["new", "contacted", "closed"],
