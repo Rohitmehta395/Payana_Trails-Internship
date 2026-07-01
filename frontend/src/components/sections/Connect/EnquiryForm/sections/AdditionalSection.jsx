@@ -26,19 +26,6 @@ const AdditionalSection = ({ formData, touched, handleChange, handleSelectChange
         />
         <div className="space-y-2">
           <label className="flex items-center gap-2 text-sm font-medium text-[#4A3B2A]">
-            <FiMessageSquare size={16} className="text-[#4A3B2A]/60" /> Message
-            (Optional)
-          </label>
-          <textarea
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            placeholder="Tell us more about your travel style, special requests, or anything else..."
-            className="w-full px-4 py-3 bg-white border border-[#4A3B2A]/10 rounded-xl focus:border-[#4A3B2A] focus:ring-2 focus:ring-[#4A3B2A]/10 outline-none transition-all duration-200 min-h-[120px] resize-y text-[#4A3B2A] placeholder:text-[#4A3B2A]/30"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 text-sm font-medium text-[#4A3B2A]">
             <FiUserPlus size={16} className="text-[#4A3B2A]/60" /> Referred By
             (Optional)
           </label>
@@ -49,6 +36,19 @@ const AdditionalSection = ({ formData, touched, handleChange, handleSelectChange
             onChange={handleChange}
             placeholder="Name of the person who referred you"
             className="w-full px-4 py-3 bg-white border border-[#4A3B2A]/10 rounded-xl focus:border-[#4A3B2A] focus:ring-2 focus:ring-[#4A3B2A]/10 outline-none transition-all duration-200 text-[#4A3B2A] placeholder:text-[#4A3B2A]/30"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 text-sm font-medium text-[#4A3B2A]">
+            <FiMessageSquare size={16} className="text-[#4A3B2A]/60" /> Message
+            (Optional)
+          </label>
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            placeholder="Tell us more about your travel style, special requests, or anything else..."
+            className="w-full px-4 py-3 bg-white border border-[#4A3B2A]/10 rounded-xl focus:border-[#4A3B2A] focus:ring-2 focus:ring-[#4A3B2A]/10 outline-none transition-all duration-200 min-h-[120px] resize-y text-[#4A3B2A] placeholder:text-[#4A3B2A]/30"
           />
         </div>
       </div>
