@@ -15,14 +15,14 @@
     "@ilovepdf/ilovepdf-nodejs": "^0.3.1",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
+    "dotenv": "^18.0.10",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "express-validator": "^7.3.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.4",
     "multer": "^2.1.1",
-    "nodemailer": "^9.0.3",
+    "nodemailer": "^10.5.0",
     "pdf-lib": "^1.17.1",
     "sharp": "^0.35.3"
   }

@@ -93,18 +93,19 @@ const mergeData = (initial, defaults) => {
 };
 
 const ConnectForm = ({ initialData, onSave, activeTab }) => {
+  const [prevInitialData, setPrevInitialData] = useState(initialData);
   const [data, setData] = useState(() => mergeData(initialData, defaultData));
+
+  if (initialData !== prevInitialData) {
+    setPrevInitialData(initialData);
+    setData(mergeData(initialData, defaultData));
+  }
+
   const [files, setFiles] = useState({});
   const [compressionPreviews, setCompressionPreviews] = useState({});
   const [compressionLoading, setCompressionLoading] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
-
-  useEffect(() => {
-    if (initialData) {
-      setData(mergeData(initialData, defaultData));
-    }
-  }, [initialData]);
 
   const handleSectionChange = (section, newData) => {
     setData((prev) => ({ ...prev, [section]: newData }));
@@ -165,7 +166,7 @@ const ConnectForm = ({ initialData, onSave, activeTab }) => {
     }
   };
 
-  const SaveButton = () => (
+  const saveButton = (
     <div className="mt-6 flex justify-end">
       <button
         type="submit"
@@ -198,7 +199,7 @@ const ConnectForm = ({ initialData, onSave, activeTab }) => {
             compressionStatsRight={compressionPreviews.enquiryRightImage}
             compressionLoadingRight={compressionLoading.enquiryRightImage}
           >
-            <SaveButton />
+            {saveButton}
           </EnquirySectionForm>
         )}
 
@@ -210,7 +211,7 @@ const ConnectForm = ({ initialData, onSave, activeTab }) => {
             compressionStats={compressionPreviews.referFriendImage}
             compressionLoading={compressionLoading.referFriendImage}
           >
-            <SaveButton />
+            {saveButton}
           </ReferFriendSectionForm>
         )}
 
@@ -222,7 +223,7 @@ const ConnectForm = ({ initialData, onSave, activeTab }) => {
             compressionStats={compressionPreviews.giftJourneyImage}
             compressionLoading={compressionLoading.giftJourneyImage}
           >
-            <SaveButton />
+            {saveButton}
           </GiftJourneySectionForm>
         )}
 
@@ -231,7 +232,7 @@ const ConnectForm = ({ initialData, onSave, activeTab }) => {
             data={data.faqSection} 
             onChange={(d) => handleSectionChange("faqSection", d)} 
           >
-            <SaveButton />
+            {saveButton}
           </FAQSectionForm>
         )}
 
@@ -240,7 +241,7 @@ const ConnectForm = ({ initialData, onSave, activeTab }) => {
             data={data.connectSection} 
             onChange={(d) => handleSectionChange("connectSection", d)} 
           >
-            <SaveButton />
+            {saveButton}
           </ConnectSectionForm>
         )}
       </form>
