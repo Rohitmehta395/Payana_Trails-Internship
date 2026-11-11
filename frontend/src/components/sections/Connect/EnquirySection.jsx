@@ -74,7 +74,7 @@ const EnquirySection = ({ data }) => {
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-[20s] hover:scale-110"
               style={{
-                backgroundImage: `url(${data?.rightImage ? `${IMAGE_BASE_URL}${data.rightImage}` : enquiry1})`,
+                backgroundImage: `url(${data?.leftImage ? `${IMAGE_BASE_URL}${data.leftImage}` : enquiry1})`,
               }}
             ></div>
             <div className="absolute inset-0 bg-[#4A3B2A]/5 mix-blend-multiply"></div>
@@ -85,7 +85,7 @@ const EnquirySection = ({ data }) => {
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-[15s] hover:scale-110"
               style={{
-                backgroundImage: `url(${data?.leftImage ? `${IMAGE_BASE_URL}${data.leftImage}` : enquiry2})`,
+                backgroundImage: `url(${data?.rightImage ? `${IMAGE_BASE_URL}${data.rightImage}` : enquiry2})`,
               }}
             ></div>
             <div className="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.1)] pointer-events-none"></div>

@@ -53,17 +53,19 @@ const EnquirySectionForm = ({
         <ImageUploadField
           label="Left Image"
           currentImage={data.leftImage}
+          onImageSelect={onFileSelectLeft}
           onFileSelect={onFileSelectLeft}
           compressionStats={compressionStatsLeft}
-          isLoading={compressionLoadingLeft}
+          compressionLoading={compressionLoadingLeft}
         />
         
         <ImageUploadField
           label="Right Image"
           currentImage={data.rightImage}
+          onImageSelect={onFileSelectRight}
           onFileSelect={onFileSelectRight}
           compressionStats={compressionStatsRight}
-          isLoading={compressionLoadingRight}
+          compressionLoading={compressionLoadingRight}
         />
       </div>
 

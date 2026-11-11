@@ -68,9 +68,10 @@ const ReferFriendSectionForm = ({
       <ImageUploadField
         label="Image"
         currentImage={data.image}
+        onImageSelect={onFileSelect}
         onFileSelect={onFileSelect}
         compressionStats={compressionStats}
-        isLoading={compressionLoading}
+        compressionLoading={compressionLoading}
       />
 
       <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-4">

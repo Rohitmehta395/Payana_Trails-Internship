@@ -28,14 +28,14 @@ exports.updateConnectPage = async (req, res) => {
     // Assign existing images if not updated
     if (currentData) {
       if (data.enquirySection) {
-        data.enquirySection.leftImage = currentData.enquirySection?.leftImage;
-        data.enquirySection.rightImage = currentData.enquirySection?.rightImage;
+        data.enquirySection.leftImage = currentData.enquirySection?.leftImage || "";
+        data.enquirySection.rightImage = currentData.enquirySection?.rightImage || "";
       }
       if (data.referFriendSection) {
-        data.referFriendSection.image = currentData.referFriendSection?.image;
+        data.referFriendSection.image = currentData.referFriendSection?.image || "";
       }
       if (data.giftJourneySection) {
-        data.giftJourneySection.image = currentData.giftJourneySection?.image;
+        data.giftJourneySection.image = currentData.giftJourneySection?.image || "";
       }
     }
 

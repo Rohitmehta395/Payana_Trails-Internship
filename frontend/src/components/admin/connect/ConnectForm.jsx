@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EnquirySectionForm from "./sections/EnquirySectionForm";
 import ReferFriendSectionForm from "./sections/ReferFriendSectionForm";
 import GiftJourneySectionForm from "./sections/GiftJourneySectionForm";
@@ -100,6 +100,12 @@ const ConnectForm = ({ initialData, onSave, activeTab }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
+  useEffect(() => {
+    if (initialData) {
+      setData(mergeData(initialData, defaultData));
+    }
+  }, [initialData]);
+
   const handleSectionChange = (section, newData) => {
     setData((prev) => ({ ...prev, [section]: newData }));
   };
@@ -142,9 +148,13 @@ const ConnectForm = ({ initialData, onSave, activeTab }) => {
     });
 
     try {
-      await onSave(formData);
+      const result = await onSave(formData);
       setMessage({ type: "success", text: "Connect Page content updated successfully!" });
       setFiles({});
+      setCompressionPreviews({});
+      if (result) {
+        setData(mergeData(result, defaultData));
+      }
       setTimeout(() => {
         setMessage(null);
       }, 3000);

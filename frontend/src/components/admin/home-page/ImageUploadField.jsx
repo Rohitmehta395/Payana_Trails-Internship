@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { IMAGE_BASE_URL } from "../../../services/api";
 import { Loader2 } from "lucide-react";
 
@@ -12,15 +12,42 @@ const formatBytes = (bytes = 0) => {
   return `${bytes} B`;
 };
 
-const ImageUploadField = ({ label, currentImage, onImageSelect, compressionStats, compressionLoading }) => {
+const getImageUrl = (url) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `${IMAGE_BASE_URL}${url}`;
+};
+
+const ImageUploadField = ({
+  label,
+  currentImage,
+  onImageSelect,
+  onFileSelect,
+  compressionStats,
+  compressionLoading,
+  isLoading,
+}) => {
   const fileRef = useRef(null);
   const [preview, setPreview] = useState(null);
+
+  // Sync / clear preview when currentImage changes or resets
+  useEffect(() => {
+    setPreview(null);
+    if (fileRef.current) {
+      fileRef.current.value = "";
+    }
+  }, [currentImage]);
+
+  const handleSelect = onImageSelect || onFileSelect;
+  const isCompressing = compressionLoading ?? isLoading;
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setPreview(URL.createObjectURL(file));
-      onImageSelect(file);
+      if (typeof handleSelect === "function") {
+        handleSelect(file);
+      }
     }
   };
 
@@ -33,7 +60,7 @@ const ImageUploadField = ({ label, currentImage, onImageSelect, compressionStats
         {(preview || currentImage) && (
           <div className="w-32 h-20 bg-gray-100 rounded-md overflow-hidden border border-gray-200">
             <img
-              src={preview || `${IMAGE_BASE_URL}${currentImage}`}
+              src={preview || getImageUrl(currentImage)}
               alt="Preview"
               className="w-full h-full object-cover"
             />
@@ -58,7 +85,7 @@ const ImageUploadField = ({ label, currentImage, onImageSelect, compressionStats
         </div>
       </div>
       <div className="mt-2">
-        {compressionLoading ? (
+        {isCompressing ? (
           <div className="inline-flex items-center gap-2 text-gray-600">
             <Loader2 size={14} className="animate-spin" />
             Checking compression...
