@@ -125,7 +125,13 @@ export const submitGift = async (giftData) => {
  */
 export const getConnectPage = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/connect-page`);
+    const response = await fetch(`${API_BASE_URL}/connect-page`, {
+      cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+      },
+    });
 
     if (!response.ok) throw new Error("Failed to fetch connect page");
 

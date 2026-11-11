@@ -57,7 +57,7 @@ app.use("/api/home-page", cacheMiddleware(60), homePageRoutes);
 app.use("/api/payana-way", cacheMiddleware(60), payanaWayRoutes);
 app.use("/api/stories", cacheMiddleware(60), storiesRoutes);
 app.use("/api/external-stories", cacheMiddleware(60), externalStoriesRoutes);
-app.use("/api/connect-page", cacheMiddleware(60), connectPageRoutes);
+app.use("/api/connect-page", connectPageRoutes);
 app.use("/api/journey-page", cacheMiddleware(60), journeyPageRoutes);
 app.use("/api/header", cacheMiddleware(60), headerRoutes);
 app.use("/api/footer", cacheMiddleware(60), footerRoutes);
