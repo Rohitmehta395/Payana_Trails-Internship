@@ -1,9 +1,11 @@
 import React from "react";
 import ImageUploadField from "../../home-page/ImageUploadField";
 import FormField from "../../home-page/FormField";
+import enquiry1 from "../../../../assets/connect/enquiry1.webp";
+import enquiry2 from "../../../../assets/connect/enquiry2.webp";
 
 const EnquirySectionForm = ({
-  data,
+  data = {},
   onChange,
   onFileSelectLeft,
   onFileSelectRight,
@@ -49,21 +51,27 @@ const EnquirySectionForm = ({
         onChange={handleChange}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#F3EFE9]/40 rounded-xl border border-[#4A3B2A]/10">
         <ImageUploadField
-          label="Left Image"
+          label="Back Image (Visual Left / Background)"
+          helperText="The offset background photo behind the main front card."
           currentImage={data.leftImage}
+          defaultImage={enquiry1}
           onImageSelect={onFileSelectLeft}
           onFileSelect={onFileSelectLeft}
+          onRemove={() => onChange({ ...data, leftImage: "" })}
           compressionStats={compressionStatsLeft}
           compressionLoading={compressionLoadingLeft}
         />
         
         <ImageUploadField
-          label="Right Image"
+          label="Front Image (Visual Right / Main Focus)"
+          helperText="The primary foreground card photo with rounded borders."
           currentImage={data.rightImage}
+          defaultImage={enquiry2}
           onImageSelect={onFileSelectRight}
           onFileSelect={onFileSelectRight}
+          onRemove={() => onChange({ ...data, rightImage: "" })}
           compressionStats={compressionStatsRight}
           compressionLoading={compressionLoadingRight}
         />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ConnectForm from "../../../components/admin/connect/ConnectForm";
 import { api } from "../../../services/api";
+import { RotateCw } from "lucide-react";
 
 const ConnectManager = () => {
   const [data, setData] = useState(null);
@@ -58,10 +59,10 @@ const ConnectManager = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      {/* Tab Navigation */}
-      <div className="border-b border-gray-200">
+      {/* Tab Navigation + Refresh */}
+      <div className="border-b border-gray-200 flex items-center justify-between px-6">
         <nav
-          className="flex space-x-8 px-6 overflow-x-auto no-scrollbar"
+          className="flex space-x-8 overflow-x-auto no-scrollbar py-1"
           aria-label="Connect Tabs"
         >
           {tabs.map((tab) => (
@@ -78,10 +79,21 @@ const ConnectManager = () => {
             </button>
           ))}
         </nav>
+        <button
+          type="button"
+          onClick={fetchData}
+          disabled={loading}
+          className="flex items-center gap-1.5 text-xs text-[#4A3B2A] font-medium hover:text-[#2d2319] px-3 py-1.5 rounded border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm ml-4 shrink-0"
+          title="Reload latest data from server"
+        >
+          <RotateCw size={13} className={loading ? "animate-spin" : ""} />
+          Refresh
+        </button>
       </div>
 
       <div className="p-6">
         <ConnectForm
+          key={data?._id ? `${data._id}-${data.updatedAt || ''}` : "connect-form"}
           initialData={data}
           onSave={handleSave}
           activeTab={activeTab}

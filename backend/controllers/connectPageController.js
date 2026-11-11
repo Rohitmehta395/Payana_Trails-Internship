@@ -3,6 +3,11 @@ const { validateConnectPage } = require("../validators/connectPageValidator");
 
 exports.getConnectPage = async (req, res) => {
   try {
+    res.set({
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      "Pragma": "no-cache",
+      "Expires": "0",
+    });
     const connectPage = await connectPageService.getConnectPage();
     if (!connectPage) {
       return res.status(200).json({});
@@ -25,36 +30,64 @@ exports.updateConnectPage = async (req, res) => {
 
     const currentData = await connectPageService.getConnectPage();
 
-    // Assign existing images if not updated
+    if (!data.enquirySection) data.enquirySection = {};
+    if (!data.referFriendSection) data.referFriendSection = {};
+    if (!data.giftJourneySection) data.giftJourneySection = {};
+
+    // Assign existing images if not provided/updated
     if (currentData) {
-      if (data.enquirySection) {
+      if (data.enquirySection.leftImage === undefined) {
         data.enquirySection.leftImage = currentData.enquirySection?.leftImage || "";
+      }
+      if (data.enquirySection.rightImage === undefined) {
         data.enquirySection.rightImage = currentData.enquirySection?.rightImage || "";
       }
-      if (data.referFriendSection) {
+      if (data.referFriendSection.image === undefined) {
         data.referFriendSection.image = currentData.referFriendSection?.image || "";
       }
-      if (data.giftJourneySection) {
+      if (data.giftJourneySection.image === undefined) {
         data.giftJourneySection.image = currentData.giftJourneySection?.image || "";
+      }
+
+      // If user explicitly sent empty string to reset custom image:
+      if (data.enquirySection.leftImage === "" && currentData.enquirySection?.leftImage) {
+        connectPageService.deleteOldImage(currentData.enquirySection.leftImage);
+      }
+      if (data.enquirySection.rightImage === "" && currentData.enquirySection?.rightImage) {
+        connectPageService.deleteOldImage(currentData.enquirySection.rightImage);
+      }
+      if (data.referFriendSection.image === "" && currentData.referFriendSection?.image) {
+        connectPageService.deleteOldImage(currentData.referFriendSection.image);
+      }
+      if (data.giftJourneySection.image === "" && currentData.giftJourneySection?.image) {
+        connectPageService.deleteOldImage(currentData.giftJourneySection.image);
       }
     }
 
-    // Process new images
+    // Process newly uploaded images
     if (req.files) {
       if (req.files.enquiryLeftImage && req.files.enquiryLeftImage.length > 0) {
-        if (data.enquirySection?.leftImage) connectPageService.deleteOldImage(data.enquirySection.leftImage);
+        if (currentData?.enquirySection?.leftImage) {
+          connectPageService.deleteOldImage(currentData.enquirySection.leftImage);
+        }
         data.enquirySection.leftImage = `/uploads/connect/${req.files.enquiryLeftImage[0].filename}`;
       }
       if (req.files.enquiryRightImage && req.files.enquiryRightImage.length > 0) {
-        if (data.enquirySection?.rightImage) connectPageService.deleteOldImage(data.enquirySection.rightImage);
+        if (currentData?.enquirySection?.rightImage) {
+          connectPageService.deleteOldImage(currentData.enquirySection.rightImage);
+        }
         data.enquirySection.rightImage = `/uploads/connect/${req.files.enquiryRightImage[0].filename}`;
       }
       if (req.files.referFriendImage && req.files.referFriendImage.length > 0) {
-        if (data.referFriendSection?.image) connectPageService.deleteOldImage(data.referFriendSection.image);
+        if (currentData?.referFriendSection?.image) {
+          connectPageService.deleteOldImage(currentData.referFriendSection.image);
+        }
         data.referFriendSection.image = `/uploads/connect/${req.files.referFriendImage[0].filename}`;
       }
       if (req.files.giftJourneyImage && req.files.giftJourneyImage.length > 0) {
-        if (data.giftJourneySection?.image) connectPageService.deleteOldImage(data.giftJourneySection.image);
+        if (currentData?.giftJourneySection?.image) {
+          connectPageService.deleteOldImage(currentData.giftJourneySection.image);
+        }
         data.giftJourneySection.image = `/uploads/connect/${req.files.giftJourneyImage[0].filename}`;
       }
     }

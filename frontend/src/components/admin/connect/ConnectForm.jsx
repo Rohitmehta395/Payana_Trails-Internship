@@ -13,6 +13,8 @@ const defaultData = {
     titleBold: "Craft Your",
     titleItalic: "Journey.",
     subtitle: "Travel is the only thing you buy that makes you richer.",
+    leftImage: "",
+    rightImage: "",
   },
   referFriendSection: {
     typographyText: "Refer A Friend",
@@ -25,6 +27,7 @@ const defaultData = {
     block2Label: "Exclusive",
     block2Title: "Benefits",
     block2Body: "Unlock rewards while sharing exceptional journeys with your circle.",
+    image: "",
     imageBlockLabel: "Referral Program",
     imageBlockTitle: "Share Payana",
     imageBlockBody: "Invite friends to travel beautifully.",
@@ -40,6 +43,7 @@ const defaultData = {
     block2Label: "Curated",
     block2Title: "Journeys",
     block2Body: "Gift a fully planned, breathtaking signature trail.",
+    image: "",
     imageBlockLabel: "Memorable",
     imageBlockTitle: "Surprises",
     imageBlockBody: "Gift beautifully.",
@@ -77,43 +81,52 @@ const mergeData = (initial, defaults) => {
   return {
     ...defaults,
     ...initial,
-    enquirySection: { ...defaults.enquirySection, ...initial.enquirySection },
-    referFriendSection: { ...defaults.referFriendSection, ...initial.referFriendSection },
-    giftJourneySection: { ...defaults.giftJourneySection, ...initial.giftJourneySection },
-    faqSection: { ...defaults.faqSection, ...initial.faqSection },
+    enquirySection: { ...defaults.enquirySection, ...(initial.enquirySection || {}) },
+    referFriendSection: { ...defaults.referFriendSection, ...(initial.referFriendSection || {}) },
+    giftJourneySection: { ...defaults.giftJourneySection, ...(initial.giftJourneySection || {}) },
+    faqSection: { ...defaults.faqSection, ...(initial.faqSection || {}) },
     connectSection: { 
       ...defaults.connectSection, 
-      ...initial.connectSection,
+      ...(initial.connectSection || {}),
       socialMedia: {
         ...defaults.connectSection.socialMedia,
-        ...initial.connectSection?.socialMedia
+        ...(initial.connectSection?.socialMedia || {})
       }
     }
   };
 };
 
 const ConnectForm = ({ initialData, onSave, activeTab }) => {
-  const [prevInitialData, setPrevInitialData] = useState(initialData);
   const [data, setData] = useState(() => mergeData(initialData, defaultData));
-
-  if (initialData !== prevInitialData) {
-    setPrevInitialData(initialData);
-    setData(mergeData(initialData, defaultData));
-  }
-
   const [files, setFiles] = useState({});
   const [compressionPreviews, setCompressionPreviews] = useState({});
   const [compressionLoading, setCompressionLoading] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
+  useEffect(() => {
+    if (initialData) {
+      setData(mergeData(initialData, defaultData));
+    }
+  }, [initialData]);
+
   const handleSectionChange = (section, newData) => {
     setData((prev) => ({ ...prev, [section]: newData }));
   };
 
   const handleFileSelect = async (fieldName, file) => {
-    setFiles((prev) => ({ ...prev, [fieldName]: file }));
-    await previewCompression(fieldName, file);
+    setFiles((prev) => {
+      const next = { ...prev };
+      if (file) {
+        next[fieldName] = file;
+      } else {
+        delete next[fieldName];
+      }
+      return next;
+    });
+    if (file) {
+      await previewCompression(fieldName, file);
+    }
   };
 
   const previewCompression = async (fieldName, file) => {
@@ -145,7 +158,9 @@ const ConnectForm = ({ initialData, onSave, activeTab }) => {
     formData.append("data", JSON.stringify(data));
 
     Object.entries(files).forEach(([key, file]) => {
-      formData.append(key, file);
+      if (file) {
+        formData.append(key, file);
+      }
     });
 
     try {
@@ -158,7 +173,7 @@ const ConnectForm = ({ initialData, onSave, activeTab }) => {
       }
       setTimeout(() => {
         setMessage(null);
-      }, 3000);
+      }, 4000);
     } catch (err) {
       setMessage({ type: "error", text: err.message || "Failed to update connect page content." });
     } finally {

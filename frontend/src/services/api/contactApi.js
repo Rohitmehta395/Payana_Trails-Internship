@@ -125,7 +125,7 @@ export const submitGift = async (giftData) => {
  */
 export const getConnectPage = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/connect-page`, {
+    const response = await fetch(`${API_BASE_URL}/connect-page?t=${Date.now()}`, {
       cache: "no-store",
       headers: {
         "Cache-Control": "no-cache",

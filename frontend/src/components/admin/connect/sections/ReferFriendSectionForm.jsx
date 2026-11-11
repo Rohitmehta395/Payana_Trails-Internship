@@ -2,9 +2,10 @@ import React from "react";
 import ImageUploadField from "../../home-page/ImageUploadField";
 import FormField from "../../home-page/FormField";
 import TextAreaField from "../../home-page/TextAreaField";
+import referFriendImg from "../../../../assets/connect/refer.jpg";
 
 const ReferFriendSectionForm = ({
-  data,
+  data = {},
   onChange,
   onFileSelect,
   compressionStats,
@@ -66,10 +67,13 @@ const ReferFriendSectionForm = ({
       </div>
 
       <ImageUploadField
-        label="Image"
+        label="Refer a Friend Image"
+        helperText="Main photo displayed on the Refer a Friend section."
         currentImage={data.image}
+        defaultImage={referFriendImg}
         onImageSelect={onFileSelect}
         onFileSelect={onFileSelect}
+        onRemove={() => onChange({ ...data, image: "" })}
         compressionStats={compressionStats}
         compressionLoading={compressionLoading}
       />

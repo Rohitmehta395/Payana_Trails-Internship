@@ -2,9 +2,10 @@ import React from "react";
 import ImageUploadField from "../../home-page/ImageUploadField";
 import FormField from "../../home-page/FormField";
 import TextAreaField from "../../home-page/TextAreaField";
+import giftImg from "../../../../assets/connect/gift.webp";
 
 const GiftJourneySectionForm = ({
-  data,
+  data = {},
   onChange,
   onFileSelect,
   compressionStats,
@@ -66,10 +67,13 @@ const GiftJourneySectionForm = ({
       </div>
 
       <ImageUploadField
-        label="Image"
+        label="Gift a Journey Image"
+        helperText="Main photo displayed on the Gift a Journey section."
         currentImage={data.image}
+        defaultImage={giftImg}
         onImageSelect={onFileSelect}
         onFileSelect={onFileSelect}
+        onRemove={() => onChange({ ...data, image: "" })}
         compressionStats={compressionStats}
         compressionLoading={compressionLoading}
       />
